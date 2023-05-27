@@ -2,30 +2,29 @@
 #include "main.h"
 #include "bmp.h"
 
-int WINAPI WinMain
-(
-    _In_ HINSTANCE hInstance, 
-    _In_opt_ HINSTANCE hPrevInstance, 
-    _In_ LPSTR lpCmdLine, 
-    _In_ int nCmdShow)
+int WINAPI WinMain(
+    _In_ HINSTANCE hInstance,           //アプリケーションのインスタンスハンドル
+    _In_opt_ HINSTANCE hPrevInstance,   //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
+    _In_ LPSTR lpCmdLine,               //コマンドラインが格納された、NULLで終わる文字列へのポインタが入る。プログラム名は含まれない
+    _In_ int nCmdShow)                  //ウィンドウをどのように表示するかの指定が入る。SW_MESSAGENAMEの値が入る  
 {
-    static TCHAR szWindowsClass[] = _T("window1");
-    static TCHAR szTitle[] = _T("GLPA");
+    WNDCLASSEX wcex;        //struct tagWNDCLASSEXW
 
-    WNDCLASSEX wcex;
-
-    wcex.cbSize = sizeof(wcex);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.cbSize = sizeof(wcex);                                     //WNDCLASSEX構造体の大きさの設定
+    wcex.style = CS_HREDRAW | CS_VREDRAW;                           //
     wcex.lpfnWndProc = WndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wcex.hIcon = 
+        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex.hCursor = 
+        LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = szWindowsClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex.lpszClassName = L"window1";
+    wcex.hIconSm = 
+        LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
     if (!RegisterClassEx(&wcex))
     {
@@ -39,18 +38,18 @@ int WINAPI WinMain
         return 1;
     }
 
-    hInst = hInstance;
+    MSG msg;        //メッセージ構造体
 
-    HWND hWnd = CreateWindow(
-        szWindowsClass,
-        szTitle,
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        WINDOW_WIDTH, WINDOW_HEIGHT,
-        NULL,
-        NULL,
-        hInstance,
-        NULL
+    HWND hWnd = CreateWindow(           //ウィンドウハンドル
+        L"window1",                     //LPCSTR 登録されたクラス名のアドレス
+        L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
+        WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
+        CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
+        WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
+        NULL,                           //HWND 親ウィンドウのハンドル
+        NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
+        hInstance,                      //HINSTANCE アプリケーションインスタンスのハンドル
+        NULL                            //void FAR* ウィンドウ作成データのアドレス
     );
 
     if (!hWnd)
@@ -72,14 +71,14 @@ int WINAPI WinMain
 
     UpdateWindow(hWnd);
 
-    MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
     
-    return (int)msg.wParam;
+    return (int)msg.wParam;             //関数がWM_QUITメッセージを受け取って終了したときは、メッセージのwParamパラメータが持つ終了コードを返す。
+							            //関数がメッセージループに入る前に終了したときは、０を返す
 }
 
 void draw(HDC hMemDC, TEXTURE *texture)
