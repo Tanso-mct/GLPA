@@ -10,20 +10,20 @@ int WINAPI WinMain(
 {
     WNDCLASSEX wcex;        //struct tagWNDCLASSEXW
 
-    wcex.cbSize = sizeof(wcex);                                     //WNDCLASSEX構造体の大きさの設定
-    wcex.style = CS_HREDRAW | CS_VREDRAW;                           //
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = 
+    wcex.cbSize = sizeof(wcex);                                     //UINT WNDCLASSEX構造体の大きさの設定
+    wcex.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
+    wcex.lpfnWndProc = WndProc;                                     //WNDPROC WNDPROCを指すポインタ
+    wcex.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
+    wcex.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
+    wcex.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
+    wcex.hIcon =                                                    //HICON クラスアイコンを指定する
         LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex.hCursor = 
+    wcex.hCursor =                                                  //HCURSOR クラスカーソルを指定する
         LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = L"window1";
-    wcex.hIconSm = 
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
+    wcex.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
+    wcex.lpszClassName = L"window1";                                //LPCSTR ウィンドウクラスの名前を指定する
+    wcex.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
         LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
     if (!RegisterClassEx(&wcex))
@@ -40,17 +40,18 @@ int WINAPI WinMain(
 
     MSG msg;        //メッセージ構造体
 
-    HWND hWnd = CreateWindow(           //ウィンドウハンドル
+    HWND hWnd = CreateWindow(           //HWND ウィンドウハンドル
         L"window1",                     //LPCSTR 登録されたクラス名のアドレス
         L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
         WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
-        NULL,                           //HWND 親ウィンドウのハンドル
+        HWND_DESKTOP,                           //HWND 親ウィンドウのハンドル
         NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
         hInstance,                      //HINSTANCE アプリケーションインスタンスのハンドル
         NULL                            //void FAR* ウィンドウ作成データのアドレス
     );
+
 
     if (!hWnd)
     {
@@ -243,6 +244,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 return 1;
         case WM_PAINT :
                 hdc = BeginPaint(hWnd, &ps);
+                /*
                 StretchDIBits(
                     hdc,
                     0,
@@ -258,6 +260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     DIB_RGB_COLORS,
                     SRCCOPY
                 );
+                */
                 EndPaint(hWnd, &ps);
                 return 0;
                 
