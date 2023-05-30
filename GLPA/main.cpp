@@ -3,8 +3,12 @@
 #include "bmp.h"
 
 HWND hWnd;
+HWND hWnd2;
 HWND gr_hWnd2;
+bool hWnd1Open = false;
+bool hWnd2Open = false;
 int gr_nCmdShow;
+HINSTANCE gr_hInstance;
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,           //アプリケーションのインスタンスハンドル
@@ -98,32 +102,9 @@ int WINAPI WinMain(
         return 1;
     }
 
-    HWND hWnd2 = CreateWindow(           //HWND ウィンドウハンドル
-        L"window2",                     //LPCSTR 登録されたクラス名のアドレス
-        L"GLPA2",                        //LPCSTR ウィンドウテキストのアドレス
-        WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
-        CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
-        WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
-        hWnd,                           //HWND 親ウィンドウのハンドル
-        NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
-        hInstance,                      //HINSTANCE アプリケーションインスタンスのハンドル
-        NULL                            //void FAR* ウィンドウ作成データのアドレス
-    );
-
-    if (!hWnd2)
-    {
-        MessageBox(
-            NULL,
-            _T("window2 make fail"),
-            _T("window2"),
-            MB_ICONEXCLAMATION
-        );
-
-        return 1;
-    }
+    gr_hInstance = hInstance;
 
     gr_nCmdShow = nCmdShow;
-    gr_hWnd2 = hWnd2;
 
     ShowWindow(
         hWnd,
@@ -232,6 +213,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static clock_t lastloop;
     static long double fps;
 
+    if (hWnd2Open && message != WM_SETFOCUS)
+    {
+        return DefWindowProc(hWnd, message, wParam, lParam);;
+    }
+    else if (message == WM_SETFOCUS)
+    {
+        hWnd1Open = true;
+        hWnd2Open = false;
+    }
+
     switch (message)
     {
         case WM_CREATE :
@@ -304,6 +295,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_ERASEBKGND :
                 return 1;
         case WM_PAINT :
+                // OutputDebugString(L"debug window 1111111\n");
                 hdc = BeginPaint(hWnd, &ps);
                 StretchDIBits(
                     hdc,
@@ -328,6 +320,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 case REQUEST_ANIMATION_TIMER :
                         //fps
+                        OutputDebugString(L"debug window 1111111\n");
                         if (!startFpsCount)
                         {
                             lastloop = clock();
@@ -371,13 +364,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     case VK_SPACE :
                             _stprintf_s(szstr, _T("%s"), _T("SPACE"));
                             //full screen
+                            hWnd1Open = false;
+                            hWnd2 = CreateWindow(           //HWND ウィンドウハンドル
+                                L"window2",                     //LPCSTR 登録されたクラス名のアドレス
+                                L"GLPA2",                        //LPCSTR ウィンドウテキストのアドレス
+                                WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
+                                CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
+                                WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
+                                HWND_DESKTOP,                           //HWND 親ウィンドウのハンドル
+                                NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
+                                gr_hInstance,                      //HINSTANCE アプリケーションインスタンスのハンドル
+                                NULL                            //void FAR* ウィンドウ作成データのアドレス
+                            );
+
+                            if (!hWnd2)
+                            {
+                                MessageBox(
+                                    NULL,
+                                    _T("window2 make fail"),
+                                    _T("window2"),
+                                    MB_ICONEXCLAMATION
+                                );
+
+                                return 1;
+                            }
+                            // else
+                            // {
+                            //     hWnd2Open = true;
+                            // }
+
                             ShowWindow(
-                                gr_hWnd2,
+                                hWnd2,
                                 gr_nCmdShow
                             );
 
                             UpdateWindow(gr_hWnd2);
-                            WaitForInputIdle(hWnd, INFINITE);
                             // SetMenu(hWnd, NULL);
                             // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
                             // MoveWindow(
@@ -504,6 +525,16 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static clock_t lastloop;
     static long double fps;
 
+    if (hWnd1Open && message != WM_SETFOCUS)
+    {
+        return DefWindowProc(hWnd, message, wParam, lParam);;
+    }
+    else if (message == WM_SETFOCUS)
+    {
+        hWnd1Open = false;
+        hWnd2Open = true;
+    }
+
     switch (message)
     {
     case WM_CREATE:
@@ -562,20 +593,21 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ReleaseDC(hWnd, hdc);
 
         //full screen
-        // SetMenu(hWnd, NULL);
-        // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-        // MoveWindow(
-        //     hWnd,
-        //     0, 0,
-        //     WINDOW_WIDTH, WINDOW_HEIGHT,
-        //     FALSE
-        // );
+        SetMenu(hWnd, NULL);
+        SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
+        MoveWindow(
+            hWnd,
+            0, 0,
+            WINDOW_WIDTH, WINDOW_HEIGHT,
+            FALSE
+        );
         return 0;
     }
 
     case WM_ERASEBKGND:
         return 1;
     case WM_PAINT:
+        // OutputDebugString(L"debug window 2222222\n");
         hdc = BeginPaint(hWnd, &ps);
         StretchDIBits(
             hdc,
@@ -600,6 +632,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case REQUEST_ANIMATION_TIMER:
             //fps
+            OutputDebugString(L"debug window 2222222\n");
             if (!startFpsCount)
             {
                 lastloop = clock();
@@ -714,6 +747,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         DestroyWindow(hWnd);
 
     case WM_DESTROY:
+        hWnd2Open = false;
         PostQuitMessage(0);
 
     default:
