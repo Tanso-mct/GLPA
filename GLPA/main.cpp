@@ -76,8 +76,6 @@ int WINAPI WinMain(
         return 1;
     }
 
-    MSG msg;        //メッセージ構造体
-
     HWND hWnd = CreateWindow(           //HWND ウィンドウハンドル
         L"window1",                     //LPCSTR 登録されたクラス名のアドレス
         L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
@@ -110,9 +108,9 @@ int WINAPI WinMain(
         hWnd,
         nCmdShow
     );
-
-
     UpdateWindow(hWnd);
+
+    MSG msg;        //メッセージ構造体
 
     while (GetMessage(&msg, NULL, 0, 0))
     {
