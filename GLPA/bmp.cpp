@@ -44,7 +44,7 @@ bool BMPFILE::create(
     unsigned short windowHeight,
     unsigned short displayResolution,
     HDC hBmpDC,
-    LPDWORD bmpPixel
+    LPDWORD cre_bmpPixel
 )
 {
     PatBlt(hBmpDC, 0, 0, windowWidth * displayResolution, windowHeight * displayResolution, WHITENESS);
@@ -53,7 +53,7 @@ bool BMPFILE::create(
     {
         for (int x = 0; x < bitmapImage.bmWidth; x++)
         {
-            pixel[x][y] = bmpPixel[x + y *windowWidth * displayResolution];
+            pixel[x][y] = cre_bmpPixel[x + y *windowWidth * displayResolution];
         }
     }
     return 0;

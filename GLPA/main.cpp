@@ -175,10 +175,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static HDC hMemDC;
     static BITMAPINFO bmpInfo; 
 
-    //bmpfile dc
-    static HBITMAP hBmpFileBitmap;    
-    static HDC hBmpDC;
-    static BITMAPINFO bmpFileInfo; 
+    // //bmpfile dc
+    // static HBITMAP hBmpFileBitmap;    
+    // static HDC hBmpDC;
+    // static BITMAPINFO bmpFileInfo; 
 
     //textute
     static TEXTURE texture_sample;
@@ -238,34 +238,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 SelectObject(hMemDC, GetStockObject(DC_BRUSH));
 
                 //bmp file dc
-                bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                bmpFileInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
-                bmpFileInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;      
-                bmpFileInfo.bmiHeader.biPlanes = 1;
-                bmpFileInfo.bmiHeader.biBitCount = 32;
-                bmpFileInfo.bmiHeader.biCompression = BI_RGB;
+                // bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                // bmpFileInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
+                // bmpFileInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;      
+                // bmpFileInfo.bmiHeader.biPlanes = 1;
+                // bmpFileInfo.bmiHeader.biBitCount = 32;
+                // bmpFileInfo.bmiHeader.biCompression = BI_RGB;
                 
-                hBmpDC = CreateCompatibleDC(hdc);
-                hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
-                SelectObject(hBmpDC, hBmpFileBitmap);
+                // hBmpDC = CreateCompatibleDC(hdc);
+                // hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
+                // SelectObject(hBmpDC, hBmpFileBitmap);
                 
                 //load texture
                 sample.load(TEXT("sample.bmp"), hdc);
-                sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
+                sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hMemDC, lpPixel);
                 texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
                 sample.deleteImage(); 
 
                 sample2.load(TEXT("redimage.bmp"), hdc);
-                sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
+                sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hMemDC, lpPixel);
                 texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
                 sample2.deleteImage();   
 
                 sample3.load(TEXT("blueimage.bmp"), hdc);
-                sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
+                sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hMemDC, lpPixel);
                 texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
                 sample3.deleteImage();     
 
-                DeleteDC(hBmpDC);
+                // DeleteDC(hBmpDC);
                 ReleaseDC(hWnd, hdc);
 
                 //full screen
@@ -450,10 +450,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_CLOSE :
                 DeleteDC(hMemDC);
-                DeleteDC(hBmpDC);
+                // DeleteDC(hBmpDC);
 
                 DeleteObject(hBitmap);
-                DeleteObject(hBmpFileBitmap);
+                // DeleteObject(hBmpFileBitmap);
 
                 DestroyWindow(hWnd);
 
