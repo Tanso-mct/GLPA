@@ -170,16 +170,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     PAINTSTRUCT ps;
     HDC hdc;
 
-    //mouse move limit
-    static RECT rc = 
-    {
-        0,
-        0,
-        GetSystemMetrics(SM_CXSCREEN),
-        GetSystemMetrics(SM_CYSCREEN)
-    };
-    ClipCursor(&rc);
-
     //bufer bmp dc
     static HBITMAP hBitmap;    
     static HDC hMemDC;
@@ -487,10 +477,16 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         0,
         0,
-        GetSystemMetrics(SM_CXSCREEN),
-        GetSystemMetrics(SM_CYSCREEN)
+        WINDOW_WIDTH,
+        WINDOW_HEIGHT
     };
-    ClipCursor(&rc);
+    static int debug_num = 0;
+    if (debug_num == 0)
+    {
+        ClipCursor(&rc);
+        debug_num = 1;
+    }
+    
 
     //bufer bmp dc
     static HBITMAP hBitmap;
