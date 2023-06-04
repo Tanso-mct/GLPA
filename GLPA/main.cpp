@@ -48,9 +48,9 @@ int WINAPI WinMain(
 
     WNDCLASSEX wcex2;        //struct tagWNDCLASSEXW
 
-    wcex2.cbSize = sizeof(wcex2);                                     //UINT WNDCLASSEX構造体の大きさの設定
+    wcex2.cbSize = sizeof(wcex2);                                    //UINT WNDCLASSEX構造体の大きさの設定
     wcex2.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
-    wcex2.lpfnWndProc = WndProc2;                                     //WNDPROC WNDPROCを指すポインタ
+    wcex2.lpfnWndProc = WndProc2;                                    //WNDPROC WNDPROCを指すポインタ
     wcex2.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
     wcex2.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
     wcex2.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
@@ -82,7 +82,7 @@ int WINAPI WinMain(
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
         WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
-        HWND_DESKTOP,                           //HWND 親ウィンドウのハンドル
+        HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
         NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
         hInstance,                      //HINSTANCE アプリケーションインスタンスのハンドル
         NULL                            //void FAR* ウィンドウ作成データのアドレス
@@ -194,6 +194,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static BMPFILE sample3;    
     static BMPFILE *pt_sample3 = &sample3;
 
+    //
+    
     //fps
     static int refreshRate;
     static bool startFpsCount = false;
@@ -235,8 +237,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 hBitmap = CreateDIBSection(NULL, &bmpInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
                 SelectObject(hMemDC, hBitmap);
                 SelectObject(hMemDC, GetStockObject(DC_PEN));
-                SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-
+                SelectObject(hMemDC, GetStockObject(DC_BRUSH)); 
+                
                 //bmp file dc
                 // bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
                 // bmpFileInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
