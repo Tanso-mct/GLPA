@@ -122,6 +122,7 @@ int WINAPI WinMain(
 							            //関数がメッセージループに入る前に終了したときは、０を返す
 }
 
+//TODO:
 void draw(HDC hMemDC, TEXTURE *texture)
 {
     texture->displayImage_rectangle(
