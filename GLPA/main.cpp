@@ -122,7 +122,6 @@ int WINAPI WinMain(
 							            //関数がメッセージループに入る前に終了したときは、０を返す
 }
 
-//TODO:
 void draw(HDC hMemDC, TEXTURE *texture)
 {
     texture->displayImage_rectangle(
@@ -168,8 +167,8 @@ void draw(HDC hMemDC, TEXTURE *texture)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     //win32 define
-    PAINTSTRUCT ps;
-    HDC hdc;
+    static PAINTSTRUCT ps;
+    static HDC hWindow_DC;
 
     //bufer bmp dc
     static HBITMAP hBitmap;    
@@ -218,9 +217,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         case WM_CREATE :
             {
-                hdc = GetDC(hWnd);
-                refreshRate = GetDeviceCaps(hdc, VREFRESH);
-                ReleaseDC(hWnd, hdc);
+                hWindow_DC = GetDC(hWnd);
+                refreshRate = GetDeviceCaps(hWindow_DC, VREFRESH);
+                ReleaseDC(hWnd, hWindow_DC);
 
                 SetTimer(hWnd, REQUEST_ANIMATION_TIMER, std::floor(1000 / refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
@@ -233,12 +232,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 bmpInfo.bmiHeader.biBitCount = 32;
                 bmpInfo.bmiHeader.biCompression = BI_RGB;
                 
-                hdc = GetDC(hWnd);
-                hMemDC = CreateCompatibleDC(hdc);
+                hWindow_DC = GetDC(hWnd);
+                hMemDC = CreateCompatibleDC(hWindow_DC);
                 hBitmap = CreateDIBSection(NULL, &bmpInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
                 SelectObject(hMemDC, hBitmap);
-                SelectObject(hMemDC, GetStockObject(DC_PEN));
-                SelectObject(hMemDC, GetStockObject(DC_BRUSH)); 
+                // SelectObject(hMemDC, GetStockObject(DC_PEN));
+                // SelectObject(hMemDC, GetStockObject(DC_BRUSH)); 
                 
                 //bmp file dc
                 // bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -248,28 +247,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 // bmpFileInfo.bmiHeader.biBitCount = 32;
                 // bmpFileInfo.bmiHeader.biCompression = BI_RGB;
                 
-                // hBmpDC = CreateCompatibleDC(hdc);
+                // hBmpDC = CreateCompatibleDC(hWindow_DC);
                 // hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
                 // SelectObject(hBmpDC, hBmpFileBitmap);
                 
                 //load texture
-                sample.load(TEXT("sample.bmp"), hdc);
+                sample.load(TEXT("sample.bmp"), hWindow_DC);
                 sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hMemDC, lpPixel);
                 texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
                 sample.deleteImage(); 
 
-                sample2.load(TEXT("redimage.bmp"), hdc);
+                sample2.load(TEXT("redimage.bmp"), hWindow_DC);
                 sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hMemDC, lpPixel);
                 texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
                 sample2.deleteImage();   
 
-                sample3.load(TEXT("blueimage.bmp"), hdc);
+                sample3.load(TEXT("blueimage.bmp"), hWindow_DC);
                 sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hMemDC, lpPixel);
                 texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
                 sample3.deleteImage();     
 
                 // DeleteDC(hBmpDC);
-                ReleaseDC(hWnd, hdc);
+                ReleaseDC(hWnd, hWindow_DC);
 
                 //full screen
                 // SetMenu(hWnd, NULL);
@@ -287,9 +286,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 return 1;
         case WM_PAINT :
                 // OutputDebugString(L"debug window 1111111\n");
-                hdc = BeginPaint(hWnd, &ps);
+                hWindow_DC = BeginPaint(hWnd, &ps);
                 StretchDIBits(
-                    hdc,
+                    hWindow_DC,
                     0,
                     0,
                     GetSystemMetrics(SM_CXSCREEN),
@@ -473,7 +472,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     //win32 define
     PAINTSTRUCT ps;
-    HDC hdc;
+    HDC hWindow_DC;
 
     //mouse move limit
     static RECT rc =
@@ -536,9 +535,9 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
     {
-        hdc = GetDC(hWnd);
-        refreshRate = GetDeviceCaps(hdc, VREFRESH);
-        ReleaseDC(hWnd, hdc);
+        hWindow_DC = GetDC(hWnd);
+        refreshRate = GetDeviceCaps(hWindow_DC, VREFRESH);
+        ReleaseDC(hWnd, hWindow_DC);
 
         SetTimer(hWnd, REQUEST_ANIMATION_TIMER, std::floor(1000 / refreshRate), NULL);
         SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
@@ -551,8 +550,8 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         bmpInfo.bmiHeader.biBitCount = 32;
         bmpInfo.bmiHeader.biCompression = BI_RGB;
 
-        hdc = GetDC(hWnd);
-        hMemDC = CreateCompatibleDC(hdc);
+        hWindow_DC = GetDC(hWnd);
+        hMemDC = CreateCompatibleDC(hWindow_DC);
         hBitmap = CreateDIBSection(NULL, &bmpInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
         SelectObject(hMemDC, hBitmap);
         SelectObject(hMemDC, GetStockObject(DC_PEN));
@@ -566,28 +565,28 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         bmpFileInfo.bmiHeader.biBitCount = 32;
         bmpFileInfo.bmiHeader.biCompression = BI_RGB;
 
-        hBmpDC = CreateCompatibleDC(hdc);
+        hBmpDC = CreateCompatibleDC(hWindow_DC);
         hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
         SelectObject(hBmpDC, hBmpFileBitmap);
 
         //load texture
-        sample.load(TEXT("sample.bmp"), hdc);
+        sample.load(TEXT("sample.bmp"), hWindow_DC);
         sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
         texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
         sample.deleteImage();
 
-        sample2.load(TEXT("redimage.bmp"), hdc);
+        sample2.load(TEXT("redimage.bmp"), hWindow_DC);
         sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
         texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
         sample2.deleteImage();
 
-        sample3.load(TEXT("blueimage.bmp"), hdc);
+        sample3.load(TEXT("blueimage.bmp"), hWindow_DC);
         sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
         texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
         sample3.deleteImage();
 
         DeleteDC(hBmpDC);
-        ReleaseDC(hWnd, hdc);
+        ReleaseDC(hWnd, hWindow_DC);
 
         //full screen
         SetMenu(hWnd, NULL);
@@ -605,9 +604,9 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 1;
     case WM_PAINT:
         // OutputDebugString(L"debug window 2222222\n");
-        hdc = BeginPaint(hWnd, &ps);
+        hWindow_DC = BeginPaint(hWnd, &ps);
         StretchDIBits(
-            hdc,
+            hWindow_DC,
             0,
             0,
             GetSystemMetrics(SM_CXSCREEN),
