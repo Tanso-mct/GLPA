@@ -6,13 +6,15 @@
 #include <tchar.h>
 #include <cmath>
 #include <time.h>
+#include "bmp.h"
 
+//WINDOW SETTINGS
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 #define DISPLAY_RESOLUTION 1
 
 //double buffer pixel
-static LPDWORD lpPixel = 
+LPDWORD lpPixel = 
 (LPDWORD)HeapAlloc
 (
     GetProcessHeap(),
@@ -21,7 +23,7 @@ static LPDWORD lpPixel =
 );
 
 //bmpfile load pixel
-static LPDWORD bmpPixel = 
+LPDWORD bmpPixel = 
 (LPDWORD)HeapAlloc
 (
     GetProcessHeap(),
@@ -29,11 +31,11 @@ static LPDWORD bmpPixel =
     WINDOW_WIDTH*WINDOW_HEIGHT*4
 );
 
-
+//Window Procedure
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK WndProc2(HWND, UINT, WPARAM, LPARAM);
 
-
+//TIMER
 #define REQUEST_ANIMATION_TIMER 1
 #define FPS_OUTPUT_TIMER 2
 
