@@ -282,15 +282,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             _stprintf_s(szstr, _T("%s"), _T("SPACE"));
                             //full screen
                             hWnd1Open = false;
-                            hWnd2 = CreateWindow(           //HWND ウィンドウハンドル
+                            hWnd2 = CreateWindow(               //HWND ウィンドウハンドル
                                 L"window2",                     //LPCSTR 登録されたクラス名のアドレス
-                                L"GLPA2",                        //LPCSTR ウィンドウテキストのアドレス
+                                L"GLPA2",                       //LPCSTR ウィンドウテキストのアドレス
                                 WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
                                 CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
                                 WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
-                                HWND_DESKTOP,                           //HWND 親ウィンドウのハンドル
+                                HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
                                 NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
-                                gr_hInstance,                      //HINSTANCE アプリケーションインスタンスのハンドル
+                                gr_hInstance,                   //HINSTANCE アプリケーションインスタンスのハンドル
                                 NULL                            //void FAR* ウィンドウ作成データのアドレス
                             );
 
