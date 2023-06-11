@@ -124,13 +124,6 @@ void draw(HDC hBuffer_DC, TEXTURE *texture)
         FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
     );
 
-    // texture->displayImage_rectangle(
-    //     lpPixel, texture->file2.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
-    //     0, 0,
-    //     0, 0,
-    //     800, 800
-    // );
-
     HFONT hFont1 = CreateFont(30 * DISPLAY_RESOLUTION, 0, 
 		0, 0, 0, 
 		FALSE, FALSE, FALSE,   
@@ -159,17 +152,6 @@ void draw(HDC hBuffer_DC, TEXTURE *texture)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // if (hWnd2Open && message != WM_SETFOCUS)
-    // {
-    //     return DefWindowProc(hWnd, message, wParam, lParam);
-    // }
-    // else if (message == WM_SETFOCUS)
-    // {
-    //     hWnd1Open = true;
-    //     hWnd2Open = false;
-    // }
-
-
     switch (message)
     {
         case WM_KILLFOCUS:
@@ -200,20 +182,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 hBuffer_DC = CreateCompatibleDC(hWindow_DC);
                 hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
                 SelectObject(hBuffer_DC, hBuffer_bitmap);
-                // SelectObject(hBuffer_DC, GetStockObject(DC_PEN));
-                // SelectObject(hBuffer_DC, GetStockObject(DC_BRUSH)); 
-                
-                //bmp file dc
-                // bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                // bmpFileInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
-                // bmpFileInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;      
-                // bmpFileInfo.bmiHeader.biPlanes = 1;
-                // bmpFileInfo.bmiHeader.biBitCount = 32;
-                // bmpFileInfo.bmiHeader.biCompression = BI_RGB;
-                
-                // hBmpDC = CreateCompatibleDC(hWindow_DC);
-                // hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
-                // SelectObject(hBmpDC, hBmpFileBitmap);
                 
                 //load texture
                 sample.load(TEXT("sample.bmp"), hWindow_DC);
@@ -231,18 +199,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
                 sample3.deleteImage();     
 
-                // DeleteDC(hBmpDC);
                 ReleaseDC(hWnd, hWindow_DC);
 
-                //full screen
-                // SetMenu(hWnd, NULL);
-                // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-                // MoveWindow(
-                //     hWnd,
-                //     0, 0,
-                //     WINDOW_WIDTH, WINDOW_HEIGHT,
-                //     FALSE
-                // );
                 return 0;
             }
 
@@ -428,7 +386,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
-                
+
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;  
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
                 // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
