@@ -1,14 +1,7 @@
 
 #include "main.h"
 #include "bmp.h"
-
-HWND hWnd;
-HWND hWnd2;
-HWND gr_hWnd2;
-bool hWnd1Open = false;
-bool hWnd2Open = false;
-int gr_nCmdShow;
-HINSTANCE gr_hInstance;
+#include "graphic.h"
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,           //アプリケーションのインスタンスハンドル
@@ -118,8 +111,8 @@ int WINAPI WinMain(
         DispatchMessage(&msg);
     }
     
-    return (int)msg.wParam;             //関数がWM_QUITメッセージを受け取って終了したときは、メッセージのwParamパラメータが持つ終了コードを返す。
-							            //関数がメッセージループに入る前に終了したときは、０を返す
+    return (int)msg.wParam;             //関数がWM_QUITメッセージを受け取って終了したときは、メッセージのwParamパラメータが
+							            //持つ終了コードを返す。関数がメッセージループに入る前に終了したときは、０を返す
 }
 
 void draw(HDC hBuffer_DC, TEXTURE *texture)
@@ -166,54 +159,32 @@ void draw(HDC hBuffer_DC, TEXTURE *texture)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    //TODO:graphic.hファイルの作成。WndProc内の宣言＆定義を移動させる
-    //win32 define
-    static PAINTSTRUCT hPS;
-    static HDC hWindow_DC;
+    // if (hWnd2Open && message != WM_SETFOCUS)
+    // {
+    //     return DefWindowProc(hWnd, message, wParam, lParam);
+    // }
+    // else if (message == WM_SETFOCUS)
+    // {
+    //     hWnd1Open = true;
+    //     hWnd2Open = false;
+    // }
 
-    //bufer bmp dc
-    static HDC hBuffer_DC;
-    static HBITMAP hBuffer_bitmap;    
-    static BITMAPINFO hBuffer_bitmapInfo; 
-
-    //textute
-    static TEXTURE texture_sample;
-    static TEXTURE *pt_texture_sample = &texture_sample;
-
-    //bmpfile
-    static BMPFILE sample;    
-    static BMPFILE *pt_sample = &sample;
-
-    static BMPFILE sample2;    
-    static BMPFILE *pt_sample2 = &sample2;
-
-    static BMPFILE sample3;    
-    static BMPFILE *pt_sample3 = &sample3;
-
-    //fps
-    static int refreshRate;
-    static bool startFpsCount = false;
-    static clock_t thisloop;
-    static clock_t lastloop;
-    static long double fps;
-
-    if (hWnd2Open && message != WM_SETFOCUS)
-    {
-        return DefWindowProc(hWnd, message, wParam, lParam);;
-    }
-    else if (message == WM_SETFOCUS)
-    {
-        hWnd1Open = true;
-        hWnd2Open = false;
-    }
 
     switch (message)
     {
+        case WM_KILLFOCUS:
+            hWnd1_foucus = false;
+            return DefWindowProc(hWnd, message, wParam, lParam);
+
+
+        case WM_SETFOCUS:
+            hWnd1_foucus = true;
+            return DefWindowProc(hWnd, message, wParam, lParam);
+
         case WM_CREATE :
             {
                 hWindow_DC = GetDC(hWnd);
                 refreshRate = GetDeviceCaps(hWindow_DC, VREFRESH);
-                ReleaseDC(hWnd, hWindow_DC);
 
                 SetTimer(hWnd, REQUEST_ANIMATION_TIMER, std::floor(1000 / refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
@@ -226,7 +197,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 hBuffer_bitmapInfo.bmiHeader.biBitCount = 32;
                 hBuffer_bitmapInfo.bmiHeader.biCompression = BI_RGB;
                 
-                hWindow_DC = GetDC(hWnd);
                 hBuffer_DC = CreateCompatibleDC(hWindow_DC);
                 hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
                 SelectObject(hBuffer_DC, hBuffer_bitmap);
@@ -279,7 +249,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_ERASEBKGND :
                 return 1;
         case WM_PAINT :
-                // OutputDebugString(L"debug window 1111111\n");
+                OutputDebugString(L"debug window 1 drawing\n");
                 hWindow_DC = BeginPaint(hWnd, &hPS);
                 StretchDIBits(
                     hWindow_DC,
@@ -304,7 +274,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 case REQUEST_ANIMATION_TIMER :
                         //fps
-                        OutputDebugString(L"debug window 1111111\n");
+                        // OutputDebugString(L"debug window 1111111\n");
                         if (!startFpsCount)
                         {
                             lastloop = clock();
@@ -339,6 +309,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
                 
         case WM_KEYDOWN :
+                if (!hWnd1_foucus)
+                {
+                    return DefWindowProc(hWnd, message, wParam, lParam);
+                }
+
                 switch (wParam)
                 {
                     case VK_ESCAPE :
@@ -408,6 +383,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 return 0;
 
         case WM_KEYUP :
+                if (!hWnd1_foucus)
+                {
+                    return DefWindowProc(hWnd, message, wParam, lParam);
+                }
+
                 switch (wParam)
                 {
                     case VK_ESCAPE :
@@ -433,12 +413,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 return 0;
 
         case WM_LBUTTONDOWN :
+                if (!hWnd1_foucus)
+                {
+                    return DefWindowProc(hWnd, message, wParam, lParam);
+                }
+
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
                 // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
                 return 0;
 
         case WM_MOUSEMOVE :
+                if (!hWnd1_foucus)
+                {
+                    return DefWindowProc(hWnd, message, wParam, lParam);
+                }
+                
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;  
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
                 // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);

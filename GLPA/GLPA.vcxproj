@@ -128,11 +128,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bmp.cpp" />
+    <ClCompile Include="graphic.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="png.cpp" />
+    <ClCompile Include="system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bmp.h" />
+    <ClInclude Include="graphic.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="png.h" />
+    <ClInclude Include="system.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\x64\Debug\blueimage.bmp" />

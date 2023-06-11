@@ -6,11 +6,19 @@
 #include <tchar.h>
 #include <cmath>
 #include <time.h>
-#include "bmp.h"
+
+HWND hWnd;
+HWND hWnd2;
+HWND gr_hWnd2;
+bool hWnd1Open = false;
+bool hWnd2Open = false;
+int gr_nCmdShow;
+bool hWnd1_foucus = true;
+HINSTANCE gr_hInstance;
 
 //WINDOW SETTINGS
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
+#define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
+#define WINDOW_HEIGHT GetSystemMetrics(SM_CYSCREEN)
 #define DISPLAY_RESOLUTION 1
 
 //double buffer pixel
