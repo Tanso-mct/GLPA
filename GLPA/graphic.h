@@ -3,7 +3,7 @@
 
 #include <Windows.h>
 
-
+//TODO:add prefix "gr" to the name of the global variable
 //Win32 Define
 PAINTSTRUCT hPS;
 HDC hWindow_DC;
