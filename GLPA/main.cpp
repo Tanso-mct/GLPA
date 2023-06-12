@@ -69,7 +69,7 @@ int WINAPI WinMain(
         return 1;
     }
 
-    HWND hWnd = CreateWindow(           //HWND ウィンドウハンドル
+    HWND hWnd_LAU = CreateWindow(           //HWND ウィンドウハンドル
         L"window1",                     //LPCSTR 登録されたクラス名のアドレス
         L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
@@ -81,7 +81,7 @@ int WINAPI WinMain(
         NULL                            //void FAR* ウィンドウ作成データのアドレス
     );
 
-    if (!hWnd)
+    if (!hWnd_LAU)
     {
         MessageBox(
             NULL,
@@ -98,7 +98,7 @@ int WINAPI WinMain(
     gr_nCmdShow = nCmdShow;
 
     ShowWindow(
-        hWnd,
+        hWnd_LAU,
         nCmdShow
     );
     UpdateWindow(hWnd);
@@ -183,6 +183,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
                 SelectObject(hBuffer_DC, hBuffer_bitmap);
                 
+                //TODO:to make at texture.h,.cpp about load texture function
                 //load texture
                 sample.load(TEXT("sample.bmp"), hWindow_DC);
                 sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, lpPixel);
