@@ -4,30 +4,32 @@
 #include "graphic.h"
 
 int WINAPI WinMain(
-    _In_ HINSTANCE hInstance,           //アプリケーションのインスタンスハンドル
-    _In_opt_ HINSTANCE hPrevInstance,   //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
-    _In_ LPSTR lpCmdLine,               //コマンドラインが格納された、NULLで終わる文字列へのポインタが入る。プログラム名は含まれない
-    _In_ int nCmdShow)                  //ウィンドウをどのように表示するかの指定が入る。SW_MESSAGENAMEの値が入る  
+    _In_ HINSTANCE hInstance,             //アプリケーションのインスタンスハンドル
+    _In_opt_ HINSTANCE hPrevInstance,     //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
+    _In_ LPSTR lpCmdLine,                 //コマンドラインが格納された、NULLで終わる文字列へのポインタが入る。
+                                          //プログラム名は含まれない
+    _In_ int nCmdShow)                    //ウィンドウをどのように表示するかの指定が入る。SW_MESSAGENAMEの値が入る  
 {
-    WNDCLASSEX wcex;        //struct tagWNDCLASSEXW
+    WNDCLASSEX wcex_LAU;
 
-    wcex.cbSize = sizeof(wcex);                                     //UINT WNDCLASSEX構造体の大きさの設定
-    wcex.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
-    wcex.lpfnWndProc = WndProc;                                     //WNDPROC WNDPROCを指すポインタ
-    wcex.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
-    wcex.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
-    wcex.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
-    wcex.hIcon =                                                    //HICON クラスアイコンを指定する
+    wcex_LAU.cbSize = sizeof(wcex_LAU);                            //UINT WNDCLASSEX構造体の大きさの設定
+    wcex_LAU.style = CS_HREDRAW | CS_VREDRAW;                      //UINT クラススタイルを表す。CS_MESSAGENAMEの値をO
+                                                                   //R演算子で組み合わせた値となる
+    wcex_LAU.lpfnWndProc = WndProc_LAU;                            //WNDPROC WNDPROCを指すポインタ
+    wcex_LAU.cbClsExtra = 0;                                       //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
+    wcex_LAU.cbWndExtra = 0;                                       //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
+    wcex_LAU.hInstance = hInstance;                                //HINSTANCE インスタンスハンドル
+    wcex_LAU.hIcon =                                               //HICON クラスアイコンを指定する
         LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex.hCursor =                                                  //HCURSOR クラスカーソルを指定する
+    wcex_LAU.hCursor =                                             //HCURSOR クラスカーソルを指定する
         LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
-    wcex.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
-    wcex.lpszClassName = L"window1";                                //LPCSTR ウィンドウクラスの名前を指定する
-    wcex.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
-        LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex_LAU.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);           //HBRUSH クラス背景ブラシを指定する
+    wcex_LAU.lpszMenuName = NULL;                                  //LPCSTR クラスメニューのリソース名を指定する
+    wcex_LAU.lpszClassName = L"window1";                           //LPCSTR ウィンドウクラスの名前を指定する
+    wcex_LAU.hIconSm =                                             //HICON 小さなクラスアイコンを指定する
+        LoadIcon(wcex_LAU.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
-    if (!RegisterClassEx(&wcex))
+    if (!RegisterClassEx(&wcex_LAU))
     {
         MessageBox(
             NULL,
@@ -150,7 +152,7 @@ void draw(HDC hBuffer_DC, TEXTURE *texture)
     );
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
