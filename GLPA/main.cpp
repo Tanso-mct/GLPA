@@ -25,7 +25,7 @@ int WINAPI WinMain(
         LoadCursor(NULL, IDC_ARROW);
     wcex_LAU.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);           //HBRUSH クラス背景ブラシを指定する
     wcex_LAU.lpszMenuName = NULL;                                  //LPCSTR クラスメニューのリソース名を指定する
-    wcex_LAU.lpszClassName = L"window1";                           //LPCSTR ウィンドウクラスの名前を指定する
+    wcex_LAU.lpszClassName = L"window_LAU";                           //LPCSTR ウィンドウクラスの名前を指定する
     wcex_LAU.hIconSm =                                             //HICON 小さなクラスアイコンを指定する
         LoadIcon(wcex_LAU.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
@@ -34,7 +34,7 @@ int WINAPI WinMain(
         MessageBox(
             NULL,
             _T("RegisterClassEx fail"),
-            _T("window1"),
+            _T("window_LAU"),
             MB_ICONEXCLAMATION
         );
 
@@ -55,7 +55,7 @@ int WINAPI WinMain(
         LoadCursor(NULL, IDC_ARROW);
     wcex2.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
     wcex2.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
-    wcex2.lpszClassName = L"window2";                                //LPCSTR ウィンドウクラスの名前を指定する
+    wcex2.lpszClassName = L"window_PLAY";                            //LPCSTR ウィンドウクラスの名前を指定する
     wcex2.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
         LoadIcon(wcex2.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
@@ -64,7 +64,7 @@ int WINAPI WinMain(
         MessageBox(
             NULL,
             _T("RegisterClassEx fail"),
-            _T("window2"),
+            _T("window_PLAY"),
             MB_ICONEXCLAMATION
         );
 
@@ -72,7 +72,7 @@ int WINAPI WinMain(
     }
 
     HWND hWnd_LAU = CreateWindow(       //HWND ウィンドウハンドル
-        L"window1",                     //LPCSTR 登録されたクラス名のアドレス
+        L"window_LAU",                     //LPCSTR 登録されたクラス名のアドレス
         L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
@@ -88,7 +88,7 @@ int WINAPI WinMain(
         MessageBox(
             NULL,
             _T("window make fail"),
-            _T("window1"),
+            _T("window_LAU"),
             MB_ICONEXCLAMATION
         );
 
@@ -286,7 +286,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             //full screen
                             hWnd1Open = false;
                             hWnd2 = CreateWindow(               //HWND ウィンドウハンドル
-                                L"window2",                     //LPCSTR 登録されたクラス名のアドレス
+                                L"window_PLAY",                     //LPCSTR 登録されたクラス名のアドレス
                                 L"GLPA2",                       //LPCSTR ウィンドウテキストのアドレス
                                 WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
                                 CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
@@ -301,8 +301,8 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             {
                                 MessageBox(
                                     NULL,
-                                    _T("window2 make fail"),
-                                    _T("window2"),
+                                    _T("window_PLAY make fail"),
+                                    _T("window_PLAY"),
                                     MB_ICONEXCLAMATION
                                 );
 
