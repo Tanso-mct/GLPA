@@ -7,8 +7,8 @@
 #include <cmath>
 #include <time.h>
 
-HWND hWnd;
-HWND hWnd2;
+// HWND hWnd;
+HWND hWnd_PLAY;
 HWND gr_hWnd2;
 bool hWnd1Open = false;
 bool hWnd2Open = false;

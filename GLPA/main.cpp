@@ -25,7 +25,7 @@ int WINAPI WinMain(
         LoadCursor(NULL, IDC_ARROW);
     wcex_LAU.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);           //HBRUSH クラス背景ブラシを指定する
     wcex_LAU.lpszMenuName = NULL;                                  //LPCSTR クラスメニューのリソース名を指定する
-    wcex_LAU.lpszClassName = L"window_LAU";                           //LPCSTR ウィンドウクラスの名前を指定する
+    wcex_LAU.lpszClassName = L"window_LAU";                        //LPCSTR ウィンドウクラスの名前を指定する
     wcex_LAU.hIconSm =                                             //HICON 小さなクラスアイコンを指定する
         LoadIcon(wcex_LAU.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
@@ -73,7 +73,7 @@ int WINAPI WinMain(
 
     HWND hWnd_LAU = CreateWindow(       //HWND ウィンドウハンドル
         L"window_LAU",                  //LPCSTR 登録されたクラス名のアドレス
-        L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
+        L"LAUNCHER",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
         WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
@@ -207,9 +207,6 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
             }
 
-        case WM_ERASEBKGND :
-                return 1;
-
         case WM_PAINT :
                 OutputDebugString(L"debug window 1 drawing\n");
                 hWindow_DC = BeginPaint(hWnd, &hPS);
@@ -286,11 +283,10 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             break;
                     case VK_SPACE :
                             _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-                            //full screen
                             hWnd1Open = false;
-                            hWnd2 = CreateWindow(               //HWND ウィンドウハンドル
-                                L"window_PLAY",                     //LPCSTR 登録されたクラス名のアドレス
-                                L"GLPA2",                       //LPCSTR ウィンドウテキストのアドレス
+                            hWnd_PLAY = CreateWindow(           //HWND ウィンドウハンドル
+                                L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
+                                L"PLAY",                       //LPCSTR ウィンドウテキストのアドレス
                                 WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
                                 CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
                                 WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
@@ -300,7 +296,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                                 NULL                            //void FAR* ウィンドウ作成データのアドレス
                             );
 
-                            if (!hWnd2)
+                            if (!hWnd_PLAY)
                             {
                                 MessageBox(
                                     NULL,
@@ -311,25 +307,13 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
                                 return 1;
                             }
-                            // else
-                            // {
-                            //     hWnd2Open = true;
-                            // }
 
                             ShowWindow(
-                                hWnd2,
+                                hWnd_PLAY,
                                 gr_nCmdShow
                             );
 
-                            UpdateWindow(gr_hWnd2);
-                            // SetMenu(hWnd, NULL);
-                            // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-                            // MoveWindow(
-                            //     hWnd,
-                            //     0, 0,
-                            //     WINDOW_WIDTH, WINDOW_HEIGHT,
-                            //     FALSE
-                            // );
+                            UpdateWindow(hWnd_PLAY);
                             // OutputDebugStringW(_T("SPACE\n"));
                             break;
                     case VK_SHIFT :
@@ -408,6 +392,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 DestroyWindow(hWnd);
 
         case WM_DESTROY :
+                //TODO:Change PostQuitMessage to send only when no windows are displayed.
                 PostQuitMessage(0);
             
         default :
@@ -537,14 +522,14 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ReleaseDC(hWnd, hWindow_DC);
 
         //full screen
-        SetMenu(hWnd, NULL);
-        SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-        MoveWindow(
-            hWnd,
-            0, 0,
-            WINDOW_WIDTH, WINDOW_HEIGHT,
-            FALSE
-        );
+        // SetMenu(hWnd, NULL);
+        // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
+        // MoveWindow(
+        //     hWnd,
+        //     0, 0,
+        //     WINDOW_WIDTH, WINDOW_HEIGHT,
+        //     FALSE
+        // );
         return 0;
     }
 
