@@ -72,7 +72,7 @@ int WINAPI WinMain(
     }
 
     HWND hWnd_LAU = CreateWindow(       //HWND ウィンドウハンドル
-        L"window_LAU",                     //LPCSTR 登録されたクラス名のアドレス
+        L"window_LAU",                  //LPCSTR 登録されたクラス名のアドレス
         L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
@@ -119,12 +119,12 @@ int WINAPI WinMain(
 
 void draw(HDC hBuffer_DC, TEXTURE *texture)
 {
-    texture->displayImage_rectangle(
-        lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
-        0, 0,
-        0, 0,
-        FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
-    );
+    // texture->displayImage_rectangle(
+    //     lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
+    //     0, 0,
+    //     0, 0,
+    //     FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
+    // );
 
     HFONT hFont1 = CreateFont(30 * DISPLAY_RESOLUTION, 0, 
 		0, 0, 0, 
@@ -209,6 +209,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
         case WM_ERASEBKGND :
                 return 1;
+
         case WM_PAINT :
                 OutputDebugString(L"debug window 1 drawing\n");
                 hWindow_DC = BeginPaint(hWnd, &hPS);
@@ -231,43 +232,45 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
                 
         case WM_TIMER :
-            switch (wParam)
-            {
-                case REQUEST_ANIMATION_TIMER :
-                        //fps
-                        // OutputDebugString(L"debug window 1111111\n");
-                        if (!startFpsCount)
-                        {
-                            lastloop = clock();
-                            startFpsCount = true;
-                        }
-                        else
-                        {
-                            thisloop = clock();
-                            fps = 1000 / static_cast<long double>(thisloop - lastloop);
-                            fps = std::round(fps * 100) / 100;
-                            lastloop = thisloop;
-                        }
+                switch (wParam)
+                {
+                    case REQUEST_ANIMATION_TIMER :
+                            //fps
+                            // OutputDebugString(L"debug window 1111111\n");
+                            if (!startFpsCount)
+                            {
+                                lastloop = clock();
+                                startFpsCount = true;
+                            }
+                            else
+                            {
+                                thisloop = clock();
+                                fps = 1000 / static_cast<long double>(thisloop - lastloop);
+                                fps = std::round(fps * 100) / 100;
+                                lastloop = thisloop;
+                            }
 
-                        PatBlt(
-                            hBuffer_DC, 
-                            0, 
-                            0, 
-                            WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-                            WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                            WHITENESS
-                        );
-                        draw(hBuffer_DC, pt_texture_sample);
+                            PatBlt(
+                                hBuffer_DC, 
+                                0, 
+                                0, 
+                                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+                                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                                WHITENESS
+                            );
+                            draw(hBuffer_DC, pt_texture_sample);
 
-                        InvalidateRect(hWnd, NULL, FALSE);
-                        return 0;
-                case FPS_OUTPUT_TIMER :
-                        _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
-                        return 0;
-                default :
-                        OutputDebugStringW(_T("TIMER ERROR\n"));
-                        return 0;
-            }
+                            InvalidateRect(hWnd, NULL, FALSE);
+                            return 0;
+
+                    case FPS_OUTPUT_TIMER :
+                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
+                            return 0;
+                            
+                    default :
+                            OutputDebugStringW(_T("TIMER ERROR\n"));
+                            return 0;
+                }
                 
         case WM_KEYDOWN :
                 if (!hWnd1_foucus)
@@ -381,7 +384,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-                // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
+                // _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
                 return 0;
 
         case WM_MOUSEMOVE :
@@ -392,7 +395,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;  
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-                // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
+                _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
                 return 0;
 
         case WM_CLOSE :
