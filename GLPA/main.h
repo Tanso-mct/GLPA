@@ -13,7 +13,7 @@ HWND gr_hWnd2;
 bool hWnd1Open = false;
 bool hWnd2Open = false;
 int gr_nCmdShow;
-bool hWnd1_foucus = true;
+bool hWnd_LAU_foucus = true;
 HINSTANCE gr_hInstance;
 
 //WINDOW SETTINGS

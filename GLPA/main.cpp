@@ -157,12 +157,12 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     switch (message)
     {
         case WM_KILLFOCUS:
-            hWnd1_foucus = false;
+            hWnd_LAU_foucus = false;
             return DefWindowProc(hWnd, message, wParam, lParam);
 
 
         case WM_SETFOCUS:
-            hWnd1_foucus = true;
+            hWnd_LAU_foucus = true;
             return DefWindowProc(hWnd, message, wParam, lParam);
 
         case WM_CREATE :
@@ -206,6 +206,19 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
                 return 0;
             }
+
+        case WM_CLOSE :
+                DeleteDC(hBuffer_DC);
+                // DeleteDC(hBmpDC);
+
+                DeleteObject(hBuffer_bitmap);
+                // DeleteObject(hBmpFileBitmap);
+
+                DestroyWindow(hWnd);
+
+        case WM_DESTROY :
+                //TODO:Change PostQuitMessage to send only when no windows are displayed.
+                PostQuitMessage(0);
 
         case WM_PAINT :
                 OutputDebugString(L"debug window 1 drawing\n");
@@ -270,7 +283,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 }
                 
         case WM_KEYDOWN :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -331,7 +344,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_KEYUP :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -361,7 +374,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_LBUTTONDOWN :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -372,7 +385,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_MOUSEMOVE :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -381,19 +394,6 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
                 _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
                 return 0;
-
-        case WM_CLOSE :
-                DeleteDC(hBuffer_DC);
-                // DeleteDC(hBmpDC);
-
-                DeleteObject(hBuffer_bitmap);
-                // DeleteObject(hBmpFileBitmap);
-
-                DestroyWindow(hWnd);
-
-        case WM_DESTROY :
-                //TODO:Change PostQuitMessage to send only when no windows are displayed.
-                PostQuitMessage(0);
             
         default :
                 return DefWindowProc(hWnd, message, wParam, lParam);
