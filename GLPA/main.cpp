@@ -71,7 +71,7 @@ int WINAPI WinMain(
         return 1;
     }
 
-    HWND hWnd_LAU = CreateWindow(       //HWND ウィンドウハンドル
+    hWnd_LAU = CreateWindow(            //HWND ウィンドウハンドル
         L"window1",                     //LPCSTR 登録されたクラス名のアドレス
         L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる

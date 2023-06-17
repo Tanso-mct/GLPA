@@ -7,7 +7,7 @@
 #include <cmath>
 #include <time.h>
 
-HWND hWnd;
+HWND hWnd_LAU;
 HWND hWnd2;
 HWND gr_hWnd2;
 bool hWnd1Open = false;
