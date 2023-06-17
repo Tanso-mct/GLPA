@@ -25,7 +25,7 @@ int WINAPI WinMain(
         LoadCursor(NULL, IDC_ARROW);
     wcex_LAU.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);           //HBRUSH クラス背景ブラシを指定する
     wcex_LAU.lpszMenuName = NULL;                                  //LPCSTR クラスメニューのリソース名を指定する
-    wcex_LAU.lpszClassName = L"window1";                           //LPCSTR ウィンドウクラスの名前を指定する
+    wcex_LAU.lpszClassName = L"window_LAU";                        //LPCSTR ウィンドウクラスの名前を指定する
     wcex_LAU.hIconSm =                                             //HICON 小さなクラスアイコンを指定する
         LoadIcon(wcex_LAU.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
@@ -34,46 +34,46 @@ int WINAPI WinMain(
         MessageBox(
             NULL,
             _T("RegisterClassEx fail"),
-            _T("window1"),
+            _T("window_LAU"),
             MB_ICONEXCLAMATION
         );
 
         return 1;
     }
 
-    WNDCLASSEX wcex2;        //struct tagWNDCLASSEXW
+    WNDCLASSEX wcex_PLAY;        //struct tagWNDCLASSEXW
 
-    wcex2.cbSize = sizeof(wcex2);                                    //UINT WNDCLASSEX構造体の大きさの設定
-    wcex2.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
-    wcex2.lpfnWndProc = WndProc2;                                    //WNDPROC WNDPROCを指すポインタ
-    wcex2.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
-    wcex2.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
-    wcex2.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
-    wcex2.hIcon =                                                    //HICON クラスアイコンを指定する
+    wcex_PLAY.cbSize = sizeof(wcex_PLAY);                                //UINT WNDCLASSEX構造体の大きさの設定
+    wcex_PLAY.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
+    wcex_PLAY.lpfnWndProc = WndProc2;                                    //WNDPROC WNDPROCを指すポインタ
+    wcex_PLAY.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
+    wcex_PLAY.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
+    wcex_PLAY.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
+    wcex_PLAY.hIcon =                                                    //HICON クラスアイコンを指定する
         LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex2.hCursor =                                                  //HCURSOR クラスカーソルを指定する
+    wcex_PLAY.hCursor =                                                  //HCURSOR クラスカーソルを指定する
         LoadCursor(NULL, IDC_ARROW);
-    wcex2.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
-    wcex2.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
-    wcex2.lpszClassName = L"window2";                                //LPCSTR ウィンドウクラスの名前を指定する
-    wcex2.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
-        LoadIcon(wcex2.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex_PLAY.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
+    wcex_PLAY.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
+    wcex_PLAY.lpszClassName = L"window_PLAY";                            //LPCSTR ウィンドウクラスの名前を指定する
+    wcex_PLAY.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
+        LoadIcon(wcex_PLAY.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
-    if (!RegisterClassEx(&wcex2))
+    if (!RegisterClassEx(&wcex_PLAY))
     {
         MessageBox(
             NULL,
             _T("RegisterClassEx fail"),
-            _T("window2"),
+            _T("window_PLAY"),
             MB_ICONEXCLAMATION
         );
 
         return 1;
     }
 
-    hWnd_LAU = CreateWindow(            //HWND ウィンドウハンドル
-        L"window1",                     //LPCSTR 登録されたクラス名のアドレス
-        L"GLPA",                        //LPCSTR ウィンドウテキストのアドレス
+    hWnd_LAU = CreateWindow(       //HWND ウィンドウハンドル
+        L"window_LAU",                  //LPCSTR 登録されたクラス名のアドレス
+        L"LAUNCHER",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
         WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
@@ -88,7 +88,7 @@ int WINAPI WinMain(
         MessageBox(
             NULL,
             _T("window make fail"),
-            _T("window1"),
+            _T("window_LAU"),
             MB_ICONEXCLAMATION
         );
 
@@ -119,12 +119,12 @@ int WINAPI WinMain(
 
 void draw(HDC hBuffer_DC, TEXTURE *texture)
 {
-    texture->displayImage_rectangle(
-        lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
-        0, 0,
-        0, 0,
-        FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
-    );
+    // texture->displayImage_rectangle(
+    //     lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
+    //     0, 0,
+    //     0, 0,
+    //     FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
+    // );
 
     HFONT hFont1 = CreateFont(30 * DISPLAY_RESOLUTION, 0, 
 		0, 0, 0, 
@@ -157,12 +157,12 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     switch (message)
     {
         case WM_KILLFOCUS:
-            hWnd1_foucus = false;
+            hWnd_LAU_foucus = false;
             return DefWindowProc(hWnd, message, wParam, lParam);
 
 
         case WM_SETFOCUS:
-            hWnd1_foucus = true;
+            hWnd_LAU_foucus = true;
             return DefWindowProc(hWnd, message, wParam, lParam);
 
         case WM_CREATE :
@@ -207,8 +207,19 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
             }
 
-        case WM_ERASEBKGND :
-                return 1;
+        case WM_CLOSE :
+                DeleteDC(hBuffer_DC);
+                // DeleteDC(hBmpDC);
+
+                DeleteObject(hBuffer_bitmap);
+                // DeleteObject(hBmpFileBitmap);
+
+                DestroyWindow(hWnd);
+
+        case WM_DESTROY :
+                //TODO:Change PostQuitMessage to send only when no windows are displayed.
+                PostQuitMessage(0);
+
         case WM_PAINT :
                 OutputDebugString(L"debug window 1 drawing\n");
                 hWindow_DC = BeginPaint(hWnd, &hPS);
@@ -231,46 +242,48 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
                 
         case WM_TIMER :
-            switch (wParam)
-            {
-                case REQUEST_ANIMATION_TIMER :
-                        //fps
-                        // OutputDebugString(L"debug window 1111111\n");
-                        if (!startFpsCount)
-                        {
-                            lastloop = clock();
-                            startFpsCount = true;
-                        }
-                        else
-                        {
-                            thisloop = clock();
-                            fps = 1000 / static_cast<long double>(thisloop - lastloop);
-                            fps = std::round(fps * 100) / 100;
-                            lastloop = thisloop;
-                        }
+                switch (wParam)
+                {
+                    case REQUEST_ANIMATION_TIMER :
+                            //fps
+                            // OutputDebugString(L"debug window 1111111\n");
+                            if (!startFpsCount)
+                            {
+                                lastloop = clock();
+                                startFpsCount = true;
+                            }
+                            else
+                            {
+                                thisloop = clock();
+                                fps = 1000 / static_cast<long double>(thisloop - lastloop);
+                                fps = std::round(fps * 100) / 100;
+                                lastloop = thisloop;
+                            }
 
-                        PatBlt(
-                            hBuffer_DC, 
-                            0, 
-                            0, 
-                            WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-                            WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                            WHITENESS
-                        );
-                        draw(hBuffer_DC, pt_texture_sample);
+                            PatBlt(
+                                hBuffer_DC, 
+                                0, 
+                                0, 
+                                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+                                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                                WHITENESS
+                            );
+                            draw(hBuffer_DC, pt_texture_sample);
 
-                        InvalidateRect(hWnd, NULL, FALSE);
-                        return 0;
-                case FPS_OUTPUT_TIMER :
-                        _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
-                        return 0;
-                default :
-                        OutputDebugStringW(_T("TIMER ERROR\n"));
-                        return 0;
-            }
+                            InvalidateRect(hWnd, NULL, FALSE);
+                            return 0;
+
+                    case FPS_OUTPUT_TIMER :
+                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
+                            return 0;
+                            
+                    default :
+                            OutputDebugStringW(_T("TIMER ERROR\n"));
+                            return 0;
+                }
                 
         case WM_KEYDOWN :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -283,11 +296,10 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             break;
                     case VK_SPACE :
                             _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-                            //full screen
                             hWnd1Open = false;
-                            hWnd2 = CreateWindow(               //HWND ウィンドウハンドル
-                                L"window2",                     //LPCSTR 登録されたクラス名のアドレス
-                                L"GLPA2",                       //LPCSTR ウィンドウテキストのアドレス
+                            hWnd_PLAY = CreateWindow(           //HWND ウィンドウハンドル
+                                L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
+                                L"PLAY",                       //LPCSTR ウィンドウテキストのアドレス
                                 WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
                                 CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
                                 WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
@@ -297,36 +309,24 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                                 NULL                            //void FAR* ウィンドウ作成データのアドレス
                             );
 
-                            if (!hWnd2)
+                            if (!hWnd_PLAY)
                             {
                                 MessageBox(
                                     NULL,
-                                    _T("window2 make fail"),
-                                    _T("window2"),
+                                    _T("window_PLAY make fail"),
+                                    _T("window_PLAY"),
                                     MB_ICONEXCLAMATION
                                 );
 
                                 return 1;
                             }
-                            // else
-                            // {
-                            //     hWnd2Open = true;
-                            // }
 
                             ShowWindow(
-                                hWnd2,
+                                hWnd_PLAY,
                                 gr_nCmdShow
                             );
 
-                            UpdateWindow(gr_hWnd2);
-                            // SetMenu(hWnd, NULL);
-                            // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-                            // MoveWindow(
-                            //     hWnd,
-                            //     0, 0,
-                            //     WINDOW_WIDTH, WINDOW_HEIGHT,
-                            //     FALSE
-                            // );
+                            UpdateWindow(hWnd_PLAY);
                             // OutputDebugStringW(_T("SPACE\n"));
                             break;
                     case VK_SHIFT :
@@ -344,7 +344,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_KEYUP :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -374,38 +374,26 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_LBUTTONDOWN :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
 
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-                // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
+                // _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
                 return 0;
 
         case WM_MOUSEMOVE :
-                if (!hWnd1_foucus)
+                if (!hWnd_LAU_foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
 
                 pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;  
                 pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-                // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
+                _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
                 return 0;
-
-        case WM_CLOSE :
-                DeleteDC(hBuffer_DC);
-                // DeleteDC(hBmpDC);
-
-                DeleteObject(hBuffer_bitmap);
-                // DeleteObject(hBmpFileBitmap);
-
-                DestroyWindow(hWnd);
-
-        case WM_DESTROY :
-                PostQuitMessage(0);
             
         default :
                 return DefWindowProc(hWnd, message, wParam, lParam);
@@ -534,14 +522,14 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         ReleaseDC(hWnd, hWindow_DC);
 
         //full screen
-        SetMenu(hWnd, NULL);
-        SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-        MoveWindow(
-            hWnd,
-            0, 0,
-            WINDOW_WIDTH, WINDOW_HEIGHT,
-            FALSE
-        );
+        // SetMenu(hWnd, NULL);
+        // SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
+        // MoveWindow(
+        //     hWnd,
+        //     0, 0,
+        //     WINDOW_WIDTH, WINDOW_HEIGHT,
+        //     FALSE
+        // );
         return 0;
     }
 
