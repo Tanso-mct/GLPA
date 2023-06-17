@@ -4,11 +4,12 @@
 #include <Windows.h>
 
 //TODO:add prefix "gr" to the name of the global variable
-//Win32 Define
+//TODO:Convert window-related variables to structures
+//LAUNCHER Win32 Define
 PAINTSTRUCT hPS;
 HDC hWindow_DC;
 
-//Buffer DC
+//LAUNCHER Buffer DC
 HDC hBuffer_DC;
 HBITMAP hBuffer_bitmap;    
 BITMAPINFO hBuffer_bitmapInfo; 

@@ -7,13 +7,18 @@
 #include <cmath>
 #include <time.h>
 
+<<<<<<< HEAD
 HWND hWnd_LAU;
 HWND hWnd2;
+=======
+// HWND hWnd;
+HWND hWnd_PLAY;
+>>>>>>> 7ece9cf2f4fa4c7acb1f0eb37a00fe1211ebf341
 HWND gr_hWnd2;
 bool hWnd1Open = false;
 bool hWnd2Open = false;
 int gr_nCmdShow;
-bool hWnd1_foucus = true;
+bool hWnd_LAU_foucus = true;
 HINSTANCE gr_hInstance;
 
 //WINDOW SETTINGS
