@@ -14,7 +14,7 @@ HDC hBuffer_DC;
 HBITMAP hBuffer_bitmap;    
 BITMAPINFO hBuffer_bitmapInfo; 
 
-//TODO:texture‚ğ\‘¢‘Ì‚É•ÏX‚·‚é
+//TODO:To change texture structures
 //Texture
 TEXTURE texture_sample;
 TEXTURE *pt_texture_sample = &texture_sample;
