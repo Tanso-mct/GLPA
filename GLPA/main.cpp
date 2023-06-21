@@ -3,6 +3,7 @@
 #include "bmp.h"
 #include "graphic.h"
 
+
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,             //アプリケーションのインスタンスハンドル
     _In_opt_ HINSTANCE hPrevInstance,     //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
