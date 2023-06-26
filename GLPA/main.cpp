@@ -2,6 +2,7 @@
 #include "main.h"
 #include "bmp.h"
 #include "graphic.h"
+#include "userinput.h"
 
 
 int WINAPI WinMain(
