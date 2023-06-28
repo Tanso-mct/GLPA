@@ -1,7 +1,6 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define STRICT
 #include <windows.h>
 #include <tchar.h>
 #include <cmath>

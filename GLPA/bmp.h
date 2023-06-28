@@ -2,7 +2,6 @@
 #ifndef BMP_H_
 #define BMP_H_
 
-#define STRICT
 #include <tchar.h>
 #include <windows.h>
 
