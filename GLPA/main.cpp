@@ -72,7 +72,7 @@ int WINAPI WinMain(
         return 1;
     }
 
-    hWnd_LAU = CreateWindow(       //HWND ウィンドウハンドル
+    WND_LAU.hWnd = CreateWindow(       //HWND ウィンドウハンドル
         L"window_LAU",                  //LPCSTR 登録されたクラス名のアドレス
         L"LAUNCHER",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
@@ -84,7 +84,7 @@ int WINAPI WinMain(
         NULL                            //void FAR* ウィンドウ作成データのアドレス
     );
 
-    if (!hWnd_LAU)
+    if (!WND_LAU.hWnd)
     {
         MessageBox(
             NULL,
@@ -97,14 +97,13 @@ int WINAPI WinMain(
     }
 
     gr_hInstance = hInstance;
-
     gr_nCmdShow = nCmdShow;
 
     ShowWindow(
-        hWnd_LAU,
+        WND_LAU.hWnd,
         nCmdShow
     );
-    UpdateWindow(hWnd_LAU);
+    UpdateWindow(WND_LAU.hWnd);
 
     MSG msg;        //メッセージ構造体
 
@@ -404,56 +403,56 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    //win32 define
-    PAINTSTRUCT hPS;
-    HDC hWindow_DC;
+    // //win32 define
+    // PAINTSTRUCT hPS;
+    // HDC hWindow_DC;
 
-    //mouse move limit
-    static RECT rc =
-    {
-        0,
-        0,
-        WINDOW_WIDTH,
-        WINDOW_HEIGHT
-    };
-    static int debug_num = 0;
-    if (debug_num == 0)
-    {
-        ClipCursor(&rc);
-        debug_num = 1;
-    }
+    // //mouse move limit
+    // static RECT rc =
+    // {
+    //     0,
+    //     0,
+    //     WINDOW_WIDTH,
+    //     WINDOW_HEIGHT
+    // };
+    // static int debug_num = 0;
+    // if (debug_num == 0)
+    // {
+    //     ClipCursor(&rc);
+    //     debug_num = 1;
+    // }
     
 
-    //bufer bmp dc
-    static HBITMAP hBuffer_bitmap;
-    static HDC hBuffer_DC;
-    static BITMAPINFO hBuffer_bitmapInfo;
+    // //bufer bmp dc
+    // static HBITMAP hBuffer_bitmap;
+    // static HDC hBuffer_DC;
+    // static BITMAPINFO hBuffer_bitmapInfo;
 
-    //bmpfile dc
-    static HBITMAP hBmpFileBitmap;
-    static HDC hBmpDC;
-    static BITMAPINFO bmpFileInfo;
+    // //bmpfile dc
+    // static HBITMAP hBmpFileBitmap;
+    // static HDC hBmpDC;
+    // static BITMAPINFO bmpFileInfo;
 
-    //textute
-    static TEXTURE texture_sample;
-    static TEXTURE* pt_texture_sample = &texture_sample;
+    // //textute
+    // static TEXTURE texture_sample;
+    // static TEXTURE* pt_texture_sample = &texture_sample;
 
-    //bmpfile
-    static BMPFILE sample;
-    static BMPFILE* pt_sample = &sample;
+    // //bmpfile
+    // static BMPFILE sample;
+    // static BMPFILE* pt_sample = &sample;
 
-    static BMPFILE sample2;
-    static BMPFILE* pt_sample2 = &sample2;
+    // static BMPFILE sample2;
+    // static BMPFILE* pt_sample2 = &sample2;
 
-    static BMPFILE sample3;
-    static BMPFILE* pt_sample3 = &sample3;
+    // static BMPFILE sample3;
+    // static BMPFILE* pt_sample3 = &sample3;
 
-    //fps
-    static int refreshRate;
-    static bool startFpsCount = false;
-    static clock_t thisloop;
-    static clock_t lastloop;
-    static long double fps;
+    // //fps
+    // static int refreshRate;
+    // static bool startFpsCount = false;
+    // static clock_t thisloop;
+    // static clock_t lastloop;
+    // static long double fps;
 
     if (hWnd1Open && message != WM_SETFOCUS)
     {
@@ -490,37 +489,37 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SelectObject(hBuffer_DC, hBuffer_bitmap);
         SelectObject(hBuffer_DC, GetStockObject(DC_PEN));
         SelectObject(hBuffer_DC, GetStockObject(DC_BRUSH));
-
-        //bmp file dc
-        bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bmpFileInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
-        bmpFileInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;
-        bmpFileInfo.bmiHeader.biPlanes = 1;
-        bmpFileInfo.bmiHeader.biBitCount = 32;
-        bmpFileInfo.bmiHeader.biCompression = BI_RGB;
-
-        hBmpDC = CreateCompatibleDC(hWindow_DC);
-        hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
-        SelectObject(hBmpDC, hBmpFileBitmap);
-
-        //load texture
-        sample.load(TEXT("sample.bmp"), hWindow_DC);
-        sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
-        texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
-        sample.deleteImage();
-
-        sample2.load(TEXT("redimage.bmp"), hWindow_DC);
-        sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
-        texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
-        sample2.deleteImage();
-
-        sample3.load(TEXT("blueimage.bmp"), hWindow_DC);
-        sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
-        texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
-        sample3.deleteImage();
-
-        DeleteDC(hBmpDC);
         ReleaseDC(hWnd, hWindow_DC);
+
+        // //bmp file dc
+        // bmpFileInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        // bmpFileInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
+        // bmpFileInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;
+        // bmpFileInfo.bmiHeader.biPlanes = 1;
+        // bmpFileInfo.bmiHeader.biBitCount = 32;
+        // bmpFileInfo.bmiHeader.biCompression = BI_RGB;
+
+        // hBmpDC = CreateCompatibleDC(hWindow_DC);
+        // hBmpFileBitmap = CreateDIBSection(NULL, &bmpFileInfo, DIB_RGB_COLORS, (LPVOID*)&bmpPixel, NULL, 0);
+        // SelectObject(hBmpDC, hBmpFileBitmap);
+
+        // //load texture
+        // sample.load(TEXT("sample.bmp"), hWindow_DC);
+        // sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
+        // texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
+        // sample.deleteImage();
+
+        // sample2.load(TEXT("redimage.bmp"), hWindow_DC);
+        // sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
+        // texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
+        // sample2.deleteImage();
+
+        // sample3.load(TEXT("blueimage.bmp"), hWindow_DC);
+        // sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBmpDC, bmpPixel);
+        // texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
+        // sample3.deleteImage();
+
+        // DeleteDC(hBmpDC);
 
         //full screen
         // SetMenu(hWnd, NULL);
@@ -584,95 +583,95 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 WINDOW_HEIGHT * DISPLAY_RESOLUTION,
                 WHITENESS
             );
-            draw(hBuffer_DC, pt_texture_sample);
+            // draw(hBuffer_DC, pt_texture_sample);
 
             InvalidateRect(hWnd, NULL, FALSE);
             return 0;
-        case FPS_OUTPUT_TIMER:
-            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
-            return 0;
-        default:
-            OutputDebugStringW(_T("TIMER ERROR\n"));
-            return 0;
+        // case FPS_OUTPUT_TIMER:
+        //     _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
+        //     return 0;
+        // default:
+        //     OutputDebugStringW(_T("TIMER ERROR\n"));
+        //     return 0;
         }
 
-    case WM_KEYDOWN:
-        switch (wParam)
-        {
-        case VK_ESCAPE:
-            _stprintf_s(szstr, _T("%s"), _T("ESCAPE"));
-            // OutputDebugStringW(_T("ESCAPE\n"));
-            break;
-        case VK_SPACE:
-            _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-            //full screen
-            SetMenu(hWnd, NULL);
-            SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
-            MoveWindow(
-                hWnd,
-                0, 0,
-                WINDOW_WIDTH, WINDOW_HEIGHT,
-                FALSE
-            );
-            // OutputDebugStringW(_T("SPACE\n"));
-            break;
-        case VK_SHIFT:
-            _stprintf_s(szstr, _T("%s"), _T("SHIFT"));
-            // OutputDebugStringW(_T("SHIFT\n"));
-            break;
-        case 'W':
-            _stprintf_s(szstr, _T("%s"), _T("W ON"));
-            // OutputDebugStringW(_T("W\n"));
-            break;
-        default:
-            _stprintf_s(szstr, _T("%s"), _T("ANY"));
-            break;
-        }
-        return 0;
+    // case WM_KEYDOWN:
+    //     switch (wParam)
+    //     {
+    //     case VK_ESCAPE:
+    //         _stprintf_s(szstr, _T("%s"), _T("ESCAPE"));
+    //         // OutputDebugStringW(_T("ESCAPE\n"));
+    //         break;
+    //     case VK_SPACE:
+    //         _stprintf_s(szstr, _T("%s"), _T("SPACE"));
+    //         //full screen
+    //         SetMenu(hWnd, NULL);
+    //         SetWindowLong(hWnd, GWL_STYLE, WS_VISIBLE | WS_BORDER);
+    //         MoveWindow(
+    //             hWnd,
+    //             0, 0,
+    //             WINDOW_WIDTH, WINDOW_HEIGHT,
+    //             FALSE
+    //         );
+    //         // OutputDebugStringW(_T("SPACE\n"));
+    //         break;
+    //     case VK_SHIFT:
+    //         _stprintf_s(szstr, _T("%s"), _T("SHIFT"));
+    //         // OutputDebugStringW(_T("SHIFT\n"));
+    //         break;
+    //     case 'W':
+    //         _stprintf_s(szstr, _T("%s"), _T("W ON"));
+    //         // OutputDebugStringW(_T("W\n"));
+    //         break;
+    //     default:
+    //         _stprintf_s(szstr, _T("%s"), _T("ANY"));
+    //         break;
+    //     }
+    //     return 0;
 
-    case WM_KEYUP:
-        switch (wParam)
-        {
-        case VK_ESCAPE:
-            _stprintf_s(szstr, _T("%s"), _T("NAN"));
-            // OutputDebugStringW(_T("ESCAPE UP\n"));
-            break;
-        case VK_SPACE:
-            _stprintf_s(szstr, _T("%s"), _T("NAN"));
-            // OutputDebugStringW(_T("SPACE UP\n"));
-            break;
-        case VK_SHIFT:
-            _stprintf_s(szstr, _T("%s"), _T("NAN"));
-            // OutputDebugStringW(_T("SHIFT UP\n"));
-            break;
-        case 'W':
-            _stprintf_s(szstr, _T("%s"), _T("W OFF"));
-            // OutputDebugStringW(_T("W UP\n"));
-            break;
-        default:
-            _stprintf_s(szstr, _T("%s"), _T("NAN"));
-            break;
-        }
-        return 0;
+    // case WM_KEYUP:
+    //     switch (wParam)
+    //     {
+    //     case VK_ESCAPE:
+    //         _stprintf_s(szstr, _T("%s"), _T("NAN"));
+    //         // OutputDebugStringW(_T("ESCAPE UP\n"));
+    //         break;
+    //     case VK_SPACE:
+    //         _stprintf_s(szstr, _T("%s"), _T("NAN"));
+    //         // OutputDebugStringW(_T("SPACE UP\n"));
+    //         break;
+    //     case VK_SHIFT:
+    //         _stprintf_s(szstr, _T("%s"), _T("NAN"));
+    //         // OutputDebugStringW(_T("SHIFT UP\n"));
+    //         break;
+    //     case 'W':
+    //         _stprintf_s(szstr, _T("%s"), _T("W OFF"));
+    //         // OutputDebugStringW(_T("W UP\n"));
+    //         break;
+    //     default:
+    //         _stprintf_s(szstr, _T("%s"), _T("NAN"));
+    //         break;
+    //     }
+    //     return 0;
 
-    case WM_LBUTTONDOWN:
-        pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
-        pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-        // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
-        return 0;
+    // case WM_LBUTTONDOWN:
+    //     pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
+    //     pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
+    //     // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
+    //     return 0;
 
-    case WM_MOUSEMOVE:
-        pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
-        pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-        // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
-        return 0;
+    // case WM_MOUSEMOVE:
+    //     pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
+    //     pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
+    //     // _stprintf_s(mouseMsg, _T("%d,%d"), pt.x, pt.y);
+    //     return 0;
 
     case WM_CLOSE:
         DeleteDC(hBuffer_DC);
-        DeleteDC(hBmpDC);
+        // DeleteDC(hBmpDC);
 
         DeleteObject(hBuffer_bitmap);
-        DeleteObject(hBmpFileBitmap);
+        // DeleteObject(hBmpFileBitmap);
 
         DestroyWindow(hWnd);
 
