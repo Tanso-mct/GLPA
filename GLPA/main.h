@@ -46,6 +46,7 @@ typedef struct GR_WINDOW_VARIABLE
 } GR_WNDVARI;
 
 GR_WNDVARI WND_LAU;
+GR_WNDVARI WND_PLAY;
 
 // HWND hWnd_LAU;
 // HWND hWnd_PLAY;
@@ -56,13 +57,13 @@ GR_WNDVARI WND_LAU;
 // bool hWnd_LAU_foucus = true;
 
 //double buffer pixel
-LPDWORD lpPixel = 
-(LPDWORD)HeapAlloc
-(
-    GetProcessHeap(),
-    HEAP_ZERO_MEMORY,
-    WINDOW_WIDTH*WINDOW_HEIGHT*4
-);
+// LPDWORD lpPixel = 
+// (LPDWORD)HeapAlloc
+// (
+//     GetProcessHeap(),
+//     HEAP_ZERO_MEMORY,
+//     WINDOW_WIDTH*WINDOW_HEIGHT*4
+// );
 
 //bmpfile load pixel
 // LPDWORD bmpPixel = 

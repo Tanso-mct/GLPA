@@ -5,11 +5,12 @@
 #include "userinput.h"
 
 int WINAPI WinMain(
-    _In_ HINSTANCE hInstance,             //アプリケーションのインスタンスハンドル
-    _In_opt_ HINSTANCE hPrevInstance,     //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
-    _In_ LPSTR lpCmdLine,                 //コマンドラインが格納された、NULLで終わる文字列へのポインタが入る。
-                                          //プログラム名は含まれない
-    _In_ int nCmdShow)                    //ウィンドウをどのように表示するかの指定が入る。SW_MESSAGENAMEの値が入る  
+    _In_ HINSTANCE hInstance,          //アプリケーションのインスタンスハンドル
+    _In_opt_ HINSTANCE hPrevInstance,  //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
+    _In_ LPSTR lpCmdLine,              //コマンドラインが格納された、NULLで終わる文字列へのポインタが入る。
+                                       //プログラム名は含まれない
+    _In_ int nCmdShow                  //ウィンドウをどのように表示するかの指定が入る。SW_MESSAGENAMEの値が入る
+)                      
 {
     WNDCLASSEX wcex_LAU;
 
@@ -157,12 +158,12 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     switch (message)
     {
         case WM_KILLFOCUS:
-            hWnd_LAU_foucus = false;
+            WND_LAU.foucus = false;
             return DefWindowProc(hWnd, message, wParam, lParam);
 
 
         case WM_SETFOCUS:
-            hWnd_LAU_foucus = true;
+            WND_LAU.foucus = true;
             return DefWindowProc(hWnd, message, wParam, lParam);
 
         case WM_CREATE :
@@ -182,23 +183,23 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 hBuffer_bitmapInfo.bmiHeader.biCompression = BI_RGB;
                 
                 hBuffer_DC = CreateCompatibleDC(hWindow_DC);
-                hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
+                hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&WND_LAU.lpPixel, NULL, 0);
                 SelectObject(hBuffer_DC, hBuffer_bitmap);
                 
                 //TODO:to make at texture.h,.cpp about load texture function
                 //load texture
                 sample.load(TEXT("sample.bmp"), hWindow_DC);
-                sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, lpPixel);
+                sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, WND_LAU.lpPixel);
                 texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
                 sample.deleteImage(); 
 
                 sample2.load(TEXT("redimage.bmp"), hWindow_DC);
-                sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, lpPixel);
+                sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, WND_LAU.lpPixel);
                 texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
                 sample2.deleteImage();   
 
                 sample3.load(TEXT("blueimage.bmp"), hWindow_DC);
-                sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, lpPixel);
+                sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, WND_LAU.lpPixel);
                 texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
                 sample3.deleteImage();     
 
@@ -233,7 +234,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                     0,
                     WINDOW_WIDTH * DISPLAY_RESOLUTION,
                     WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                    lpPixel,
+                    WND_LAU.lpPixel,
                     &hBuffer_bitmapInfo,
                     DIB_RGB_COLORS,
                     SRCCOPY
@@ -283,7 +284,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 }
                 
         case WM_KEYDOWN :
-                if (!hWnd_LAU_foucus)
+                if (!WND_LAU.foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -296,8 +297,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             break;
                     case VK_SPACE :
                             _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-                            hWnd1Open = false;
-                            hWnd_PLAY = CreateWindow(           //HWND ウィンドウハンドル
+                            WND_PLAY.hWnd = CreateWindow(           //HWND ウィンドウハンドル
                                 L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
                                 L"PLAY",                       //LPCSTR ウィンドウテキストのアドレス
                                 WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
@@ -309,7 +309,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                                 NULL                            //void FAR* ウィンドウ作成データのアドレス
                             );
 
-                            if (!hWnd_PLAY)
+                            if (!WND_PLAY.hWnd)
                             {
                                 MessageBox(
                                     NULL,
@@ -322,11 +322,11 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             }
 
                             ShowWindow(
-                                hWnd_PLAY,
+                                WND_PLAY.hWnd,
                                 gr_nCmdShow
                             );
 
-                            UpdateWindow(hWnd_PLAY);
+                            UpdateWindow(WND_PLAY.hWnd);
                             // OutputDebugStringW(_T("SPACE\n"));
                             break;
                     case VK_SHIFT :
@@ -344,7 +344,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_KEYUP :
-                if (!hWnd_LAU_foucus)
+                if (!WND_LAU.foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -374,7 +374,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_LBUTTONDOWN :
-                if (!hWnd_LAU_foucus)
+                if (!WND_LAU.foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -385,7 +385,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 return 0;
 
         case WM_MOUSEMOVE :
-                if (!hWnd_LAU_foucus)
+                if (!WND_LAU.foucus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -454,15 +454,15 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     // static clock_t lastloop;
     // static long double fps;
 
-    if (hWnd1Open && message != WM_SETFOCUS)
-    {
-        return DefWindowProc(hWnd, message, wParam, lParam);;
-    }
-    else if (message == WM_SETFOCUS)
-    {
-        hWnd1Open = false;
-        hWnd2Open = true;
-    }
+    // if (hWnd1Open && message != WM_SETFOCUS)
+    // {
+    //     return DefWindowProc(hWnd, message, wParam, lParam);;
+    // }
+    // else if (message == WM_SETFOCUS)
+    // {
+    //     hWnd1Open = false;
+    //     hWnd2Open = true;
+    // }
 
     switch (message)
     {
@@ -485,7 +485,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         hWindow_DC = GetDC(hWnd);
         hBuffer_DC = CreateCompatibleDC(hWindow_DC);
-        hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&lpPixel, NULL, 0);
+        hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&WND_PLAY.lpPixel, NULL, 0);
         SelectObject(hBuffer_DC, hBuffer_bitmap);
         SelectObject(hBuffer_DC, GetStockObject(DC_PEN));
         SelectObject(hBuffer_DC, GetStockObject(DC_BRUSH));
@@ -548,7 +548,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             0,
             WINDOW_WIDTH * DISPLAY_RESOLUTION,
             WINDOW_HEIGHT * DISPLAY_RESOLUTION,
-            lpPixel,
+            WND_PLAY.lpPixel,
             &hBuffer_bitmapInfo,
             DIB_RGB_COLORS,
             SRCCOPY
@@ -676,7 +676,6 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         DestroyWindow(hWnd);
 
     case WM_DESTROY:
-        hWnd2Open = false;
         PostQuitMessage(0);
 
     default:
