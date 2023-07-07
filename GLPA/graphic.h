@@ -6,7 +6,7 @@
 //TODO:add prefix "gr" to the name of the global variable
 //TODO:Convert window-related variables to structures
 //LAUNCHER Win32 Define
-PAINTSTRUCT hPS;
+// PAINTSTRUCT hPS;
 HDC hWindow_DC;
 
 //LAUNCHER Buffer DC
