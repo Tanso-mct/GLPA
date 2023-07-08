@@ -43,35 +43,35 @@ int WINAPI WinMain(
         return 1;
     }
 
-    WNDCLASSEX wcex_PLAY;        //struct tagWNDCLASSEXW
+    // WNDCLASSEX wcex_PLAY;        //struct tagWNDCLASSEXW
 
-    wcex_PLAY.cbSize = sizeof(wcex_PLAY);                                //UINT WNDCLASSEX構造体の大きさの設定
-    wcex_PLAY.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
-    wcex_PLAY.lpfnWndProc = WndProc2;                                    //WNDPROC WNDPROCを指すポインタ
-    wcex_PLAY.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
-    wcex_PLAY.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
-    wcex_PLAY.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
-    wcex_PLAY.hIcon =                                                    //HICON クラスアイコンを指定する
-        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
-    wcex_PLAY.hCursor =                                                  //HCURSOR クラスカーソルを指定する
-        LoadCursor(NULL, IDC_ARROW);
-    wcex_PLAY.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
-    wcex_PLAY.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
-    wcex_PLAY.lpszClassName = L"window_PLAY";                            //LPCSTR ウィンドウクラスの名前を指定する
-    wcex_PLAY.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
-        LoadIcon(wcex_PLAY.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    // wcex_PLAY.cbSize = sizeof(wcex_PLAY);                                //UINT WNDCLASSEX構造体の大きさの設定
+    // wcex_PLAY.style = CS_HREDRAW | CS_VREDRAW;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
+    // wcex_PLAY.lpfnWndProc = WndProc2;                                    //WNDPROC WNDPROCを指すポインタ
+    // wcex_PLAY.cbClsExtra = 0;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
+    // wcex_PLAY.cbWndExtra = 0;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
+    // wcex_PLAY.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
+    // wcex_PLAY.hIcon =                                                    //HICON クラスアイコンを指定する
+    //     LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    // wcex_PLAY.hCursor =                                                  //HCURSOR クラスカーソルを指定する
+    //     LoadCursor(NULL, IDC_ARROW);
+    // wcex_PLAY.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);                //HBRUSH クラス背景ブラシを指定する
+    // wcex_PLAY.lpszMenuName = NULL;                                       //LPCSTR クラスメニューのリソース名を指定する
+    // wcex_PLAY.lpszClassName = L"window_PLAY";                            //LPCSTR ウィンドウクラスの名前を指定する
+    // wcex_PLAY.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
+    //     LoadIcon(wcex_PLAY.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
 
-    if (!RegisterClassEx(&wcex_PLAY))
-    {
-        MessageBox(
-            NULL,
-            _T("RegisterClassEx fail"),
-            _T("window_PLAY"),
-            MB_ICONEXCLAMATION
-        );
+    // if (!RegisterClassEx(&wcex_PLAY))
+    // {
+    //     MessageBox(
+    //         NULL,
+    //         _T("RegisterClassEx fail"),
+    //         _T("window_PLAY"),
+    //         MB_ICONEXCLAMATION
+    //     );
 
-        return 1;
-    }
+    //     return 1;
+    // }
 
     WND_LAU.hWnd = CreateWindow(        //HWND ウィンドウハンドル
         L"window_LAU",                  //LPCSTR 登録されたクラス名のアドレス
