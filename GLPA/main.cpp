@@ -120,12 +120,12 @@ int WINAPI WinMain(
 
 void draw(HDC hBuffer_DC, TEXTURE *texture)
 {
-    // texture->displayImage_rectangle(
-    //     lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
-    //     0, 0,
-    //     0, 0,
-    //     FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
-    // );
+    texture->displayImage_rectangle(
+        WND_LAU.lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
+        0, 0,
+        0, 0,
+        FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
+    );
 
     HFONT hFont1 = CreateFont(30 * DISPLAY_RESOLUTION, 0, 
 		0, 0, 0, 
@@ -297,9 +297,9 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                             break;
                     case VK_SPACE :
                             // _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-                            // WND_PLAY.hWnd = CreateWindow(           //HWND ウィンドウハンドル
+                            // WND_PLAY.hWnd = CreateWindow(       //HWND ウィンドウハンドル
                             //     L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
-                            //     L"PLAY",                       //LPCSTR ウィンドウテキストのアドレス
+                            //     L"PLAY",                        //LPCSTR ウィンドウテキストのアドレス
                             //     WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
                             //     CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
                             //     WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
