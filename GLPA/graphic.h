@@ -3,16 +3,14 @@
 
 #include <Windows.h>
 
-//TODO:add prefix "gr" to the name of the global variable
-//TODO:Convert window-related variables to structures
 //LAUNCHER Win32 Define
 // PAINTSTRUCT hPS;
-HDC hWindow_DC;
+// HDC hWindow_DC;
 
 //LAUNCHER Buffer DC
-HDC hBuffer_DC;
-HBITMAP hBuffer_bitmap;    
-BITMAPINFO hBuffer_bitmapInfo; 
+// HDC hBuffer_DC;
+// HBITMAP hBuffer_bitmap;    
+// BITMAPINFO hBuffer_bitmapInfo; 
 
 //TODO:To change texture structures
 //Texture
@@ -30,10 +28,10 @@ BMPFILE sample3;
 BMPFILE *pt_sample3 = &sample3;
 
 //fps
-int refreshRate;
-bool startFpsCount = false;
-clock_t thisloop;
-clock_t lastloop;
-long double fps;
+// int refreshRate;
+// bool startFpsCount = false;
+// clock_t thisloop;
+// clock_t lastloop;
+// long double fps;
 
 #endif GRAPHIC_H_

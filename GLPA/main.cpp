@@ -168,51 +168,51 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
         case WM_CREATE :
             {
-                hWindow_DC = GetDC(hWnd);
-                refreshRate = GetDeviceCaps(hWindow_DC, VREFRESH);
+                WND_LAU.hWndDC = GetDC(hWnd);
+                WND_LAU.refreshRate = GetDeviceCaps(WND_LAU.hWndDC, VREFRESH);
 
-                SetTimer(hWnd, REQUEST_ANIMATION_TIMER, std::floor(1000 / refreshRate), NULL);
+                SetTimer(hWnd, REQUEST_ANIMATION_TIMER, std::floor(1000 / WND_LAU.refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
                 
                 //bmp buffer dc
-                hBuffer_bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                hBuffer_bitmapInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
-                hBuffer_bitmapInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;      
-                hBuffer_bitmapInfo.bmiHeader.biPlanes = 1;
-                hBuffer_bitmapInfo.bmiHeader.biBitCount = 32;
-                hBuffer_bitmapInfo.bmiHeader.biCompression = BI_RGB;
+                WND_LAU.hBufBmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                WND_LAU.hBufBmpInfo.bmiHeader.biWidth = +WINDOW_WIDTH * DISPLAY_RESOLUTION;
+                WND_LAU.hBufBmpInfo.bmiHeader.biHeight = -WINDOW_HEIGHT * DISPLAY_RESOLUTION;      
+                WND_LAU.hBufBmpInfo.bmiHeader.biPlanes = 1;
+                WND_LAU.hBufBmpInfo.bmiHeader.biBitCount = 32;
+                WND_LAU.hBufBmpInfo.bmiHeader.biCompression = BI_RGB;
                 
-                hBuffer_DC = CreateCompatibleDC(hWindow_DC);
-                hBuffer_bitmap = CreateDIBSection(NULL, &hBuffer_bitmapInfo, DIB_RGB_COLORS, (LPVOID*)&WND_LAU.lpPixel, NULL, 0);
-                SelectObject(hBuffer_DC, hBuffer_bitmap);
+                WND_LAU.hBufDC = CreateCompatibleDC(WND_LAU.hWndDC);
+                WND_LAU.hBufBmp = CreateDIBSection(NULL, &WND_LAU.hBufBmpInfo, DIB_RGB_COLORS, (LPVOID*)&WND_LAU.lpPixel, NULL, 0);
+                SelectObject(WND_LAU.hBufDC, WND_LAU.hBufBmp);
                 
                 //TODO:to make at texture.h,.cpp about load texture function
                 //load texture
-                sample.load(TEXT("sample.bmp"), hWindow_DC);
-                sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, WND_LAU.lpPixel);
+                sample.load(TEXT("sample.bmp"), WND_LAU.hWndDC);
+                sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, WND_LAU.hBufDC, WND_LAU.lpPixel);
                 texture_sample.insertBMP(sample.pixel, sample.getWidth(), sample.getHeight());
                 sample.deleteImage(); 
 
-                sample2.load(TEXT("redimage.bmp"), hWindow_DC);
-                sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, WND_LAU.lpPixel);
+                sample2.load(TEXT("redimage.bmp"), WND_LAU.hWndDC);
+                sample2.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, WND_LAU.hBufDC, WND_LAU.lpPixel);
                 texture_sample.insertBMP(sample2.pixel, sample2.getWidth(), sample2.getHeight());
                 sample2.deleteImage();   
 
-                sample3.load(TEXT("blueimage.bmp"), hWindow_DC);
-                sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, hBuffer_DC, WND_LAU.lpPixel);
+                sample3.load(TEXT("blueimage.bmp"), WND_LAU.hWndDC);
+                sample3.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, WND_LAU.hBufDC, WND_LAU.lpPixel);
                 texture_sample.insertBMP(sample3.pixel, sample3.getWidth(), sample3.getHeight());
                 sample3.deleteImage();     
 
-                ReleaseDC(hWnd, hWindow_DC);
+                ReleaseDC(hWnd, WND_LAU.hWndDC);
 
                 return 0;
             }
 
         case WM_CLOSE :
-                DeleteDC(hBuffer_DC);
+                DeleteDC(WND_LAU.hBufDC);
                 // DeleteDC(hBmpDC);
 
-                DeleteObject(hBuffer_bitmap);
+                DeleteObject(WND_LAU.hBufBmp);
                 // DeleteObject(hBmpFileBitmap);
 
                 DestroyWindow(hWnd);
@@ -223,9 +223,9 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
         case WM_PAINT :
                 // OutputDebugString(L"debug window 1 drawing\n");
-                hWindow_DC = BeginPaint(hWnd, &WND_LAU.hPs);
+                WND_LAU.hWndDC = BeginPaint(hWnd, &WND_LAU.hPs);
                 StretchDIBits(
-                    hWindow_DC,
+                    WND_LAU.hWndDC,
                     0,
                     0,
                     GetSystemMetrics(SM_CXSCREEN),
@@ -235,7 +235,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                     WINDOW_WIDTH * DISPLAY_RESOLUTION,
                     WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
                     WND_LAU.lpPixel,
-                    &hBuffer_bitmapInfo,
+                    &WND_LAU.hBufBmpInfo,
                     DIB_RGB_COLORS,
                     SRCCOPY
                 );
@@ -248,34 +248,34 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                     case REQUEST_ANIMATION_TIMER :
                             //fps
                             // OutputDebugString(L"debug window 1111111\n");
-                            if (!startFpsCount)
+                            if (!WND_LAU.startFpsCount)
                             {
-                                lastloop = clock();
-                                startFpsCount = true;
+                                WND_LAU.lastLoopTime = clock();
+                                WND_LAU.startFpsCount = true;
                             }
                             else
                             {
-                                thisloop = clock();
-                                fps = 1000 / static_cast<long double>(thisloop - lastloop);
-                                fps = std::round(fps * 100) / 100;
-                                lastloop = thisloop;
+                                WND_LAU.thisLoopTime = clock();
+                                WND_LAU.fps = 1000 / static_cast<long double>(WND_LAU.thisLoopTime - WND_LAU.lastLoopTime);
+                                WND_LAU.fps = std::round(WND_LAU.fps * 100) / 100;
+                                WND_LAU.lastLoopTime = WND_LAU.thisLoopTime;
                             }
 
                             PatBlt(
-                                hBuffer_DC, 
+                                WND_LAU.hBufDC, 
                                 0, 
                                 0, 
                                 WINDOW_WIDTH * DISPLAY_RESOLUTION, 
                                 WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
                                 WHITENESS
                             );
-                            draw(hBuffer_DC, pt_texture_sample);
+                            draw(WND_LAU.hBufDC, pt_texture_sample);
 
                             InvalidateRect(hWnd, NULL, FALSE);
                             return 0;
 
                     case FPS_OUTPUT_TIMER :
-                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), fps);
+                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), WND_LAU.fps);
                             return 0;
                             
                     default :

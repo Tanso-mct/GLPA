@@ -28,7 +28,7 @@ typedef struct GR_WINDOW_VARIABLE
     PAINTSTRUCT hPs;
 
     //buffer
-    HDC hBufferDC;
+    HDC hBufDC;
     HBITMAP hBufBmp;    
     BITMAPINFO hBufBmpInfo;      
     LPDWORD lpPixel = (LPDWORD)HeapAlloc(
