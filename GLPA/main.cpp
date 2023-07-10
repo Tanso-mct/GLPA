@@ -1,16 +1,6 @@
 
 #include "main.h"
 
-int gr_nCmdShow;
-HINSTANCE gr_hInstance;
-TCHAR szstr[256] = _T("NAN KEY");
-TCHAR mouseMsg[256] = _T("NOW COORDINATE");
-POINT pt = 
-{
-    5,
-    20
-};
-
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,          //アプリケーションのインスタンスハンドル
     _In_opt_ HINSTANCE hPrevInstance,  //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL

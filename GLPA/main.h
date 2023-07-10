@@ -15,19 +15,6 @@
 #define REQUEST_ANIMATION_TIMER 1
 #define FPS_OUTPUT_TIMER 2
 
-//Stores Winmain function arguments as global variables
-extern int gr_nCmdShow;
-extern HINSTANCE gr_hInstance;
-
-//Window Procedure
-LRESULT CALLBACK WndProc_LAU(HWND, UINT, WPARAM, LPARAM);
-// LRESULT CALLBACK WndProc2(HWND, UINT, WPARAM, LPARAM);
-
-extern TCHAR szstr[256];
-extern TCHAR mouseMsg[256];
-
-extern POINT pt;
-
 #include "window.h"
 #include "bmp.h"
 // #include "graphic.h"

@@ -35,4 +35,17 @@ typedef struct GR_WINDOW_VARIABLE
 
 extern GR_WNDVARI WND_LAU;
 
+//Stores Winmain function arguments as global variables
+extern int gr_nCmdShow;
+extern HINSTANCE gr_hInstance;
+
+//Window Procedure
+LRESULT CALLBACK WndProc_LAU(HWND, UINT, WPARAM, LPARAM);
+// LRESULT CALLBACK WndProc2(HWND, UINT, WPARAM, LPARAM);
+
+extern TCHAR szstr[256];
+extern TCHAR mouseMsg[256];
+
+extern POINT pt;
+
 #endif WINDOW_H_
