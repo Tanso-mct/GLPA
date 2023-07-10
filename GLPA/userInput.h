@@ -1,9 +1,10 @@
 #ifndef USERINPUT_H_
 #define USERINPUT_H_
 
-#include "main.h"
 #include <tchar.h>
 #include <windows.h>
+
+#include "graphic.h"
 
 // class UserInput
 // {
@@ -16,48 +17,58 @@ class WndLAUInput
 {
     public : 
     //Key message
-    void keyDown(WPARAM wParam);
-    // void keyUp(WPARAM wParam);
+    void keyDown(WPARAM w_Param);
+    void keyUp(WPARAM w_Param);
+    
+    //Mouse message
+    //Move message
+    void mouseMove(LPARAM l_Param);
+    
+    //Left button message
+    void mouseLbtnDown(LPARAM l_Param);
+    // void mouseLbtnUp(LPARAM l_Param);
+    // void mouseLbtnDblclick(LPARAM l_Param);
 
-    // //Mouse Left button message
-    // void mouseLbtnDown(LPARAM lParam);
-    // void mouseLbtnUp(LPARAM lParam);
-    // void mouseLbtnDblclick(LPARAM lParam);
+    //Right button message
+    // void mouseRbtnDown(LPARAM l_Param);
+    // void mouseRbtnUp(LPARAM l_Param);
+    // void mouseRbtnDblClick(LPARAM l_Param);
 
-    // //Mouse Right button message
-    // void mouseRbtnDown(LPARAM lParam);
-    // void mouseRbtnUp(LPARAM lParam);
-    // void mouseRbtnDblClick(LPARAM lParam);
-
-    // //Mouse Middle button message
-    // void mouseMbtnDown(LPARAM lParam);
-    // void mouseMbtnUp(LPARAM lParam);
-    // void mouseMbtnWheel(LPARAM lParam);
+    //Middle button message
+    // void mouseMbtnDown(LPARAM l_Param);
+    // void mouseMbtnUp(LPARAM l_Param);
+    // void mouseMbtnWheel(LPARAM l_Param);
+    
 };
 
-// class WndPLAYInput
-// {
-//     public : 
+class WndPLAYInput
+{
+    public : 
     //Key message
-    // void keyDown(WPARAM wParam);
-    // void keyUp(WPARAM wParam);
+    void keyDown(WPARAM w_Param);
+    void keyUp(WPARAM w_Param);
+    
+    //Mouse message
+    //Move message
+    void mouseMove(LPARAM l_Param);
+    
+    //Left button message
+    void mouseLbtnDown(LPARAM l_Param);
+    // void mouseLbtnUp(LPARAM l_Param);
+    // void mouseLbtnDblclick(LPARAM l_Param);
 
-    // //Mouse Left button message
-    // void mouseLbtnDown(LPARAM lParam);
-    // void mouseLbtnUp(LPARAM lParam);
-    // void mouseLbtnDblclick(LPARAM lParam);
+    //Right button message
+    // void mouseRbtnDown(LPARAM l_Param);
+    // void mouseRbtnUp(LPARAM l_Param);
+    // void mouseRbtnDblClick(LPARAM l_Param);
 
-    // //Mouse Right button message
-    // void mouseRbtnDown(LPARAM lParam);
-    // void mouseRbtnUp(LPARAM lParam);
-    // void mouseRbtnDblClick(LPARAM lParam);
-
-    // //Mouse Middle button message
-    // void mouseMbtnDown(LPARAM lParam);
-    // void mouseMbtnUp(LPARAM lParam);
-    // void mouseMbtnWheel(LPARAM lParam);
-// };
+    //Middle button message
+    // void mouseMbtnDown(LPARAM l_Param);
+    // void mouseMbtnUp(LPARAM l_Param);
+    // void mouseMbtnWheel(LPARAM l_Param);
+};
 
 extern WndLAUInput UserInputWndLAU;
+extern WndPLAYInput UserInputWndPLAY;
 
 #endif USERINPUT_H_
