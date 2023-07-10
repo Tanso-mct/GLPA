@@ -138,5 +138,19 @@ bool TEXTURE::displayImage_rectangle
     return 0;   
 }
 
+//TODO:To change texture structures
+//Texture
+TEXTURE texture_sample;
+TEXTURE *pt_texture_sample = &texture_sample;
+
+//bmpfile
+BMPFILE sample;    
+BMPFILE *pt_sample = &sample;
+
+BMPFILE sample2;    
+BMPFILE *pt_sample2 = &sample2;
+
+BMPFILE sample3;    
+BMPFILE *pt_sample3 = &sample3;
 
 

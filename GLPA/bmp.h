@@ -67,4 +67,18 @@ class TEXTURE
     );
 };
 
+// Texture
+extern TEXTURE texture_sample;
+extern TEXTURE *pt_texture_sample;
+
+// bmpfile
+extern BMPFILE sample;    
+extern BMPFILE *pt_sample;
+
+extern BMPFILE sample2;    
+extern BMPFILE *pt_sample2;
+
+extern BMPFILE sample3;    
+extern BMPFILE *pt_sample3;
+
 #endif // BMP_H_

@@ -1,8 +1,15 @@
 
 #include "main.h"
-#include "bmp.h"
-#include "graphic.h"
-#include "userinput.h"
+
+int gr_nCmdShow;
+HINSTANCE gr_hInstance;
+TCHAR szstr[256] = _T("NAN KEY");
+TCHAR mouseMsg[256] = _T("NOW COORDINATE");
+POINT pt = 
+{
+    5,
+    20
+};
 
 int WINAPI WinMain(
     _In_ HINSTANCE hInstance,          //アプリケーションのインスタンスハンドル
@@ -120,12 +127,12 @@ int WINAPI WinMain(
 
 void draw(HDC hBuffer_DC, TEXTURE *texture)
 {
-    texture->displayImage_rectangle(
-        WND_LAU.lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
-        0, 0,
-        0, 0,
-        FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
-    );
+    // texture->displayImage_rectangle(
+    //     WND_LAU.lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
+    //     0, 0,
+    //     0, 0,
+    //     FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
+    // );
 
     HFONT hFont1 = CreateFont(30 * DISPLAY_RESOLUTION, 0, 
 		0, 0, 0, 
@@ -289,58 +296,60 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
 
-                switch (wParam)
-                {
-                    case VK_ESCAPE :
-                            _stprintf_s(szstr, _T("%s"), _T("ESCAPE"));
-                            // OutputDebugStringW(_T("ESCAPE\n"));
-                            break;
-                    case VK_SPACE :
-                            // _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-                            // WND_PLAY.hWnd = CreateWindow(       //HWND ウィンドウハンドル
-                            //     L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
-                            //     L"PLAY",                        //LPCSTR ウィンドウテキストのアドレス
-                            //     WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
-                            //     CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
-                            //     WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
-                            //     HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
-                            //     NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
-                            //     gr_hInstance,                   //HINSTANCE アプリケーションインスタンスのハンドル
-                            //     NULL                            //void FAR* ウィンドウ作成データのアドレス
-                            // );
+                UserInputWndLAU.keyDown(wParam);
 
-                            // if (!WND_PLAY.hWnd)
-                            // {
-                            //     MessageBox(
-                            //         NULL,
-                            //         _T("window_PLAY make fail"),
-                            //         _T("window_PLAY"),
-                            //         MB_ICONEXCLAMATION
-                            //     );
+                // switch (wParam)
+                // {
+                //     case VK_ESCAPE :
+                //             _stprintf_s(szstr, _T("%s"), _T("ESCAPE"));
+                //             // OutputDebugStringW(_T("ESCAPE\n"));
+                //             break;
+                //     case VK_SPACE :
+                //             // _stprintf_s(szstr, _T("%s"), _T("SPACE"));
+                //             // WND_PLAY.hWnd = CreateWindow(       //HWND ウィンドウハンドル
+                //             //     L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
+                //             //     L"PLAY",                        //LPCSTR ウィンドウテキストのアドレス
+                //             //     WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
+                //             //     CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
+                //             //     WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
+                //             //     HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
+                //             //     NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
+                //             //     gr_hInstance,                   //HINSTANCE アプリケーションインスタンスのハンドル
+                //             //     NULL                            //void FAR* ウィンドウ作成データのアドレス
+                //             // );
 
-                            //     return 1;
-                            // }
+                //             // if (!WND_PLAY.hWnd)
+                //             // {
+                //             //     MessageBox(
+                //             //         NULL,
+                //             //         _T("window_PLAY make fail"),
+                //             //         _T("window_PLAY"),
+                //             //         MB_ICONEXCLAMATION
+                //             //     );
 
-                            // ShowWindow(
-                            //     WND_PLAY.hWnd,
-                            //     gr_nCmdShow
-                            // );
+                //             //     return 1;
+                //             // }
 
-                            // UpdateWindow(WND_PLAY.hWnd);
-                            // OutputDebugStringW(_T("SPACE\n"));
-                            break;
-                    case VK_SHIFT :
-                            _stprintf_s(szstr, _T("%s"), _T("SHIFT"));
-                            // OutputDebugStringW(_T("SHIFT\n"));
-                            break;
-                    case 'W' :
-                            _stprintf_s(szstr, _T("%s"), _T("W ON"));
-                            // OutputDebugStringW(_T("W\n"));
-                            break;
-                    default :
-                            _stprintf_s(szstr, _T("%s"), _T("ANY"));
-                            break;
-                }
+                //             // ShowWindow(
+                //             //     WND_PLAY.hWnd,
+                //             //     gr_nCmdShow
+                //             // );
+
+                //             // UpdateWindow(WND_PLAY.hWnd);
+                //             // OutputDebugStringW(_T("SPACE\n"));
+                //             break;
+                //     case VK_SHIFT :
+                //             _stprintf_s(szstr, _T("%s"), _T("SHIFT"));
+                //             // OutputDebugStringW(_T("SHIFT\n"));
+                //             break;
+                //     case 'W' :
+                //             _stprintf_s(szstr, _T("%s"), _T("W ON"));
+                //             // OutputDebugStringW(_T("W\n"));
+                //             break;
+                //     default :
+                //             _stprintf_s(szstr, _T("%s"), _T("ANY"));
+                //             break;
+                // }
                 return 0;
 
         case WM_KEYUP :

@@ -1,6 +1,8 @@
 #ifndef USERINPUT_H_
 #define USERINPUT_H_
 
+#include "main.h"
+#include <tchar.h>
 #include <windows.h>
 
 // class UserInput
@@ -33,11 +35,11 @@ class WndLAUInput
     // void mouseMbtnWheel(LPARAM lParam);
 };
 
-class WndPLAYInput
-{
-    public : 
+// class WndPLAYInput
+// {
+//     public : 
     //Key message
-    void keyDown(WPARAM wParam);
+    // void keyDown(WPARAM wParam);
     // void keyUp(WPARAM wParam);
 
     // //Mouse Left button message
@@ -54,6 +56,8 @@ class WndPLAYInput
     // void mouseMbtnDown(LPARAM lParam);
     // void mouseMbtnUp(LPARAM lParam);
     // void mouseMbtnWheel(LPARAM lParam);
-};
+// };
+
+extern WndLAUInput UserInputWndLAU;
 
 #endif USERINPUT_H_
