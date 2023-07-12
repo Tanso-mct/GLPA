@@ -131,6 +131,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
         case WM_CREATE :
             {
+                WND_LAU.open = true;
                 WND_LAU.hWndDC = GetDC(hWnd);
                 WND_LAU.refreshRate = GetDeviceCaps(WND_LAU.hWndDC, VREFRESH);
 
@@ -182,7 +183,12 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
         case WM_DESTROY :
                 //TODO:Change PostQuitMessage to send only when no windows are displayed.
-                PostQuitMessage(0);
+                if (!WND_PLAY.open)
+                {
+                    PostQuitMessage(0);
+                }
+
+                return 0;
 
         case WM_PAINT :
                 // OutputDebugString(L"debug window 1 drawing\n");
@@ -304,6 +310,7 @@ LRESULT CALLBACK WndProc_PLAY(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
         case WM_CREATE :
             {
+                WND_PLAY.open = true;
                 WND_PLAY.hWndDC = GetDC(hWnd);
                 WND_PLAY.refreshRate = GetDeviceCaps(WND_PLAY.hWndDC, VREFRESH);
 
@@ -355,7 +362,12 @@ LRESULT CALLBACK WndProc_PLAY(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
         case WM_DESTROY :
                 //TODO:Change PostQuitMessage to send only when no windows are displayed.
-                PostQuitMessage(0);
+                if (!WND_LAU.open)
+                {
+                    PostQuitMessage(0);
+                }
+
+                return 0;
 
         case WM_PAINT :
                 // OutputDebugString(L"debug window 1 drawing\n");

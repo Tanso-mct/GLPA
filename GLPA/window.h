@@ -20,6 +20,7 @@ typedef struct GR_WINDOW_VARIABLE
     // window
     HWND hWnd;
     bool foucus = false;
+    bool open = false;
     HDC hWndDC;
     PAINTSTRUCT hPs;
 
