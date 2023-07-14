@@ -135,6 +135,7 @@ LRESULT CALLBACK WndProc_LAU(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 WND_LAU.hWndDC = GetDC(hWnd);
                 WND_LAU.refreshRate = GetDeviceCaps(WND_LAU.hWndDC, VREFRESH);
 
+                // TODO: Use TIMERPROC function with setTimer
                 SetTimer(hWnd, REQUEST_ANIMATION_TIMER, std::floor(1000 / WND_LAU.refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
                 

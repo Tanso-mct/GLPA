@@ -17,6 +17,7 @@ extern TCHAR mouseMsgfPlay[256];
 extern POINT ptfPlay;
 
 // Function to change the value of what is drawn on the screen
+// TODO: change override function
 void scrLAUDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/);
 void scrPLAYDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/);
 
