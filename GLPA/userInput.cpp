@@ -3,9 +3,9 @@
 
 // WND LAU UserInput define
 
-void WndLAUInput ::keyDown(WPARAM w_Param)
+void WndLAUInput ::keyDown(WPARAM wParam)
 {
-        switch (w_Param)
+        switch (wParam)
         {
         case VK_ESCAPE :
                 _stprintf_s(szstr, _T("%s"), _T("ESCAPE"));
@@ -13,37 +13,36 @@ void WndLAUInput ::keyDown(WPARAM w_Param)
                 break;
         case VK_SPACE :
                 _stprintf_s(szstr, _T("%s"), _T("SPACE"));
-                // hWnd1Open = false;
-                // hWnd_PLAY = CreateWindow(           //HWND ウィンドウハンドル
-                //     L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
-                //     L"PLAY",                        //LPCSTR ウィンドウテキストのアドレス
-                //     WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
-                //     CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
-                //     WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
-                //     HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
-                //     NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
-                //     gr_hInstance,                   //HINSTANCE アプリケーションインスタンスのハンドル
-                //     NULL                            //void FAR* ウィンドウ作成データのアドレス
-                // );
+                WndPLAY.hWnd = CreateWindow(           //HWND ウィンドウハンドル
+                    L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
+                    L"PLAY",                        //LPCSTR ウィンドウテキストのアドレス
+                    WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
+                    CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
+                    WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
+                    HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
+                    NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
+                    WndMain.gr_hInstance,           //HINSTANCE アプリケーションインスタンスのハンドル
+                    NULL                            //void FAR* ウィンドウ作成データのアドレス
+                );
 
-                // if (!hWnd_PLAY)
-                // {
-                //     MessageBox(
-                //         NULL,
-                //         _T("window_PLAY make fail"),
-                //         _T("window_PLAY"),
-                //         MB_ICONEXCLAMATION
-                //     );
+                if (!WndPLAY.hWnd)
+                {
+                        MessageBox(
+                        NULL,
+                        _T("window_PLAY make fail"),
+                        _T("window_PLAY"),
+                        MB_ICONEXCLAMATION
+                        );
 
-                //     // return 1;
-                // }
+                    // return 1;
+                }
 
-                // ShowWindow(
-                //     hWnd_PLAY,
-                //     gr_nCmdShow
-                // );
+                ShowWindow(
+                        WndPLAY.hWnd,
+                        WndMain.gr_nCmdShow
+                );
 
-                // UpdateWindow(hWnd_PLAY);
+                UpdateWindow(WndPLAY.hWnd);
                 // OutputDebugStringW(_T("SPACE\n"));
                 break;
         case VK_SHIFT :
@@ -102,16 +101,16 @@ void WndLAUInput :: mouseLbtnDown(LPARAM lParam)
 };
 
 // WND Play UserInput define
-void WndPLAYInput ::keyDown(WPARAM w_Param)
+void WndPLAYInput ::keyDown(WPARAM wParam)
 {
-        switch (w_Param)
+        switch (wParam)
         {
         case VK_ESCAPE :
-                _stprintf_s(szstr, _T("%s"), _T("ESCAPE"));
+                _stprintf_s(szstrfPlay, _T("%s"), _T("ESCAPE"));
                 // OutputDebugStringW(_T("ESCAPE\n"));
                 break;
         case VK_SPACE :
-                _stprintf_s(szstr, _T("%s"), _T("SPACE"));
+                _stprintf_s(szstrfPlay, _T("%s"), _T("SPACE"));
                 // hWnd1Open = false;
                 // hWnd_PLAY = CreateWindow(           //HWND ウィンドウハンドル
                 //     L"window_PLAY",                 //LPCSTR 登録されたクラス名のアドレス
@@ -146,15 +145,15 @@ void WndPLAYInput ::keyDown(WPARAM w_Param)
                 // OutputDebugStringW(_T("SPACE\n"));
                 break;
         case VK_SHIFT :
-                _stprintf_s(szstr, _T("%s"), _T("SHIFT"));
+                _stprintf_s(szstrfPlay, _T("%s"), _T("SHIFT"));
                 // OutputDebugStringW(_T("SHIFT\n"));
                 break;
         case 'W' :
-                _stprintf_s(szstr, _T("%s"), _T("W ON"));
+                _stprintf_s(szstrfPlay, _T("%s"), _T("W ON"));
                 // OutputDebugStringW(_T("W\n"));
                 break;
         default :
-                _stprintf_s(szstr, _T("%s"), _T("ANY"));
+                _stprintf_s(szstrfPlay, _T("%s"), _T("ANY"));
                 break;
         }
 };
@@ -164,40 +163,40 @@ void WndPLAYInput ::keyUp(WPARAM wParam)
         switch (wParam)
         {
                 case VK_ESCAPE :
-                        _stprintf_s(szstr, _T("%s"), _T("NAN"));
+                        _stprintf_s(szstrfPlay, _T("%s"), _T("NAN"));
                         // OutputDebugStringW(_T("ESCAPE UP\n"));
                         break;
                 case VK_SPACE :
-                        _stprintf_s(szstr, _T("%s"), _T("NAN"));
+                        _stprintf_s(szstrfPlay, _T("%s"), _T("NAN"));
                         // OutputDebugStringW(_T("SPACE UP\n"));
                         break;
                 case VK_SHIFT :
-                        _stprintf_s(szstr, _T("%s"), _T("NAN"));
+                        _stprintf_s(szstrfPlay, _T("%s"), _T("NAN"));
                         // OutputDebugStringW(_T("SHIFT UP\n"));
                         break;
                 case 'W' :
-                        _stprintf_s(szstr, _T("%s"), _T("W OFF"));
+                        _stprintf_s(szstrfPlay, _T("%s"), _T("W OFF"));
                         // OutputDebugStringW(_T("W UP\n"));
                         break;
                 default :
-                        _stprintf_s(szstr, _T("%s"), _T("NAN"));
+                        _stprintf_s(szstrfPlay, _T("%s"), _T("NAN"));
                         break;
         }
 };
 
 void WndPLAYInput :: mouseMove(LPARAM lParam)
 {
-        pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
-        pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
+        ptfPlay.x = LOWORD(lParam) * DISPLAY_RESOLUTION;
+        ptfPlay.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
         // _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
 };
 
 
 void WndPLAYInput :: mouseLbtnDown(LPARAM lParam)
 {
-        pt.x = LOWORD(lParam) * DISPLAY_RESOLUTION;  
-        pt.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
-        _stprintf_s(szstr, _T("%d,%d"), pt.x, pt.y);
+        ptfPlay.x = LOWORD(lParam) * DISPLAY_RESOLUTION;  
+        ptfPlay.y = HIWORD(lParam) * DISPLAY_RESOLUTION;
+        _stprintf_s(szstrfPlay, _T("%d,%d"), ptfPlay.x, ptfPlay.y);
 };
 
 

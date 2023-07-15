@@ -4,6 +4,10 @@
 #include <windows.h>
 #include <tchar.h>
 #include <time.h>
+#include <cmath>
+
+#include "graphic.h"
+#include "userInput.h"
 
 //WINDOW SETTINGS
 #define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
@@ -14,17 +18,14 @@
 #define REQUEST_ANIMATION_TIMER 1
 #define FPS_OUTPUT_TIMER 2
 
-
-typedef struct GR_WINDOW_VARIABLE
+typedef struct tagWND_STATE
 {
-    // window
-    HWND hWnd;
     bool foucus = false;
     bool open = false;
-    HDC hWndDC;
-    PAINTSTRUCT hPs;
+} WND_STATE;
 
-    // buffer
+typedef struct tagWND_BUFFER
+{
     HDC hBufDC;
     HBITMAP hBufBmp;    
     BITMAPINFO hBufBmpInfo;      
@@ -33,25 +34,56 @@ typedef struct GR_WINDOW_VARIABLE
         HEAP_ZERO_MEMORY,
         WINDOW_WIDTH*WINDOW_HEIGHT*4
     );
+} WND_BUF;
 
-    // fps
+typedef struct tagFPS
+{
     int refreshRate;
     bool startFpsCount = false;
     clock_t thisLoopTime;
     clock_t lastLoopTime;
     long double fps;
-} GR_WNDVARI;
+} WND_FPS;
 
-// Grobal window structre
-extern GR_WNDVARI WND_LAU;
-extern GR_WNDVARI WND_PLAY;
+class WNDMAIN
+{
+    public :
+        int gr_nCmdShow;
+        HINSTANCE gr_hInstance;
+};
 
-// Stores Winmain function arguments as global variables
-extern int gr_nCmdShow;
-extern HINSTANCE gr_hInstance;
+class WINDOW
+{
+    public :
+        HWND hWnd;          //main 
+        HDC hWndDC;
+        PAINTSTRUCT hPs;
 
-// Window Procedure
-LRESULT CALLBACK WndProc_LAU(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK WndProc_PLAY(HWND, UINT, WPARAM, LPARAM);
+        int wndWidth = 1200;
+        int wndHeight = 1000;
+        int monitorWidth;
+        int monitorHeight;
+        int displayResolution = 1;
+
+        WND_STATE state;
+        WND_BUF buffer;
+        WND_FPS fps;
+};
+
+class WINDOW_LAU : public WINDOW
+{
+    public :
+        static LRESULT CALLBACK wndProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
+};
+
+class WINDOW_PLAY : public WINDOW
+{
+    public :
+        static LRESULT CALLBACK wndProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
+};
+
+extern WNDMAIN WndMain;
+extern WINDOW_LAU WndLAU;
+extern WINDOW_PLAY WndPLAY;
 
 #endif WINDOW_H_
