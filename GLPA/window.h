@@ -48,8 +48,29 @@ typedef struct tagFPS
 class WNDMAIN
 {
     public :
-        int gr_nCmdShow;
-        HINSTANCE gr_hInstance;
+        // Variable for storing arguments of WinMain function
+        int nCmdShow;
+        HINSTANCE hInstance;
+
+        // Class Registration
+        WNDCLASSEX registerClass
+        (
+            UINT cls_style,
+            WNDPROC wnd_proc,
+            int cls_extra,
+            int wnd_extra,
+            HINSTANCE h_instance,
+            LPWSTR load_icon,
+            LPWSTR load_cursor,
+            int background_color,
+            LPCWSTR menu_resources_name,
+            LPCWSTR cls_name,
+            LPWSTR cls_small_icon
+        );
+
+        // Check that classes and windows have been created successfully
+        int checkClass(WNDCLASSEX *pt_class);
+        int checkWindow(HWND created_hWnd);
 };
 
 class WINDOW
@@ -59,8 +80,6 @@ class WINDOW
         HDC hWndDC;
         PAINTSTRUCT hPs;
 
-        int wndWidth = 1200;
-        int wndHeight = 1000;
         int monitorWidth;
         int monitorHeight;
         int displayResolution = 1;
@@ -73,12 +92,16 @@ class WINDOW
 class WINDOW_LAU : public WINDOW
 {
     public :
+        int wndWidth = 1200;
+        int wndHeight = 800;
         static LRESULT CALLBACK wndProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 };
 
 class WINDOW_PLAY : public WINDOW
 {
     public :
+        int wndWidth = WINDOW_WIDTH;
+        int wndHeight = WINDOW_HEIGHT;
         static LRESULT CALLBACK wndProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 };
 

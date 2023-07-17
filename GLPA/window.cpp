@@ -1,12 +1,88 @@
 
 #include "window.h"
 
-// GR_WNDVARI WND_LAU;
-// GR_WNDVARI WND_PLAY;s
-
 WNDMAIN WndMain;
 WINDOW_LAU WndLAU;
 WINDOW_PLAY WndPLAY;
+
+WNDCLASSEX WNDMAIN::registerClass
+(
+    UINT style, 
+    WNDPROC wndproc, 
+    int clsExtra, 
+    int wndExtra, 
+    HINSTANCE hInstance, 
+    LPWSTR loadIcon, 
+    LPWSTR loadCursor, 
+    int backgroundColor, 
+    LPCWSTR menuResName, 
+    LPCWSTR name, 
+    LPWSTR smallIcon
+)
+{
+    WNDCLASSEX wndClass;
+    wndClass.cbSize = sizeof(wndClass);                                 //UINT WNDCLASSEX構造体の大きさの設定
+    wndClass.style = style;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
+    wndClass.lpfnWndProc = wndproc;                             //WNDPROC WNDPROCを指すポインタ
+    wndClass.cbClsExtra = clsExtra;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
+    wndClass.cbWndExtra = wndExtra;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
+    wndClass.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
+    wndClass.hIcon = (HICON)LoadImage                                                   //HICON クラスアイコンを指定するLoadImage
+        (
+            NULL, 
+            MAKEINTRESOURCE(loadIcon),
+            IMAGE_ICON,
+            0,
+            0,
+            LR_DEFAULTSIZE | LR_SHARED
+        );
+    wndClass.hCursor = (HCURSOR)LoadImage
+        (
+            NULL, 
+            MAKEINTRESOURCE(loadIcon),
+            IMAGE_CURSOR,
+            0,
+            0,
+            LR_DEFAULTSIZE | LR_SHARED
+        );                                                 //HCURSOR クラスカーソルを指定する
+    wndClass.hbrBackground = (HBRUSH)GetStockObject(backgroundColor);                //HBRUSH クラス背景ブラシを指定する
+    wndClass.lpszMenuName = menuResName;                                       //LPCSTR クラスメニューのリソース名を指定する
+    wndClass.lpszClassName = name;                            //LPCSTR ウィンドウクラスの名前を指定する
+    wndClass.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
+    LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(smallIcon));
+    return wndClass;
+};
+
+int WNDMAIN::checkClass(WNDCLASSEX *ptClass)
+{
+    if (!RegisterClassEx(ptClass))
+    {
+        MessageBox(
+            NULL,
+            _T("RegisterClassEx fail"),
+            _T("window_LAU"),
+            MB_ICONEXCLAMATION
+        );
+
+        return NULL;
+    }
+};
+
+int WNDMAIN::checkWindow(HWND createdHWnd)
+{
+    if (!createdHWnd)
+    {
+        MessageBox(
+            NULL,
+            _T("window make fail"),
+            _T("window_LAU"),
+            MB_ICONEXCLAMATION
+        );
+
+        return NULL;
+    }
+};
+
 
 LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -390,6 +466,3 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
     }
     return 0;
 };
-
-// int gr_nCmdShow;
-// HINSTANCE gr_hInstance;

@@ -21,7 +21,7 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                     WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
                     HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
                     NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
-                    WndMain.gr_hInstance,           //HINSTANCE アプリケーションインスタンスのハンドル
+                    WndMain.hInstance,           //HINSTANCE アプリケーションインスタンスのハンドル
                     NULL                            //void FAR* ウィンドウ作成データのアドレス
                 );
 
@@ -39,7 +39,7 @@ void WndLAUInput ::keyDown(WPARAM wParam)
 
                 ShowWindow(
                         WndPLAY.hWnd,
-                        WndMain.gr_nCmdShow
+                        WndMain.nCmdShow
                 );
 
                 UpdateWindow(WndPLAY.hWnd);
