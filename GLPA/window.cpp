@@ -21,13 +21,13 @@ WNDCLASSEX WNDMAIN::registerClass
 )
 {
     WNDCLASSEX wndClass;
-    wndClass.cbSize = sizeof(wndClass);                                 //UINT WNDCLASSEX構造体の大きさの設定
-    wndClass.style = style;                           //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
-    wndClass.lpfnWndProc = wndproc;                             //WNDPROC WNDPROCを指すポインタ
-    wndClass.cbClsExtra = clsExtra;                                            //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
-    wndClass.cbWndExtra = wndExtra;                                            //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
-    wndClass.hInstance = hInstance;                                     //HINSTANCE インスタンスハンドル
-    wndClass.hIcon = (HICON)LoadImage                                                   //HICON クラスアイコンを指定するLoadImage
+    wndClass.cbSize = sizeof(wndClass);     //UINT WNDCLASSEX構造体の大きさの設定
+    wndClass.style = style;                 //UINT クラススタイルを表す。CS_MESSAGENAMEの値をOR演算子で組み合わせた値となる
+    wndClass.lpfnWndProc = wndproc;         //WNDPROC WNDPROCを指すポインタ
+    wndClass.cbClsExtra = clsExtra;         //int ウィンドウクラス構造体の跡に割り当てるバイト数を示す
+    wndClass.cbWndExtra = wndExtra;         //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
+    wndClass.hInstance = hInstance;         //HINSTANCE インスタンスハンドル
+    wndClass.hIcon = (HICON)LoadImage       //HICON クラスアイコンを指定するLoadImage
         (
             NULL, 
             MAKEINTRESOURCE(loadIcon),
@@ -36,7 +36,7 @@ WNDCLASSEX WNDMAIN::registerClass
             0,
             LR_DEFAULTSIZE | LR_SHARED
         );
-    wndClass.hCursor = (HCURSOR)LoadImage
+    wndClass.hCursor = (HCURSOR)LoadImage   //HCURSOR クラスカーソルを指定する
         (
             NULL, 
             MAKEINTRESOURCE(loadIcon),
@@ -44,11 +44,11 @@ WNDCLASSEX WNDMAIN::registerClass
             0,
             0,
             LR_DEFAULTSIZE | LR_SHARED
-        );                                                 //HCURSOR クラスカーソルを指定する
-    wndClass.hbrBackground = (HBRUSH)GetStockObject(backgroundColor);                //HBRUSH クラス背景ブラシを指定する
-    wndClass.lpszMenuName = menuResName;                                       //LPCSTR クラスメニューのリソース名を指定する
-    wndClass.lpszClassName = name;                            //LPCSTR ウィンドウクラスの名前を指定する
-    wndClass.hIconSm =                                                  //HICON 小さなクラスアイコンを指定する
+        );                                                 
+    wndClass.hbrBackground = (HBRUSH)GetStockObject(backgroundColor);       //HBRUSH クラス背景ブラシを指定する
+    wndClass.lpszMenuName = menuResName;                                    //LPCSTR クラスメニューのリソース名を指定する
+    wndClass.lpszClassName = name;                                          //LPCSTR ウィンドウクラスの名前を指定する
+    wndClass.hIconSm =                                                      //HICON 小さなクラスアイコンを指定する
     LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(smallIcon));
     return wndClass;
 };
