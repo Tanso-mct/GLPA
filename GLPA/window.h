@@ -76,7 +76,7 @@ class WNDMAIN
 class WINDOW
 {
     public :
-        HWND hWnd;          //main 
+        HWND hWnd;
         HDC hWndDC;
         PAINTSTRUCT hPs;
 
