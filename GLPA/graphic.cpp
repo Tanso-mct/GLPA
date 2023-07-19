@@ -16,7 +16,7 @@ extern POINT ptfPlay =
 {
     5,
     20
-};;
+};
 
 void scrLAUDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/)
 {

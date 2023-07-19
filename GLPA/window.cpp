@@ -51,7 +51,7 @@ WNDCLASSEX WNDMAIN::registerClass
     wndClass.hIconSm =                                                      //HICON 小さなクラスアイコンを指定する
     LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(smallIcon));
     return wndClass;
-};
+}
 
 int WNDMAIN::checkClass(WNDCLASSEX *ptClass)
 {
@@ -66,7 +66,7 @@ int WNDMAIN::checkClass(WNDCLASSEX *ptClass)
 
         return NULL;
     }
-};
+}
 
 int WNDMAIN::checkWindow(HWND createdHWnd)
 {
@@ -81,7 +81,7 @@ int WNDMAIN::checkWindow(HWND createdHWnd)
 
         return NULL;
     }
-};
+}
 
 
 LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -273,7 +273,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
-};
+}
 
 LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -465,4 +465,4 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
-};
+}
