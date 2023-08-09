@@ -49,24 +49,6 @@ typedef struct tagFPS
     long double fps;
 } WND_FPS;
 
-typedef struct tagRGBA
-{
-    int r;
-    int g;
-    int b;
-    int a;
-} RGBA;
-
-typedef struct tagIMAGE
-{
-    int width;
-    int height;
-    int colorDepth;
-    int compType;
-    std::vector<RGBA> data;
-    int format;
-} IMAGE;
-
 class WNDMAIN
 {
 public:
