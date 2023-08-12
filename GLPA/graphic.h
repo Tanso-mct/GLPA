@@ -58,11 +58,13 @@ class SCREEN
 class SCR_LAU : public SCREEN
 {
     public :
+    int scrUpdate();
 };
 
 class SCR_PLAY : public SCREEN
 {
     public :
+    int scrUpdate();
 };
 
 

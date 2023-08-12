@@ -15,14 +15,14 @@ class FILELOAD
 {
     public :
     int loadStatus = NO_PROCESSED;
+    char *loadBinary();
 };
 
 class LOAD_BMP : public FILELOAD
 {
     public :
     IMAGE image;
-    int loadHeaderInfo();
-    int loadData();
+    int readBinary();
 };
 
 
