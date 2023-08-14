@@ -3,6 +3,7 @@
 
 #include <tchar.h>
 #include <windows.h>
+#include <vector>
 
 #include "window.h"
 

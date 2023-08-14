@@ -5,7 +5,6 @@
 #include <tchar.h>
 #include <time.h>
 #include <cmath>
-#include <vector>
 
 #include "graphic.h"
 #include "userInput.h"
