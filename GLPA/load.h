@@ -2,10 +2,12 @@
 #define LOAD_H_
 
 #include <string>
-#include <stdio.h>
 #include <iostream>
-#include <sstream>
 #include <fstream>
+#include <string>
+
+#include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
 
 using namespace std;
 
@@ -28,7 +30,7 @@ class FILELOAD
 {
     public :
     int loadStatus = NO_PROCESSED;
-    int loadBinary();
+    int loadBinary(string file_type, string file_name);
 };
 
 class LOAD_BMP : public FILELOAD

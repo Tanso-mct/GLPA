@@ -1,42 +1,67 @@
 
 #include "load.h"
 
-int FILELOAD::loadBinary()
+int FILELOAD::loadBinary(std::string file_type, std::string file_name)
 {
-    char filePath[] = "C:/Users/nari-/Documents/GitHub/GLPA/x64/Debug/blueimage.bmp";
+    string filePath ("../x64/Debug/sample.png");
+
     //ファイル名からバイナリファイルで読み込む
     std::ifstream ifs(filePath, std::ios::binary);
     if (ifs.fail())
     {
+        OutputDebugStringA("file open failed\n");
         return 1;
     }
 
     //読込サイズを調べる。
-    ifs.seekg(0, std::ios::end);
+    ifs.seekg(0, ios::end);
     long long int size = ifs.tellg();
     ifs.seekg(0);
+    vector<string> imageData (size);
 
     //読み込んだデータをchar型に出力する
-    char *data = new char[size];
-    ifs.read(data, size);
+    char *fileData = new char[size];
+    ifs.read(fileData, size);
 
     //サイズを出力する
-    OutputDebugStringA(("size = " + std::to_string(size) + "\n").c_str());
-    std::cout << "size = "<< size <<"\n" ;
+    // OutputDebugStringA(("size = " + std::to_string(size) + "\n").c_str());
+
+    char hexChar[9];
+    int decimal;
+
+    //バイナリデータの格納
     for (int i = 1; i < size + 1; i++)
     {
-        //出力する
-        OutputDebugStringA((std::to_string(data[i - 1]) + " ").c_str());
-        std::cout <<data[i - 1] << " ";
-        //16バイト毎に改行する
-        if ((i % 16) == 0)
+        decimal = stoi(to_string(fileData[i - 1]));
+        // char hex_str[9];
+        sprintf_s(hexChar, sizeof(hexChar),"%.2X", decimal);
+        string hexString (hexChar);
+        if (stoi(to_string(fileData[i - 1])) < 0)
         {
-            OutputDebugStringA("\n");
-            std::cout << "\n";
+            hexString.erase(0, 6);
+            imageData[i - 1] = hexString;
+        }
+        else
+        {
+            imageData[i - 1] = hexString;
         }
     }
-    std::cout << "\nEnd!\n"; 
-    delete data;
+
+    // OutputDebugStringA("\nEND\n");
+
+    // //16進数バイナリデータを表示する
+    // for (int i = 1; i < imageData.size() + 1; i++)
+    // {
+    //     OutputDebugStringA("   ");
+    //     OutputDebugStringA((imageData[i - 1]).c_str());
+
+    //     if ((i % 16) == 0)
+    //     {
+    //         OutputDebugStringA("\n");
+    //     }
+    // }
+
+    delete fileData;
     return 0;
 }
 

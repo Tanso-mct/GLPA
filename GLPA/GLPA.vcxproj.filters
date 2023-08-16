@@ -66,15 +66,4 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\x64\Debug\sample.bmp">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="..\x64\Debug\redimage.bmp">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-    <Image Include="..\x64\Debug\blueimage.bmp">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-  </ItemGroup>
 </Project>
