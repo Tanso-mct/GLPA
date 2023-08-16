@@ -43,6 +43,12 @@
         "xlocinfo": "cpp",
         "xlocnum": "cpp",
         "xmemory": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "iomanip": "cpp",
+        "iostream": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp",
+        "sstream": "cpp",
+        "string": "cpp"
     }
 }

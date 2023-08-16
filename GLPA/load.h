@@ -1,8 +1,15 @@
 #ifndef LOAD_H_
 #define LOAD_H_
 
-#include <fstream> 
-#include <iterator> 
+#include <string>
+#include <stdio.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+using namespace std;
+
+#include <vector>
 
 #include "graphic.h"
 
@@ -15,20 +22,23 @@
 #define ENDED_PROCESS 5
 
 //File path char
-#define MAX_FILE_PATH_CHAR 10
+#define MAX_FILE_PATH_CHAR 11
+
 class FILELOAD
 {
     public :
     int loadStatus = NO_PROCESSED;
-    int loadBinary(char file_path[MAX_FILE_PATH_CHAR]);
+    int loadBinary();
 };
 
 class LOAD_BMP : public FILELOAD
 {
     public :
-    IMAGE image;
-    int readBinary();
+    // IMAGE image;
+    // int readBinary();
 };
+
+extern LOAD_BMP sampleBmpFile;
 
 
 
