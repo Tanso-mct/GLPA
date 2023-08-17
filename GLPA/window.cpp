@@ -129,7 +129,8 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 );
                 SelectObject(WndLAU.buffer.hBufDC, WndLAU.buffer.hBufBmp);
 
-                sampleBmpFile.loadBinary(("image"), ("sample.bmp"));
+                sampleBmpFile.loadBinary(FILETYPE_BMP, ("sample.bmp"));
+                sampleBmpFile.checkBinary();
                 
                 // //TODO:to make at texture.h,.cpp about load texture function
                 // //load texture

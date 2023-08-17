@@ -10,9 +10,9 @@ POINT pt =
 };
 
 //For PLAY
-extern TCHAR szstrfPlay[256] = _T("NAN KEY");
-extern TCHAR mouseMsgfPlay[256] = _T("NOW COORDINATE");
-extern POINT ptfPlay = 
+TCHAR szstrfPlay[256] = _T("NAN KEY");
+TCHAR mouseMsgfPlay[256] = _T("NOW COORDINATE");
+POINT ptfPlay = 
 {
     5,
     20

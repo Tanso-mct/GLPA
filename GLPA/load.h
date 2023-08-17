@@ -9,11 +9,12 @@
 #include <stdio.h>
 #define _CRT_SECURE_NO_WARNINGS
 
-using namespace std;
-
 #include <vector>
 
 #include "graphic.h"
+
+#define FILETYPE_BMP 0
+#define FILETYPE_PNG 1
 
 // Load state
 #define LOAD_SUCCESS 0
@@ -23,24 +24,41 @@ using namespace std;
 #define LOADING 4
 #define ENDED_PROCESS 5
 
-//File path char
-#define MAX_FILE_PATH_CHAR 11
+typedef struct tagRGBA
+{
+    int r;
+    int g;
+    int b;
+    int a;
+} RGBA;
+
+typedef struct tagIMAGE
+{
+    int width;
+    int height;
+    int colorDepth;
+    int compType;
+    int format;
+} IMAGE;
 
 class FILELOAD
 {
     public :
+    std::string fileName;
+    std::vector<std::string> binaryData;
     int loadStatus = NO_PROCESSED;
-    int loadBinary(string file_type, string file_name);
+    int loadBinary(int file_type, std::string input_file_name);
+    void checkBinary();
 };
 
-class LOAD_BMP : public FILELOAD
+class BMP_FILE : public FILELOAD
 {
     public :
-    // IMAGE image;
+    IMAGE file;
     // int readBinary();
 };
 
-extern LOAD_BMP sampleBmpFile;
+extern BMP_FILE sampleBmpFile;
 
 
 

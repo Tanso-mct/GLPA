@@ -1,30 +1,57 @@
+#define DEBUG_LOAD_
 
 #include "load.h"
 
-int FILELOAD::loadBinary(std::string file_type, std::string file_name)
+int FILELOAD::loadBinary(int fileType, std::string inputFileName)
 {
-    string filePath ("../x64/Debug/sample.png");
+    std::string filePath ("../x64/Debug/");
+    fileName = inputFileName;
 
+    switch (fileType)
+    {
+    case FILETYPE_BMP :
+        filePath.append("bmp");
+        break;
+    
+    case FILETYPE_PNG :
+        filePath.append("png");
+        break;
+    
+    default:
+        break;
+    }
+
+    filePath.append("/");
+    filePath.append(fileName);
+    
     //ファイル名からバイナリファイルで読み込む
     std::ifstream ifs(filePath, std::ios::binary);
     if (ifs.fail())
     {
+        #ifdef DEBUG_LOAD_
+
         OutputDebugStringA("file open failed\n");
+
+        #endif
         return 1;
     }
 
     //読込サイズを調べる。
-    ifs.seekg(0, ios::end);
+    ifs.seekg(0, std::ios::end);
     long long int size = ifs.tellg();
     ifs.seekg(0);
-    vector<string> imageData (size);
+    std::vector<std::string> tempBinaryData (size);
 
     //読み込んだデータをchar型に出力する
     char *fileData = new char[size];
     ifs.read(fileData, size);
 
+    #ifdef DEBUG_LOAD_
+
     //サイズを出力する
-    // OutputDebugStringA(("size = " + std::to_string(size) + "\n").c_str());
+    OutputDebugStringA(("size = " + std::to_string(size) + "\n").c_str());
+
+    #endif p
 
     char hexChar[9];
     int decimal;
@@ -32,37 +59,46 @@ int FILELOAD::loadBinary(std::string file_type, std::string file_name)
     //バイナリデータの格納
     for (int i = 1; i < size + 1; i++)
     {
-        decimal = stoi(to_string(fileData[i - 1]));
+        decimal = std::stoi(std::to_string(fileData[i - 1]));
         // char hex_str[9];
         sprintf_s(hexChar, sizeof(hexChar),"%.2X", decimal);
-        string hexString (hexChar);
-        if (stoi(to_string(fileData[i - 1])) < 0)
+        std::string hexString(hexChar);
+        if (std::stoi(std::to_string(fileData[i - 1])) < 0)
         {
             hexString.erase(0, 6);
-            imageData[i - 1] = hexString;
+            tempBinaryData[i - 1] = hexString;
         }
         else
         {
-            imageData[i - 1] = hexString;
+            tempBinaryData[i - 1] = hexString;
         }
     }
-
-    // OutputDebugStringA("\nEND\n");
-
-    // //16進数バイナリデータを表示する
-    // for (int i = 1; i < imageData.size() + 1; i++)
-    // {
-    //     OutputDebugStringA("   ");
-    //     OutputDebugStringA((imageData[i - 1]).c_str());
-
-    //     if ((i % 16) == 0)
-    //     {
-    //         OutputDebugStringA("\n");
-    //     }
-    // }
+    
+    binaryData.swap(tempBinaryData);
 
     delete fileData;
+
+    #ifdef DEBUG_LOAD_
+
+    OutputDebugStringA("END");
+
+    #endif
     return 0;
 }
 
-LOAD_BMP sampleBmpFile;
+void FILELOAD::checkBinary()
+{
+    //16進数バイナリデータを表示する
+    for (int i = 1; i < binaryData.size() + 1; i++)
+    {
+        OutputDebugStringA("   ");
+        OutputDebugStringA((binaryData[i - 1]).c_str());
+
+        if ((i % 16) == 0)
+        {
+            OutputDebugStringA("\n");
+        }
+    }
+}
+
+BMP_FILE sampleBmpFile;

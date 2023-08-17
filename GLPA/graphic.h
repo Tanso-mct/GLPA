@@ -4,11 +4,10 @@
 #include <tchar.h>
 #include <windows.h>
 #include <vector>
+#include <string>
 
 #include "window.h"
 
-#define FILETYPE_BMP 0
-#define FILETYPE_PNG 1
 
 //For LAU
 extern TCHAR szstr[256];
@@ -19,24 +18,6 @@ extern POINT pt;
 extern TCHAR szstrfPlay[256];
 extern TCHAR mouseMsgfPlay[256];
 extern POINT ptfPlay;
-
-typedef struct tagRGBA
-{
-    int r;
-    int g;
-    int b;
-    int a;
-} RGBA;
-
-typedef struct tagIMAGE
-{
-    int width;
-    int height;
-    int colorDepth;
-    int compType;
-    std::vector<RGBA> data;
-    int format;
-} IMAGE;
 
 typedef struct tagVECTOR2
 {
