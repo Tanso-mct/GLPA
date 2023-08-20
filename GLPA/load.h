@@ -55,7 +55,7 @@ class BMP_FILE : public FILELOAD
 {
     public :
     IMAGE image;
-    // int readBinary();
+    int readBinary();
 };
 
 extern BMP_FILE sampleBmpFile;

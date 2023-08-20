@@ -1,4 +1,4 @@
-// #define DEBUG_LOAD_
+#define DEBUG_LOAD_
 
 #include "load.h"
 
@@ -99,6 +99,11 @@ void FILELOAD::checkBinary()
             OutputDebugStringA("\n");
         }
     }
+}
+
+int BMP_FILE::readBinary()
+{
+    return 0;
 }
 
 BMP_FILE sampleBmpFile;
