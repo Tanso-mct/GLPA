@@ -32,6 +32,29 @@ typedef struct tagVECTOR3
     double z;
 } VEC3;
 
+typedef struct tagNUMCOMB3
+{
+    unsigned short n1; // number 1
+    unsigned short n2; // number 2
+    unsigned short n3; // number 3
+} NUMCOMB3;
+
+typedef struct tagVERTEX
+{
+    std::vector<VEC3> w; // world coordinate
+    std::vector<VEC2> u; // uv coordinate
+    std::vector<VEC3> n; // normal
+} VERTEX;
+
+typedef struct tagPOLYGON
+{
+
+    std::vector<NUMCOMB3> vNum; // vertex number
+    std::vector<NUMCOMB3> uNum; // uv number
+    std::vector<NUMCOMB3> nNum; // normal number
+} POLYGON;
+
+
 class SCREEN
 {
     public :

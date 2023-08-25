@@ -1,6 +1,6 @@
-#define DEBUG_LOAD_
+// #define DEBUG_LOAD_
 
-#include "load.h"
+#include "file.h"
 
 int FILELOAD::loadBinary(int fileType, std::string inputFileName)
 {

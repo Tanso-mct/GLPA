@@ -131,7 +131,7 @@
     <ClCompile Include="graphic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="png.cpp" />
-    <ClCompile Include="load.cpp" />
+    <ClCompile Include="file.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="userinput.cpp" />
     <ClCompile Include="window.cpp" />
@@ -141,7 +141,7 @@
     <ClInclude Include="graphic.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="png.h" />
-    <ClInclude Include="load.h" />
+    <ClInclude Include="file.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="userinput.h" />
     <ClInclude Include="window.h" />

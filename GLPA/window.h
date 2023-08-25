@@ -8,7 +8,7 @@
 
 #include "graphic.h"
 #include "userInput.h"
-#include "load.h"
+#include "file.h"
 
 // WINDOW SETTINGS
 #define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
