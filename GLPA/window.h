@@ -6,10 +6,8 @@
 #include <time.h>
 #include <cmath>
 
-// #include "file.h"
 #include "graphic.h"
 #include "userInput.h"
-// #include "file.h"
 
 // WINDOW SETTINGS
 #define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)

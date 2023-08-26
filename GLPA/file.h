@@ -24,24 +24,6 @@
 #define LOADING 4
 #define ENDED_PROCESS 5
 
-typedef struct tagRGBA
-{
-    int r;
-    int g;
-    int b;
-    int a;
-} RGBA;
-
-typedef struct tagIMAGE
-{
-    int width;
-    int height;
-    int colorDepth;
-    int compType;
-    int format;
-    std::vector<RGBA> rgbaData;
-} IMAGE;
-
 class FILELOAD
 {
     public :

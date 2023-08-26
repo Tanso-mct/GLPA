@@ -38,6 +38,24 @@ typedef struct tagNUMCOMB3
     unsigned short num3; // number 3
 } NUMCOMB3;
 
+typedef struct tagRGBA
+{
+    int r;
+    int g;
+    int b;
+    int a;
+} RGBA;
+
+typedef struct tagIMAGE
+{
+    int width;
+    int height;
+    int colorDepth;
+    int compType;
+    int format;
+    std::vector<RGBA> rgbaData;
+} IMAGE;
+
 typedef struct tagVERTEX
 {
     std::vector<VEC3> world; // world coordinate
