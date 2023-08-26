@@ -8,7 +8,6 @@
 
 #include "window.h"
 
-
 //For LAU
 extern TCHAR szstr[256];
 extern TCHAR mouseMsg[256];
@@ -34,24 +33,24 @@ typedef struct tagVECTOR3
 
 typedef struct tagNUMCOMB3
 {
-    unsigned short n1; // number 1
-    unsigned short n2; // number 2
-    unsigned short n3; // number 3
+    unsigned short num1; // number 1
+    unsigned short num2; // number 2
+    unsigned short num3; // number 3
 } NUMCOMB3;
 
 typedef struct tagVERTEX
 {
-    std::vector<VEC3> w; // world coordinate
-    std::vector<VEC2> u; // uv coordinate
-    std::vector<VEC3> n; // normal
+    std::vector<VEC3> world; // world coordinate
+    std::vector<VEC2> uv; // uv coordinate
+    std::vector<VEC3> normal; // normal
 } VERTEX;
 
 typedef struct tagPOLYGON
 {
 
-    std::vector<NUMCOMB3> vNum; // vertex number
-    std::vector<NUMCOMB3> uNum; // uv number
-    std::vector<NUMCOMB3> nNum; // normal number
+    std::vector<NUMCOMB3> vertexNum; // vertex number
+    std::vector<NUMCOMB3> uvNum; // uv number
+    std::vector<NUMCOMB3> normalNum; // normal number
 } POLYGON;
 
 
@@ -77,5 +76,7 @@ class SCR_PLAY : public SCREEN
 // TODO: change class
 void scrLAUDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/);
 void scrPLAYDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/);
+
+#include "file.h"
 
 #endif GRAPHIC_H_

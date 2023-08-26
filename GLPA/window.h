@@ -6,9 +6,10 @@
 #include <time.h>
 #include <cmath>
 
+// #include "file.h"
 #include "graphic.h"
 #include "userInput.h"
-#include "file.h"
+// #include "file.h"
 
 // WINDOW SETTINGS
 #define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
@@ -18,10 +19,6 @@
 // TIMER
 #define REQUEST_ANIMATION_TIMER 1
 #define FPS_OUTPUT_TIMER 2
-
-// FILE TYPE
-#define FILETYPE_BMP 0
-#define FILETYPE_PNG 1
 
 typedef struct tagWND_STATE
 {

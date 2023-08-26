@@ -24,6 +24,14 @@
 #define LOADING 4
 #define ENDED_PROCESS 5
 
+typedef struct tagRGBA
+{
+    int r;
+    int g;
+    int b;
+    int a;
+} RGBA;
+
 typedef struct tagIMAGE
 {
     int width;
@@ -33,14 +41,6 @@ typedef struct tagIMAGE
     int format;
     std::vector<RGBA> rgbaData;
 } IMAGE;
-
-typedef struct tagRGBA
-{
-    int r;
-    int g;
-    int b;
-    int a;
-} RGBA;
 
 class FILELOAD
 {
@@ -62,7 +62,9 @@ class BMP_FILE : public FILELOAD
 class OBJ_FILE : public FILELOAD
 {
     public :
-
+    VERTEX vertexInfo;
+    POLYGON polyInfo;
+    int readBinary();
 };
 
 extern BMP_FILE sampleBmpFile;

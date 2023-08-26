@@ -1,5 +1,4 @@
 // #define DEBUG_LOAD_
-
 #include "file.h"
 
 int FILELOAD::loadBinary(int fileType, std::string inputFileName)
@@ -102,6 +101,11 @@ void FILELOAD::checkBinary()
 }
 
 int BMP_FILE::readBinary()
+{
+    return 0;
+}
+
+int OBJ_FILE::readBinary()
 {
     return 0;
 }
