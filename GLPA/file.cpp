@@ -24,8 +24,8 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     filePath.append(fileName);
     
     //ファイル名からバイナリファイルで読み込む
-    std::ifstream ifs(filePath, std::ios::binary);
-    if (ifs.fail())
+    std::ifstream file(filePath, std::ios::binary);
+    if (file.fail())
     {
         #ifdef DEBUG_LOAD_
 
@@ -36,14 +36,14 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     }
 
     //読込サイズを調べる。
-    ifs.seekg(0, std::ios::end);
-    long long int size = ifs.tellg();
-    ifs.seekg(0);
+    file.seekg(0, std::ios::end);
+    long long int size = file.tellg();
+    file.seekg(0);
     std::vector<std::string> tempBinaryData (size);
 
     //読み込んだデータをchar型に出力する
     char *fileData = new char[size];
-    ifs.read(fileData, size);
+    file.read(fileData, size);
 
     #ifdef DEBUG_LOAD_
 
@@ -105,8 +105,47 @@ int BMP_FILE::readBinary()
     return 0;
 }
 
-int OBJ_FILE::readBinary()
+int OBJ_FILE::readBinary(int fileType, std::string inputFileName)
 {
+    std::string filePath ("../x64/Debug/");
+    fileName = inputFileName;
+
+    switch (fileType)
+    {
+    case FILETYPE_BMP :
+        filePath.append("bmp");
+        break;
+    
+    case FILETYPE_PNG :
+        filePath.append("png");
+        break;
+    
+    default:
+        break;
+    }
+
+    filePath.append("/");
+    filePath.append(fileName);
+
+    std::ifstream file(filePath);
+
+    if (file.fail())
+    {
+        #ifdef DEBUG_LOAD_
+
+        OutputDebugStringA("file open failed\n");
+
+        #endif
+        return 1;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        
+    }
+
+    file.close();
+
     return 0;
 }
 

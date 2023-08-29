@@ -46,7 +46,7 @@ class OBJ_FILE : public FILELOAD
     public :
     VERTEX vertexInfo;
     POLYGON polyInfo;
-    int readBinary();
+    int readBinary(int fileType, std::string inputFileName);
 };
 
 extern BMP_FILE sampleBmpFile;
