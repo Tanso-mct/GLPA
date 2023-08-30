@@ -44,6 +44,7 @@ class BMP_FILE : public FILELOAD
 class OBJ_FILE : public FILELOAD
 {
     public :
+    RANGE_CUBE range;
     VERTEX vertexInfo;
     POLYGON polyInfo;
     int readBinary(int fileType, std::string inputFileName);

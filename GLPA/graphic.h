@@ -71,6 +71,12 @@ typedef struct tagPOLYGON
     std::vector<NUMCOMB3> normalNum; // normal number
 } POLYGON;
 
+typedef struct tagRANGE_CUBE
+{
+    VEC3 origin;
+    VEC3 opposite;
+} RANGE_CUBE;
+
 
 class SCREEN
 {

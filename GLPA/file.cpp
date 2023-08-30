@@ -140,8 +140,21 @@ int OBJ_FILE::readBinary(int fileType, std::string inputFileName)
     }
 
     std::string line;
+    std::string name;
     while (std::getline(file, line)) {
-        
+        std::string tag (line , 2);
+
+        // Branching by TAG
+        if (tag == "g ")
+        {
+            std::string nameErase (line);
+            nameErase.erase(1, 2);
+            name = nameErase;
+        }
+        else if (tag == "v ")
+        {
+            
+        }
     }
 
     file.close();
