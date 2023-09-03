@@ -1,9 +1,9 @@
-// #define DEBUG_LOAD_
+#define DEBUG_LOAD_
 #include "file.h"
 
 int FILELOAD::loadBinary(int fileType, std::string inputFileName)
 {
-    std::string filePath ("../x64/Debug/");
+    std::string filePath ("../loadfiles/");
     fileName = inputFileName;
 
     switch (fileType)
