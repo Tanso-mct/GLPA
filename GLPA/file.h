@@ -50,7 +50,10 @@ class OBJ_FILE : public FILELOAD
     int loadData(std::string inputFileName);
 };
 
+// BMP files
 extern BMP_FILE sampleBmpFile;
+
+// OBJ files
 extern OBJ_FILE tempObjFile;
 
 

@@ -29,11 +29,15 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     {
         #ifdef DEBUG_FILE_
 
-        OutputDebugStringA("file open failed\n");
+        OutputDebugStringA("binary file open failed\n");
 
         #endif
+
+        loadStatus = LOAD_FAILURE;
         return 1;
     }
+
+    loadStatus = STANDBY_LOAD;
 
     //読込サイズを調べる。
     file.seekg(0, std::ios::end);
@@ -56,6 +60,7 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     int decimal;
 
     //バイナリデータの格納
+    loadStatus = LOADING;
     for (int i = 1; i < size + 1; i++)
     {
         decimal = std::stoi(std::to_string(fileData[i - 1]));
@@ -72,6 +77,7 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
             tempBinaryData[i - 1] = hexString;
         }
     }
+    loadStatus = ENDED_PROCESS;
     
     binaryData.swap(tempBinaryData);
 
@@ -82,6 +88,8 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     OutputDebugStringA("END");
 
     #endif
+
+    loadStatus = LOAD_SUCCESS;
     return 0;
 }
 
@@ -120,11 +128,14 @@ int OBJ_FILE::loadData(std::string inputFileName)
     {
         #ifdef DEBUG_FILE_
 
-        OutputDebugStringA("file open failed\n");
+        OutputDebugStringA("obj file open failed\n");
 
         #endif
+        loadStatus = LOAD_FAILURE;
         return 1;
     }
+
+    loadStatus = STANDBY_LOAD;
 
     std::string tag;
     std::string line;
@@ -137,7 +148,8 @@ int OBJ_FILE::loadData(std::string inputFileName)
     VEC2 num2d;
     NUMCOMB3 numComb3;
 
-    char spaceString = ' ';
+    loadStatus = LOADING;
+
     while (std::getline(file, line)) {
         punc1 = line.find(" ");
         tag = line.substr(0, punc1);
@@ -194,11 +206,11 @@ int OBJ_FILE::loadData(std::string inputFileName)
 
             // Save the second number
             punc3 = line.find("/", punc2 + 1);
-            numComb3.num2 = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            numComb3.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
 
             // Save the third number
             punc4 = line.find(" ", punc3 + 1);
-            numComb3.num3 = std::stod(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
+            numComb3.num3 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
 
             poly.v.push_back(numComb3);
 
@@ -209,11 +221,11 @@ int OBJ_FILE::loadData(std::string inputFileName)
 
             // Save the second number
             punc3 = line.find("/", punc2 + 1);
-            numComb3.num2 = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            numComb3.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
 
             // Save the third number
             punc4 = line.find(" ", punc3 + 1);
-            numComb3.num3 = std::stod(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
+            numComb3.num3 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
 
             poly.uv.push_back(numComb3);
 
@@ -224,14 +236,16 @@ int OBJ_FILE::loadData(std::string inputFileName)
 
             // Save the second number
             punc3 = line.find("/", punc2 + 1);
-            numComb3.num2 = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            numComb3.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
 
             // Save the third number
-            numComb3.num3 = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
+            numComb3.num3 = std::stoi(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
 
             poly.normal.push_back(numComb3);
         }
     }
+
+    loadStatus = ENDED_PROCESS;
 
     #ifdef DEBUG_FILE_
 
@@ -339,9 +353,12 @@ int OBJ_FILE::loadData(std::string inputFileName)
     
 
     file.close();
-
+    loadStatus = LOAD_SUCCESS;
     return 0;
 }
 
+// BMP files
 BMP_FILE sampleBmpFile;
+
+// OBJ files
 OBJ_FILE tempObjFile;
