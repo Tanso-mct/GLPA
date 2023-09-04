@@ -33,9 +33,9 @@ typedef struct tagVECTOR3
 
 typedef struct tagNUMCOMB3
 {
-    unsigned short num1; // number 1
-    unsigned short num2; // number 2
-    unsigned short num3; // number 3
+    int num1; // number 1
+    int num2; // number 2
+    int num3; // number 3
 } NUMCOMB3;
 
 typedef struct tagRGBA
@@ -65,10 +65,9 @@ typedef struct tagVERTEX
 
 typedef struct tagPOLYGON
 {
-
-    std::vector<NUMCOMB3> vertexNum; // vertex number
-    std::vector<NUMCOMB3> uvNum; // uv number
-    std::vector<NUMCOMB3> normalNum; // normal number
+    std::vector<NUMCOMB3> v; // vertex number
+    std::vector<NUMCOMB3> uv; // uv number
+    std::vector<NUMCOMB3> normal; // normal number
 } POLYGON;
 
 typedef struct tagRANGE_CUBE

@@ -45,12 +45,13 @@ class OBJ_FILE : public FILELOAD
 {
     public :
     RANGE_CUBE range;
-    VERTEX vertexInfo;
-    POLYGON polyInfo;
-    int readBinary(int fileType, std::string inputFileName);
+    VERTEX v;
+    POLYGON poly;
+    int loadData(std::string inputFileName);
 };
 
 extern BMP_FILE sampleBmpFile;
+extern OBJ_FILE tempObjFile;
 
 
 
