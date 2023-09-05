@@ -177,31 +177,31 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return 0;
 
         case WM_PAINT :
-                // OutputDebugString(L"debug window 1 drawing\n");
-                WndLAU.hWndDC = BeginPaint(hWnd, &WndLAU.hPs);
-                StretchDIBits(
-                    WndLAU.hWndDC,
-                    0,
-                    0,
-                    GetSystemMetrics(SM_CXSCREEN),
-                    GetSystemMetrics(SM_CYSCREEN), 
-                    0,
-                    0,
-                    WINDOW_WIDTH * DISPLAY_RESOLUTION,
-                    WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                    WndLAU.buffer.lpPixel,
-                    &WndLAU.buffer.hBufBmpInfo,
-                    DIB_RGB_COLORS,
-                    SRCCOPY
-                );
-                EndPaint(hWnd, &WndLAU.hPs);
+                // // OutputDebugString(L"debug window 1 drawing\n");
+                // WndLAU.hWndDC = BeginPaint(hWnd, &WndLAU.hPs);
+                // StretchDIBits(
+                //     WndLAU.hWndDC,
+                //     0,
+                //     0,
+                //     GetSystemMetrics(SM_CXSCREEN),
+                //     GetSystemMetrics(SM_CYSCREEN), 
+                //     0,
+                //     0,
+                //     WINDOW_WIDTH * DISPLAY_RESOLUTION,
+                //     WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                //     WndLAU.buffer.lpPixel,
+                //     &WndLAU.buffer.hBufBmpInfo,
+                //     DIB_RGB_COLORS,
+                //     SRCCOPY
+                // );
+                // EndPaint(hWnd, &WndLAU.hPs);
                 return 0;
                 
         case WM_TIMER :
                 switch (wParam)
                 {
                     case REQUEST_ANIMATION_TIMER :
-                            //fps
+                            // fps
                             // OutputDebugString(L"debug window 1111111\n");
                             if (!WndLAU.fps.startFpsCount)
                             {
@@ -226,7 +226,26 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                             );
                             scrLAUDwgContModif(WndLAU.buffer.hBufDC);
 
-                            InvalidateRect(hWnd, NULL, FALSE);
+                            // InvalidateRect(hWnd, NULL, FALSE);
+
+                            // OutputDebugString(L"debug window 1 drawing\n");
+                            WndLAU.hWndDC = BeginPaint(hWnd, &WndLAU.hPs);
+                            StretchDIBits(
+                                WndLAU.hWndDC,
+                                0,
+                                0,
+                                GetSystemMetrics(SM_CXSCREEN),
+                                GetSystemMetrics(SM_CYSCREEN), 
+                                0,
+                                0,
+                                WINDOW_WIDTH * DISPLAY_RESOLUTION,
+                                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                                WndLAU.buffer.lpPixel,
+                                &WndLAU.buffer.hBufBmpInfo,
+                                DIB_RGB_COLORS,
+                                SRCCOPY
+                            );
+                            EndPaint(hWnd, &WndLAU.hPs);
                             return 0;
 
                     case FPS_OUTPUT_TIMER :
