@@ -50,11 +50,22 @@ class OBJ_FILE : public FILELOAD
     int loadData(std::string inputFileName);
 };
 
+class MTL_FILE : public FILELOAD
+{
+    public :
+    VEC3 ka;
+    VEC3 kd;
+    int loadData(std::string inputFileName);
+};
+
 // BMP files
 extern BMP_FILE sampleBmpFile;
 
 // OBJ files
 extern OBJ_FILE tempObjFile;
+
+// MTL files
+extern MTL_FILE tempMtlFile;
 
 
 

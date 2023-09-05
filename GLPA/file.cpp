@@ -1,4 +1,4 @@
-// #define DEBUG_FILE_
+#define DEBUG_FILE_
 #include "file.h"
 
 int FILELOAD::loadBinary(int fileType, std::string inputFileName)
@@ -428,8 +428,126 @@ int OBJ_FILE::loadData(std::string inputFileName)
     return 0;
 }
 
+int MTL_FILE::loadData(std::string inputFileName)
+{
+    std::string filePath ("../loadfiles/");
+    fileName = inputFileName;
+
+    filePath.append("mtl");
+    filePath.append("/");
+    filePath.append(fileName);
+
+    std::ifstream file(filePath);
+
+    if (file.fail())
+    {
+        #ifdef DEBUG_FILE_
+
+        OutputDebugStringA("mtl file open failed\n");
+
+        #endif
+        loadStatus = LOAD_FAILURE;
+        return 1;
+    }
+
+    loadStatus = STANDBY_LOAD;
+
+    std::string tag;
+    std::string line;
+    std::string name;
+    std::size_t punc1;
+    std::size_t punc2;
+    std::size_t punc3;
+    std::size_t punc4;
+    VEC3 num3d;
+
+    loadStatus = LOADING;
+
+    while (std::getline(file, line)) {
+        punc1 = line.find(" ");
+        tag = line.substr(0, punc1);
+
+        // Branching by TAG
+        if (tag == "Ka")
+        {
+            // Ambient light
+
+            // Save the first number
+            punc2 = line.find(" ", tag.size() + 2);
+            num3d.x = std::stod(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
+
+            // Save the second number
+            punc3 = line.find(" ", punc2 + 1);
+            num3d.y = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            
+            // Save the third number
+            num3d.z = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
+
+            ka = num3d;
+        }
+        else if (tag == "Kd")
+        {
+            // Diffuse light
+
+            // Save the first number
+            punc2 = line.find(" ", tag.size() + 2);
+            num3d.x = std::stod(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
+
+            // Save the second number
+            punc3 = line.find(" ", punc2 + 1);
+            num3d.y = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            
+            // Save the third number
+            num3d.z = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
+
+            kd = num3d;
+        }
+    }
+
+    #ifdef DEBUG_FILE_
+
+    char buffer[256];
+
+    OutputDebugStringA("\n");
+    OutputDebugStringA("mtl ka\n");
+    sprintf_s(buffer, "%f", ka.x);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", ka.y);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", ka.z);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA("\n");
+
+    OutputDebugStringA("\n");
+    OutputDebugStringA("mtl kd\n");
+    sprintf_s(buffer, "%f", kd.x);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", kd.y);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", kd.z);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA("\n");
+
+    #endif
+    
+    file.close();
+    loadStatus = LOAD_SUCCESS;
+    return 0;
+}
+
 // BMP files
 BMP_FILE sampleBmpFile;
 
 // OBJ files
 OBJ_FILE tempObjFile;
+
+// MTL files
+MTL_FILE tempMtlFile;
