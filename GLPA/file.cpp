@@ -168,6 +168,48 @@ int OBJ_FILE::loadData(std::string inputFileName)
             // Save the third number
             num3d.z = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
 
+            if (range.status)
+            {
+                // Processing with respect to origin point
+                if (num3d.x < range.origin.x)
+                {
+                    range.origin.x = num3d.x;
+                }
+                if (num3d.y < range.origin.y)
+                {
+                    range.origin.y = num3d.y;
+                }
+                if (num3d.z < range.origin.z)
+                {
+                    range.origin.z = num3d.z;
+                }
+
+                // Processing with respect to opposite point
+                if (num3d.x > range.opposite.x)
+                {
+                    range.opposite.x = num3d.x;
+                }
+                if (num3d.y > range.opposite.y)
+                {
+                    range.opposite.y = num3d.y;
+                }
+                if (num3d.z > range.opposite.z)
+                {
+                    range.opposite.z = num3d.z;
+                }
+            }
+            else
+            {
+                range.origin.x = num3d.x;
+                range.origin.y = num3d.y;
+                range.origin.z = num3d.z;
+
+                range.opposite.x = num3d.x;
+                range.opposite.y = num3d.y;
+                range.opposite.z = num3d.z;
+                range.status = true;
+            }
+
             v.world.push_back(num3d);
         }
         else if (tag == "vt")
@@ -252,7 +294,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
     char buffer[256];
 
     OutputDebugStringA("\n");
-    OutputDebugStringA("\n");
+    OutputDebugStringA("v world\n");
     for (int i = 0; i < v.world.size(); ++i)
     {
         sprintf_s(buffer, "%f", v.world[i].x);
@@ -269,7 +311,36 @@ int OBJ_FILE::loadData(std::string inputFileName)
     }
 
     OutputDebugStringA("\n");
+    OutputDebugStringA("range origin\n");
+    sprintf_s(buffer, "%f", range.origin.x);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", range.origin.y);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", range.origin.z);
+    OutputDebugStringA(buffer);
     OutputDebugStringA("\n");
+
+    OutputDebugStringA("\n");
+    OutputDebugStringA("range opposite\n");
+    sprintf_s(buffer, "%f", range.opposite.x);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", range.opposite.y);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA(" ");
+
+    sprintf_s(buffer, "%f", range.opposite.z);
+    OutputDebugStringA(buffer);
+    OutputDebugStringA("\n");
+    
+
+    OutputDebugStringA("\n");
+    OutputDebugStringA("v uv\n");
     for (int i = 0; i < v.uv.size(); ++i)
     {
         sprintf_s(buffer, "%f", v.uv[i].x);
@@ -282,7 +353,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
     }
 
     OutputDebugStringA("\n");
-    OutputDebugStringA("\n");
+    OutputDebugStringA("v normal\n");
     for (int i = 0; i < v.normal.size(); ++i)
     {
         sprintf_s(buffer, "%f", v.normal[i].x);
@@ -299,7 +370,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
     }
 
     OutputDebugStringA("\n");
-    OutputDebugStringA("\n");
+    OutputDebugStringA("poly v\n");
     for (int i = 0; i < poly.v.size(); ++i)
     {
         sprintf_s(buffer, "%d", poly.v[i].num1);
@@ -316,7 +387,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
     }
 
     OutputDebugStringA("\n");
-    OutputDebugStringA("\n");
+    OutputDebugStringA("poly uv\n");
     for (int i = 0; i < poly.uv.size(); ++i)
     {
         sprintf_s(buffer, "%d", poly.uv[i].num1);
@@ -332,7 +403,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
         OutputDebugStringA("\n");
     }
 
-    OutputDebugStringA("\n");
+    OutputDebugStringA("poly normal\n");
     OutputDebugStringA("\n");
     for (int i = 0; i < poly.normal.size(); ++i)
     {

@@ -72,6 +72,7 @@ typedef struct tagPOLYGON
 
 typedef struct tagRANGE_CUBE
 {
+    bool status = false;
     VEC3 origin;
     VEC3 opposite;
 } RANGE_CUBE;
