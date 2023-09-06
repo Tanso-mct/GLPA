@@ -41,7 +41,8 @@ typedef struct tagFPS
     bool startFpsCount = false;
     clock_t thisLoopTime;
     clock_t lastLoopTime;
-    long double fps;
+    double currentFps;
+
 } WND_FPS;
 
 class WNDMAIN
@@ -68,8 +69,8 @@ public:
     );
 
     // Check that classes and windows have been created successfully
-    int checkClass(WNDCLASSEX *pt_class);
-    int checkWindow(HWND created_hWnd);
+    bool checkClass(WNDCLASSEX *pt_class);
+    bool checkWindow(HWND created_hWnd);
 };
 
 class WINDOW

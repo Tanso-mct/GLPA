@@ -1,4 +1,4 @@
-#define DEBUG_FILE_
+// #define DEBUG_FILE_
 #include "file.h"
 
 int FILELOAD::loadBinary(int fileType, std::string inputFileName)
@@ -458,7 +458,6 @@ int MTL_FILE::loadData(std::string inputFileName)
     std::size_t punc1;
     std::size_t punc2;
     std::size_t punc3;
-    std::size_t punc4;
     VEC3 num3d;
 
     loadStatus = LOADING;

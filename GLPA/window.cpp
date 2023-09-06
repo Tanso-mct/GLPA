@@ -53,7 +53,7 @@ WNDCLASSEX WNDMAIN::registerClass
     return wndClass;
 }
 
-int WNDMAIN::checkClass(WNDCLASSEX *ptClass)
+bool WNDMAIN::checkClass(WNDCLASSEX *ptClass)
 {
     if (!RegisterClassEx(ptClass))
     {
@@ -63,12 +63,12 @@ int WNDMAIN::checkClass(WNDCLASSEX *ptClass)
             _T("window_LAU"),
             MB_ICONEXCLAMATION
         );
-
-        return NULL;
+        return false;
     }
+    return true;
 }
 
-int WNDMAIN::checkWindow(HWND createdHWnd)
+bool WNDMAIN::checkWindow(HWND createdHWnd)
 {
     if (!createdHWnd)
     {
@@ -78,9 +78,9 @@ int WNDMAIN::checkWindow(HWND createdHWnd)
             _T("window_LAU"),
             MB_ICONEXCLAMATION
         );
-
-        return NULL;
+        return false;
     }
+    return true;
 }
 
 
@@ -106,7 +106,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 WndLAU.fps.refreshRate = GetDeviceCaps(WndLAU.hWndDC, VREFRESH);
 
                 // TODO: Use TIMERPROC function with setTimer
-                SetTimer(hWnd, REQUEST_ANIMATION_TIMER, (UINT)std::floor(1000 / WndLAU.fps.refreshRate), NULL);
+                // SetTimer(hWnd, REQUEST_ANIMATION_TIMER, (UINT)std::floor(1000 / WndLAU.fps.refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
                 
                 //bmp buffer dc
@@ -177,85 +177,38 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return 0;
 
         case WM_PAINT :
-                // // OutputDebugString(L"debug window 1 drawing\n");
-                // WndLAU.hWndDC = BeginPaint(hWnd, &WndLAU.hPs);
-                // StretchDIBits(
-                //     WndLAU.hWndDC,
-                //     0,
-                //     0,
-                //     GetSystemMetrics(SM_CXSCREEN),
-                //     GetSystemMetrics(SM_CYSCREEN), 
-                //     0,
-                //     0,
-                //     WINDOW_WIDTH * DISPLAY_RESOLUTION,
-                //     WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                //     WndLAU.buffer.lpPixel,
-                //     &WndLAU.buffer.hBufBmpInfo,
-                //     DIB_RGB_COLORS,
-                //     SRCCOPY
-                // );
-                // EndPaint(hWnd, &WndLAU.hPs);
+                WndLAU.hWndDC = BeginPaint(hWnd, &WndLAU.hPs);
+                StretchDIBits(
+                    WndLAU.hWndDC,
+                    0,
+                    0,
+                    GetSystemMetrics(SM_CXSCREEN),
+                    GetSystemMetrics(SM_CYSCREEN), 
+                    0,
+                    0,
+                    WINDOW_WIDTH * DISPLAY_RESOLUTION,
+                    WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                    WndLAU.buffer.lpPixel,
+                    &WndLAU.buffer.hBufBmpInfo,
+                    DIB_RGB_COLORS,
+                    SRCCOPY
+                );
+                EndPaint(hWnd, &WndLAU.hPs);
                 return 0;
                 
         case WM_TIMER :
                 switch (wParam)
                 {
-                    case REQUEST_ANIMATION_TIMER :
-                            // fps
-                            // OutputDebugString(L"debug window 1111111\n");
-                            if (!WndLAU.fps.startFpsCount)
-                            {
-                                WndLAU.fps.lastLoopTime = clock();
-                                WndLAU.fps.startFpsCount = true;
-                            }
-                            else
-                            {
-                                WndLAU.fps.thisLoopTime = clock();
-                                WndLAU.fps.fps = 1000 / static_cast<long double>(WndLAU.fps.thisLoopTime - WndLAU.fps.lastLoopTime);
-                                WndLAU.fps.fps = std::round(WndLAU.fps.fps * 100) / 100;
-                                WndLAU.fps.lastLoopTime = WndLAU.fps.thisLoopTime;
-                            }
-
-                            PatBlt(
-                                WndLAU.buffer.hBufDC, 
-                                0, 
-                                0, 
-                                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-                                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                                WHITENESS
-                            );
-                            scrLAUDwgContModif(WndLAU.buffer.hBufDC);
-
-                            // InvalidateRect(hWnd, NULL, FALSE);
-
-                            // OutputDebugString(L"debug window 1 drawing\n");
-                            WndLAU.hWndDC = BeginPaint(hWnd, &WndLAU.hPs);
-                            StretchDIBits(
-                                WndLAU.hWndDC,
-                                0,
-                                0,
-                                GetSystemMetrics(SM_CXSCREEN),
-                                GetSystemMetrics(SM_CYSCREEN), 
-                                0,
-                                0,
-                                WINDOW_WIDTH * DISPLAY_RESOLUTION,
-                                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                                WndLAU.buffer.lpPixel,
-                                &WndLAU.buffer.hBufBmpInfo,
-                                DIB_RGB_COLORS,
-                                SRCCOPY
-                            );
-                            EndPaint(hWnd, &WndLAU.hPs);
-                            return 0;
-
                     case FPS_OUTPUT_TIMER :
-                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), WndLAU.fps.fps);
-                            return 0;
+                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), WndLAU.fps.currentFps);
+                            break;
                             
                     default :
-                            OutputDebugStringW(_T("TIMER ERROR\n"));
-                            return 0;
+                            // OutputDebugStringW(_T("TIMER ERROR\n"));
+                            break;
                 }
+
+                return 0;
                 
         case WM_KEYDOWN :
                 if (!WndLAU.state.foucus)
@@ -322,7 +275,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 WndPLAY.hWndDC = GetDC(hWnd);
                 WndPLAY.fps.refreshRate = GetDeviceCaps(WndPLAY.hWndDC, VREFRESH);
 
-                SetTimer(hWnd, REQUEST_ANIMATION_TIMER, (UINT)std::floor(1000 / WndPLAY.fps.refreshRate), NULL);
+                // SetTimer(hWnd, REQUEST_ANIMATION_TIMER, (UINT)std::floor(1000 / WndPLAY.fps.refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
                 
                 //bmp buffer dc
@@ -410,38 +363,8 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
         case WM_TIMER :
                 switch (wParam)
                 {
-                    case REQUEST_ANIMATION_TIMER :
-                            //fps
-                            // OutputDebugString(L"debug window 1111111\n");
-                            if (!WndPLAY.fps.startFpsCount)
-                            {
-                                WndPLAY.fps.lastLoopTime = clock();
-                                WndPLAY.fps.startFpsCount = true;
-                            }
-                            else
-                            {
-                                WndPLAY.fps.thisLoopTime = clock();
-                                WndPLAY.fps.fps 
-                                = 1000 / static_cast<long double>(WndPLAY.fps.thisLoopTime - WndPLAY.fps.lastLoopTime);
-                                WndPLAY.fps.fps = std::round(WndPLAY.fps.fps * 100) / 100;
-                                WndPLAY.fps.lastLoopTime = WndPLAY.fps.thisLoopTime;
-                            }
-
-                            PatBlt(
-                                WndPLAY.buffer.hBufDC, 
-                                0, 
-                                0, 
-                                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-                                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                                WHITENESS
-                            );
-                            scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
-
-                            InvalidateRect(hWnd, NULL, FALSE);
-                            return 0;
-
                     case FPS_OUTPUT_TIMER :
-                            _stprintf_s(mouseMsgfPlay, _T("FPS(%4.2lf)[fps]"), WndPLAY.fps.fps);
+                            _stprintf_s(mouseMsgfPlay, _T("FPS(%4.2lf)[fps]"), WndPLAY.fps.currentFps);
                             return 0;
                             
                     default :

@@ -77,15 +77,87 @@ int WINAPI WinMain(
         WndLAU.hWnd,
         nCmdShow
     );
-    UpdateWindow(WndLAU.hWnd);
+    // UpdateWindow(WndLAU.hWnd);
 
     MSG msg;        //メッセージ構造体
 
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+    // while (GetMessage(&msg, NULL, 0, 0))
+    // {
+    //     TranslateMessage(&msg);
+    //     DispatchMessage(&msg);
+    // }
+
+    while (true) {
+		//メッセージを取得したら1(true)を返し取得しなかった場合は0(false)を返す
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			if (msg.message == WM_QUIT) {
+				//終了メッセージが来たらゲームループから抜ける
+				break;
+			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		} 
+        else if (WndPLAY.state.foucus)
+        {
+            // fps control
+            if (WndPLAY.fps.startFpsCount)
+            {
+                WndPLAY.fps.thisLoopTime = clock();
+                WndPLAY.fps.currentFps 
+                = 1000 / static_cast<double>(WndPLAY.fps.thisLoopTime - WndPLAY.fps.lastLoopTime);
+                WndPLAY.fps.currentFps = std::round(WndPLAY.fps.currentFps * 100) / 100;
+                WndPLAY.fps.lastLoopTime = WndPLAY.fps.thisLoopTime;
+            }
+            else
+            {
+                WndPLAY.fps.lastLoopTime = clock();
+                WndPLAY.fps.startFpsCount = true;
+            }
+
+            PatBlt(
+                WndPLAY.buffer.hBufDC, 
+                0, 
+                0, 
+                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                WHITENESS
+            );
+            scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
+
+            InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
+        }
+        else if (WndLAU.state.foucus)
+        {
+            // fps control
+            if (WndLAU.fps.startFpsCount)
+            {
+                WndLAU.fps.thisLoopTime = clock();
+                WndLAU.fps.currentFps = 1000 / static_cast<double>(WndLAU.fps.thisLoopTime - WndLAU.fps.lastLoopTime);
+                WndLAU.fps.currentFps = std::round(WndLAU.fps.currentFps * 100) / 100;
+                WndLAU.fps.lastLoopTime = WndLAU.fps.thisLoopTime;
+            }
+            else
+            {
+                WndLAU.fps.lastLoopTime = clock();
+                WndLAU.fps.startFpsCount = true;
+            }
+
+            PatBlt(
+                WndLAU.buffer.hBufDC, 
+                0, 
+                0, 
+                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+                WHITENESS
+            );
+            scrLAUDwgContModif(WndLAU.buffer.hBufDC);
+
+            InvalidateRect(WndLAU.hWnd, NULL, FALSE);
+        }
+        
     }
+
+    
     
     return (int)msg.wParam;             //関数がWM_QUITメッセージを受け取って終了したときは、メッセージのwParamパラメータが
 							            //持つ終了コードを返す。関数がメッセージループに入る前に終了したときは、０を返す
