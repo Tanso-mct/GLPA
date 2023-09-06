@@ -77,21 +77,14 @@ int WINAPI WinMain(
         WndLAU.hWnd,
         nCmdShow
     );
-    // UpdateWindow(WndLAU.hWnd);
 
     MSG msg;        //メッセージ構造体
 
-    // while (GetMessage(&msg, NULL, 0, 0))
-    // {
-    //     TranslateMessage(&msg);
-    //     DispatchMessage(&msg);
-    // }
-
     while (true) {
-		//メッセージを取得したら1(true)を返し取得しなかった場合は0(false)を返す
+		// Returns 1 (true) if a message is retrieved and 0 (false) if not.
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if (msg.message == WM_QUIT) {
-				//終了メッセージが来たらゲームループから抜ける
+				// Exit from the loop when the exit message comes.
 				break;
 			}
 			TranslateMessage(&msg);
