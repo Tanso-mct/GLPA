@@ -4,15 +4,18 @@
 #include <windows.h>
 #include <tchar.h>
 #include <time.h>
+#include <thread>
+#include <chrono>
 #include <cmath>
 
 #include "graphic.h"
+#include "file.h"
 #include "userInput.h"
 
 // WINDOW SETTINGS
+#define DISPLAY_RESOLUTION 1
 #define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
 #define WINDOW_HEIGHT GetSystemMetrics(SM_CYSCREEN)
-#define DISPLAY_RESOLUTION 1
 
 // TIMER
 #define REQUEST_ANIMATION_TIMER 1
@@ -35,15 +38,30 @@ typedef struct tagWND_BUFFER
         WINDOW_WIDTH *WINDOW_HEIGHT * 4);
 } WND_BUF;
 
-typedef struct tagFPS
+// typedef struct tagFPS
+// {
+//     int refreshRate;
+//     bool startFpsCount = false;
+//     clock_t thisLoopTime;
+//     clock_t lastLoopTime;
+//     double currentFps;
+
+// } WND_FPS;
+
+class FPS_CALC
 {
-    int refreshRate;
-    bool startFpsCount = false;
+public :
+    double fps;
+    double setFps = 1000;
+    double currentFps;
+    double maxFps;
     clock_t thisLoopTime;
     clock_t lastLoopTime;
-    double currentFps;
+    double nextLoopTime;
+    bool startFpsCalc = false;
 
-} WND_FPS;
+    void fpsLimiter();
+};
 
 class WNDMAIN
 {
@@ -80,28 +98,25 @@ public:
     HDC hWndDC;
     PAINTSTRUCT hPs;
 
-    int monitorWidth;
-    int monitorHeight;
-    int displayResolution = 1;
+    // SIZE2 monitor;
+    int displayRes = 1;
 
     WND_STATE state;
     WND_BUF buffer;
-    WND_FPS fps;
+    FPS_CALC fpsSystem;
 };
 
 class WINDOW_LAU : public WINDOW
 {
 public:
-    int wndWidth = 1200;
-    int wndHeight = 800;
+    SIZE2 windowSize = {1200, 800};
     static LRESULT CALLBACK wndProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 };
 
 class WINDOW_PLAY : public WINDOW
 {
 public:
-    int wndWidth = WINDOW_WIDTH;
-    int wndHeight = WINDOW_HEIGHT;
+    SIZE2 windowSize = {WINDOW_WIDTH, WINDOW_HEIGHT};
     static LRESULT CALLBACK wndProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 };
 

@@ -57,7 +57,7 @@ int WINAPI WinMain(
         L"LAUNCHER",                        //LPCSTR ウィンドウテキストのアドレス
         WS_OVERLAPPEDWINDOW,                //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
         CW_USEDEFAULT, CW_USEDEFAULT,       //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
-        WndLAU.wndWidth, WndLAU.wndHeight,  //int ウィンドウの幅, ウィンドウの高さ
+        WndLAU.windowSize.width, WndLAU.windowSize.height,  //int ウィンドウの幅, ウィンドウの高さ
         HWND_DESKTOP,                       //HWND 親ウィンドウのハンドル
         NULL,                               //HMENU メニューのハンドルまたは子ウィンドウのID
         hInstance,                          //HINSTANCE アプリケーションインスタンスのハンドル
@@ -93,18 +93,18 @@ int WINAPI WinMain(
         else if (WndPLAY.state.foucus)
         {
             // fps control
-            if (WndPLAY.fps.startFpsCount)
+            if (WndPLAY.fpsSystem.startFpsCalc)
             {
-                WndPLAY.fps.thisLoopTime = clock();
-                WndPLAY.fps.currentFps 
-                = 1000 / static_cast<double>(WndPLAY.fps.thisLoopTime - WndPLAY.fps.lastLoopTime);
-                WndPLAY.fps.currentFps = std::round(WndPLAY.fps.currentFps * 100) / 100;
-                WndPLAY.fps.lastLoopTime = WndPLAY.fps.thisLoopTime;
+                WndPLAY.fpsSystem.thisLoopTime = clock();
+                WndPLAY.fpsSystem.currentFps 
+                = 1000 / static_cast<double>(WndPLAY.fpsSystem.thisLoopTime - WndPLAY.fpsSystem.lastLoopTime);
+                WndPLAY.fpsSystem.currentFps = std::round(WndPLAY.fpsSystem.currentFps * 100) / 100;
+                WndPLAY.fpsSystem.lastLoopTime = WndPLAY.fpsSystem.thisLoopTime;
             }
             else
             {
-                WndPLAY.fps.lastLoopTime = clock();
-                WndPLAY.fps.startFpsCount = true;
+                WndPLAY.fpsSystem.lastLoopTime = clock();
+                WndPLAY.fpsSystem.startFpsCalc = true;
             }
 
             PatBlt(
@@ -122,18 +122,20 @@ int WINAPI WinMain(
         else if (WndLAU.state.foucus)
         {
             // fps control
-            if (WndLAU.fps.startFpsCount)
-            {
-                WndLAU.fps.thisLoopTime = clock();
-                WndLAU.fps.currentFps = 1000 / static_cast<double>(WndLAU.fps.thisLoopTime - WndLAU.fps.lastLoopTime);
-                WndLAU.fps.currentFps = std::round(WndLAU.fps.currentFps * 100) / 100;
-                WndLAU.fps.lastLoopTime = WndLAU.fps.thisLoopTime;
-            }
-            else
-            {
-                WndLAU.fps.lastLoopTime = clock();
-                WndLAU.fps.startFpsCount = true;
-            }
+            // if (WndLAU.fpsSystem.startFpsCalc)
+            // {
+            //     WndLAU.fpsSystem.thisLoopTime = clock();
+            //     WndLAU.fpsSystem.currentFps = 1000 / static_cast<double>(WndLAU.fpsSystem.thisLoopTime - WndLAU.fpsSystem.lastLoopTime);
+            //     WndLAU.fpsSystem.currentFps = std::round(WndLAU.fpsSystem.currentFps * 100) / 100;
+            //     WndLAU.fpsSystem.lastLoopTime = WndLAU.fpsSystem.thisLoopTime;
+            // }
+            // else
+            // {
+            //     WndLAU.fpsSystem.lastLoopTime = clock();
+            //     WndLAU.fpsSystem.startFpsCalc = true;
+            // }
+
+            WndLAU.fpsSystem.fpsLimiter();
 
             PatBlt(
                 WndLAU.buffer.hBufDC, 

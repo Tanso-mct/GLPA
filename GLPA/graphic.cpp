@@ -1,5 +1,7 @@
 #include "graphic.h"
 
+#include "window.h"
+
 //For LAU
 TCHAR szstr[256] = _T("NAN KEY");
 TCHAR mouseMsg[256] = _T("NOW COORDINATE");

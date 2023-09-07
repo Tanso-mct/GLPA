@@ -71,4 +71,5 @@ class WndPLAYInput
 extern WndLAUInput UserInputWndLAU;
 extern WndPLAYInput UserInputWndPLAY;
 
+
 #endif USERINPUT_H_

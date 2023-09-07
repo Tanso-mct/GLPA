@@ -6,8 +6,6 @@
 #include <vector>
 #include <string>
 
-#include "window.h"
-
 //For LAU
 extern TCHAR szstr[256];
 extern TCHAR mouseMsg[256];
@@ -30,6 +28,12 @@ typedef struct tagVECTOR3
     double y;
     double z;
 } VEC3;
+
+typedef struct tagSIZE2
+{
+    int width;
+    int height;
+} SIZE2;
 
 typedef struct tagNUMCOMB3
 {

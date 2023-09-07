@@ -1,5 +1,5 @@
-#ifndef LOAD_H_
-#define LOAD_H_
+#ifndef FILE_H_
+#define FILE_H_
 
 #include <string>
 #include <iostream>
@@ -70,4 +70,4 @@ extern MTL_FILE tempMtlFile;
 
 
 
-#endif LOAD_H_
+#endif FILE_H_

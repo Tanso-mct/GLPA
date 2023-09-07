@@ -1,6 +1,8 @@
 
 #include "userinput.h"
 
+#include "window.h"
+
 // WND LAU UserInput define
 
 void WndLAUInput ::keyDown(WPARAM wParam)
@@ -18,7 +20,7 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                     L"PLAY",                        //LPCSTR ウィンドウテキストのアドレス
                     WS_OVERLAPPEDWINDOW,            //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
                     CW_USEDEFAULT, CW_USEDEFAULT,   //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
-                    WINDOW_WIDTH, WINDOW_HEIGHT,    //int ウィンドウの幅, ウィンドウの高さ
+                    WndPLAY.windowSize.width, WndPLAY.windowSize.height,    //int ウィンドウの幅, ウィンドウの高さ
                     HWND_DESKTOP,                   //HWND 親ウィンドウのハンドル
                     NULL,                           //HMENU メニューのハンドルまたは子ウィンドウのID
                     WndMain.hInstance,           //HINSTANCE アプリケーションインスタンスのハンドル
@@ -51,7 +53,12 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 break;
         case 'W' :
                 _stprintf_s(szstr, _T("%s"), _T("W ON"));
+                WndLAU.fpsSystem.setFps = 240;
                 // OutputDebugStringW(_T("W\n"));
+                break;
+        case 'S' :
+                _stprintf_s(szstr, _T("%s"), _T("S ON"));
+                WndLAU.fpsSystem.setFps = 10;
                 break;
         default :
                 _stprintf_s(szstr, _T("%s"), _T("ANY"));
@@ -78,6 +85,9 @@ void WndLAUInput ::keyUp(WPARAM wParam)
                 case 'W' :
                         _stprintf_s(szstr, _T("%s"), _T("W OFF"));
                         // OutputDebugStringW(_T("W UP\n"));
+                        break;
+                case 'S' :
+                        _stprintf_s(szstr, _T("%s"), _T("S OFF"));
                         break;
                 default :
                         _stprintf_s(szstr, _T("%s"), _T("NAN"));

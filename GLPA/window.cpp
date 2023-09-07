@@ -5,6 +5,36 @@ WNDMAIN WndMain;
 WINDOW_LAU WndLAU;
 WINDOW_PLAY WndPLAY;
 
+void FPS_CALC::fpsLimiter()
+{
+    if (startFpsCalc)
+    {
+        // Measurement of actual FPS values
+        thisLoopTime = clock();
+        currentFps = std::round(1000 / static_cast<double>(thisLoopTime - lastLoopTime));
+
+        // If the FPS is higher than the set FPS, delay to match the set FPS
+        nextLoopTime = static_cast<double>(lastLoopTime) + (1000 / setFps);
+        int leftTime;
+        if (static_cast<int>(thisLoopTime) < nextLoopTime)
+        {
+            leftTime = static_cast<int>(nextLoopTime) - static_cast<int>(thisLoopTime);
+            std::this_thread::sleep_for(std::chrono::milliseconds(leftTime));
+        }
+
+        // Measurement of FPS value to be displayed
+        thisLoopTime = clock();
+        fps = std::round(1000 / static_cast<double>(thisLoopTime - lastLoopTime));
+
+        lastLoopTime = thisLoopTime;
+    }
+    else
+    {
+        lastLoopTime = clock();
+        startFpsCalc = true;
+    }
+}
+
 WNDCLASSEX WNDMAIN::registerClass
 (
     UINT style, 
@@ -103,7 +133,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
             {
                 WndLAU.state.open = true;
                 WndLAU.hWndDC = GetDC(hWnd);
-                WndLAU.fps.refreshRate = GetDeviceCaps(WndLAU.hWndDC, VREFRESH);
+                WndLAU.fpsSystem.maxFps = GetDeviceCaps(WndLAU.hWndDC, VREFRESH);
 
                 // TODO: Use TIMERPROC function with setTimer
                 // SetTimer(hWnd, REQUEST_ANIMATION_TIMER, (UINT)std::floor(1000 / WndLAU.fps.refreshRate), NULL);
@@ -200,7 +230,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 switch (wParam)
                 {
                     case FPS_OUTPUT_TIMER :
-                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), WndLAU.fps.currentFps);
+                            _stprintf_s(mouseMsg, _T("FPS(%4.2lf)[fps]"), WndLAU.fpsSystem.fps);
                             break;
                             
                     default :
@@ -273,7 +303,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
             {
                 WndPLAY.state.open = true;
                 WndPLAY.hWndDC = GetDC(hWnd);
-                WndPLAY.fps.refreshRate = GetDeviceCaps(WndPLAY.hWndDC, VREFRESH);
+                WndPLAY.fpsSystem.maxFps = GetDeviceCaps(WndPLAY.hWndDC, VREFRESH);
 
                 // SetTimer(hWnd, REQUEST_ANIMATION_TIMER, (UINT)std::floor(1000 / WndPLAY.fps.refreshRate), NULL);
                 SetTimer(hWnd, FPS_OUTPUT_TIMER, 250, NULL);
@@ -364,7 +394,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 switch (wParam)
                 {
                     case FPS_OUTPUT_TIMER :
-                            _stprintf_s(mouseMsgfPlay, _T("FPS(%4.2lf)[fps]"), WndPLAY.fps.currentFps);
+                            _stprintf_s(mouseMsgfPlay, _T("FPS(%4.2lf)[fps]"), WndPLAY.fpsSystem.currentFps);
                             return 0;
                             
                     default :
