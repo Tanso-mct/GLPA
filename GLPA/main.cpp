@@ -92,20 +92,7 @@ int WINAPI WinMain(
 		} 
         else if (WndPLAY.state.foucus)
         {
-            // fps control
-            if (WndPLAY.fpsSystem.startFpsCalc)
-            {
-                WndPLAY.fpsSystem.thisLoopTime = clock();
-                WndPLAY.fpsSystem.currentFps 
-                = 1000 / static_cast<double>(WndPLAY.fpsSystem.thisLoopTime - WndPLAY.fpsSystem.lastLoopTime);
-                WndPLAY.fpsSystem.currentFps = std::round(WndPLAY.fpsSystem.currentFps * 100) / 100;
-                WndPLAY.fpsSystem.lastLoopTime = WndPLAY.fpsSystem.thisLoopTime;
-            }
-            else
-            {
-                WndPLAY.fpsSystem.lastLoopTime = clock();
-                WndPLAY.fpsSystem.startFpsCalc = true;
-            }
+            WndPLAY.fpsSystem.fpsLimiter();
 
             PatBlt(
                 WndPLAY.buffer.hBufDC, 
@@ -121,20 +108,6 @@ int WINAPI WinMain(
         }
         else if (WndLAU.state.foucus)
         {
-            // fps control
-            // if (WndLAU.fpsSystem.startFpsCalc)
-            // {
-            //     WndLAU.fpsSystem.thisLoopTime = clock();
-            //     WndLAU.fpsSystem.currentFps = 1000 / static_cast<double>(WndLAU.fpsSystem.thisLoopTime - WndLAU.fpsSystem.lastLoopTime);
-            //     WndLAU.fpsSystem.currentFps = std::round(WndLAU.fpsSystem.currentFps * 100) / 100;
-            //     WndLAU.fpsSystem.lastLoopTime = WndLAU.fpsSystem.thisLoopTime;
-            // }
-            // else
-            // {
-            //     WndLAU.fpsSystem.lastLoopTime = clock();
-            //     WndLAU.fpsSystem.startFpsCalc = true;
-            // }
-
             WndLAU.fpsSystem.fpsLimiter();
 
             PatBlt(

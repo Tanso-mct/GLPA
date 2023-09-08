@@ -1,16 +1,6 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
-typedef struct tagRUN_STATUS
-{
-    bool load = false;
-    bool mainMenu = false;
-    bool escMenu = false;
-    bool play1 = false;
-    bool play2 = false;
-    bool play3 = false;
-} RUN_STATUS;
-
 // RUN_STATUS
 #define RUN_STATUS_LOAD 0
 #define RUN_STATUS_MAINMENU 1

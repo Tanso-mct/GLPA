@@ -128,17 +128,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cgmath.cpp" />
     <ClCompile Include="graphic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="file.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="userinput.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cgmath.h" />
     <ClInclude Include="graphic.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="file.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="userinput.h" />
     <ClInclude Include="window.h" />

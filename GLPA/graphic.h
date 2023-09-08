@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+#include "cgmath.h"
+
 //For LAU
 extern TCHAR szstr[256];
 extern TCHAR mouseMsg[256];
@@ -15,19 +17,6 @@ extern POINT pt;
 extern TCHAR szstrfPlay[256];
 extern TCHAR mouseMsgfPlay[256];
 extern POINT ptfPlay;
-
-typedef struct tagVECTOR2
-{
-    double x;
-    double y;
-} VEC2;
-
-typedef struct tagVECTOR3
-{
-    double x;
-    double y;
-    double z;
-} VEC3;
 
 typedef struct tagSIZE2
 {

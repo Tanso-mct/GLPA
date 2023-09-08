@@ -38,16 +38,6 @@ typedef struct tagWND_BUFFER
         WINDOW_WIDTH *WINDOW_HEIGHT * 4);
 } WND_BUF;
 
-// typedef struct tagFPS
-// {
-//     int refreshRate;
-//     bool startFpsCount = false;
-//     clock_t thisLoopTime;
-//     clock_t lastLoopTime;
-//     double currentFps;
-
-// } WND_FPS;
-
 class FPS_CALC
 {
 public :
