@@ -144,8 +144,8 @@ int OBJ_FILE::loadData(std::string inputFileName)
     std::size_t punc2;
     std::size_t punc3;
     std::size_t punc4;
-    VEC3 num3d;
-    VEC2 num2d;
+    VECTOR3D num3d;
+    VECTOR2D num2d;
     NUMCOMB3 numComb3;
 
     loadStatus = LOADING;
@@ -458,7 +458,7 @@ int MTL_FILE::loadData(std::string inputFileName)
     std::size_t punc1;
     std::size_t punc2;
     std::size_t punc3;
-    VEC3 num3d;
+    VECTOR3D num3d;
 
     loadStatus = LOADING;
 

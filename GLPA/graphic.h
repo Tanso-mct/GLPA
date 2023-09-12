@@ -51,9 +51,9 @@ typedef struct tagIMAGE
 
 typedef struct tagVERTEX
 {
-    std::vector<VEC3> world; // world coordinate
-    std::vector<VEC2> uv; // uv coordinate
-    std::vector<VEC3> normal; // normal
+    std::vector<VECTOR3D> world; // world coordinate
+    std::vector<VECTOR2D> uv; // uv coordinate
+    std::vector<VECTOR3D> normal; // normal
 } VERTEX;
 
 typedef struct tagPOLYGON
@@ -66,8 +66,8 @@ typedef struct tagPOLYGON
 typedef struct tagRANGE_CUBE
 {
     bool status = false;
-    VEC3 origin;
-    VEC3 opposite;
+    VECTOR3D origin;
+    VECTOR3D opposite;
 } RANGE_CUBE;
 
 
@@ -93,7 +93,5 @@ class SCR_PLAY : public SCREEN
 // TODO: change class
 void scrLAUDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/);
 void scrPLAYDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/);
-
-#include "file.h"
 
 #endif GRAPHIC_H_

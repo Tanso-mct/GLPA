@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "graphic.h"
+#include "cgmath.h"
 
 #define FILETYPE_BMP 0
 #define FILETYPE_PNG 1
@@ -53,8 +54,8 @@ class OBJ_FILE : public FILELOAD
 class MTL_FILE : public FILELOAD
 {
     public :
-    VEC3 ka;
-    VEC3 kd;
+    VECTOR3D ka;
+    VECTOR3D kd;
     int loadData(std::string inputFileName);
 };
 
