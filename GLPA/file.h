@@ -4,7 +4,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <string>
 
 #include <stdio.h>
 #define _CRT_SECURE_NO_WARNINGS
@@ -12,7 +11,7 @@
 #include <vector>
 
 #include "graphic.h"
-#include "cgmath.h"
+#include "cgmath.cuh"
 
 #define FILETYPE_BMP 0
 #define FILETYPE_PNG 1

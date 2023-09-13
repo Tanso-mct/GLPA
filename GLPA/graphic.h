@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#include "cgmath.h"
+#include "cgmath.cuh"
 
 //For LAU
 extern TCHAR szstr[256];
