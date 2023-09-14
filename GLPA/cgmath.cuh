@@ -8,11 +8,13 @@
 #define C1 0
 #define C2 1
 #define C3 2
+#define C4 3
 
 // Row number
 #define R1 0
 #define R2 1
 #define R3 2
+#define R4 3
 
 // Selected axis
 #define SELECTAXIS_X 0
@@ -39,12 +41,46 @@ typedef struct tagVECTOR3D
     double z;
 } VECTOR3D;
 
+typedef struct tagVECTOR4D
+{
+    double x;
+    double y;
+    double z;
+    double w;
+} VECTOR4D;
+
+class VECTOR
+{
+public :
+    void pushVec3d
+    (
+        double push_x,
+        double push_y,
+        double push_z,
+        std::vector<VECTOR3D>* input_vevotr3d
+    );
+
+    void pushVec4d
+    (
+        double push_x,
+        double push_y,
+        double push_z,
+        double push_w,
+        std::vector<VECTOR4D>* input_vevotr3d
+    );
+};
+
 class MATRIX
 {
 public :
+
+    // vector class
+    VECTOR vecSystem;
+    
     // vector data
     std::vector<VECTOR3D> sourceMatrices;
-    std::vector<VECTOR3D> calcMatrices;
+    std::vector<VECTOR3D> calcMatrices3x;
+    std::vector<VECTOR4D> calcMatrices4x;
     std::vector<VECTOR3D> resultMatrices;
 
     // host memory
@@ -60,7 +96,7 @@ public :
     int matrixRaw;
 
     // 3x3 matrix product
-    __global__ void gpuCalcMatrixProduct
+    __global__ void gpuCalc3xMatrixProduct
     (
         VECTOR3D* source_matrices, 
         double* calc_matrices, 
@@ -68,7 +104,17 @@ public :
         int n // Number of array columns
     );
 
-    void calcMatrixProduct();
+    __global__ void gpuCalc4xMatrixProduct
+    (
+        VECTOR3D* source_matrices, 
+        double* calc_matrices, 
+        double* result_matrices, 
+        int n // Number of array columns
+    );
+
+    // Enter and use numerical values for each of sourceMatrix, calcMatrix, and matrixRaw.
+    void calcMatrix3xProduct();
+    void calcMatrix4xProduct();
 
     // Calculation of each matrix
     void posTrans
