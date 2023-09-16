@@ -52,6 +52,12 @@ typedef struct tagVECTOR4D
     double w;
 } VECTOR4D;
 
+typedef struct tagSIZE2
+{
+    int width;
+    int height;
+} SIZE2;
+
 class VECTOR
 {
 public :

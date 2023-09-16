@@ -18,12 +18,6 @@ extern TCHAR szstrfPlay[256];
 extern TCHAR mouseMsgfPlay[256];
 extern POINT ptfPlay;
 
-typedef struct tagSIZE2
-{
-    int width;
-    int height;
-} SIZE2;
-
 typedef struct tagNUMCOMB3
 {
     int num1; // number 1
