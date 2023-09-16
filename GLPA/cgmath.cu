@@ -25,6 +25,89 @@ void VECTOR::pushVec4d
     inputVevotr4d->push_back(pushVec);
 }
 
+void VECTOR::inputVec3d
+(
+    double inputX, 
+    double inputY, 
+    double inputZ, 
+    int arrayNumInput, 
+    std::vector<VECTOR3D>* inputVevotr3d
+)
+{
+    (*inputVevotr3d)[arrayNumInput].x = inputX;
+    (*inputVevotr3d)[arrayNumInput].y = inputY;
+    (*inputVevotr3d)[arrayNumInput].z = inputZ;
+}
+
+void VECTOR::inputVec4d
+(
+    double inputX, 
+    double inputY, 
+    double inputZ, 
+    double inputW,
+    int arrayNumInput, 
+    std::vector<VECTOR4D>* inputVevotr4d
+)
+{
+    (*inputVevotr4d)[arrayNumInput].x = inputX;
+    (*inputVevotr4d)[arrayNumInput].y = inputY;
+    (*inputVevotr4d)[arrayNumInput].z = inputZ;
+    (*inputVevotr4d)[arrayNumInput].w = inputW;
+}
+
+
+void MATRIX::input3xMatrix
+(
+    std::vector<VECTOR3D> *inputMatrix, 
+    double a11, double a12, double a13, 
+    double a21, double a22, double a23, 
+    double a31, double a32, double a33
+)
+{
+    (*inputMatrix)[C1].x = a11;
+    (*inputMatrix)[C1].y = a21;
+    (*inputMatrix)[C1].z = a31;
+
+    (*inputMatrix)[C2].x = a12;
+    (*inputMatrix)[C2].y = a22;
+    (*inputMatrix)[C2].z = a32;
+
+    (*inputMatrix)[C3].x = a13;
+    (*inputMatrix)[C3].y = a23;
+    (*inputMatrix)[C3].z = a33;
+}
+
+void MATRIX::input4xMatrix
+(
+    std::vector<VECTOR4D>* inputMatrix,
+    double a11, double a12, double a13, double a14,
+    double a21, double a22, double a23, double a24,
+    double a31, double a32, double a33, double a34,
+    double a41, double a42, double a43, double a44
+)
+{
+    (*inputMatrix)[C1].x = a11;
+    (*inputMatrix)[C1].y = a21;
+    (*inputMatrix)[C1].z = a31;
+    (*inputMatrix)[C1].w = a41;
+
+    (*inputMatrix)[C2].x = a12;
+    (*inputMatrix)[C2].y = a22;
+    (*inputMatrix)[C2].z = a32;
+    (*inputMatrix)[C2].w = a42;
+
+    (*inputMatrix)[C3].x = a13;
+    (*inputMatrix)[C3].y = a23;
+    (*inputMatrix)[C3].z = a33;
+    (*inputMatrix)[C3].w = a43;
+
+    (*inputMatrix)[C4].x = a14;
+    (*inputMatrix)[C4].y = a24;
+    (*inputMatrix)[C4].z = a34;
+    (*inputMatrix)[C4].w = a44;    
+}
+
+
 
 __global__ void MATRIX::gpuCalc3xMatrixProduct
 (
@@ -113,10 +196,16 @@ void MATRIX::calcMatrix3xProduct()
     cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*matrixRaw*sourceMatrices.size(), cudaMemcpyDeviceToHost);
     
     // Assign the result to a Vector member variable
-
     for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
     {
-        vecSystem.pushVec3d(hResultMatrices[i+C1], hResultMatrices[i+C2], hResultMatrices[i+C3], &resultMatrices);
+        vecSystem.inputVec3d
+        (
+            hResultMatrices[i*matrixRaw+C1], 
+            hResultMatrices[i*matrixRaw+C2], 
+            hResultMatrices[i*matrixRaw+C3], 
+            i / matrixRaw,
+            &resultMatrices
+        );
     }
 
     // Release all memory allocated by malloc
@@ -173,20 +262,16 @@ void MATRIX::calcMatrix4xProduct()
     cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*matrixRaw*sourceMatrices.size(), cudaMemcpyDeviceToHost);
     
     // Assign the result to a Vector member variable
-    VECTOR3D assignVec;
-
     for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
     {
-        assignVec.x = hResultMatrices[i+C1];
-        assignVec.y = hResultMatrices[i+C2];
-        assignVec.z = hResultMatrices[i+C3];
-
-        resultMatrices.push_back(assignVec);
-    }
-
-    for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
-    {
-        vecSystem.pushVec3d(hResultMatrices[i+C1], hResultMatrices[i+C2], hResultMatrices[i+C3], &resultMatrices);
+        vecSystem.inputVec3d
+        (
+            hResultMatrices[i*matrixRaw+C1], 
+            hResultMatrices[i*matrixRaw+C2], 
+            hResultMatrices[i*matrixRaw+C3],  
+            i / matrixRaw,
+            &resultMatrices
+        );
     }
 
     // Release all memory allocated by malloc
@@ -199,32 +284,21 @@ void MATRIX::calcMatrix4xProduct()
     cudaFree(dResultMatrices);
 }
 
-void MATRIX::posTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D change_pos_amount)
+void MATRIX::posTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D changePosAmount)
 {
     matrixRaw = MATRIX4RAW;
     sourceMatrices = sourceCoordinates;
-    
-    VECTOR4D assignVec{0, 0, 0, 0};
 
-    assignVec.x = 1;
-    assignVec.y = 0;
-    assignVec.z = 0;
-    assignVec.w = 0;
-    calcMatrices4x.push_back(assignVec);
+    input4xMatrix
+    (
+        &calcMatrices4x,
+        1, 0, 0, changePosAmount.x,
+        0, 1, 0, changePosAmount.y,
+        0, 0, 1, changePosAmount.z,
+        0, 0, 0, 0
+    );
 
-    assignVec.x = 0;
-    assignVec.y = 1;
-    assignVec.z = 0;
-    assignVec.w = 0;
-    calcMatrices4x.push_back(assignVec);
-
-    assignVec.x = 0;
-    assignVec.y = 0;
-    assignVec.z = 1;
-    assignVec.w = 0;
-    calcMatrices4x.push_back(assignVec);
-
-    
+    calcMatrix4xProduct();
 }
 
 void MATRIX::rotTrans
@@ -234,26 +308,57 @@ void MATRIX::rotTrans
     double rotationAngle
 )
 {
-
-
     matrixRaw = MATRIX3RAW;
-
+    sourceMatrices = sourceCoordinates;
 
     switch (rotationAxis)
     {
     case SELECTAXIS_X:
-        
+        input3xMatrix
+        (
+            &calcMatrices3x,
+            1,    0,                                     0, 
+            0,    std::cos(rotationAngle * PI / 180),    -1 * std::sin(rotationAngle * PI / 180),
+            0,    std::sin(rotationAngle * PI / 180),    std::cos(rotationAngle * PI / 180)
+        );
         break;
 
     case SELECTAXIS_Y:
-        /* code */
+        input3xMatrix
+        (
+            &calcMatrices3x,
+            std::cos(rotationAngle * PI / 180),         0,     std::sin(rotationAngle * PI / 180), 
+            0,                                          1,     0,
+            -1 * std::sin(rotationAngle * PI / 180),    0,     std::cos(rotationAngle * PI / 180)
+        );
         break;
 
     case SELECTAXIS_Z:
-        /* code */
-        break;
-    
-    default:
+        input3xMatrix
+        (
+            &calcMatrices3x,
+            std::cos(rotationAngle * PI / 180),     -1 * std::sin(rotationAngle * PI / 180),   0, 
+            std::sin(rotationAngle * PI / 180),     std::cos(rotationAngle * PI / 180),        0,
+            0,                                      0,                                         1
+        );
         break;
     }
+    
+    calcMatrix3xProduct();
+}
+
+void MATRIX::scaleTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D scalingRate)
+{
+    matrixRaw = MATRIX3RAW;
+    sourceMatrices = sourceCoordinates;
+
+    input3xMatrix
+    (
+        &calcMatrices3x,
+        scalingRate.x,  0,              0,
+        0,              scalingRate.y,  0,
+        0,              0,              scalingRate.z
+    );
+
+    calcMatrix3xProduct();
 }
