@@ -3,6 +3,7 @@
 
 #include "file.h"
 #include "cgmath.cuh"
+#include "camera.h"
 
 class PLAYER : public OBJ_FILE
 {
@@ -13,6 +14,10 @@ public :
     VECTOR3D scaleRate;
 
     SIZE2 hitBoxSize;
+
+    CAMERA cam;
+
+
 };
 
 

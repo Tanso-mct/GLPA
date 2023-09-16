@@ -12,6 +12,7 @@ public :
     double nearZ;
     double farZ;
     double viewAngle;
+    VECTOR2D aspectRatio;
     SIZE2 screenSize;
 };
 
