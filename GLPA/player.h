@@ -7,6 +7,14 @@
 #include "camera.h"
 #include "hitbox.cuh"
 
+typedef struct tagSTATUS_PLAYER
+{
+    double walkSpeed = 0;
+    double runSpeed = 0;
+    double jumpPower = 0;
+    double hp = 0;
+} STATUS_PLAYER;
+
 class PLAYER
 {
 public :
@@ -15,13 +23,30 @@ public :
     VECTOR3D rotAngle;
     VECTOR3D scaleRate;
 
+    STATUS_PLAYER status;
+
+    void initializeTrans();
+    void initializeStatus();
+
     // Player object data
-    OBJ_FILE body;
     OBJ_FILE head;
+    OBJ_FILE body;
 
-    SIZE2 hitBoxSize;
+    // Hitbox
+    HITBOX head;
+    HITBOX body;
 
+    void hitboxOperate();
+
+    // Player Transform
+    void posTrans();
+    void rotTrans();
+    void scaleTrans();
+
+    // Camera Transform
     CAMERA cam;
+    int cameraMode;
+    void changeCameMode();
 
 
 };

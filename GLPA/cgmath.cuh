@@ -1,6 +1,11 @@
 #ifndef CGMATH_H_
 #define CGMATH_H_
 
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
+// %(AdditionalLibraryDirectories);$(CudaToolkitLibDir)
+
 #include <vector>
 #include <algorithm>
 
@@ -105,6 +110,26 @@ public :
     );
 };
 
+
+// 3x3 matrix product
+__global__ void gpuCalc3xMatrixProduct
+(
+    VECTOR3D* source_matrices, 
+    double* calc_matrices, 
+    double* result_matrices, 
+    int n, // Number of array columns
+    int matrix_raw
+);
+
+__global__ void gpuCalc4xMatrixProduct
+(
+    VECTOR3D* source_matrices, 
+    double* calc_matrices, 
+    double* result_matrices, 
+    int n, // Number of array columns
+    int matrix_raw
+);
+
 class MATRIX
 {
 public :
@@ -153,24 +178,6 @@ public :
         double a_21, double a_22, double a_23, double a_24,
         double a_31, double a_32, double a_33, double a_34,
         double a_41, double a_42, double a_43, double a_44
-    );
-
-
-    // 3x3 matrix product
-    __global__ void gpuCalc3xMatrixProduct
-    (
-        VECTOR3D* source_matrices, 
-        double* calc_matrices, 
-        double* result_matrices, 
-        int n // Number of array columns
-    );
-
-    __global__ void gpuCalc4xMatrixProduct
-    (
-        VECTOR3D* source_matrices, 
-        double* calc_matrices, 
-        double* result_matrices, 
-        int n // Number of array columns
     );
 
     // Enter and use numerical values for each of sourceMatrix, calcMatrix, and matrixRaw.

@@ -109,12 +109,13 @@ void MATRIX::input4xMatrix
 
 
 
-__global__ void MATRIX::gpuCalc3xMatrixProduct
+__global__ void gpuCalc3xMatrixProduct
 (
     VECTOR3D* sourceMatrices, 
     double* calcMatrices, 
     double* resultMatrices, 
-    int n
+    int n,
+    int matrixRaw
 )
 {
     // Decide which (i,j) you are in charge of based on your back number
@@ -131,12 +132,13 @@ __global__ void MATRIX::gpuCalc3xMatrixProduct
 
 }
 
-__global__ void MATRIX::gpuCalc4xMatrixProduct
+__global__ void gpuCalc4xMatrixProduct
 (
     VECTOR3D *sourceMatrices, 
     double *calcMatrices, 
     double *resultMatrices, 
-    int n
+    int n,
+    int matrixRaw
 )
 {
     // Decide which (i,j) you are in charge of based on your back number
@@ -184,12 +186,12 @@ void MATRIX::calcMatrix3xProduct()
     if (matrixRaw == MATRIX3RAW)
     {
         gpuCalc3xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size());
+        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size(), matrixRaw);
     }
     else if (matrixRaw == MATRIX4RAW)
     {
         gpuCalc4xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size());
+        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size(), matrixRaw);
     }
 
     // Copy results from device memory to host memory
@@ -250,12 +252,12 @@ void MATRIX::calcMatrix4xProduct()
     if (matrixRaw == MATRIX3RAW)
     {
         gpuCalc3xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size());
+        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size(), matrixRaw);
     }
     else if (matrixRaw == MATRIX4RAW)
     {
         gpuCalc4xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size());
+        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size(), matrixRaw);
     }
 
     // Copy results from device memory to host memory
