@@ -58,6 +58,13 @@ typedef struct tagSIZE2
     int height;
 } SIZE2;
 
+typedef struct tagRANGE_CUBE
+{
+    bool status = false;
+    VECTOR3D origin;
+    VECTOR3D opposite;
+} RANGE_CUBE;
+
 class VECTOR
 {
 public :
