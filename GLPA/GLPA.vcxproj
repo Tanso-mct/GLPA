@@ -170,6 +170,23 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\loadfiles\obj\temp_body.obj" />
+    <Object Include="..\loadfiles\obj\temp_cam.obj" />
+    <Object Include="..\loadfiles\obj\temp_cube.obj" />
+    <Object Include="..\loadfiles\obj\temp_head.obj" />
+    <Object Include="..\loadfiles\obj\temp_pointLight.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\loadfiles\mtl\temp_body.mtl" />
+    <None Include="..\loadfiles\mtl\temp_cam.mtl" />
+    <None Include="..\loadfiles\mtl\temp_cube.mtl" />
+    <None Include="..\loadfiles\mtl\temp_head.mtl" />
+    <None Include="..\loadfiles\mtl\temp_pointLight.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\loadfiles\bmp\temp.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.2.targets" />
