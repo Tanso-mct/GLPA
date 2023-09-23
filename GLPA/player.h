@@ -9,10 +9,10 @@
 
 typedef struct tagSTATUS_PLAYER
 {
-    double walkSpeed = 0;
-    double runSpeed = 0;
-    double jumpPower = 0;
-    double hp = 0;
+    double walkSpeed;
+    double runSpeed;
+    double jumpPower;
+    double hp;
 } STATUS_PLAYER;
 
 class PLAYER

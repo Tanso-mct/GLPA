@@ -135,6 +135,22 @@ int OBJ_FILE::loadData(std::string inputFileName)
         return 1;
     }
 
+    // Initialize data
+    range.status = false;
+    calcRange.status = false;
+
+    v.world.resize(0);
+    v.uv.resize(0);
+    v.normal.resize(0);
+
+    calcV.world.resize(0);
+    calcV.uv.resize(0);
+    calcV.normal.resize(0);
+
+    poly.v.resize(0);
+    poly.uv.resize(0);
+    poly.normal.resize(0);
+
     loadStatus = STANDBY_LOAD;
 
     std::string tag;

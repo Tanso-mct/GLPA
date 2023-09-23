@@ -14,6 +14,8 @@ public :
     double viewAngle;
     VECTOR2D aspectRatio;
     SIZE2 screenSize;
+
+    void initialize();
 };
 
 #endif CAMERA_H_

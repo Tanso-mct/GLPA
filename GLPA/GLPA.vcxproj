@@ -172,17 +172,13 @@
   </ItemGroup>
   <ItemGroup>
     <Object Include="..\loadfiles\obj\temp_body.obj" />
-    <Object Include="..\loadfiles\obj\temp_cam.obj" />
     <Object Include="..\loadfiles\obj\temp_cube.obj" />
     <Object Include="..\loadfiles\obj\temp_head.obj" />
-    <Object Include="..\loadfiles\obj\temp_pointLight.obj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\loadfiles\mtl\temp_body.mtl" />
-    <None Include="..\loadfiles\mtl\temp_cam.mtl" />
     <None Include="..\loadfiles\mtl\temp_cube.mtl" />
     <None Include="..\loadfiles\mtl\temp_head.mtl" />
-    <None Include="..\loadfiles\mtl\temp_pointLight.mtl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\loadfiles\bmp\temp.bmp" />
