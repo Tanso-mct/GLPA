@@ -171,17 +171,13 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\loadfiles\obj\temp_body.obj" />
-    <Object Include="..\loadfiles\obj\temp_cube.obj" />
-    <Object Include="..\loadfiles\obj\temp_head.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\loadfiles\mtl\temp_body.mtl" />
-    <None Include="..\loadfiles\mtl\temp_cube.mtl" />
-    <None Include="..\loadfiles\mtl\temp_head.mtl" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\loadfiles\bmp\temp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\loadfiles\obj\temp_cube.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\loadfiles\mtl\temp_cube.mtl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -111,30 +111,18 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\loadfiles\obj\temp_body.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </Object>
-    <Object Include="..\loadfiles\obj\temp_cube.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </Object>
-    <Object Include="..\loadfiles\obj\temp_head.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </Object>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\loadfiles\mtl\temp_body.mtl">
-      <Filter>リソース ファイル\mtl</Filter>
-    </None>
-    <None Include="..\loadfiles\mtl\temp_cube.mtl">
-      <Filter>リソース ファイル\mtl</Filter>
-    </None>
-    <None Include="..\loadfiles\mtl\temp_head.mtl">
-      <Filter>リソース ファイル\mtl</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\loadfiles\bmp\temp.bmp">
       <Filter>リソース ファイル\bmp</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\loadfiles\obj\temp_cube.obj">
+      <Filter>リソース ファイル\obj</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\loadfiles\mtl\temp_cube.mtl">
+      <Filter>リソース ファイル\mtl</Filter>
+    </None>
   </ItemGroup>
 </Project>
