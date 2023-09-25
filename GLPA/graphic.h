@@ -59,18 +59,19 @@ typedef struct tagPOLYGON
 
 class SCREEN
 {
-    public :
+public :
+
 };
 
 class SCR_LAU : public SCREEN
 {
-    public :
+public :
     int scrUpdate();
 };
 
 class SCR_PLAY : public SCREEN
 {
-    public :
+public :
     int scrUpdate();
 };
 

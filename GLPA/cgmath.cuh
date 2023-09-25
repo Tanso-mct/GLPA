@@ -59,8 +59,8 @@ typedef struct tagVECTOR4D
 
 typedef struct tagSIZE2
 {
-    int width;
-    int height;
+    double width;
+    double height;
 } SIZE2;
 
 typedef struct tagRANGE_CUBE

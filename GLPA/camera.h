@@ -15,7 +15,13 @@ public :
     VECTOR2D aspectRatio;
     SIZE2 screenSize;
 
-    void initialize();
+    void initialize(); // Initialize data
+    void defClippingArea(); // define clipping area
+    void clippingRange(); // Sellect range by clipping area
+    void polyBilateralJudge(); // Determining whether the face is front or back
+
+    // Coordinate transformation of the vertices of the surface to be drawn
+    void coordinateTrans();
 };
 
 #endif CAMERA_H_
