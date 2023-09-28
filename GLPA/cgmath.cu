@@ -320,8 +320,8 @@ void MATRIX::rotTrans
         (
             &calcMatrices3x,
             1,    0,                                     0, 
-            0,    std::cos(rotationAngle * PI / 180),    -1 * std::sin(rotationAngle * PI / 180),
-            0,    std::sin(rotationAngle * PI / 180),    std::cos(rotationAngle * PI / 180)
+            0,    cos(rotationAngle * PI / 180),    -1 * sin(rotationAngle * PI / 180),
+            0,    sin(rotationAngle * PI / 180),    cos(rotationAngle * PI / 180)
         );
         break;
 
@@ -329,9 +329,9 @@ void MATRIX::rotTrans
         input3xMatrix
         (
             &calcMatrices3x,
-            std::cos(rotationAngle * PI / 180),         0,     std::sin(rotationAngle * PI / 180), 
+            cos(rotationAngle * PI / 180),         0,     sin(rotationAngle * PI / 180), 
             0,                                          1,     0,
-            -1 * std::sin(rotationAngle * PI / 180),    0,     std::cos(rotationAngle * PI / 180)
+            -1 * sin(rotationAngle * PI / 180),    0,     cos(rotationAngle * PI / 180)
         );
         break;
 
@@ -339,8 +339,8 @@ void MATRIX::rotTrans
         input3xMatrix
         (
             &calcMatrices3x,
-            std::cos(rotationAngle * PI / 180),     -1 * std::sin(rotationAngle * PI / 180),   0, 
-            std::sin(rotationAngle * PI / 180),     std::cos(rotationAngle * PI / 180),        0,
+            cos(rotationAngle * PI / 180),     -1 * sin(rotationAngle * PI / 180),   0, 
+            sin(rotationAngle * PI / 180),     cos(rotationAngle * PI / 180),        0,
             0,                                      0,                                         1
         );
         break;

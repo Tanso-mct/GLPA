@@ -1,6 +1,9 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
+#include <vector>
+#include <math.h>
+
 #include "cgmath.cuh"
 
 class CAMERA
@@ -9,11 +12,15 @@ public :
     VECTOR3D wPos;
     VECTOR3D rotAngle;
 
+    bool initialized = false;
+
     double nearZ;
     double farZ;
     double viewAngle;
     VECTOR2D aspectRatio;
     SIZE2 screenSize;
+    std::vector<VECTOR_XZ> viewPointA;
+    std::vector<VECTOR_YZ> viewPointB;
 
     void initialize(); // Initialize data
     void defClippingArea(); // define clipping area

@@ -57,6 +57,18 @@ typedef struct tagVECTOR4D
     double w;
 } VECTOR4D;
 
+typedef struct tagVECTOR_XZ
+{
+    double x;
+    double z;
+} VECTOR_XZ;
+
+typedef struct tagVECTOR_YZ
+{
+    double y;
+    double z;
+} VECTOR_YZ;
+
 typedef struct tagSIZE2
 {
     double width;
