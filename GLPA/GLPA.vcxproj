@@ -133,7 +133,6 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="cgmath.cpp" />
     <ClCompile Include="graphic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="file.cpp" />
@@ -174,7 +173,9 @@
     <Image Include="..\loadfiles\bmp\temp.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\loadfiles\obj\temp_cube.obj" />
+    <None Include="..\loadfiles\obj\temp_cube.obj">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\loadfiles\mtl\temp_cube.mtl" />

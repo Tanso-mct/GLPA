@@ -14,8 +14,8 @@
 
 // WINDOW SETTINGS
 #define DISPLAY_RESOLUTION 1
-#define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
-#define WINDOW_HEIGHT GetSystemMetrics(SM_CYSCREEN)
+#define WINDOW_WIDTH static_cast<double>(GetSystemMetrics(SM_CXSCREEN))
+#define WINDOW_HEIGHT static_cast<double>(GetSystemMetrics(SM_CYSCREEN))
 
 // TIMER
 #define REQUEST_ANIMATION_TIMER 1

@@ -45,9 +45,6 @@
     <ClCompile Include="player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="cgmath.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -116,13 +113,11 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\loadfiles\obj\temp_cube.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </Object>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\loadfiles\mtl\temp_cube.mtl">
       <Filter>リソース ファイル\mtl</Filter>
+    </None>
+    <None Include="..\loadfiles\obj\temp_cube.obj">
+      <Filter>リソース ファイル\obj</Filter>
     </None>
   </ItemGroup>
 </Project>
