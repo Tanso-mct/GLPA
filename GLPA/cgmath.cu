@@ -197,6 +197,7 @@ void MATRIX::calcMatrix3xProduct()
     // Copy results from device memory to host memory
     cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*matrixRaw*sourceMatrices.size(), cudaMemcpyDeviceToHost);
     
+    resultMatrices.resize(sourceMatrices.size());
     // Assign the result to a Vector member variable
     for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
     {
@@ -264,6 +265,8 @@ void MATRIX::calcMatrix4xProduct()
     cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*matrixRaw*sourceMatrices.size(), cudaMemcpyDeviceToHost);
     
     // Assign the result to a Vector member variable
+
+    resultMatrices.resize(sourceMatrices.size());
     for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
     {
         vecSystem.inputVec3d
@@ -271,7 +274,7 @@ void MATRIX::calcMatrix4xProduct()
             hResultMatrices[i*matrixRaw+C1], 
             hResultMatrices[i*matrixRaw+C2], 
             hResultMatrices[i*matrixRaw+C3],  
-            i / matrixRaw,
+            i / matrixRaw - 1,
             &resultMatrices
         );
     }
