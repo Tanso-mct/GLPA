@@ -6,6 +6,11 @@
 
 #include "cgmath.cuh"
 
+#define VP1 0
+#define VP2 1
+#define VP3 2
+#define VP4 3
+
 class CAMERA
 {
 public :
@@ -18,7 +23,10 @@ public :
     double farZ;
     double viewAngle;
     VECTOR2D aspectRatio;
-    SIZE2 screenSize;
+
+    SIZE2 nearScreenSize;
+    SIZE2 farScreenSize;
+    
     std::vector<VECTOR_XZ> viewPointA;
     std::vector<VECTOR_YZ> viewPointB;
 
