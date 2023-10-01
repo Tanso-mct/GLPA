@@ -253,12 +253,12 @@ void MATRIX::calcMatrix4xProduct()
     if (matrixRaw == MATRIX3RAW)
     {
         gpuCalc3xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size(), matrixRaw);
+        (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size(), matrixRaw);
     }
     else if (matrixRaw == MATRIX4RAW)
     {
         gpuCalc4xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-        (hSourceMatrices, hCalcMatrices, hResultMatrices, sourceMatrices.size(), matrixRaw);
+        (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size(), matrixRaw);
     }
 
     // Copy results from device memory to host memory
@@ -292,6 +292,7 @@ void MATRIX::calcMatrix4xProduct()
 void MATRIX::posTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D changePosAmount)
 {
     matrixRaw = MATRIX4RAW;
+    sourceMatrices.resize(sourceCoordinates.size());
     sourceMatrices = sourceCoordinates;
 
     input4xMatrix
@@ -314,6 +315,7 @@ void MATRIX::rotTrans
 )
 {
     matrixRaw = MATRIX3RAW;
+    sourceMatrices.resize(sourceCoordinates.size());
     sourceMatrices = sourceCoordinates;
 
     switch (rotationAxis)
@@ -355,6 +357,7 @@ void MATRIX::rotTrans
 void MATRIX::scaleTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D scalingRate)
 {
     matrixRaw = MATRIX3RAW;
+    sourceMatrices.resize(sourceCoordinates.size());
     sourceMatrices = sourceCoordinates;
 
     input3xMatrix

@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <math.h>
+#include <windows.h>
+#include <stdio.h>
 
 #include "cgmath.cuh"
 
@@ -29,6 +31,15 @@ public :
     
     std::vector<VECTOR_XZ> viewPointA;
     std::vector<VECTOR_YZ> viewPointB;
+    
+    std::vector<VECTOR3D> transViewPoint;
+
+    CAMERA()
+    {
+        transViewPoint.resize(4);
+    }
+
+    MATRIX mtx;
 
     void initialize(); // Initialize data
     void defClippingArea(); // define clipping area
