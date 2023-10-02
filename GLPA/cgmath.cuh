@@ -129,7 +129,7 @@ __global__ void gpuCalc3xMatrixProduct
     VECTOR3D* source_matrices, 
     double* calc_matrices, 
     double* result_matrices, 
-    int n, // Number of array columns
+    int size_n, // Number of array columns
     int matrix_raw
 );
 
@@ -164,12 +164,12 @@ public :
     }
 
     // host memory
-    VECTOR3D* hSourceMatrices; // Value of 3D coordinates before calculation
+    double* hSourceMatrices; // Value of 3D coordinates before calculation
     double* hCalcMatrices;   // Matrix value to be used in the calculation
     double* hResultMatrices; // Calculated 3D Coordinate 
 
     // device memory
-    VECTOR3D* dSourceMatrices;
+    double* dSourceMatrices;
     double* dCalcMatrices;
     double* dResultMatrices;
 
