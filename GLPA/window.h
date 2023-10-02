@@ -11,6 +11,7 @@
 #include "graphic.h"
 #include "file.h"
 #include "userInput.h"
+#include "camera.h"
 
 // WINDOW SETTINGS
 #define DISPLAY_RESOLUTION 1

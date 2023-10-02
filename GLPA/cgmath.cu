@@ -160,10 +160,12 @@ void MATRIX::calcMatrix3xProduct()
     // Allocate memory for each matrix size
     hSourceMatrices = (VECTOR3D *)malloc(sizeof(VECTOR3D)*sourceMatrices.size());
     hCalcMatrices = (double *)malloc(sizeof(double)*matrixRaw*calcMatrices3x.size());
-    hResultMatrices = (double *)calloc(matrixRaw*sourceMatrices.size(), sizeof(double));
+    // hResultMatrices = (double *)calloc(matrixRaw*sourceMatrices.size(), sizeof(double));
+    hResultMatrices = (double *)malloc(sizeof(double)*matrixRaw*sourceMatrices.size());
 
     // Copy member variable
-    hSourceMatrices = sourceMatrices.data();
+    // hSourceMatrices = sourceMatrices.data();
+    memcpy(hSourceMatrices, sourceMatrices.data(), sizeof(VECTOR3D) * sourceMatrices.size());
 
     for (int i = 0; i < calcMatrices3x.size(); ++i)
     {
@@ -199,14 +201,14 @@ void MATRIX::calcMatrix3xProduct()
     
     resultMatrices.resize(sourceMatrices.size());
     // Assign the result to a Vector member variable
-    for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
+    for (int i = 0; i < sourceMatrices.size(); ++i)
     {
         vecSystem.inputVec3d
         (
             hResultMatrices[i*matrixRaw+C1], 
             hResultMatrices[i*matrixRaw+C2], 
             hResultMatrices[i*matrixRaw+C3], 
-            i / matrixRaw,
+            i,
             &resultMatrices
         );
     }
@@ -226,10 +228,12 @@ void MATRIX::calcMatrix4xProduct()
     // Allocate memory for each matrix size
     hSourceMatrices = (VECTOR3D *)malloc(sizeof(VECTOR3D)*sourceMatrices.size());
     hCalcMatrices = (double *)malloc(sizeof(double)*matrixRaw*calcMatrices4x.size());
-    hResultMatrices = (double *)calloc(matrixRaw*sourceMatrices.size(), sizeof(double));
+    // hResultMatrices = (double *)calloc(matrixRaw*sourceMatrices.size(), sizeof(double));
+    hResultMatrices = (double *)malloc(sizeof(double)*matrixRaw*sourceMatrices.size());
 
     // Copy member variable
-    hSourceMatrices = sourceMatrices.data();
+    // hSourceMatrices = sourceMatrices.data();
+    memcpy(hSourceMatrices, sourceMatrices.data(), sizeof(VECTOR3D) * sourceMatrices.size());
 
     for (int i = 0; i < calcMatrices4x.size(); ++i)
     {
@@ -267,14 +271,14 @@ void MATRIX::calcMatrix4xProduct()
     // Assign the result to a Vector member variable
 
     resultMatrices.resize(sourceMatrices.size());
-    for (int i = 0; i < sizeof(double)*matrixRaw*sourceMatrices.size(); ++i)
+    for (int i = 0; i < sourceMatrices.size(); ++i)
     {
         vecSystem.inputVec3d
         (
             hResultMatrices[i*matrixRaw+C1], 
             hResultMatrices[i*matrixRaw+C2], 
             hResultMatrices[i*matrixRaw+C3],  
-            i / matrixRaw - 1,
+            i,
             &resultMatrices
         );
     }

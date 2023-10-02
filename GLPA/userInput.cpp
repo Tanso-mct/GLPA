@@ -60,6 +60,10 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 _stprintf_s(szstr, _T("%s"), _T("S ON"));
                 WndLAU.fpsSystem.setFps = 10;
                 break;
+        case 'C' :
+                mainCam.initialize();
+                mainCam.defClippingArea();
+                break;
         default :
                 _stprintf_s(szstr, _T("%s"), _T("ANY"));
                 break;

@@ -60,12 +60,12 @@ void CAMERA::defClippingArea()
     }
 
     mtx.posTrans(transViewPoint, wPos);
-    transViewPoint = mtx.resultMatrices;
-    mtx.rotTrans(transViewPoint, SELECTAXIS_X, rotAngle.x);
-    transViewPoint = mtx.resultMatrices;
-    mtx.rotTrans(transViewPoint, SELECTAXIS_Y, rotAngle.y);
-    transViewPoint = mtx.resultMatrices;
-    mtx.rotTrans(transViewPoint, SELECTAXIS_Z, rotAngle.z);
+    // transViewPoint = mtx.resultMatrices;
+    // mtx.rotTrans(transViewPoint, SELECTAXIS_X, rotAngle.x);
+    // transViewPoint = mtx.resultMatrices;
+    // mtx.rotTrans(transViewPoint, SELECTAXIS_Y, rotAngle.y);
+    // transViewPoint = mtx.resultMatrices;
+    // mtx.rotTrans(transViewPoint, SELECTAXIS_Z, rotAngle.z);
 
     for (int i = 0; i < 4; ++i)
     {
@@ -77,27 +77,29 @@ void CAMERA::defClippingArea()
 
     #ifdef DEBUG_CAMERA_
 
-    char buffer[256];
+    char buffer[100];
 
     OutputDebugStringA("view point a\n");
     for (int i = 0; i < 4; ++i)
     {
-        sprintf_s(buffer, "%lf", viewPointA[i].x);
-        OutputDebugStringA(" ");
-        sprintf_s(buffer, "%lf", viewPointA[i].z);
+        snprintf(buffer, sizeof(buffer), "%.2lf", viewPointA[i].x);
+        OutputDebugStringA("\n");
         OutputDebugStringA(buffer);
     }
 
-    OutputDebugStringA("\n");
-    OutputDebugStringA("view point b\n");
-    for (int i = 0; i < 4; ++i)
-    {
-        sprintf_s(buffer, "%lf", viewPointB[i].y);
-        OutputDebugStringA(" ");
-        sprintf_s(buffer, "%lf", viewPointB[i].z);
-        OutputDebugStringA(buffer);
-    }
+    // OutputDebugStringA("\n");
+    // OutputDebugStringA("view point b\n");
+    // for (int i = 0; i < 4; ++i)
+    // {
+    //     sprintf_s(buffer, "%lf", viewPointB[i].y);
+    //     OutputDebugStringA(buffer);
+    //     OutputDebugStringA(" ");
+    //     sprintf_s(buffer, "%lf", viewPointB[i].z);
+    //     OutputDebugStringA(buffer);
+    // }
 
     #endif
 
 }
+
+CAMERA mainCam;
