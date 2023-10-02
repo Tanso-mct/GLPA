@@ -3,7 +3,7 @@
 
 void CAMERA::initialize()
 {
-    wPos = {0, 0, 0};
+    wPos = {5, 8, 10};
     rotAngle = {0, 0, 0};
 
     nearZ = 1;
