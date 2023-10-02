@@ -129,8 +129,7 @@ __global__ void gpuCalc3xMatrixProduct
     VECTOR3D* source_matrices, 
     double* calc_matrices, 
     double* result_matrices, 
-    int size_n, // Number of array columns
-    int matrix_raw
+    int size_n // Number of array columns
 );
 
 __global__ void gpuCalc4xMatrixProduct
@@ -138,8 +137,7 @@ __global__ void gpuCalc4xMatrixProduct
     VECTOR3D* source_matrices, 
     double* calc_matrices, 
     double* result_matrices, 
-    int n, // Number of array columns
-    int matrix_raw
+    int size_n // Number of array columns
 );
 
 class MATRIX
@@ -172,8 +170,6 @@ public :
     double* dSourceMatrices;
     double* dCalcMatrices;
     double* dResultMatrices;
-
-    int matrixRaw;
 
     void input3xMatrix
     (
