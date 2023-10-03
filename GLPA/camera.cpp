@@ -4,7 +4,7 @@
 void CAMERA::initialize()
 {
     wPos = {0, 0, 0};
-    rotAngle = {10, 0, 0};
+    rotAngle = {0, 0, 0};
 
     nearZ = 1;
     farZ = 1000;
@@ -119,6 +119,7 @@ void CAMERA::defClippingArea()
     viewPointA[VP4].z = mtx.resultMatrices[1].z;
     viewPointB[VP4].y = mtx.resultMatrices[2].y;
     viewPointB[VP4].z = mtx.resultMatrices[2].z;
+
 }
 
 CAMERA mainCam;
