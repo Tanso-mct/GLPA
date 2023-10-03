@@ -36,7 +36,7 @@ public :
 
     CAMERA()
     {
-        transViewPoint.resize(4);
+        transViewPoint.resize(8);
     }
 
     MATRIX mtx;

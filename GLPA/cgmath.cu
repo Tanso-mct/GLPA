@@ -319,11 +319,12 @@ void MATRIX::rotTrans
     switch (rotationAxis)
     {
     case SELECTAXIS_X:
+        rotationAngle = rotationAngle * -1;
         input3xMatrix
         (
             &calcMatrices3x,
             1,    0,                                     0, 
-            0,    cos(rotationAngle * PI / 180),    -1 * sin(rotationAngle * PI / 180),
+            0,    cos(rotationAngle * PI / 180),    -sin(rotationAngle * PI / 180),
             0,    sin(rotationAngle * PI / 180),    cos(rotationAngle * PI / 180)
         );
         break;
