@@ -33,9 +33,6 @@
 #define MATRIX3RAW 3
 #define MATRIX4RAW 4
 
-// Number of threads per block
-#define BS 1024
-
 typedef struct tagVECTOR2D
 {
     double x;
