@@ -123,10 +123,10 @@ __global__ void gpuCalc3xMatrixProduct
 
     if (i < size && j < MATRIX3RAW)
     {
-        resultMatrices[MATRIX3RAW*i+j] 
-        = sourceMatrices[i*MATRIX3RAW + C1] * calcMatrices[j+MATRIX3RAW*R1] 
-        + sourceMatrices[i*MATRIX3RAW + C2] * calcMatrices[j+MATRIX3RAW*R2]
-        + sourceMatrices[i*MATRIX3RAW + C3] * calcMatrices[j+MATRIX3RAW*R3];
+        resultMatrices[MATRIX3RAW*i + j] 
+        = sourceMatrices[i*MATRIX3RAW + C1] * calcMatrices[j + MATRIX3RAW*R1] 
+        + sourceMatrices[i*MATRIX3RAW + C2] * calcMatrices[j + MATRIX3RAW*R2]
+        + sourceMatrices[i*MATRIX3RAW + C3] * calcMatrices[j + MATRIX3RAW*R3];
     }
 
 }
@@ -167,9 +167,9 @@ void MATRIX::calcMatrix3xProduct()
 
     for (int i = 0; i < calcMatrices3x.size(); ++i)
     {
-        hCalcMatrices[i*MATRIX3RAW+R1] = calcMatrices3x[i].x;
-        hCalcMatrices[i*MATRIX3RAW+R2] = calcMatrices3x[i].y;
-        hCalcMatrices[i*MATRIX3RAW+R3] = calcMatrices3x[i].z;
+        hCalcMatrices[i*MATRIX3RAW+C1] = calcMatrices3x[i].x;
+        hCalcMatrices[i*MATRIX3RAW+C2] = calcMatrices3x[i].y;
+        hCalcMatrices[i*MATRIX3RAW+C3] = calcMatrices3x[i].z;
     }
 
     // Allocate device-side memory using CUDAMALLOC
