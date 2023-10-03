@@ -158,11 +158,9 @@ void MATRIX::calcMatrix3xProduct()
     // Allocate memory for each matrix size
     hSourceMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*sourceMatrices.size());
     hCalcMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*calcMatrices3x.size());
-    // hResultMatrices = (double *)calloc(matrixRaw*sourceMatrices.size(), sizeof(double));
     hResultMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*sourceMatrices.size());
 
     // Copy member variable
-    // hSourceMatrices = sourceMatrices.data();
     memcpy(hSourceMatrices, sourceMatrices.data(), sizeof(double)*MATRIX3RAW*sourceMatrices.size());
 
     for (int i = 0; i < calcMatrices3x.size(); ++i)
@@ -187,22 +185,12 @@ void MATRIX::calcMatrix3xProduct()
     dim3 gridSize((MATRIX3RAW + blockSize.x - 1) / blockSize.x, (MATRIX3RAW + blockSize.y - 1) / blockSize.y); // Grid Size
     gpuCalc3xMatrixProduct<<<gridSize, blockSize>>>
     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
-    // if (matrixRaw == MATRIX3RAW)
-    // {
-    //     gpuCalc3xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-    //     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
-    // }
-    // else if (matrixRaw == MATRIX4RAW)
-    // {
-    //     gpuCalc4xMatrixProduct<<<dim3((sourceMatrices.size()+BS-1)/BS, ((sourceMatrices.size()+BS-1)/BS)), dim3(BS, BS)>>>
-    //     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
-    // }
 
     // Copy results from device memory to host memory
     cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size(), cudaMemcpyDeviceToHost);
     
-    resultMatrices.resize(sourceMatrices.size());
     // Assign the result to a Vector member variable
+    resultMatrices.resize(sourceMatrices.size());
     for (int i = 0; i < sourceMatrices.size(); ++i)
     {
         vecSystem.inputVec3d
@@ -230,11 +218,9 @@ void MATRIX::calcMatrix4xProduct()
     // Allocate memory for each matrix size
     hSourceMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*sourceMatrices.size());
     hCalcMatrices = (double*)malloc(sizeof(double)*MATRIX4RAW*calcMatrices4x.size());
-    // hResultMatrices = (double *)calloc(matrixRaw*sourceMatrices.size(), sizeof(double));
     hResultMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*sourceMatrices.size());
 
     // Copy member variable
-    // hSourceMatrices = sourceMatrices.data();
     memcpy(hSourceMatrices, sourceMatrices.data(), sizeof(double)*MATRIX3RAW*sourceMatrices.size());
 
     for (int i = 0; i < calcMatrices4x.size(); ++i)
@@ -253,7 +239,6 @@ void MATRIX::calcMatrix4xProduct()
     // Copy host-side data to device-side memory
     cudaMemcpy(dSourceMatrices, hSourceMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size(), cudaMemcpyHostToDevice);
     cudaMemcpy(dCalcMatrices, hCalcMatrices, sizeof(double)*MATRIX4RAW*calcMatrices4x.size(), cudaMemcpyHostToDevice);
-    // cudaMemcpy(dResultMatrices, hResultMatrices, sizeof(double)*matrixRaw*sourceMatrices.size(), cudaMemcpyHostToDevice);
 
     // GPU kernel function calls
     dim3 blockSize(32, 32); // Thread block size
@@ -265,7 +250,6 @@ void MATRIX::calcMatrix4xProduct()
     cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size(), cudaMemcpyDeviceToHost);
     
     // Assign the result to a Vector member variable
-
     resultMatrices.resize(sourceMatrices.size());
     for (int i = 0; i < sourceMatrices.size(); ++i)
     {
