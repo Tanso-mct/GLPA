@@ -24,11 +24,6 @@
 #define R3 2
 #define R4 3
 
-// Selected axis
-#define SELECTAXIS_X 0
-#define SELECTAXIS_Y 1
-#define SELECTAXIS_Z 2
-
 // Matrix raw amout
 #define MATRIX3RAW 3
 #define MATRIX4RAW 4
@@ -199,8 +194,7 @@ public :
     void rotTrans
     (
         std::vector<VECTOR3D> source_3d_coordinates,
-        int rotation_axis,
-        double rotation_angle
+        VECTOR3D rotation_angle
     );
 
     void scaleTrans

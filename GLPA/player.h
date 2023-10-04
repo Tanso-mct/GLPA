@@ -33,8 +33,8 @@ public :
     OBJ_FILE body;
 
     // Hitbox
-    HITBOX head;
-    HITBOX body;
+    HITBOX headBox;
+    HITBOX bodyBox;
 
     void hitboxOperate();
 

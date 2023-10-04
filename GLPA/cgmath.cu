@@ -290,51 +290,46 @@ void MATRIX::posTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D changePo
     calcMatrix4xProduct();
 }
 
-void MATRIX::rotTrans
-(
-    std::vector<VECTOR3D> sourceCoordinates, 
-    int rotationAxis, 
-    double rotationAngle
-)
+void MATRIX::rotTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D rotAngle)
 {
     sourceMatrices.resize(sourceCoordinates.size());
     sourceMatrices = sourceCoordinates;
 
-    switch (rotationAxis)
-    {
-    case SELECTAXIS_X:
-        rotationAngle = rotationAngle * -1;
-        input3xMatrix
-        (
-            &calcMatrices3x,
-            1,    0,                                     0, 
-            0,    cos(rotationAngle * PI / 180),    -sin(rotationAngle * PI / 180),
-            0,    sin(rotationAngle * PI / 180),    cos(rotationAngle * PI / 180)
-        );
-        break;
+    double calcRotAngle;
 
-    case SELECTAXIS_Y:
-        input3xMatrix
-        (
-            &calcMatrices3x,
-            cos(rotationAngle * PI / 180),         0,     sin(rotationAngle * PI / 180), 
-            0,                                          1,     0,
-            -1 * sin(rotationAngle * PI / 180),    0,     cos(rotationAngle * PI / 180)
-        );
-        break;
-
-    case SELECTAXIS_Z:
-        input3xMatrix
-        (
-            &calcMatrices3x,
-            cos(rotationAngle * PI / 180),     -1 * sin(rotationAngle * PI / 180),   0, 
-            sin(rotationAngle * PI / 180),     cos(rotationAngle * PI / 180),        0,
-            0,                                      0,                                         1
-        );
-        break;
-    }
-    
+    calcRotAngle = -rotAngle.x;
+    input3xMatrix
+    (
+        &calcMatrices3x,
+        1,    0,                               0, 
+        0,    cos(calcRotAngle * PI / 180),    -sin(calcRotAngle * PI / 180),
+        0,    sin(calcRotAngle * PI / 180),    cos(calcRotAngle * PI / 180)
+    );
     calcMatrix3xProduct();
+    sourceMatrices = resultMatrices;
+
+    calcRotAngle = rotAngle.y;
+    input3xMatrix
+    (
+        &calcMatrices3x,
+        cos(calcRotAngle * PI / 180),     0,     sin(calcRotAngle * PI / 180), 
+        0,                                1,    0,
+        -sin(calcRotAngle * PI / 180),    0,     cos(calcRotAngle * PI / 180)
+    );
+    calcMatrix3xProduct();
+    sourceMatrices = resultMatrices;
+        
+    calcRotAngle = rotAngle.z;
+    input3xMatrix
+    (
+        &calcMatrices3x,
+        cos(calcRotAngle * PI / 180),     -sin(calcRotAngle * PI / 180),   0, 
+        sin(calcRotAngle * PI / 180),     cos(calcRotAngle * PI / 180),    0,
+        0,                                0,                               1
+    );
+    calcMatrix3xProduct();
+    sourceMatrices = resultMatrices;
+
 }
 
 void MATRIX::scaleTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D scalingRate)

@@ -23,7 +23,7 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     filePath.append("/");
     filePath.append(fileName);
     
-    //ファイル名からバイナリファイルで読み込む
+    // Read in a binary file from a filename
     std::ifstream file(filePath, std::ios::binary);
     if (file.fail())
     {
@@ -39,19 +39,19 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
 
     loadStatus = STANDBY_LOAD;
 
-    //読込サイズを調べる。
+    // Check the read size
     file.seekg(0, std::ios::end);
     long long int size = file.tellg();
     file.seekg(0);
     std::vector<std::string> tempBinaryData (size);
 
-    //読み込んだデータをchar型に出力する
+    // Output read data to char type
     char *fileData = new char[size];
     file.read(fileData, size);
 
     #ifdef DEBUG_FILE_
 
-    //サイズを出力する
+    // Output size
     OutputDebugStringA(("size = " + std::to_string(size) + "\n").c_str());
 
     #endif p
@@ -59,12 +59,11 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
     char hexChar[9];
     int decimal;
 
-    //バイナリデータの格納
+    // Storing Binary Data
     loadStatus = LOADING;
     for (int i = 1; i < size + 1; i++)
     {
         decimal = std::stoi(std::to_string(fileData[i - 1]));
-        // char hex_str[9];
         sprintf_s(hexChar, sizeof(hexChar),"%.2X", decimal);
         std::string hexString(hexChar);
         if (std::stoi(std::to_string(fileData[i - 1])) < 0)
@@ -95,7 +94,7 @@ int FILELOAD::loadBinary(int fileType, std::string inputFileName)
 
 void FILELOAD::checkBinary()
 {
-    //16進数バイナリデータを表示する
+    // Display hexadecimal binary data
     for (int i = 1; i < binaryData.size() + 1; i++)
     {
         OutputDebugStringA("   ");
