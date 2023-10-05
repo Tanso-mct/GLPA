@@ -297,7 +297,7 @@ void MATRIX::rotTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D rotAngle
 
     double calcRotAngle;
 
-    calcRotAngle = -rotAngle.x;
+    calcRotAngle = rotAngle.x;
     input3xMatrix
     (
         &calcMatrices3x,

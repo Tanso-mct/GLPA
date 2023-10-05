@@ -36,10 +36,10 @@ void CAMERA::defClippingArea()
     viewPointXZ[VP3].x = farScreenSize.width / 2;
     viewPointXZ[VP4].x = nearScreenSize.width / 2;
 
-    viewPointXZ[VP1].z = nearZ;
-    viewPointXZ[VP2].z = farZ;
-    viewPointXZ[VP3].z = farZ;
-    viewPointXZ[VP4].z = nearZ;
+    viewPointXZ[VP1].z = -nearZ;
+    viewPointXZ[VP2].z = -farZ;
+    viewPointXZ[VP3].z = -farZ;
+    viewPointXZ[VP4].z = -nearZ;
 
     // Define coordinates of view area vertices on yz axis
     viewPointYZ[VP1].y = nearScreenSize.height / 2;
@@ -47,56 +47,56 @@ void CAMERA::defClippingArea()
     viewPointYZ[VP3].y = -farScreenSize.height / 2;
     viewPointYZ[VP4].y = -nearScreenSize.height / 2;
 
-    viewPointYZ[VP1].z = nearZ;
-    viewPointYZ[VP2].z = farZ;
-    viewPointYZ[VP3].z = farZ;
-    viewPointYZ[VP4].z = nearZ;
+    viewPointYZ[VP1].z = -nearZ;
+    viewPointYZ[VP2].z = -farZ;
+    viewPointYZ[VP3].z = -farZ;
+    viewPointYZ[VP4].z = -nearZ;
 
     #ifdef DEBUG_CAMERA_
 
-    VECTOR3D scaleRate = {2, 2, 2};
+    VECTOR3D scaleRate = {1, 1, 1};
     std::vector<VECTOR3D> transViewPoint;
     std::vector<VECTOR3D> transedViewPoint;
     transViewPoint.resize(8);
     // 0
     transViewPoint[0].x = viewPointXZ[VP1].x;
     transViewPoint[0].y = viewPointYZ[VP1].y;
-    transViewPoint[0].z = nearZ;
+    transViewPoint[0].z = -nearZ;
 
     // 1
     transViewPoint[1].x = viewPointXZ[VP4].x;
     transViewPoint[1].y = viewPointYZ[VP1].y;
-    transViewPoint[1].z = nearZ;
+    transViewPoint[1].z = -nearZ;
 
     // 2
     transViewPoint[2].x = viewPointXZ[VP4].x;
     transViewPoint[2].y = viewPointYZ[VP4].y;
-    transViewPoint[2].z = nearZ;
+    transViewPoint[2].z = -nearZ;
 
     // 3
     transViewPoint[3].x = viewPointXZ[VP1].x;
     transViewPoint[3].y = viewPointYZ[VP4].y;
-    transViewPoint[3].z = nearZ;
+    transViewPoint[3].z = -nearZ;
 
     // 4
     transViewPoint[4].x = viewPointXZ[VP2].x;
     transViewPoint[4].y = viewPointYZ[VP2].y;
-    transViewPoint[4].z = farZ;
+    transViewPoint[4].z = -farZ;
 
     // 5
     transViewPoint[5].x = viewPointXZ[VP3].x;
     transViewPoint[5].y = viewPointYZ[VP2].y;
-    transViewPoint[5].z = farZ;
+    transViewPoint[5].z = -farZ;
 
     // 6
     transViewPoint[6].x = viewPointXZ[VP3].x;
     transViewPoint[6].y = viewPointYZ[VP3].y;
-    transViewPoint[6].z = farZ;
+    transViewPoint[6].z = -farZ;
 
     // 7
     transViewPoint[7].x = viewPointXZ[VP2].x;
     transViewPoint[7].y = viewPointYZ[VP3].y;
-    transViewPoint[7].z = farZ;
+    transViewPoint[7].z = -farZ;
 
     mtx.posTrans(transViewPoint, wPos);
     mtx.rotTrans(mtx.resultMatrices, rotAngle);
@@ -131,7 +131,7 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>& objData)
 
 void CAMERA::clippingRange()
 {
-
+    
 }
 
 void CAMERA::polyBilateralJudge()
