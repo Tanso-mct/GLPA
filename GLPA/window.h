@@ -12,6 +12,7 @@
 #include "file.h"
 #include "userInput.h"
 #include "camera.h"
+#include "object.h"
 
 // WINDOW SETTINGS
 #define DISPLAY_RESOLUTION 1
@@ -33,6 +34,9 @@ typedef struct tagWND_BUFFER
     HDC hBufDC;
     HBITMAP hBufBmp;
     BITMAPINFO hBufBmpInfo;
+    // #define RGBA(r, g, b, a) ((DWORD)((a << 24) | (r << 16) | (g << 8) | b))
+    // DWORD redColor = RGBA(255, 0, 0, 255);
+    // int pixelOffset = y * WINDOW_WIDTH + x;
     LPDWORD lpPixel = (LPDWORD)HeapAlloc(
         GetProcessHeap(),
         HEAP_ZERO_MEMORY,

@@ -17,4 +17,6 @@ public :
     void inputData(std::string inputFileName);
 };
 
+extern OBJECT tempObject;
+
 #endif OBJECT_H_

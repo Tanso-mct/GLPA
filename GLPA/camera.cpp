@@ -54,6 +54,7 @@ void CAMERA::defClippingArea()
 
     #ifdef DEBUG_CAMERA_
 
+    VECTOR3D scaleRate = {2, 2, 2};
     std::vector<VECTOR3D> transViewPoint;
     std::vector<VECTOR3D> transedViewPoint;
     transViewPoint.resize(8);
@@ -98,12 +99,9 @@ void CAMERA::defClippingArea()
     transViewPoint[7].z = farZ;
 
     mtx.posTrans(transViewPoint, wPos);
-    transedViewPoint = mtx.resultMatrices;
-    mtx.rotTrans(transedViewPoint, rotAngle);
-    transedViewPoint = mtx.resultMatrices;
+    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    mtx.scaleTrans(mtx.resultMatrices, scaleRate);
 
-    VECTOR3D scaleRate = {2, 2, 2};
-    mtx.scaleTrans(transedViewPoint, scaleRate);
     transedViewPoint = mtx.resultMatrices;
 
     #endif
@@ -112,17 +110,22 @@ void CAMERA::defClippingArea()
 
 void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>& objData)
 {
+    // origin and opposite point data
+    std::vector<VECTOR3D> pointData;
+
     for (int i = 0; i < objData.size(); ++i)
     {
-        // world trans
-        mtx.posTrans(objData[i].v.world, wPos);
-        objData[i].calcV.world = mtx.resultMatrices;
+        pointData.push_back(objData[i].range.origin);
+        pointData.push_back(objData[i].range.opposite);
+    }
 
-        mtx.rotTrans(objData[i].v.world, rotAngle);
-
-
-        // normal trans
-        
+    mtx.posTrans(pointData, wPos);
+    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    
+    for (int i = 0; i < pointData.size() / 2; ++i)
+    {
+        objData[i*2].calcRange.origin = mtx.resultMatrices[i*2];
+        objData[i*2 + 1].calcRange.origin = mtx.resultMatrices[i*2 + 1];
     }
 }
 

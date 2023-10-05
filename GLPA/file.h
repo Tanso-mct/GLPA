@@ -63,9 +63,6 @@ class MTL_FILE : public FILELOAD
 // BMP files
 extern BMP_FILE sampleBmpFile;
 
-// OBJ files
-extern OBJ_FILE tempObjFile;
-
 // MTL files
 extern MTL_FILE tempMtlFile;
 

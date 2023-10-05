@@ -560,8 +560,8 @@ int MTL_FILE::loadData(std::string inputFileName)
 // BMP files
 BMP_FILE sampleBmpFile;
 
-// OBJ files
-OBJ_FILE tempObjFile;
+// // OBJ files
+// OBJ_FILE tempObjFile;
 
 // MTL files
 MTL_FILE tempMtlFile;
