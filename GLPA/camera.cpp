@@ -135,11 +135,11 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
         for (int j = 1; j < 8; ++j)
         {
             // Processing with respect to origin point
-            if ((*objData)[i].range.origin.x < mtx.resultMatrices[i*8 + j].x)
-            {
+            if ((*objData)[i].range.origin.x > mtx.resultMatrices[i*8 + j].x)
+            {   
                 (*objData)[i].range.origin.x = mtx.resultMatrices[i*8 + j].x;
             }
-            if ((*objData)[i].range.origin.y < mtx.resultMatrices[i*8 + j].y)
+            if ((*objData)[i].range.origin.y > mtx.resultMatrices[i*8 + j].y)
             {
                 (*objData)[i].range.origin.y = mtx.resultMatrices[i*8 + j].y;
             }
@@ -149,11 +149,11 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
             }
 
             // Processing with respect to opposite point
-            if ((*objData)[i].range.opposite.x > mtx.resultMatrices[i*8 + j].x)
+            if ((*objData)[i].range.opposite.x < mtx.resultMatrices[i*8 + j].x)
             {
                 (*objData)[i].range.opposite.x = mtx.resultMatrices[i*8 + j].x;
             }
-            if ((*objData)[i].range.opposite.y > mtx.resultMatrices[i*8 + j].y)
+            if ((*objData)[i].range.opposite.y < mtx.resultMatrices[i*8 + j].y)
             {
                 (*objData)[i].range.opposite.y = mtx.resultMatrices[i*8 + j].y;
             }

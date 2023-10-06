@@ -193,7 +193,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
                 {
                     range.origin.y = num3d.y;
                 }
-                if (num3d.z < range.origin.z)
+                if (num3d.z > range.origin.z)
                 {
                     range.origin.z = num3d.z;
                 }
@@ -207,7 +207,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
                 {
                     range.opposite.y = num3d.y;
                 }
-                if (num3d.z > range.opposite.z)
+                if (num3d.z < range.opposite.z)
                 {
                     range.opposite.z = num3d.z;
                 }
