@@ -64,6 +64,7 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 mainCam.initialize();
                 mainCam.defClippingArea();
                 mainCam.coordinateTransRange(&tempObject.data);
+                mainCam.clippingRange(&tempObject.data);
 
                 break;
         default :

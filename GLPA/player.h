@@ -4,7 +4,7 @@
 #include "file.h"
 #include "cgmath.cuh"
 
-#include "camera.h"
+#include "camera.cuh"
 #include "hitbox.cuh"
 
 typedef struct tagSTATUS_PLAYER

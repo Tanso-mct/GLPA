@@ -14,6 +14,12 @@
 #define VP3 2
 #define VP4 3
 
+// Sellect range by clipping area
+__global__ void gpuClipRange
+(
+
+);
+
 class CAMERA
 {
 public :
@@ -35,16 +41,28 @@ public :
 
     MATRIX mtx;
 
+    std::vector<int> withinRangeAryNum;
+
+    // host memory
+    double* hViewPointXZ;
+    double* hViewPointYZ;
+    double* hRangePoints;
+    int* hWithinRangeAryNum;
+
+    // device memory
+    double* dViewPointXZ;
+    double* dadd;
+    double* dRangePoints;
+    int* dWithinRangeAryNum;
+
+
     void initialize(); // Initialize data
     void defClippingArea(); // define clipping area
 
     // Range coordinate transformation
-    void coordinateTransRange
-    (
-        std::vector<OBJ_FILE>* objData
-    );
+    void coordinateTransRange(std::vector<OBJ_FILE>* objData);
 
-    void clippingRange(); // Sellect range by clipping area
+    void clippingRange(std::vector<OBJ_FILE>* objData);
     void polyBilateralJudge(); // Determining whether the face is front or back
 
     // Coordinate transformation of the vertices of the surface to be drawn

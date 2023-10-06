@@ -1,5 +1,15 @@
 #define DEBUG_CAMERA_
-#include "camera.h"
+#include "camera.cuh"
+
+__global__ void gpuClipRange
+(
+
+)
+{
+    // Decide which (i,j) you are in charge of based on your back number
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+}
 
 void CAMERA::initialize()
 {
@@ -166,9 +176,30 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
     
 }
 
-void CAMERA::clippingRange()
+void CAMERA::clippingRange(std::vector<OBJ_FILE>* objData)
 {
-    
+    // Allocate memory
+    hViewPointXZ = (double*)malloc(sizeof(double)*2*viewPointXZ.size());
+    hViewPointYZ = (double*)malloc(sizeof(double)*2*viewPointYZ.size());
+    hRangePoints = (double*)malloc(sizeof(double)*6*(*objData).size());
+    hWithinRangeAryNum = (int*)malloc(sizeof(int)*(*objData).size());
+
+    // Copy member variable
+    memcpy(hViewPointXZ, viewPointXZ.data(), sizeof(double)*2*viewPointXZ.size());
+    memcpy(hViewPointYZ, viewPointYZ.data(), sizeof(double)*2*viewPointYZ.size());
+
+    for (int i = 0; i < (*objData).size(); ++i)
+    {
+        hRangePoints[i*6 + 0] = (*objData)[i].range.origin.x;
+        hRangePoints[i*6 + 1] = (*objData)[i].range.origin.y;
+        hRangePoints[i*6 + 2] = (*objData)[i].range.origin.z;
+
+        hRangePoints[i*6 + 3] = (*objData)[i].range.opposite.x;
+        hRangePoints[i*6 + 4] = (*objData)[i].range.opposite.y;
+        hRangePoints[i*6 + 5] = (*objData)[i].range.opposite.z;
+    }
+
+
 }
 
 void CAMERA::polyBilateralJudge()
