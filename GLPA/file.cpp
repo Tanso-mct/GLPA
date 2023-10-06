@@ -136,7 +136,6 @@ int OBJ_FILE::loadData(std::string inputFileName)
 
     // Initialize data
     range.status = false;
-    calcRange.status = false;
 
     v.world.resize(0);
     v.uv.resize(0);
@@ -301,6 +300,17 @@ int OBJ_FILE::loadData(std::string inputFileName)
             poly.normal.push_back(numComb3);
         }
     }
+
+    range.wVertex.resize(8);
+
+    range.wVertex[0] = {range.origin.x, range.opposite.y, range.origin.z};
+    range.wVertex[1] = {range.opposite.x, range.opposite.y, range.origin.z};
+    range.wVertex[2] = {range.opposite.x, range.origin.y, range.origin.z};
+    range.wVertex[3] = {range.origin.x, range.origin.y, range.origin.z};
+    range.wVertex[4] = {range.origin.x, range.opposite.y, range.opposite.z};
+    range.wVertex[5] = {range.opposite.x, range.opposite.y, range.opposite.z};
+    range.wVertex[6] = {range.opposite.x, range.origin.y, range.opposite.z};
+    range.wVertex[7] = {range.origin.x, range.origin.y, range.opposite.z};
 
     loadStatus = ENDED_PROCESS;
 

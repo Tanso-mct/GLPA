@@ -72,6 +72,7 @@ typedef struct tagRANGE_CUBE
     bool status = false;
     VECTOR3D origin;
     VECTOR3D opposite;
+    std::vector<VECTOR3D> wVertex;
 } RANGE_CUBE;
 
 class VECTOR

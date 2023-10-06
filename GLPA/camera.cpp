@@ -108,25 +108,62 @@ void CAMERA::defClippingArea()
 
 }
 
-void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>& objData)
+void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
 {
     // origin and opposite point data
     std::vector<VECTOR3D> pointData;
 
-    for (int i = 0; i < objData.size(); ++i)
+    for (int i = 0; i < (*objData).size(); ++i)
     {
-        pointData.push_back(objData[i].range.origin);
-        pointData.push_back(objData[i].range.opposite);
+        for (int j = 0; j < 8; ++j)
+        {
+            pointData.push_back((*objData)[i].range.wVertex[j]);
+        }
     }
 
     mtx.posTrans(pointData, wPos);
     mtx.rotTrans(mtx.resultMatrices, rotAngle);
-    
-    for (int i = 0; i < pointData.size() / 2; ++i)
+
+    for (int i = 0; i < (*objData).size(); ++i)
     {
-        objData[i*2].calcRange.origin = mtx.resultMatrices[i*2];
-        objData[i*2 + 1].calcRange.origin = mtx.resultMatrices[i*2 + 1];
+        (*objData)[i].range.origin = mtx.resultMatrices[i*8];
+        (*objData)[i].range.opposite = mtx.resultMatrices[i*8];
     }
+    
+    for (int i = 0; i < (*objData).size(); ++i)
+    {
+        for (int j = 1; j < 8; ++j)
+        {
+            // Processing with respect to origin point
+            if ((*objData)[i].range.origin.x < mtx.resultMatrices[i*8 + j].x)
+            {
+                (*objData)[i].range.origin.x = mtx.resultMatrices[i*8 + j].x;
+            }
+            if ((*objData)[i].range.origin.y < mtx.resultMatrices[i*8 + j].y)
+            {
+                (*objData)[i].range.origin.y = mtx.resultMatrices[i*8 + j].y;
+            }
+            if ((*objData)[i].range.origin.z < mtx.resultMatrices[i*8 + j].z)
+            {
+                (*objData)[i].range.origin.z = mtx.resultMatrices[i*8 + j].z;
+            }
+
+            // Processing with respect to opposite point
+            if ((*objData)[i].range.opposite.x > mtx.resultMatrices[i*8 + j].x)
+            {
+                (*objData)[i].range.opposite.x = mtx.resultMatrices[i*8 + j].x;
+            }
+            if ((*objData)[i].range.opposite.y > mtx.resultMatrices[i*8 + j].y)
+            {
+                (*objData)[i].range.opposite.y = mtx.resultMatrices[i*8 + j].y;
+            }
+            if ((*objData)[i].range.opposite.z > mtx.resultMatrices[i*8 + j].z)
+            {
+                (*objData)[i].range.opposite.z = mtx.resultMatrices[i*8 + j].z;
+            }
+        }
+    }
+    
 }
 
 void CAMERA::clippingRange()

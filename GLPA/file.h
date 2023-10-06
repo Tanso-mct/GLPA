@@ -45,7 +45,6 @@ class OBJ_FILE : public FILELOAD
 {
     public :
     RANGE_CUBE range;
-    RANGE_CUBE calcRange;
     VERTEX v;
     VERTEX calcV;
     POLYGON poly;

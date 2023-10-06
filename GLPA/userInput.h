@@ -6,6 +6,7 @@
 
 #include "graphic.h"
 #include "camera.h"
+#include "object.h"
 
 // class UserInput
 // {

@@ -63,6 +63,8 @@ void WndLAUInput ::keyDown(WPARAM wParam)
         case 'C' :
                 mainCam.initialize();
                 mainCam.defClippingArea();
+                mainCam.coordinateTransRange(&tempObject.data);
+
                 break;
         default :
                 _stprintf_s(szstr, _T("%s"), _T("ANY"));

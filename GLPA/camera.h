@@ -41,7 +41,7 @@ public :
     // Range coordinate transformation
     void coordinateTransRange
     (
-        std::vector<OBJ_FILE>& objData
+        std::vector<OBJ_FILE>* objData
     );
 
     void clippingRange(); // Sellect range by clipping area
