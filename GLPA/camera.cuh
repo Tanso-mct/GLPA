@@ -14,10 +14,22 @@
 #define VP3 2
 #define VP4 3
 
+#define ORIGIN_X 0
+#define ORIGIN_Y 1
+#define ORIGIN_Z 2
+#define OPPOSIT_X 3
+#define OPPOSIT_Y 4
+#define OPPOSIT_Z 5
+
+
 // Sellect range by clipping area
 __global__ void gpuClipRange
 (
-
+    double* view_point_XZ,
+    double* view_point_YZ,
+    double* range_point,
+    int* within_range_ary_num,
+    int size_n
 );
 
 class CAMERA
@@ -51,7 +63,7 @@ public :
 
     // device memory
     double* dViewPointXZ;
-    double* dadd;
+    double* dViewPointYZ;
     double* dRangePoints;
     int* dWithinRangeAryNum;
 

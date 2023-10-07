@@ -3,18 +3,71 @@
 
 __global__ void gpuClipRange
 (
-
+    double* vpXZ,
+    double* vpYZ,
+    double* rangePoint,
+    int* wiRangeAryNum,
+    int size
 )
 {
-    // Decide which (i,j) you are in charge of based on your back number
-    int i = blockIdx.y * blockDim.y + threadIdx.y;
-    int j = blockIdx.x * blockDim.x + threadIdx.x;
+    int i = blockIdx.x;
+
+    if (i < size)
+    {
+        // Z-axis direction determination
+        if 
+        (
+            rangePoint[i*6 + ORIGIN_Z] > vpXZ[VP2*2 + 1] && 
+            rangePoint[i*6 + OPPOSIT_Z] < vpXZ[VP1*2 + 1]
+        )
+        {
+            // X-axis direction determination
+            if 
+            (
+                // ORIGIN
+                rangePoint[i*6 + ORIGIN_X] < vpXZ[VP3*2] &&
+                rangePoint[i*6 + ORIGIN_X] < 
+                ((vpXZ[VP3*2] - vpXZ[VP4*2]) / (vpXZ[VP3*2 + 1] - vpXZ[VP4*2 + 1])) 
+                * (rangePoint[i*6 + ORIGIN_Z] - vpXZ[VP4*2 + 1]) 
+                + vpXZ[VP4*2] &&
+
+                // OPPOSITE
+                rangePoint[i*6 + OPPOSIT_X] > vpXZ[VP2*2] &&
+                rangePoint[i*6 + OPPOSIT_X] > 
+                ((vpXZ[VP2*2] - vpXZ[VP1*2]) / (vpXZ[VP2*2 + 1] - vpXZ[VP1*2 + 1])) 
+                * (rangePoint[i*6 + OPPOSIT_Z] - vpXZ[VP1*2 + 1]) 
+                + vpXZ[VP1*2]
+            )
+            {
+                if
+                (
+                    // Y-axis direction determination
+                    // ORIGIN
+                    rangePoint[i*6 + ORIGIN_Y] < vpYZ[VP2*2] &&
+                    rangePoint[i*6 + ORIGIN_Y] < 
+                    ((vpYZ[VP2*2] - vpYZ[VP1*2]) / (vpYZ[VP2*2 + 1] - vpYZ[VP1*2 + 1])) 
+                    * (rangePoint[i*6 + ORIGIN_Z] - vpYZ[VP1*2 + 1]) 
+                    + vpYZ[VP1*2] &&
+
+                    // OPPOSIT
+                    rangePoint[i*6 + OPPOSIT_Y] > vpYZ[VP3*2] &&
+                    rangePoint[i*6 + OPPOSIT_Y] > 
+                    ((vpYZ[VP3*2] - vpYZ[VP4*2]) / (vpYZ[VP3*2 + 1] - vpYZ[VP4*2 + 1])) 
+                    * (rangePoint[i*6 + OPPOSIT_Z] - vpYZ[VP4*2 + 1]) 
+                    + vpYZ[VP4*2]
+                )
+                {
+                    wiRangeAryNum[i] = i;
+                }
+            }
+        }
+    }
 }
 
 void CAMERA::initialize()
 {
     wPos = {0, 0, 0};
-    rotAngle = {0, 0, 0};
+    rotAngle = {0, 180, 0};
 
     nearZ = 1;
     farZ = 1000;
@@ -199,6 +252,44 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE>* objData)
         hRangePoints[i*6 + 5] = (*objData)[i].range.opposite.z;
     }
 
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dViewPointXZ, sizeof(double)*2*viewPointXZ.size());
+    cudaMalloc((void**)&dViewPointYZ, sizeof(double)*2*viewPointYZ.size());
+    cudaMalloc((void**)&dRangePoints, sizeof(double)*6*(*objData).size());
+    cudaMalloc((void**)&dWithinRangeAryNum, sizeof(int)*(*objData).size());
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dViewPointXZ, hViewPointXZ, sizeof(double)*2*viewPointXZ.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dViewPointYZ, hViewPointYZ, sizeof(double)*2*viewPointYZ.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dRangePoints, hRangePoints, sizeof(double)*6*(*objData).size(), cudaMemcpyHostToDevice);
+    
+    // GPU karnel function calls
+    int threadsPerBlock = 1024;
+    int blocksPerGrid = ((*objData).size() + threadsPerBlock - 1) / threadsPerBlock;
+    gpuClipRange<<<blocksPerGrid, threadsPerBlock>>>
+    (dViewPointXZ, dViewPointYZ, dRangePoints, dWithinRangeAryNum, (*objData).size());
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hWithinRangeAryNum, dWithinRangeAryNum, sizeof(int)*(*objData).size(), cudaMemcpyDeviceToHost);
+
+    // Assign the result to a Vector member variable
+    withinRangeAryNum.resize(0);
+
+    for (int i = 0; i < (*objData).size(); ++i)
+    {
+        withinRangeAryNum.push_back(hWithinRangeAryNum[i]);
+    }
+
+    // Release all memory allocated by malloc
+    free(hViewPointXZ);
+    free(hViewPointYZ);
+    free(hRangePoints);
+    free(hWithinRangeAryNum);
+
+    cudaFree(dViewPointXZ);
+    cudaFree(dViewPointYZ);
+    cudaFree(dRangePoints);
+    cudaFree(dWithinRangeAryNum);
 
 }
 

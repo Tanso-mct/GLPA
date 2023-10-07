@@ -271,6 +271,7 @@ void MATRIX::calcMatrix4xProduct()
     cudaFree(dSourceMatrices);
     cudaFree(dCalcMatrices);
     cudaFree(dResultMatrices);
+    
 }
 
 void MATRIX::posTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D changePosAmount)
