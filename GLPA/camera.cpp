@@ -1,73 +1,10 @@
 #define DEBUG_CAMERA_
-#include "camera.cuh"
-
-__global__ void gpuClipRange
-(
-    double* vpXZ,
-    double* vpYZ,
-    double* rangePoint,
-    int* wiRangeAryNum,
-    int size
-)
-{
-    int i = blockIdx.x;
-
-    if (i < size)
-    {
-        // Z-axis direction determination
-        if 
-        (
-            rangePoint[i*6 + ORIGIN_Z] > vpXZ[VP2*2 + 1] && 
-            rangePoint[i*6 + OPPOSIT_Z] < vpXZ[VP1*2 + 1]
-        )
-        {
-            // X-axis direction determination
-            if 
-            (
-                // ORIGIN
-                rangePoint[i*6 + ORIGIN_X] < vpXZ[VP3*2] &&
-                rangePoint[i*6 + ORIGIN_X] < 
-                ((vpXZ[VP3*2] - vpXZ[VP4*2]) / (vpXZ[VP3*2 + 1] - vpXZ[VP4*2 + 1])) 
-                * (rangePoint[i*6 + ORIGIN_Z] - vpXZ[VP4*2 + 1]) 
-                + vpXZ[VP4*2] &&
-
-                // OPPOSITE
-                rangePoint[i*6 + OPPOSIT_X] > vpXZ[VP2*2] &&
-                rangePoint[i*6 + OPPOSIT_X] > 
-                ((vpXZ[VP2*2] - vpXZ[VP1*2]) / (vpXZ[VP2*2 + 1] - vpXZ[VP1*2 + 1])) 
-                * (rangePoint[i*6 + OPPOSIT_Z] - vpXZ[VP1*2 + 1]) 
-                + vpXZ[VP1*2]
-            )
-            {
-                if
-                (
-                    // Y-axis direction determination
-                    // ORIGIN
-                    rangePoint[i*6 + ORIGIN_Y] < vpYZ[VP2*2] &&
-                    rangePoint[i*6 + ORIGIN_Y] < 
-                    ((vpYZ[VP2*2] - vpYZ[VP1*2]) / (vpYZ[VP2*2 + 1] - vpYZ[VP1*2 + 1])) 
-                    * (rangePoint[i*6 + ORIGIN_Z] - vpYZ[VP1*2 + 1]) 
-                    + vpYZ[VP1*2] &&
-
-                    // OPPOSIT
-                    rangePoint[i*6 + OPPOSIT_Y] > vpYZ[VP3*2] &&
-                    rangePoint[i*6 + OPPOSIT_Y] > 
-                    ((vpYZ[VP3*2] - vpYZ[VP4*2]) / (vpYZ[VP3*2 + 1] - vpYZ[VP4*2 + 1])) 
-                    * (rangePoint[i*6 + OPPOSIT_Z] - vpYZ[VP4*2 + 1]) 
-                    + vpYZ[VP4*2]
-                )
-                {
-                    wiRangeAryNum[i] = i;
-                }
-            }
-        }
-    }
-}
+#include "camera.h"
 
 void CAMERA::initialize()
 {
     wPos = {0, 0, 0};
-    rotAngle = {0, 180, 0};
+    rotAngle = {0, 0, 0};
 
     nearZ = 1;
     farZ = 1000;
@@ -229,73 +166,64 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
     
 }
 
-void CAMERA::clippingRange(std::vector<OBJ_FILE>* objData)
+void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
 {
-    // Allocate memory
-    hViewPointXZ = (double*)malloc(sizeof(double)*2*viewPointXZ.size());
-    hViewPointYZ = (double*)malloc(sizeof(double)*2*viewPointYZ.size());
-    hRangePoints = (double*)malloc(sizeof(double)*6*(*objData).size());
-    hWithinRangeAryNum = (int*)malloc(sizeof(int)*(*objData).size());
-
-    // Copy member variable
-    memcpy(hViewPointXZ, viewPointXZ.data(), sizeof(double)*2*viewPointXZ.size());
-    memcpy(hViewPointYZ, viewPointYZ.data(), sizeof(double)*2*viewPointYZ.size());
-
-    for (int i = 0; i < (*objData).size(); ++i)
-    {
-        hRangePoints[i*6 + 0] = (*objData)[i].range.origin.x;
-        hRangePoints[i*6 + 1] = (*objData)[i].range.origin.y;
-        hRangePoints[i*6 + 2] = (*objData)[i].range.origin.z;
-
-        hRangePoints[i*6 + 3] = (*objData)[i].range.opposite.x;
-        hRangePoints[i*6 + 4] = (*objData)[i].range.opposite.y;
-        hRangePoints[i*6 + 5] = (*objData)[i].range.opposite.z;
-    }
-
-    // Allocate device-side memory using CUDAMALLOC
-    cudaMalloc((void**)&dViewPointXZ, sizeof(double)*2*viewPointXZ.size());
-    cudaMalloc((void**)&dViewPointYZ, sizeof(double)*2*viewPointYZ.size());
-    cudaMalloc((void**)&dRangePoints, sizeof(double)*6*(*objData).size());
-    cudaMalloc((void**)&dWithinRangeAryNum, sizeof(int)*(*objData).size());
-
-    // Copy host-side data to device-side memory
-    cudaMemcpy(dViewPointXZ, hViewPointXZ, sizeof(double)*2*viewPointXZ.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dViewPointYZ, hViewPointYZ, sizeof(double)*2*viewPointYZ.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dRangePoints, hRangePoints, sizeof(double)*6*(*objData).size(), cudaMemcpyHostToDevice);
-    
-    // GPU karnel function calls
-    int threadsPerBlock = 1024;
-    int blocksPerGrid = ((*objData).size() + threadsPerBlock - 1) / threadsPerBlock;
-    gpuClipRange<<<blocksPerGrid, threadsPerBlock>>>
-    (dViewPointXZ, dViewPointYZ, dRangePoints, dWithinRangeAryNum, (*objData).size());
-
-    // Copy results from device memory to host memory
-    cudaMemcpy(hWithinRangeAryNum, dWithinRangeAryNum, sizeof(int)*(*objData).size(), cudaMemcpyDeviceToHost);
-
-    // Assign the result to a Vector member variable
     withinRangeAryNum.resize(0);
-
-    for (int i = 0; i < (*objData).size(); ++i)
+    for (int i = 0; i < objData.size(); ++i)
     {
-        withinRangeAryNum.push_back(hWithinRangeAryNum[i]);
+        // Z-axis direction determination
+        if 
+        (
+            objData[i].range.origin.z > viewPointXZ[VP2].z && 
+            objData[i].range.origin.z < viewPointXZ[VP1].z
+        )
+        {
+            // X-axis direction determination
+            if 
+            (
+                // ORIGIN
+                objData[i].range.origin.x < viewPointXZ[VP3].x &&
+                objData[i].range.origin.x < 
+                ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+                * (objData[i].range.origin.z - viewPointXZ[VP4].z) 
+                + viewPointXZ[VP4].x &&
+
+                // OPPOSITE
+                objData[i].range.opposite.x > viewPointXZ[VP2].x &&
+                objData[i].range.opposite.x > 
+                ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+                * (objData[i].range.opposite.z - viewPointXZ[VP1].z) 
+                + viewPointXZ[VP1].x
+            )
+            {
+                if
+                (
+                    // Y-axis direction determination
+                    // ORIGIN
+                    objData[i].range.origin.y < viewPointYZ[VP2].y &&
+                    objData[i].range.origin.y < 
+                    ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                    * (objData[i].range.origin.z - viewPointYZ[VP1].z) 
+                    + viewPointYZ[VP1].y &&
+
+                    // OPPOSIT
+                    objData[i].range.opposite.y > viewPointYZ[VP3].y &&
+                    objData[i].range.opposite.y > 
+                    ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                    * (objData[i].range.opposite.z - viewPointYZ[VP4].z) 
+                    + viewPointYZ[VP4].y
+                )
+                {
+                    withinRangeAryNum.push_back(i);
+                }
+            }
+        }
     }
-
-    // Release all memory allocated by malloc
-    free(hViewPointXZ);
-    free(hViewPointYZ);
-    free(hRangePoints);
-    free(hWithinRangeAryNum);
-
-    cudaFree(dViewPointXZ);
-    cudaFree(dViewPointYZ);
-    cudaFree(dRangePoints);
-    cudaFree(dWithinRangeAryNum);
-
 }
 
 void CAMERA::polyBilateralJudge()
 {
-
+    
 }
 
 void CAMERA::coordinateTransV()

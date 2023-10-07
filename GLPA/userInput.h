@@ -5,7 +5,7 @@
 #include <windows.h>
 
 #include "graphic.h"
-#include "camera.cuh"
+#include "camera.h"
 #include "object.h"
 
 // class UserInput

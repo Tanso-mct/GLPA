@@ -11,7 +11,7 @@
 #include "graphic.h"
 #include "file.h"
 #include "userInput.h"
-#include "camera.cuh"
+#include "camera.h"
 #include "object.h"
 
 // WINDOW SETTINGS
