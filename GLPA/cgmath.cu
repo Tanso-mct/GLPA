@@ -1,5 +1,29 @@
 #include "cgmath.cuh"
 
+__global__ void gpuVecDotProduct
+(
+    double* sourceV, 
+    double* calcV, 
+    double* resultV, 
+    int size
+)
+{
+    int i = blockIdx.x;
+
+    if (i < size)
+    {
+        resultV[i]
+        = sourceV[i*3 + 0] * calcV[i*3 + 0] / 
+        sqrt(calcV[i*3 + 0]*calcV[i*3 + 0] + calcV[i*3 + 1]*calcV[i*3 + 1] + calcV[i*3 + 2]*calcV[i*3 + 2])
+
+        + sourceV[i*3 + 1] * calcV[i*3 + 1] / 
+        sqrt(calcV[i*3 + 0]*calcV[i*3 + 0] + calcV[i*3 + 1]*calcV[i*3 + 1] + calcV[i*3 + 2]*calcV[i*3 + 2])
+
+        + sourceV[i*3 + 2] * calcV[i*3 + 2] / 
+        sqrt(calcV[i*3 + 0]*calcV[i*3 + 0] + calcV[i*3 + 1]*calcV[i*3 + 1] + calcV[i*3 + 2]*calcV[i*3 + 2]);
+    }
+}
+
 void VECTOR::pushVec3d
 (
     double pushX,
@@ -55,6 +79,71 @@ void VECTOR::inputVec4d
     (*inputVevotr4d)[arrayNumInput].w = inputW;
 }
 
+void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> calcVec)
+{
+    if (sourceVec.size() != calcVec.size())
+    {
+        OutputDebugStringA("Vector function{dotProduct} ERROR\n");
+        OutputDebugStringA("souceVec and calcVec array sizes are different\n");
+        return;
+    }
+    // Allocate memory for each vector size
+    hSouceVec = (double*)malloc(sizeof(double)*3*sourceVec.size());
+    hCalcVec = (double*)malloc(sizeof(double)*3*calcVec.size());
+    hResultVec = (double*)malloc(sizeof(double)*sourceVec.size());
+
+    memcpy(hSouceVec, sourceVec.data(), sizeof(double)*3*sourceVec.size());
+
+    for (int i = 0; i < calcVec.size(); ++i)
+    {
+        hCalcVec[i*3 + 0] = calcVec[i].x;
+        hCalcVec[i*3 + 1] = calcVec[i].y;
+        hCalcVec[i*3 + 2] = calcVec[i].z;
+    }
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dSouceVec, sizeof(double)*3*sourceVec.size());
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*3*calcVec.size());
+    cudaMalloc((void**)&dResultVec, sizeof(double)*sourceVec.size());
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*3*sourceVec.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*3*calcVec.size(), cudaMemcpyHostToDevice);
+    
+    // GPU kernel function calls
+    int threadsPerBlock = 1024;
+    int blocksPerGrid = (sourceVec.size() + threadsPerBlock - 1) / threadsPerBlock;
+    gpuVecDotProduct<<<blocksPerGrid, threadsPerBlock>>>
+    (dSouceVec, dCalcVec, dResultVec, sourceVec.size());
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*sourceVec.size(), cudaMemcpyDeviceToHost);
+
+
+    // Assign the result to a Vector member variable
+    resultVector.resize(sourceVec.size());
+    for (int i = 0; i < sourceVec.size(); ++i)
+    {
+        inputVec3d
+        (
+            hResultVec[1*3 + 0],
+            hResultVec[1*3 + 1],
+            hResultVec[1*3 + 2],
+            i,
+            &resultVector
+        );
+    }
+
+    // Release all memory allocated by malloc
+    free(hSouceVec);
+    free(hCalcVec);
+    free(hResultVec);
+
+    cudaFree(dSouceVec);
+    cudaFree(dCalcVec);
+    cudaFree(dResultVec);
+
+}
 
 void MATRIX::input3xMatrix
 (

@@ -223,7 +223,53 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
 
 void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
 {
+    // Stores the number of faces of each object in the clipping area
+    std::vector<int> faceAmout;
+
+    // Stores the coordinates of the vertices of the face corresponding to the normal vector of the face
+    std::vector<VECTOR3D> planeVertex;
+
+    // Stores the normals of the faces of objects in the clipping area
+    std::vector<VECTOR3D> planeNormal;
+
+    // Stores all normal vectors and vertex world cooridinate of the surface to be calculated
+    for (int i = 0; i < withinRangeAryNum.size(); ++i)
+    {
+        for (int j = 0; i < objData[withinRangeAryNum[i]].poly.normal.size(); ++j)
+        {
+            planeVertex.push_back
+            (
+                objData[withinRangeAryNum[i]].v.world
+                [
+                    objData[withinRangeAryNum[i]].poly.normal[j].num1
+                ]
+            );
+
+            planeNormal.push_back
+            (
+                objData[withinRangeAryNum[i]].v.normal
+                [
+                    objData[withinRangeAryNum[i]].poly.normal[j].num1
+                ]
+            );
+        }
+        faceAmout.push_back(objData[withinRangeAryNum[i]].poly.normal.size());
+    }
+
+    // Camera coordinate transformation of the vertices of a face
+    mtx.posTrans(planeVertex, wPos);
+    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    planeVertex = mtx.resultMatrices;
+
+    // Camera coordinate transformation of the normal vector of a surface
+    mtx.posTrans(planeNormal, wPos);
+    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    planeNormal = mtx.resultMatrices;
+
+    vec.dotProduct(planeNormal, planeVertex);
     
+
+
 }
 
 void CAMERA::coordinateTransV()

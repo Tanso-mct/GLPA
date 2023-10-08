@@ -160,7 +160,10 @@ int OBJ_FILE::loadData(std::string inputFileName)
     std::size_t punc4;
     VECTOR3D num3d;
     VECTOR2D num2d;
-    NUMCOMB3 numComb3;
+    NUMCOMB3 numComb3V;
+    NUMCOMB3 numComb3UV;
+    NUMCOMB3 numComb3Normal;
+
 
     loadStatus = LOADING;
 
@@ -258,46 +261,45 @@ int OBJ_FILE::loadData(std::string inputFileName)
             // Save vertex numbers
             // Save the first number
             punc2 = line.find("/", tag.size() + 2);
-            numComb3.num1 = std::stoi(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
+            numComb3V.num1 = std::stoi(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
 
             // Save the second number
             punc3 = line.find("/", punc2 + 1);
-            numComb3.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            numComb3UV.num1 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
 
             // Save the third number
             punc4 = line.find(" ", punc3 + 1);
-            numComb3.num3 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
-
-            poly.v.push_back(numComb3);
+            numComb3Normal.num1 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
 
             // Save uv numbers
             // Save the first number
             punc2 = line.find("/", punc4 + 1);
-            numComb3.num1 = std::stoi(line.substr(punc4 + 1, punc2 - (punc4 + 1)));
+            numComb3V.num2 = std::stoi(line.substr(punc4 + 1, punc2 - (punc4 + 1)));
 
             // Save the second number
             punc3 = line.find("/", punc2 + 1);
-            numComb3.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            numComb3UV.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
 
             // Save the third number
             punc4 = line.find(" ", punc3 + 1);
-            numComb3.num3 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
-
-            poly.uv.push_back(numComb3);
+            numComb3Normal.num2 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1)));
 
             // Save normal numbers
             // Save the first number
             punc2 = line.find("/", punc4 + 1);
-            numComb3.num1 = std::stoi(line.substr(punc4 + 1, punc2 - (punc4 + 1)));
+            numComb3V.num3 = std::stoi(line.substr(punc4 + 1, punc2 - (punc4 + 1)));
 
             // Save the second number
             punc3 = line.find("/", punc2 + 1);
-            numComb3.num2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            numComb3UV.num3 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
 
             // Save the third number
-            numComb3.num3 = std::stoi(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
+            numComb3Normal.num3 = std::stoi(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
 
-            poly.normal.push_back(numComb3);
+            poly.v.push_back(numComb3V);
+            poly.uv.push_back(numComb3UV);
+            poly.normal.push_back(numComb3Normal);
+
         }
     }
 

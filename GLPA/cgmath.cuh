@@ -4,10 +4,10 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
-// %(AdditionalLibraryDirectories);$(CudaToolkitLibDir)
-
+#include <math.h>
 #include <vector>
 #include <algorithm>
+#include <Windows.h>
 
 // Math
 #define PI 3.14159265
@@ -75,9 +75,32 @@ typedef struct tagRANGE_CUBE
     std::vector<VECTOR3D> wVertex;
 } RANGE_CUBE;
 
+__global__ void gpuVecDotProduct
+(
+    double* source_vector, 
+    double* calc_vector, 
+    double* result_vector, 
+    int size_n // Number of array columns
+);
+
 class VECTOR
 {
 public :
+    // data
+    std::vector<VECTOR3D> souceVector;
+    VECTOR3D calcVector;
+    std::vector<VECTOR3D> resultVector;
+
+    // host memory
+    double* hSouceVec;
+    double* hCalcVec;
+    double* hResultVec;
+
+    // device memory
+    double* dSouceVec;
+    double* dCalcVec;
+    double* dResultVec;
+
     void pushVec3d
     (
         double push_x,
@@ -113,13 +136,19 @@ public :
         int arrayNumInput,
         std::vector<VECTOR4D>* input_vevotr4d
     );
+
+    void dotProduct
+    (
+        std::vector<VECTOR3D> source_vector,
+        std::vector<VECTOR3D> calc_vector
+    );
 };
 
 
 // 3x3 matrix product
 __global__ void gpuCalc3xMatrixProduct
 (
-    VECTOR3D* source_matrices, 
+    double* source_matrices, 
     double* calc_matrices, 
     double* result_matrices, 
     int size_n // Number of array columns
@@ -127,7 +156,7 @@ __global__ void gpuCalc3xMatrixProduct
 
 __global__ void gpuCalc4xMatrixProduct
 (
-    VECTOR3D* source_matrices, 
+    double* source_matrices, 
     double* calc_matrices, 
     double* result_matrices, 
     int size_n // Number of array columns
