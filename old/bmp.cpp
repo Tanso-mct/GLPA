@@ -138,7 +138,6 @@ bool TEXTURE::displayImage_rectangle
     return 0;   
 }
 
-//TODO:To change texture structures
 //Texture
 TEXTURE texture_sample;
 TEXTURE *pt_texture_sample = &texture_sample;
