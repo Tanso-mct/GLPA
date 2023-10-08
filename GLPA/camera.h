@@ -44,7 +44,7 @@ public :
     void coordinateTransRange(std::vector<OBJ_FILE>* objData);
 
     void clippingRange(std::vector<OBJ_FILE> objData);
-    void polyBilateralJudge(); // Determining whether the face is front or back
+    void polyBilateralJudge(std::vector<OBJ_FILE> objData); // Determining whether the face is front or back
 
     // Coordinate transformation of the vertices of the surface to be drawn
     void coordinateTransV();

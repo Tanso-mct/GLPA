@@ -193,7 +193,7 @@ void MATRIX::calcMatrix3xProduct()
     resultMatrices.resize(sourceMatrices.size());
     for (int i = 0; i < sourceMatrices.size(); ++i)
     {
-        vecSystem.inputVec3d
+        vec.inputVec3d
         (
             hResultMatrices[i*MATRIX3RAW+C1], 
             hResultMatrices[i*MATRIX3RAW+C2], 
@@ -253,7 +253,7 @@ void MATRIX::calcMatrix4xProduct()
     resultMatrices.resize(sourceMatrices.size());
     for (int i = 0; i < sourceMatrices.size(); ++i)
     {
-        vecSystem.inputVec3d
+        vec.inputVec3d
         (
             hResultMatrices[i*MATRIX3RAW+C1], 
             hResultMatrices[i*MATRIX3RAW+C2], 

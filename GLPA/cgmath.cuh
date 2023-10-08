@@ -137,7 +137,7 @@ class MATRIX
 {
 public :
     // vector class
-    VECTOR vecSystem;
+    VECTOR vec;
     
     // vector data
     std::vector<VECTOR3D> sourceMatrices; 

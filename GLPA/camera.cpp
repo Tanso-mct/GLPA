@@ -221,7 +221,7 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
     }
 }
 
-void CAMERA::polyBilateralJudge()
+void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
 {
     
 }
