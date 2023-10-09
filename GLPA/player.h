@@ -51,6 +51,8 @@ public :
 
 };
 
+extern PLAYER deve001;
+
 
 
 #endif PLAYER_H_

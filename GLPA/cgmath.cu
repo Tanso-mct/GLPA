@@ -266,7 +266,7 @@ void MATRIX::calcMatrix3xProduct()
 
     // GPU kernel function calls
     dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((MATRIX3RAW + dimBlock.x - 1) / dimBlock.x, (MATRIX3RAW + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    dim3 dimGrid((sourceMatrices.size() + dimBlock.x - 1) / dimBlock.x, (MATRIX3RAW + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuCalc3xMatrixProduct<<<dimGrid, dimBlock>>>
     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
 
@@ -326,7 +326,7 @@ void MATRIX::calcMatrix4xProduct()
 
     // GPU kernel function calls
     dim3 blockSize(32, 32); // Thread block size
-    dim3 gridSize((MATRIX4RAW + blockSize.x - 1) / blockSize.x, (MATRIX4RAW + blockSize.y - 1) / blockSize.y); // Grid Size
+    dim3 gridSize((sourceMatrices.size() + blockSize.x - 1) / blockSize.x, (MATRIX4RAW + blockSize.y - 1) / blockSize.y); // Grid Size
     gpuCalc4xMatrixProduct<<<gridSize, blockSize>>>
     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
 

@@ -61,11 +61,12 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 WndLAU.fpsSystem.setFps = 10;
                 break;
         case 'C' :
-                mainCam.initialize();
-                mainCam.defClippingArea();
-                mainCam.coordinateTransRange(&tempObject.data);
-                mainCam.clippingRange(tempObject.data);
-                mainCam.polyBilateralJudge(tempObject.data);
+                deve001.cam.initialize();
+                deve001.cam.defViewVolume();
+                deve001.cam.coordinateTransRange(&tempObject.data);
+                deve001.cam.clippingRange(tempObject.data);
+                deve001.cam.polyBilateralJudge(tempObject.data);
+                deve001.cam.coordinateTransV(tempObject.data);
 
                 break;
         default :

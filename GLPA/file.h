@@ -46,7 +46,6 @@ class OBJ_FILE : public FILELOAD
     public :
     RANGE_CUBE range;
     VERTEX v;
-    VERTEX calcV;
     POLYGON poly;
     int loadData(std::string inputFileName);
 };

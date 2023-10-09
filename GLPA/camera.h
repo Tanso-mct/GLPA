@@ -38,20 +38,25 @@ public :
 
     std::vector<int> withinRangeAryNum;
     std::vector<INT2D> numPolyFacing;
+    std::vector<INT2D> numPolyInViewVolume;
+    std::vector<VECTOR3D> polyVertex;
 
     void initialize(); // Initialize data
-    void defClippingArea(); // define clipping area
+    void defViewVolume(); // define clipping area
 
     // Range coordinate transformation
     void coordinateTransRange(std::vector<OBJ_FILE>* objData);
 
     void clippingRange(std::vector<OBJ_FILE> objData);
-    void polyBilateralJudge(std::vector<OBJ_FILE> objData); // Determining whether the face is front or back
+
+    // Determining whether the face is front or back
+    void polyBilateralJudge(std::vector<OBJ_FILE> objData);
 
     // Coordinate transformation of the vertices of the surface to be drawn
-    void coordinateTransV();
-};
+    void coordinateTransV(std::vector<OBJ_FILE> objData);
 
-extern CAMERA mainCam;
+    // Determine if polygon is in view volume and store array number
+    void polyInViewVolumeJudge();
+};
 
 #endif CAMERA_H_

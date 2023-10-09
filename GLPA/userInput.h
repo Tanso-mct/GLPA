@@ -7,6 +7,7 @@
 #include "graphic.h"
 #include "camera.h"
 #include "object.h"
+#include "player.h"
 
 // class UserInput
 // {

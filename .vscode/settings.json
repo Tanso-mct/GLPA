@@ -76,6 +76,9 @@
         "ranges": "cpp",
         "span": "cpp",
         "stack": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "string_view": "cpp"
     }
 }

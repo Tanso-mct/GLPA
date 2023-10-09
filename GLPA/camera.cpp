@@ -1,4 +1,4 @@
-// #define DEBUG_CAMERA_
+#define DEBUG_CAMERA_
 #include "camera.h"
 
 void CAMERA::initialize()
@@ -12,7 +12,7 @@ void CAMERA::initialize()
     aspectRatio = {16, 9};
 }
 
-void CAMERA::defClippingArea()
+void CAMERA::defViewVolume()
 {
     // Processing to be done only for the first execution
     if (!initialized)
@@ -285,9 +285,49 @@ void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
     }
 }
 
-void CAMERA::coordinateTransV()
+void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
 {
-    
+    // Stores all vertices of surface polygons
+    polyVertex.resize(0);
+    for (int i = 0; i < withinRangeAryNum.size(); ++i)
+    {
+        for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
+        {
+            polyVertex.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num1
+                ]
+            );
+
+            polyVertex.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num2
+                ]
+            );
+
+            polyVertex.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num3
+                ]
+            );
+        }
+    }
+
+    // Camera coordinate transformation of vertex data
+    mtx.posTrans(polyVertex, wPos);
+    polyVertex = mtx.resultMatrices;
+    mtx.rotTrans(polyVertex, rotAngle);
+    polyVertex = mtx.resultMatrices;
 }
 
-CAMERA mainCam;
+void CAMERA::polyInViewVolumeJudge()
+{
+
+}
+
