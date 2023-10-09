@@ -1,4 +1,4 @@
-#define DEBUG_CAMERA_
+// #define DEBUG_CAMERA_
 #include "camera.h"
 
 void CAMERA::initialize()
@@ -235,13 +235,13 @@ void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
     // Stores all normal vectors and vertex world cooridinate of the surface to be calculated
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
-        for (int j = 0; i < objData[withinRangeAryNum[i]].poly.normal.size(); ++j)
+        for (int j = 0; j < objData[withinRangeAryNum[i]].poly.normal.size(); ++j)
         {
             planeVertex.push_back
             (
                 objData[withinRangeAryNum[i]].v.world
                 [
-                    objData[withinRangeAryNum[i]].poly.normal[j].num1
+                    objData[withinRangeAryNum[i]].poly.v[j].num1
                 ]
             );
 
@@ -267,9 +267,22 @@ void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
     planeNormal = mtx.resultMatrices;
 
     vec.dotProduct(planeNormal, planeVertex);
-    
 
-
+    // Stores which polygons of which objects are facing front
+    int sumFaceAmout = 0;
+    numPolyFacing.resize(0);
+    numPolyFacing.resize(withinRangeAryNum.size());
+    for (int i = 0; i < withinRangeAryNum.size(); ++i)
+    {
+        for (int j = 0; j < faceAmout[i]; ++j)
+        {
+            if (vec.resultVector[i+sumFaceAmout + j] < 0)
+            {
+                numPolyFacing[i].n.push_back(j);
+            }
+        }
+        sumFaceAmout += faceAmout[i];
+    }
 }
 
 void CAMERA::coordinateTransV()

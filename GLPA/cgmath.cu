@@ -8,7 +8,7 @@ __global__ void gpuVecDotProduct
     int size
 )
 {
-    int i = blockIdx.x;
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < size)
     {
@@ -111,9 +111,11 @@ void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> c
     cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*3*calcVec.size(), cudaMemcpyHostToDevice);
     
     // GPU kernel function calls
-    int threadsPerBlock = 1024;
-    int blocksPerGrid = (sourceVec.size() + threadsPerBlock - 1) / threadsPerBlock;
-    gpuVecDotProduct<<<blocksPerGrid, threadsPerBlock>>>
+    int blockSize = 1024;
+    int numBlocks = (sourceVec.size() + blockSize - 1) / blockSize;
+    dim3 dimBlock(blockSize, 1, 1);
+    dim3 dimGrid(numBlocks, 1, 1);
+    gpuVecDotProduct<<<dimGrid, dimBlock>>>
     (dSouceVec, dCalcVec, dResultVec, sourceVec.size());
 
     // Copy results from device memory to host memory
@@ -124,14 +126,7 @@ void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> c
     resultVector.resize(sourceVec.size());
     for (int i = 0; i < sourceVec.size(); ++i)
     {
-        inputVec3d
-        (
-            hResultVec[1*3 + 0],
-            hResultVec[1*3 + 1],
-            hResultVec[1*3 + 2],
-            i,
-            &resultVector
-        );
+        resultVector[i] = hResultVec[i];
     }
 
     // Release all memory allocated by malloc
@@ -270,9 +265,9 @@ void MATRIX::calcMatrix3xProduct()
     // cudaMemcpy(dResultMatrices, hResultMatrices, sizeof(double)*matrixRaw*sourceMatrices.size(), cudaMemcpyHostToDevice);
 
     // GPU kernel function calls
-    dim3 blockSize(32, 32); // Thread block size
-    dim3 gridSize((MATRIX3RAW + blockSize.x - 1) / blockSize.x, (MATRIX3RAW + blockSize.y - 1) / blockSize.y); // Grid Size
-    gpuCalc3xMatrixProduct<<<gridSize, blockSize>>>
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((MATRIX3RAW + dimBlock.x - 1) / dimBlock.x, (MATRIX3RAW + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    gpuCalc3xMatrixProduct<<<dimGrid, dimBlock>>>
     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
 
     // Copy results from device memory to host memory

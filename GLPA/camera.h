@@ -14,8 +14,6 @@
 #define VP3 2
 #define VP4 3
 
-typedef
-
 class CAMERA
 {
 public :
@@ -39,7 +37,7 @@ public :
     VECTOR vec;
 
     std::vector<int> withinRangeAryNum;
-    std::vector<VECTOR3D> NumPolyFacing;
+    std::vector<INT2D> numPolyFacing;
 
     void initialize(); // Initialize data
     void defClippingArea(); // define clipping area

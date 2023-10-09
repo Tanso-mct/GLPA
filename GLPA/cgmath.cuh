@@ -75,6 +75,11 @@ typedef struct tagRANGE_CUBE
     std::vector<VECTOR3D> wVertex;
 } RANGE_CUBE;
 
+typedef struct tagINT2D
+{
+    std::vector<int> n;
+} INT2D;
+
 __global__ void gpuVecDotProduct
 (
     double* source_vector, 
@@ -89,7 +94,7 @@ public :
     // data
     std::vector<VECTOR3D> souceVector;
     VECTOR3D calcVector;
-    std::vector<VECTOR3D> resultVector;
+    std::vector<double> resultVector;
 
     // host memory
     double* hSouceVec;
