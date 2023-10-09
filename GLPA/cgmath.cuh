@@ -24,9 +24,16 @@
 #define R3 2
 #define R4 3
 
+// Vector axis
+#define VX 0
+#define VY 1
+#define VZ 2
+
+// Vector 3d
+#define VECTOR3 3
+
 // Matrix raw amout
 #define MATRIX3RAW 3
-#define MATRIX4RAW 4
 
 typedef struct tagVECTOR2D
 {
@@ -80,6 +87,14 @@ typedef struct tagINT2D
     std::vector<int> n;
 } INT2D;
 
+__global__ void gpuVecAddition
+(
+    double* source_vector, 
+    double* calc_vector, 
+    double* result_vector, 
+    int size_n // Number of array columns
+);
+
 __global__ void gpuVecDotProduct
 (
     double* source_vector, 
@@ -95,6 +110,7 @@ public :
     std::vector<VECTOR3D> souceVector;
     VECTOR3D calcVector;
     std::vector<double> resultVector;
+    std::vector<VECTOR3D> resultVector3D;
 
     // host memory
     double* hSouceVec;
@@ -114,14 +130,6 @@ public :
         std::vector<VECTOR3D>* input_vevotr3d
     );
 
-    void pushVec4d
-    (
-        double push_x,
-        double push_y,
-        double push_z,
-        double push_w,
-        std::vector<VECTOR4D>* input_vevotr3d
-    );
 
     void inputVec3d
     (
@@ -132,14 +140,10 @@ public :
         std::vector<VECTOR3D>* input_vevotr3d
     );
 
-    void inputVec4d
+    void posTrans
     (
-        double input_x,
-        double input_y,
-        double input_z,
-        double input_w,
-        int arrayNumInput,
-        std::vector<VECTOR4D>* input_vevotr4d
+        std::vector<VECTOR3D> source_vector,
+        VECTOR3D calc_vector
     );
 
     void dotProduct
@@ -159,14 +163,6 @@ __global__ void gpuCalc3xMatrixProduct
     int size_n // Number of array columns
 );
 
-__global__ void gpuCalc4xMatrixProduct
-(
-    double* source_matrices, 
-    double* calc_matrices, 
-    double* result_matrices, 
-    int size_n // Number of array columns
-);
-
 class MATRIX
 {
 public :
@@ -176,7 +172,6 @@ public :
     // vector data
     std::vector<VECTOR3D> sourceMatrices; 
     std::vector<VECTOR3D> calcMatrices3x;
-    std::vector<VECTOR4D> calcMatrices4x;
     std::vector<VECTOR3D> resultMatrices;
 
     MATRIX()
@@ -184,7 +179,6 @@ public :
         // std::vectorの配列サイズの指定
         sourceMatrices.resize(3);
         calcMatrices3x.resize(3);
-        calcMatrices4x.resize(4);
         resultMatrices.resize(3);
     }
 
@@ -206,26 +200,10 @@ public :
         double a_31, double a_32, double a_33
     );
 
-    void input4xMatrix
-    (
-        std::vector<VECTOR4D>* inputMatrix,
-        double a_11, double a_12, double a_13, double a_14,
-        double a_21, double a_22, double a_23, double a_24,
-        double a_31, double a_32, double a_33, double a_34,
-        double a_41, double a_42, double a_43, double a_44
-    );
-
     // Enter and use numerical values for each of sourceMatrix, calcMatrix, and matrixRaw.
     void calcMatrix3xProduct();
-    void calcMatrix4xProduct();
 
     // Calculation of each matrix
-    void posTrans
-    (
-        std::vector<VECTOR3D> source_coordinates,
-        VECTOR3D change_pos_amount
-    );
-
     void rotTrans
     (
         std::vector<VECTOR3D> source_3d_coordinates,

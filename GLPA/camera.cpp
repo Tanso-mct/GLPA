@@ -98,8 +98,8 @@ void CAMERA::defViewVolume()
     transViewPoint[7].y = viewPointYZ[VP3].y;
     transViewPoint[7].z = -farZ;
 
-    mtx.posTrans(transViewPoint, wPos);
-    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    vec.posTrans(transViewPoint, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
     mtx.scaleTrans(mtx.resultMatrices, scaleRate);
 
     transedViewPoint = mtx.resultMatrices;
@@ -121,8 +121,8 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
         }
     }
 
-    mtx.posTrans(pointData, wPos);
-    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    vec.posTrans(pointData, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
 
     for (int i = 0; i < (*objData).size(); ++i)
     {
@@ -257,13 +257,13 @@ void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
     }
 
     // Camera coordinate transformation of the vertices of a face
-    mtx.posTrans(planeVertex, wPos);
-    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    vec.posTrans(planeVertex, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
     planeVertex = mtx.resultMatrices;
 
     // Camera coordinate transformation of the normal vector of a surface
-    mtx.posTrans(planeNormal, wPos);
-    mtx.rotTrans(mtx.resultMatrices, rotAngle);
+    vec.posTrans(planeNormal, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
     planeNormal = mtx.resultMatrices;
 
     vec.dotProduct(planeNormal, planeVertex);
@@ -320,9 +320,8 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
     }
 
     // Camera coordinate transformation of vertex data
-    mtx.posTrans(polyVertex, wPos);
-    polyVertex = mtx.resultMatrices;
-    mtx.rotTrans(polyVertex, rotAngle);
+    vec.posTrans(polyVertex, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
     polyVertex = mtx.resultMatrices;
 }
 

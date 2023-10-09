@@ -1,5 +1,23 @@
 #include "cgmath.cuh"
 
+__global__ void gpuVecAddition
+(
+    double* sourceV, 
+    double* calcV, 
+    double* resultV, 
+    int size // Number of array columns
+)
+{
+    // Decide which (i,j) you are in charge of based on your back number
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < size && j < VECTOR3)
+    {
+        resultV[i*VECTOR3 + j] = sourceV[i*VECTOR3 + j] + calcV[j];
+    }
+}
+
 __global__ void gpuVecDotProduct
 (
     double* sourceV, 
@@ -13,14 +31,17 @@ __global__ void gpuVecDotProduct
     if (i < size)
     {
         resultV[i]
-        = sourceV[i*3 + 0] * calcV[i*3 + 0] / 
-        sqrt(calcV[i*3 + 0]*calcV[i*3 + 0] + calcV[i*3 + 1]*calcV[i*3 + 1] + calcV[i*3 + 2]*calcV[i*3 + 2])
+        = sourceV[i*VECTOR3 + 0] * calcV[i*VECTOR3 + 0] / 
+        sqrt(calcV[i*VECTOR3 + 0]*calcV[i*VECTOR3 + 0] + 
+        calcV[i*VECTOR3 + 1]*calcV[i*VECTOR3 + 1] + calcV[i*VECTOR3 + 2]*calcV[i*VECTOR3 + 2])
 
-        + sourceV[i*3 + 1] * calcV[i*3 + 1] / 
-        sqrt(calcV[i*3 + 0]*calcV[i*3 + 0] + calcV[i*3 + 1]*calcV[i*3 + 1] + calcV[i*3 + 2]*calcV[i*3 + 2])
+        + sourceV[i*VECTOR3 + 1] * calcV[i*VECTOR3 + 1] / 
+        sqrt(calcV[i*VECTOR3 + 0]*calcV[i*VECTOR3 + 0] 
+        + calcV[i*VECTOR3 + 1]*calcV[i*VECTOR3 + 1] + calcV[i*VECTOR3 + 2]*calcV[i*VECTOR3 + 2])
 
-        + sourceV[i*3 + 2] * calcV[i*3 + 2] / 
-        sqrt(calcV[i*3 + 0]*calcV[i*3 + 0] + calcV[i*3 + 1]*calcV[i*3 + 1] + calcV[i*3 + 2]*calcV[i*3 + 2]);
+        + sourceV[i*VECTOR3 + 2] * calcV[i*VECTOR3 + 2] / 
+        sqrt(calcV[i*VECTOR3 + 0]*calcV[i*VECTOR3 + 0] 
+        + calcV[i*VECTOR3 + 1]*calcV[i*VECTOR3 + 1] + calcV[i*VECTOR3 + 2]*calcV[i*VECTOR3 + 2]);
     }
 }
 
@@ -34,19 +55,6 @@ void VECTOR::pushVec3d
 {
     VECTOR3D pushVec{pushX, pushY, pushZ};
     inputVevotr3d->push_back(pushVec);
-}
-
-void VECTOR::pushVec4d
-(
-    double pushX, 
-    double pushY, 
-    double pushZ, 
-    double pushW, 
-    std::vector<VECTOR4D> *inputVevotr4d
-)
-{
-    VECTOR4D pushVec{pushX, pushY, pushZ, pushW};
-    inputVevotr4d->push_back(pushVec);
 }
 
 void VECTOR::inputVec3d
@@ -63,21 +71,6 @@ void VECTOR::inputVec3d
     (*inputVevotr3d)[arrayNumInput].z = inputZ;
 }
 
-void VECTOR::inputVec4d
-(
-    double inputX, 
-    double inputY, 
-    double inputZ, 
-    double inputW,
-    int arrayNumInput, 
-    std::vector<VECTOR4D>* inputVevotr4d
-)
-{
-    (*inputVevotr4d)[arrayNumInput].x = inputX;
-    (*inputVevotr4d)[arrayNumInput].y = inputY;
-    (*inputVevotr4d)[arrayNumInput].z = inputZ;
-    (*inputVevotr4d)[arrayNumInput].w = inputW;
-}
 
 void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> calcVec)
 {
@@ -88,27 +81,27 @@ void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> c
         return;
     }
     // Allocate memory for each vector size
-    hSouceVec = (double*)malloc(sizeof(double)*3*sourceVec.size());
-    hCalcVec = (double*)malloc(sizeof(double)*3*calcVec.size());
+    hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
+    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3*calcVec.size());
     hResultVec = (double*)malloc(sizeof(double)*sourceVec.size());
 
     memcpy(hSouceVec, sourceVec.data(), sizeof(double)*3*sourceVec.size());
 
     for (int i = 0; i < calcVec.size(); ++i)
     {
-        hCalcVec[i*3 + 0] = calcVec[i].x;
-        hCalcVec[i*3 + 1] = calcVec[i].y;
-        hCalcVec[i*3 + 2] = calcVec[i].z;
+        hCalcVec[i*VECTOR3 + 0] = calcVec[i].x;
+        hCalcVec[i*VECTOR3 + 1] = calcVec[i].y;
+        hCalcVec[i*VECTOR3 + 2] = calcVec[i].z;
     }
 
     // Allocate device-side memory using CUDAMALLOC
-    cudaMalloc((void**)&dSouceVec, sizeof(double)*3*sourceVec.size());
-    cudaMalloc((void**)&dCalcVec, sizeof(double)*3*calcVec.size());
+    cudaMalloc((void**)&dSouceVec, sizeof(double)*VECTOR3*sourceVec.size());
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3*calcVec.size());
     cudaMalloc((void**)&dResultVec, sizeof(double)*sourceVec.size());
 
     // Copy host-side data to device-side memory
-    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*3*sourceVec.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*3*calcVec.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*VECTOR3*sourceVec.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3*calcVec.size(), cudaMemcpyHostToDevice);
     
     // GPU kernel function calls
     int blockSize = 1024;
@@ -140,6 +133,61 @@ void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> c
 
 }
 
+void VECTOR::posTrans(std::vector<VECTOR3D> sourceVec, VECTOR3D calcVec)
+{
+    // Allocate memory for each vector size
+    hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
+    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3);
+    hResultVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
+
+    memcpy(hSouceVec, sourceVec.data(), sizeof(double)*VECTOR3*sourceVec.size());
+
+    hCalcVec[VX] = calcVec.x;
+    hCalcVec[VY] = calcVec.y;
+    hCalcVec[VZ] = calcVec.z;
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dSouceVec, sizeof(double)*VECTOR3*sourceVec.size());
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3);
+    cudaMalloc((void**)&dResultVec, sizeof(double)*VECTOR3*sourceVec.size());
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*VECTOR3*sourceVec.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3, cudaMemcpyHostToDevice);
+    
+    // GPU kernel function calls
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((sourceVec.size()*VECTOR3 + dimBlock.x - 1) / dimBlock.x, (sourceVec.size()*VECTOR3 + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    gpuVecAddition<<<dimGrid, dimBlock>>>
+    (dSouceVec, dCalcVec, dResultVec, sourceVec.size());
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*3*sourceVec.size(), cudaMemcpyDeviceToHost);
+
+    // Assign the result to a Vector member variable
+    resultVector3D.resize(sourceVec.size());
+    for (int i = 0; i < sourceVec.size(); ++i)
+    {
+        inputVec3d
+        (
+            hResultVec[i*VECTOR3 + VX], 
+            hResultVec[i*VECTOR3 + VY], 
+            hResultVec[i*VECTOR3 + VZ], 
+            i,
+            &resultVector3D
+        );
+    }
+
+    // Release all memory allocated by malloc
+    free(hSouceVec);
+    free(hCalcVec);
+    free(hResultVec);
+
+    cudaFree(dSouceVec);
+    cudaFree(dCalcVec);
+    cudaFree(dResultVec);
+}
+
 void MATRIX::input3xMatrix
 (
     std::vector<VECTOR3D> *inputMatrix, 
@@ -161,38 +209,6 @@ void MATRIX::input3xMatrix
     (*inputMatrix)[C3].z = a33;
 }
 
-void MATRIX::input4xMatrix
-(
-    std::vector<VECTOR4D>* inputMatrix,
-    double a11, double a12, double a13, double a14,
-    double a21, double a22, double a23, double a24,
-    double a31, double a32, double a33, double a34,
-    double a41, double a42, double a43, double a44
-)
-{
-    (*inputMatrix)[C1].x = a11;
-    (*inputMatrix)[C1].y = a21;
-    (*inputMatrix)[C1].z = a31;
-    (*inputMatrix)[C1].w = a41;
-
-    (*inputMatrix)[C2].x = a12;
-    (*inputMatrix)[C2].y = a22;
-    (*inputMatrix)[C2].z = a32;
-    (*inputMatrix)[C2].w = a42;
-
-    (*inputMatrix)[C3].x = a13;
-    (*inputMatrix)[C3].y = a23;
-    (*inputMatrix)[C3].z = a33;
-    (*inputMatrix)[C3].w = a43;
-
-    (*inputMatrix)[C4].x = a14;
-    (*inputMatrix)[C4].y = a24;
-    (*inputMatrix)[C4].z = a34;
-    (*inputMatrix)[C4].w = a44;    
-}
-
-
-
 __global__ void gpuCalc3xMatrixProduct
 (
     double* sourceMatrices, 
@@ -213,28 +229,6 @@ __global__ void gpuCalc3xMatrixProduct
         + sourceMatrices[i*MATRIX3RAW + C3] * calcMatrices[j + MATRIX3RAW*R3];
     }
 
-}
-
-__global__ void gpuCalc4xMatrixProduct
-(
-    double *sourceMatrices, 
-    double *calcMatrices, 
-    double *resultMatrices, 
-    int size
-)
-{
-    // Decide which (i,j) you are in charge of based on your back number
-    int i = blockIdx.y * blockDim.y + threadIdx.y;
-    int j = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (i < size  && j < MATRIX4RAW)
-    {
-        resultMatrices[MATRIX3RAW*i + j] 
-        = sourceMatrices[i*MATRIX3RAW + C1] * calcMatrices[j + MATRIX4RAW*R1] 
-        + sourceMatrices[i*MATRIX3RAW + C2] * calcMatrices[j + MATRIX4RAW*R2]
-        + sourceMatrices[i*MATRIX3RAW + C3] * calcMatrices[j + MATRIX4RAW*R3]
-        + 1 * calcMatrices[j + MATRIX4RAW*R4];
-    }
 }
 
 void MATRIX::calcMatrix3xProduct()
@@ -266,7 +260,8 @@ void MATRIX::calcMatrix3xProduct()
 
     // GPU kernel function calls
     dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((sourceMatrices.size() + dimBlock.x - 1) / dimBlock.x, (MATRIX3RAW + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    dim3 dimGrid((sourceMatrices.size() + dimBlock.x - 1) 
+    / dimBlock.x, (sourceMatrices.size() + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuCalc3xMatrixProduct<<<dimGrid, dimBlock>>>
     (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
 
@@ -295,84 +290,6 @@ void MATRIX::calcMatrix3xProduct()
     cudaFree(dSourceMatrices);
     cudaFree(dCalcMatrices);
     cudaFree(dResultMatrices);
-}
-
-void MATRIX::calcMatrix4xProduct()
-{
-    // Allocate memory for each matrix size
-    hSourceMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*sourceMatrices.size());
-    hCalcMatrices = (double*)malloc(sizeof(double)*MATRIX4RAW*calcMatrices4x.size());
-    hResultMatrices = (double*)malloc(sizeof(double)*MATRIX3RAW*sourceMatrices.size());
-
-    // Copy member variable
-    memcpy(hSourceMatrices, sourceMatrices.data(), sizeof(double)*MATRIX3RAW*sourceMatrices.size());
-
-    for (int i = 0; i < calcMatrices4x.size(); ++i)
-    {
-        hCalcMatrices[i*MATRIX4RAW+R1] = calcMatrices4x[i].x;
-        hCalcMatrices[i*MATRIX4RAW+R2] = calcMatrices4x[i].y;
-        hCalcMatrices[i*MATRIX4RAW+R3] = calcMatrices4x[i].z;
-        hCalcMatrices[i*MATRIX4RAW+R4] = calcMatrices4x[i].w;
-    }
-
-    // Allocate device-side memory using CUDAMALLOC
-    cudaMalloc((void**)&dSourceMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size());
-    cudaMalloc((void**)&dCalcMatrices, sizeof(double)*MATRIX4RAW*calcMatrices4x.size());
-    cudaMalloc((void**)&dResultMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size());
-
-    // Copy host-side data to device-side memory
-    cudaMemcpy(dSourceMatrices, hSourceMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dCalcMatrices, hCalcMatrices, sizeof(double)*MATRIX4RAW*calcMatrices4x.size(), cudaMemcpyHostToDevice);
-
-    // GPU kernel function calls
-    dim3 blockSize(32, 32); // Thread block size
-    dim3 gridSize((sourceMatrices.size() + blockSize.x - 1) / blockSize.x, (MATRIX4RAW + blockSize.y - 1) / blockSize.y); // Grid Size
-    gpuCalc4xMatrixProduct<<<gridSize, blockSize>>>
-    (dSourceMatrices, dCalcMatrices, dResultMatrices, sourceMatrices.size());
-
-    // Copy results from device memory to host memory
-    cudaMemcpy(hResultMatrices, dResultMatrices, sizeof(double)*MATRIX3RAW*sourceMatrices.size(), cudaMemcpyDeviceToHost);
-    
-    // Assign the result to a Vector member variable
-    resultMatrices.resize(sourceMatrices.size());
-    for (int i = 0; i < sourceMatrices.size(); ++i)
-    {
-        vec.inputVec3d
-        (
-            hResultMatrices[i*MATRIX3RAW+C1], 
-            hResultMatrices[i*MATRIX3RAW+C2], 
-            hResultMatrices[i*MATRIX3RAW+C3],  
-            i,
-            &resultMatrices
-        );
-    }
-
-    // Release all memory allocated by malloc
-    free(hSourceMatrices);
-    free(hCalcMatrices);
-    free(hResultMatrices);
-
-    cudaFree(dSourceMatrices);
-    cudaFree(dCalcMatrices);
-    cudaFree(dResultMatrices);
-    
-}
-
-void MATRIX::posTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D changePosAmount)
-{
-    sourceMatrices.resize(sourceCoordinates.size());
-    sourceMatrices = sourceCoordinates;
-
-    input4xMatrix
-    (
-        &calcMatrices4x,
-        1, 0, 0, changePosAmount.x,
-        0, 1, 0, changePosAmount.y,
-        0, 0, 1, changePosAmount.z,
-        0, 0, 0, 0
-    );
-
-    calcMatrix4xProduct();
 }
 
 void MATRIX::rotTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D rotAngle)
