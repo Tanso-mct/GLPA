@@ -52,60 +52,53 @@ void CAMERA::defViewVolume()
     viewPointYZ[VP3].z = -farZ;
     viewPointYZ[VP4].z = -nearZ;
 
-    #ifdef DEBUG_CAMERA_
-
-    VECTOR3D scaleRate = {1, 1, 1};
-    std::vector<VECTOR3D> transViewPoint;
-    std::vector<VECTOR3D> transedViewPoint;
-    transViewPoint.resize(8);
+    viewPoint.resize(8);
     // 0
-    transViewPoint[0].x = viewPointXZ[VP1].x;
-    transViewPoint[0].y = viewPointYZ[VP1].y;
-    transViewPoint[0].z = -nearZ;
+    viewPoint[0].x = viewPointXZ[VP1].x;
+    viewPoint[0].y = viewPointYZ[VP1].y;
+    viewPoint[0].z = -nearZ;
 
     // 1
-    transViewPoint[1].x = viewPointXZ[VP4].x;
-    transViewPoint[1].y = viewPointYZ[VP1].y;
-    transViewPoint[1].z = -nearZ;
+    viewPoint[1].x = viewPointXZ[VP4].x;
+    viewPoint[1].y = viewPointYZ[VP1].y;
+    viewPoint[1].z = -nearZ;
 
     // 2
-    transViewPoint[2].x = viewPointXZ[VP4].x;
-    transViewPoint[2].y = viewPointYZ[VP4].y;
-    transViewPoint[2].z = -nearZ;
+    viewPoint[2].x = viewPointXZ[VP4].x;
+    viewPoint[2].y = viewPointYZ[VP4].y;
+    viewPoint[2].z = -nearZ;
 
     // 3
-    transViewPoint[3].x = viewPointXZ[VP1].x;
-    transViewPoint[3].y = viewPointYZ[VP4].y;
-    transViewPoint[3].z = -nearZ;
+    viewPoint[3].x = viewPointXZ[VP1].x;
+    viewPoint[3].y = viewPointYZ[VP4].y;
+    viewPoint[3].z = -nearZ;
 
     // 4
-    transViewPoint[4].x = viewPointXZ[VP2].x;
-    transViewPoint[4].y = viewPointYZ[VP2].y;
-    transViewPoint[4].z = -farZ;
+    viewPoint[4].x = viewPointXZ[VP2].x;
+    viewPoint[4].y = viewPointYZ[VP2].y;
+    viewPoint[4].z = -farZ;
 
     // 5
-    transViewPoint[5].x = viewPointXZ[VP3].x;
-    transViewPoint[5].y = viewPointYZ[VP2].y;
-    transViewPoint[5].z = -farZ;
+    viewPoint[5].x = viewPointXZ[VP3].x;
+    viewPoint[5].y = viewPointYZ[VP2].y;
+    viewPoint[5].z = -farZ;
 
     // 6
-    transViewPoint[6].x = viewPointXZ[VP3].x;
-    transViewPoint[6].y = viewPointYZ[VP3].y;
-    transViewPoint[6].z = -farZ;
+    viewPoint[6].x = viewPointXZ[VP3].x;
+    viewPoint[6].y = viewPointYZ[VP3].y;
+    viewPoint[6].z = -farZ;
 
     // 7
-    transViewPoint[7].x = viewPointXZ[VP2].x;
-    transViewPoint[7].y = viewPointYZ[VP3].y;
-    transViewPoint[7].z = -farZ;
+    viewPoint[7].x = viewPointXZ[VP2].x;
+    viewPoint[7].y = viewPointYZ[VP3].y;
+    viewPoint[7].z = -farZ;
 
-    vec.posTrans(transViewPoint, wPos);
-    mtx.rotTrans(vec.resultVector3D, rotAngle);
-    mtx.scaleTrans(mtx.resultMatrices, scaleRate);
+    // Assign a point on the surface
+    viewVolumeFaceVertex.resize(6);
+    // viewVolumeFaceVertex[SURFACE_TOP] = 
 
-    transedViewPoint = mtx.resultMatrices;
 
-    #endif
-
+    viewVolumeFaceNormal.resize(6);
 }
 
 void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)

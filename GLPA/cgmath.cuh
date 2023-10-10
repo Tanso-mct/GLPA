@@ -103,6 +103,14 @@ __global__ void gpuVecDotProduct
     int size_n // Number of array columns
 );
 
+__global__ void gpuVecCrossProduct
+(
+    double* source_vector, 
+    double* calc_vector, 
+    double* result_vector, 
+    int size_n // Number of array columns
+);
+
 class VECTOR
 {
 public :
@@ -130,7 +138,6 @@ public :
         std::vector<VECTOR3D>* input_vevotr3d
     );
 
-
     void inputVec3d
     (
         double input_x,
@@ -147,6 +154,12 @@ public :
     );
 
     void dotProduct
+    (
+        std::vector<VECTOR3D> source_vector,
+        std::vector<VECTOR3D> calc_vector
+    );
+
+    void crossProduct
     (
         std::vector<VECTOR3D> source_vector,
         std::vector<VECTOR3D> calc_vector

@@ -8,6 +8,7 @@
 
 #include "cgmath.cuh"
 #include "file.h"
+#include "graphic.h"
 
 #define VP1 0
 #define VP2 1
@@ -30,8 +31,12 @@ public :
     SIZE2 nearScreenSize;
     SIZE2 farScreenSize;
     
+    std::vector<VECTOR3D> viewPoint;
     std::vector<VECTOR_XZ> viewPointXZ;
     std::vector<VECTOR_YZ> viewPointYZ;
+
+    std::vector<VECTOR3D> viewVolumeFaceVertex;
+    std::vector<VECTOR3D> viewVolumeFaceNormal;
 
     MATRIX mtx;
     VECTOR vec;

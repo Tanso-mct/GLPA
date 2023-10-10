@@ -18,6 +18,13 @@ extern TCHAR szstrfPlay[256];
 extern TCHAR mouseMsgfPlay[256];
 extern POINT ptfPlay;
 
+#define SURFACE_TOP 0
+#define SURFACE_FRONT 1
+#define SURFACE_RIGHT 2
+#define SURFACE_LEFT 3
+#define SURFACE_BACK 4
+#define SURFACE_BOTTOM 5
+
 typedef struct tagNUMCOMB3
 {
     int num1; // number 1

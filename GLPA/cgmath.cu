@@ -31,17 +31,40 @@ __global__ void gpuVecDotProduct
     if (i < size)
     {
         resultV[i]
-        = sourceV[i*VECTOR3 + 0] * calcV[i*VECTOR3 + 0] / 
-        sqrt(calcV[i*VECTOR3 + 0]*calcV[i*VECTOR3 + 0] + 
-        calcV[i*VECTOR3 + 1]*calcV[i*VECTOR3 + 1] + calcV[i*VECTOR3 + 2]*calcV[i*VECTOR3 + 2])
+        = sourceV[i*VECTOR3 + VX] * calcV[i*VECTOR3 + VX] / 
+        sqrt(calcV[i*VECTOR3 + VX]*calcV[i*VECTOR3 + VX] + 
+        calcV[i*VECTOR3 + VY]*calcV[i*VECTOR3 + VY] + calcV[i*VECTOR3 + VZ]*calcV[i*VECTOR3 + VZ])
 
-        + sourceV[i*VECTOR3 + 1] * calcV[i*VECTOR3 + 1] / 
-        sqrt(calcV[i*VECTOR3 + 0]*calcV[i*VECTOR3 + 0] 
-        + calcV[i*VECTOR3 + 1]*calcV[i*VECTOR3 + 1] + calcV[i*VECTOR3 + 2]*calcV[i*VECTOR3 + 2])
+        + sourceV[i*VECTOR3 + VY] * calcV[i*VECTOR3 + VY] / 
+        sqrt(calcV[i*VECTOR3 + VX]*calcV[i*VECTOR3 + VX] 
+        + calcV[i*VECTOR3 + VY]*calcV[i*VECTOR3 + VY] + calcV[i*VECTOR3 + VZ]*calcV[i*VECTOR3 + VZ])
 
-        + sourceV[i*VECTOR3 + 2] * calcV[i*VECTOR3 + 2] / 
-        sqrt(calcV[i*VECTOR3 + 0]*calcV[i*VECTOR3 + 0] 
-        + calcV[i*VECTOR3 + 1]*calcV[i*VECTOR3 + 1] + calcV[i*VECTOR3 + 2]*calcV[i*VECTOR3 + 2]);
+        + sourceV[i*VECTOR3 + VZ] * calcV[i*VECTOR3 + VZ] / 
+        sqrt(calcV[i*VECTOR3 + VX]*calcV[i*VECTOR3 + VX] 
+        + calcV[i*VECTOR3 + VY]*calcV[i*VECTOR3 + VY] + calcV[i*VECTOR3 + VZ]*calcV[i*VECTOR3 + VZ]);
+    }
+}
+
+__global__ void gpuVecCrossProduct
+(
+    double* sourceV, 
+    double* calcV, 
+    double* resultV, 
+    int size
+)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < size)
+    {
+        resultV[i*VECTOR3 + VX]
+        = sourceV[i*VECTOR3 + VY] * calcV[i*VECTOR3 + VZ] - sourceV[i*VECTOR3 + VZ] * calcV[i*VECTOR3 + VY];
+
+        resultV[i*VECTOR3 + VY]
+        = sourceV[i*VECTOR3 + VZ] * calcV[i*VECTOR3 + VX] - sourceV[i*VECTOR3 + VX] * calcV[i*VECTOR3 + VZ];
+
+        resultV[i*VECTOR3 + VZ]
+        = sourceV[i*VECTOR3 + VX] * calcV[i*VECTOR3 + VY] - sourceV[i*VECTOR3 + VY] * calcV[i*VECTOR3 + VX];
     }
 }
 
@@ -71,6 +94,64 @@ void VECTOR::inputVec3d
     (*inputVevotr3d)[arrayNumInput].z = inputZ;
 }
 
+void VECTOR::posTrans(std::vector<VECTOR3D> sourceVec, VECTOR3D calcVec)
+{
+    // Allocate memory for each vector size
+    hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
+    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3);
+    hResultVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
+
+    memcpy(hSouceVec, sourceVec.data(), sizeof(double)*VECTOR3*sourceVec.size());
+
+    hCalcVec[VX] = calcVec.x;
+    hCalcVec[VY] = calcVec.y;
+    hCalcVec[VZ] = calcVec.z;
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dSouceVec, sizeof(double)*VECTOR3*sourceVec.size());
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3);
+    cudaMalloc((void**)&dResultVec, sizeof(double)*VECTOR3*sourceVec.size());
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*VECTOR3*sourceVec.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3, cudaMemcpyHostToDevice);
+    
+    // GPU kernel function calls
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid
+    (
+        (sourceVec.size()*VECTOR3 + dimBlock.x - 1) / dimBlock.x, 
+        (sourceVec.size()*VECTOR3 + dimBlock.y - 1) / dimBlock.y
+    ); // Grid Size
+    gpuVecAddition<<<dimGrid, dimBlock>>>
+    (dSouceVec, dCalcVec, dResultVec, sourceVec.size());
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*3*sourceVec.size(), cudaMemcpyDeviceToHost);
+
+    // Assign the result to a Vector member variable
+    resultVector3D.resize(sourceVec.size());
+    for (int i = 0; i < sourceVec.size(); ++i)
+    {
+        inputVec3d
+        (
+            hResultVec[i*VECTOR3 + VX], 
+            hResultVec[i*VECTOR3 + VY], 
+            hResultVec[i*VECTOR3 + VZ], 
+            i,
+            &resultVector3D
+        );
+    }
+
+    // Release all memory allocated by malloc
+    free(hSouceVec);
+    free(hCalcVec);
+    free(hResultVec);
+
+    cudaFree(dSouceVec);
+    cudaFree(dCalcVec);
+    cudaFree(dResultVec);
+}
 
 void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> calcVec)
 {
@@ -133,36 +214,46 @@ void VECTOR::dotProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> c
 
 }
 
-void VECTOR::posTrans(std::vector<VECTOR3D> sourceVec, VECTOR3D calcVec)
+void VECTOR::crossProduct(std::vector<VECTOR3D> sourceVec, std::vector<VECTOR3D> calcVec)
 {
+    if (sourceVec.size() != calcVec.size())
+    {
+        OutputDebugStringA("Vector function{crossProduct} ERROR\n");
+        OutputDebugStringA("souceVec and calcVec array sizes are different\n");
+        return;
+    }
+
     // Allocate memory for each vector size
     hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
-    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3);
+    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3*calcVec.size());
     hResultVec = (double*)malloc(sizeof(double)*VECTOR3*sourceVec.size());
 
-    memcpy(hSouceVec, sourceVec.data(), sizeof(double)*VECTOR3*sourceVec.size());
-
-    hCalcVec[VX] = calcVec.x;
-    hCalcVec[VY] = calcVec.y;
-    hCalcVec[VZ] = calcVec.z;
+    memcpy(hSouceVec, sourceVec.data(), sizeof(double)*3*sourceVec.size());
+    memcpy(hCalcVec, calcVec.data(), sizeof(double)*3*calcVec.size());
 
     // Allocate device-side memory using CUDAMALLOC
     cudaMalloc((void**)&dSouceVec, sizeof(double)*VECTOR3*sourceVec.size());
-    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3);
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3*calcVec.size());
     cudaMalloc((void**)&dResultVec, sizeof(double)*VECTOR3*sourceVec.size());
 
     // Copy host-side data to device-side memory
     cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*VECTOR3*sourceVec.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3*calcVec.size(), cudaMemcpyHostToDevice);
     
     // GPU kernel function calls
-    dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((sourceVec.size()*VECTOR3 + dimBlock.x - 1) / dimBlock.x, (sourceVec.size()*VECTOR3 + dimBlock.y - 1) / dimBlock.y); // Grid Size
-    gpuVecAddition<<<dimGrid, dimBlock>>>
+    int blockSize = 1024;
+    int numBlocks = (sourceVec.size()*VECTOR3 + blockSize - 1) / blockSize;
+    dim3 dimBlock(blockSize, 1, 1);
+    dim3 dimGrid(numBlocks, 1, 1);
+    (
+        (sourceVec.size()*VECTOR3 + dimBlock.x - 1) / dimBlock.x, 
+        (sourceVec.size()*VECTOR3 + dimBlock.y - 1) / dimBlock.y
+    ); // Grid Size
+    gpuVecCrossProduct<<<dimGrid, dimBlock>>>
     (dSouceVec, dCalcVec, dResultVec, sourceVec.size());
 
     // Copy results from device memory to host memory
-    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*3*sourceVec.size(), cudaMemcpyDeviceToHost);
+    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*VECTOR3*sourceVec.size(), cudaMemcpyDeviceToHost);
 
     // Assign the result to a Vector member variable
     resultVector3D.resize(sourceVec.size());
@@ -187,6 +278,8 @@ void VECTOR::posTrans(std::vector<VECTOR3D> sourceVec, VECTOR3D calcVec)
     cudaFree(dCalcVec);
     cudaFree(dResultVec);
 }
+
+
 
 void MATRIX::input3xMatrix
 (
