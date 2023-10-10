@@ -327,6 +327,6 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
 
 void CAMERA::polyInViewVolumeJudge()
 {
-
+    // Create equations for each face of the view volume
 }
 
