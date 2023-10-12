@@ -4,7 +4,7 @@
 void CAMERA::initialize()
 {
     wPos = {0, 0, 0};
-    rotAngle = {0, 0, 0};
+    rotAngle = {0, 0, 10};
 
     nearZ = 1;
     farZ = 1000;
@@ -167,44 +167,44 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
         // Z-axis direction determination
         if 
         (
-            objData[i].range.origin.z > viewPointXZ[VP2].z && 
-            objData[i].range.origin.z < viewPointXZ[VP1].z
+            objData[i].range.origin.z > viewPointXZ[VP2].z ||
+            objData[i].range.opposite.z < viewPointXZ[VP1].z
         )
         {
             // X-axis direction determination
             if 
             (
                 // ORIGIN
-                objData[i].range.origin.x < viewPointXZ[VP3].x &&
+                (objData[i].range.origin.x < viewPointXZ[VP3].x &&
                 objData[i].range.origin.x < 
                 ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
                 * (objData[i].range.origin.z - viewPointXZ[VP4].z) 
-                + viewPointXZ[VP4].x &&
+                + viewPointXZ[VP4].x) ||
 
                 // OPPOSITE
-                objData[i].range.opposite.x > viewPointXZ[VP2].x &&
+                (objData[i].range.opposite.x > viewPointXZ[VP2].x &&
                 objData[i].range.opposite.x > 
                 ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
                 * (objData[i].range.opposite.z - viewPointXZ[VP1].z) 
-                + viewPointXZ[VP1].x
+                + viewPointXZ[VP1].x)
             )
             {
                 if
                 (
                     // Y-axis direction determination
                     // ORIGIN
-                    objData[i].range.origin.y < viewPointYZ[VP2].y &&
+                    (objData[i].range.origin.y < viewPointYZ[VP2].y &&
                     objData[i].range.origin.y < 
                     ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
                     * (objData[i].range.origin.z - viewPointYZ[VP1].z) 
-                    + viewPointYZ[VP1].y &&
+                    + viewPointYZ[VP1].y) ||
 
                     // OPPOSIT
-                    objData[i].range.opposite.y > viewPointYZ[VP3].y &&
+                    (objData[i].range.opposite.y > viewPointYZ[VP3].y &&
                     objData[i].range.opposite.y > 
                     ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
                     * (objData[i].range.opposite.z - viewPointYZ[VP4].z) 
-                    + viewPointYZ[VP4].y
+                    + viewPointYZ[VP4].y)
                 )
                 {
                     withinRangeAryNum.push_back(i);
@@ -315,7 +315,7 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
     // Camera coordinate transformation of vertex data
     vec.posTrans(polyVertex, wPos);
     mtx.rotTrans(vec.resultVector3D, rotAngle);
-    polyVertex = mtx.resultMatrices;
+     polyVertex = mtx.resultMatrices;
 }
 
 void CAMERA::polyInViewVolumeJudge()
