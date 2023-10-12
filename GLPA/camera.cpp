@@ -315,11 +315,13 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
     // Camera coordinate transformation of vertex data
     vec.posTrans(polyVertex, wPos);
     mtx.rotTrans(vec.resultVector3D, rotAngle);
-     polyVertex = mtx.resultMatrices;
+    polyVertex = mtx.resultMatrices;
 }
 
 void CAMERA::polyInViewVolumeJudge()
 {
     // Create equations for each face of the view volume
+    
 }
 
+ 
