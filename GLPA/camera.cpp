@@ -95,10 +95,26 @@ void CAMERA::defViewVolume()
 
     // Assign a point on the surface
     viewVolumeFaceVertex.resize(6);
-    // viewVolumeFaceVertex[SURFACE_TOP] = 
+    viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[6];
+    viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[4];
+    viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[6];
+    viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[4];
+    viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[6];
+    viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[4];
 
+    std::vector<VECTOR3D> calcViewPoint;
+    calcViewPoint.resize(6);
+    calcViewPoint[SURFACE_TOP] = viewPoint[0];
+    calcViewPoint[SURFACE_FRONT] = viewPoint[0];
+    calcViewPoint[SURFACE_RIGHT] = viewPoint[7];
+    calcViewPoint[SURFACE_LEFT] = viewPoint[0];
+    calcViewPoint[SURFACE_BACK] = viewPoint[7];
+    calcViewPoint[SURFACE_BOTTOM] = viewPoint[7];
+
+    vec.crossProduct(viewVolumeFaceVertex, calcViewPoint);
 
     viewVolumeFaceNormal.resize(6);
+    viewVolumeFaceNormal = vec.resultVector3D;
 }
 
 void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
@@ -321,7 +337,7 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
 void CAMERA::polyInViewVolumeJudge()
 {
     // Create equations for each face of the view volume
+    std::vector<VECTOR3D> polyViewVolumeINTXN;
     
 }
 
- 

@@ -35,6 +35,23 @@
 // Matrix raw amout
 #define MATRIX3RAW 3
 
+// Equiation call name
+#define X1 0
+#define Y1 1
+#define Z1 2
+
+#define LX 0
+#define MY 1
+#define NZ 2
+
+#define X0 0
+#define Y0 1
+#define Z0 2
+
+#define PX 0
+#define QY 1
+#define RZ 2
+
 typedef struct tagVECTOR2D
 {
     double x;
@@ -228,6 +245,44 @@ public :
         std::vector<VECTOR3D> source_3d_coordinates,
         VECTOR3D scaling_rate
     );
+
+};
+
+__global__ void gpuGetLinePlaneI
+(
+
+);
+
+class EQUATION
+{
+public :
+    // Line equation
+    std::vector<VECTOR3D> lineVertexA; // x1, y1, z1
+    std::vector<VECTOR3D> lineVertexB; // l, m, n
+
+    // plane equation
+    std::vector<VECTOR3D> planeVertex; // x0, y0, z0
+    std::vector<VECTOR3D> planeNormal; // p, q, r
+
+    std::vector<VECTOR3D> linePlaneI;
+
+    double hLineVertexA;
+    double hLineVertexB;
+    double hPlaneVertex;
+    double hPlaneNormal;
+    double hLinePlaneI;
+
+    double dLineVertexA;
+    double dLineVertexB;
+    double dPlaneVertex;
+    double dPlaneNormal;
+    double dLinePlaneI;
+
+    void initialize();
+    void getLinePlaneI();
+
+
+
 
 };
 

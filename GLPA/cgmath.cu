@@ -442,3 +442,24 @@ void MATRIX::scaleTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D scalin
 
     calcMatrix3xProduct();
 }
+
+__global__ void gpuGetLinePlaneI
+(
+
+)
+{
+
+}
+
+void EQUATION::initialize()
+{
+    lineVertexA.resize(0);
+    lineVertexB.resize(0);
+    planeVertex.resize(0);
+    planeNormal.resize(0);
+}
+
+void EQUATION::getLinePlaneI()
+{
+    
+}

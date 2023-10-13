@@ -132,7 +132,10 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="buffer.cpp" />
-    <ClCompile Include="camera.cpp" />
+    <CudaCompile Include="camera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="graphic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="file.cpp" />
@@ -148,7 +151,9 @@
     <CudaCompile Include="cgmath.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
-    <ClInclude Include="camera.h" />
+    <CudaCompile Include="camera.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </CudaCompile>
     <ClInclude Include="graphic.h" />
     <CudaCompile Include="hitbox.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
