@@ -250,20 +250,16 @@ public :
 
 __global__ void gpuGetLinePlaneI
 (
-
+    double line_vertex_A,
+    double line_vertex_B,
+    double plane_vertex,
+    double plane_normal,
+    double line_plane_I
 );
 
 class EQUATION
 {
 public :
-    // Line equation
-    std::vector<VECTOR3D> lineVertexA; // x1, y1, z1
-    std::vector<VECTOR3D> lineVertexB; // l, m, n
-
-    // plane equation
-    std::vector<VECTOR3D> planeVertex; // x0, y0, z0
-    std::vector<VECTOR3D> planeNormal; // p, q, r
-
     std::vector<VECTOR3D> linePlaneI;
 
     double hLineVertexA;
@@ -278,11 +274,13 @@ public :
     double dPlaneNormal;
     double dLinePlaneI;
 
-    void initialize();
-    void getLinePlaneI();
-
-
-
+    void getLinePlaneI
+    (
+        std::vector<VECTOR3D> line_vertex_A, // x1, y1, z1
+        std::vector<VECTOR3D> line_vertex_B, // x1, y1, z1
+        std::vector<VECTOR3D> plane_vertex, // x0, y0, z0
+        std::vector<VECTOR3D> plane_normal // p, q, r
+    );
 
 };
 
