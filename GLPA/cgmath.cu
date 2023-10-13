@@ -552,6 +552,11 @@ void EQUATION::getLinePlaneI
     std::vector<VECTOR3D> planeN
 )
 {
+    // Obtaining the value of the denominator of the mediating variable t
+    getDenominateT(lineVB, planeN);
+
+    // Checking the value of the mediating variable t to avoid division by zero
+    
     // Allocate memory for each matrix size
     hLineVertexA = (double*)malloc(sizeof(double)*VECTOR3*lineVA.size());
     hLineVertexB = (double*)malloc(sizeof(double)*VECTOR3*lineVB.size());
