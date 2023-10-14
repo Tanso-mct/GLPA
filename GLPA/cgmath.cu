@@ -552,17 +552,52 @@ void EQUATION::getLinePlaneI
     std::vector<VECTOR3D> planeN
 )
 {
-    // Obtaining the value of the denominator of the mediating variable t
-    getDenominateT(lineVB, planeN);
-
-    // Checking the value of the mediating variable t to avoid division by zero
-    
     // Allocate memory for each matrix size
     hLineVertexA = (double*)malloc(sizeof(double)*VECTOR3*lineVA.size());
     hLineVertexB = (double*)malloc(sizeof(double)*VECTOR3*lineVB.size());
     hPlaneVertex = (double*)malloc(sizeof(double)*VECTOR3*planeV.size());
     hPlaneNormal = (double*)malloc(sizeof(double)*VECTOR3*planeN.size());
-    hLinePlaneI = (double*)malloc(sizeof(double)*VECTOR3*lineVA.size()*2);
+    // hLinePlaneI = (double*)malloc(sizeof(double)*lineVA.size());
+
+    // Obtaining the value of the denominator of the mediating variable t
+    getDenominateT(lineVB, planeN);
+
+    // Checking the value of the mediating variable t to avoid division by zero
+    int aryNum = 0;
+    int paraTnot0Amout = 0;
+    int sumParaTnot0Amout = 0;
+    amoutIeachLine.resize(0);
+    for (int i = 0; i < lineVA.size(); ++i)
+    {
+        for (int j = 0; j < planeN.size(); ++j)
+        {
+            if (paraT[i] != 0)
+            {
+                hLineVertexA[aryNum + X0] = lineVA[i].x;
+                hLineVertexA[aryNum + Y0] = lineVA[i].y;
+                hLineVertexA[aryNum + Z0] = lineVA[i].z;
+
+                hLineVertexB[aryNum + X0] = lineVB[i].x;
+                hLineVertexB[aryNum + Y0] = lineVB[i].y;
+                hLineVertexB[aryNum + Z0] = lineVB[i].z;
+
+                hPlaneVertex[aryNum + X0] = planeV[j].z;
+                hPlaneVertex[aryNum + Y0] = planeV[j].z;
+                hPlaneVertex[aryNum + Z0] = planeV[j].z;
+
+                hPlaneNormal[aryNum + X0] = planeN[j].z;
+                hPlaneNormal[aryNum + Y0] = planeN[j].z;
+                hPlaneNormal[aryNum + Z0] = planeN[j].z;
+                aryNum += 3;
+                paraTnot0Amout += 1;
+                sumParaTnot0Amout += 1;
+            }
+        }
+        amoutIeachLine.push_back(paraTnot0Amout);
+        paraTnot0Amout = 0;
+    }
+
+    
 
     // Copy member variable
     memcpy(hLineVertexA, lineVA.data(), sizeof(double)*VECTOR3*lineVA.size());
