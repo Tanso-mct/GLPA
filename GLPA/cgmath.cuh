@@ -9,6 +9,29 @@
 #include <algorithm>
 #include <Windows.h>
 
+//******************************************************************
+// Kernel function call-related processing method in 3 dimensions
+// int blockSize = 32;
+// dim3 dimBlock(blockSize, blockSize, blockSize);
+// dim3 dimGrid
+// (
+//     (xElementsNum + blockSize - 1) / blockSize, 
+//     (yElementsNum + blockSize - 1) / blockSize, 
+//     (zElementsNum + blockSize - 1) / blockSize
+// );
+
+// Two-dimensional kernel function call-related processing method
+// dim3 dimBlock(32, 32); // Thread block size
+// dim3 dimGrid((xElementsNum + dimBlock.x - 1) / dimBlock.x, 
+// (yElementsNum + dimBlock.y - 1) / dimBlock.y); // Grid Size
+
+// One-dimensional kernel function call-related processing method
+// int blockSize = 1024;
+// int numBlocks = (xElementsNum + blockSize - 1) / blockSize;
+// dim3 dimBlock(blockSize, 1, 1);
+// dim3 dimGrid(numBlocks, 1, 1);
+//******************************************************************
+
 // Math
 #define PI 3.14159265
 
@@ -252,11 +275,9 @@ __global__ void gpuGetLinePlaneI
 (
     double* line_vertex_A,
     double* line_vertex_B,
-    double* plane_vertex,
-    double* plane_normal,
+    double* parametor_t,
     double* line_plane_I,
-    int line_amout,
-    int plane_amout
+    int i_amout
 );
 
 __global__ void gpuGetDenominateT
@@ -264,8 +285,8 @@ __global__ void gpuGetDenominateT
     double* line_vertex_B,
     double* plane_normal,
     double* parameter_t,
-    int line_amout,
-    int plane_amout
+    int intersection_amout,
+    int planeAmout
 );
 
 class EQUATION

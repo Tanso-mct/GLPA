@@ -443,34 +443,6 @@ void MATRIX::scaleTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D scalin
     calcMatrix3xProduct();
 }
 
-__global__ void gpuGetLinePlaneI
-(
-    double* lineVA,
-    double* lineVB,
-    double* planeV,
-    double* planeN,
-    double* lpI,
-    int lineAmout,
-    int planeAmout
-)
-{
-    // Decide which (i,j) you are in charge of based on your back number
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-    int k = blockIdx.z * blockDim.z + threadIdx.z;
-
-    if (i < lineAmout && j < planeAmout && j < VECTOR3)
-    {
-        lpI[i*VECTOR3 + j] = 
-        lineVA[i*VECTOR3 + j] + (
-            (planeN[i*VECTOR3 + PX]*(-lineVA[i*VECTOR3 + X1]+ planeV[i*VECTOR3 + X0]) 
-            + planeN[i*VECTOR3 + QY]*(-lineVA[i*VECTOR3 + Y1] + planeV[i*VECTOR3 + Y0]) 
-            + planeN[i*VECTOR3 + RZ]*(-lineVA[i*VECTOR3 + Z1] + planeV[i*VECTOR3 + Z0]))
-            / (planeN[PX]*lineVB[LX] + planeN[QY]*lineVB[MY] + planeN[RZ]*lineVB[NZ])
-        ) * lineVB[i*VECTOR3 + j];
-    }
-}
-
 __global__ void gpuGetDenominateT
 (
     double* lineVB, // l, m, n
@@ -490,6 +462,26 @@ __global__ void gpuGetDenominateT
         = planeN[i*6 + j*VECTOR3 + X0] * lineVB[i*VECTOR3 + X0]
         + planeN[i*6 + j*VECTOR3 + Y0] * lineVB[i*VECTOR3 + Y0]
         + planeN[i*6 + j*VECTOR3 + Z0] * lineVB[i*VECTOR3 + Z0];
+    }
+}
+
+__global__ void gpuGetLinePlaneI
+(
+    double* lineVA,
+    double* lineVB,
+    double* t,
+    double* lpI,
+    int amoutI
+)
+{
+    // Decide which (i,j) you are in charge of based on your back number
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < amoutI && j < VECTOR3)
+    {
+        lpI[i*VECTOR3 + j] = 
+        lineVA[i*VECTOR3 + j] + t[i] * lineVB[i*VECTOR3 + j];
     }
 }
 
@@ -552,94 +544,69 @@ void EQUATION::getLinePlaneI
     std::vector<VECTOR3D> planeN
 )
 {
-    // Allocate memory for each matrix size
-    hLineVertexA = (double*)malloc(sizeof(double)*VECTOR3*lineVA.size());
-    hLineVertexB = (double*)malloc(sizeof(double)*VECTOR3*lineVB.size());
-    hPlaneVertex = (double*)malloc(sizeof(double)*VECTOR3*planeV.size());
-    hPlaneNormal = (double*)malloc(sizeof(double)*VECTOR3*planeN.size());
-    // hLinePlaneI = (double*)malloc(sizeof(double)*lineVA.size());
-
     // Obtaining the value of the denominator of the mediating variable t
     getDenominateT(lineVB, planeN);
 
     // Checking the value of the mediating variable t to avoid division by zero
-    int aryNum = 0;
-    int paraTnot0Amout = 0;
-    int sumParaTnot0Amout = 0;
+    int amoutI = 0;
+    int sumAmoutI = 0;
     amoutIeachLine.resize(0);
+    std::vector<VECTOR3D> calcLineVA;
+    std::vector<VECTOR3D> calcLineVB;
+    std::vector<double> calcParaT;
+
     for (int i = 0; i < lineVA.size(); ++i)
     {
         for (int j = 0; j < planeN.size(); ++j)
         {
             if (paraT[i] != 0)
             {
-                hLineVertexA[aryNum + X0] = lineVA[i].x;
-                hLineVertexA[aryNum + Y0] = lineVA[i].y;
-                hLineVertexA[aryNum + Z0] = lineVA[i].z;
-
-                hLineVertexB[aryNum + X0] = lineVB[i].x;
-                hLineVertexB[aryNum + Y0] = lineVB[i].y;
-                hLineVertexB[aryNum + Z0] = lineVB[i].z;
-
-                hPlaneVertex[aryNum + X0] = planeV[j].z;
-                hPlaneVertex[aryNum + Y0] = planeV[j].z;
-                hPlaneVertex[aryNum + Z0] = planeV[j].z;
-
-                hPlaneNormal[aryNum + X0] = planeN[j].z;
-                hPlaneNormal[aryNum + Y0] = planeN[j].z;
-                hPlaneNormal[aryNum + Z0] = planeN[j].z;
-                aryNum += 3;
-                paraTnot0Amout += 1;
-                sumParaTnot0Amout += 1;
+                calcLineVA.push_back(lineVA[i]);
+                calcLineVB.push_back(planeV[j]);
+                calcParaT.push_back(paraT[i]);
+                amoutI += 1;
+                sumAmoutI += 1;
             }
         }
-        amoutIeachLine.push_back(paraTnot0Amout);
-        paraTnot0Amout = 0;
+        amoutIeachLine.push_back(amoutI);
+        amoutI = 0;
     }
 
-    
+    // Allocate memory for each matrix size
+    hLineVertexA = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
+    hLineVertexB = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
+    hParaT = (double*)malloc(sizeof(double)*sumAmoutI);
+    hLinePlaneI = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
 
     // Copy member variable
-    memcpy(hLineVertexA, lineVA.data(), sizeof(double)*VECTOR3*lineVA.size());
-    memcpy(hLineVertexB, lineVB.data(), sizeof(double)*VECTOR3*lineVB.size());
-    memcpy(hPlaneVertex, planeV.data(), sizeof(double)*VECTOR3*planeV.size());
-    memcpy(hPlaneNormal, planeN.data(), sizeof(double)*VECTOR3*planeN.size());
+    memcpy(hLineVertexA, calcLineVA.data(), sizeof(double)*VECTOR3*sumAmoutI);
+    memcpy(hLineVertexB, calcLineVA.data(), sizeof(double)*VECTOR3*sumAmoutI);
+    memcpy(hParaT, calcParaT.data(), sizeof(double)*sumAmoutI);
 
     // Allocate device-side memory using CUDAMALLOC
-    cudaMalloc((void**)&dLineVertexA, sizeof(double)*VECTOR3*lineVA.size());
-    cudaMalloc((void**)&dLineVertexB, sizeof(double)*VECTOR3*lineVB.size());
-    cudaMalloc((void**)&dPlaneVertex, sizeof(double)*VECTOR3*planeV.size());
-    cudaMalloc((void**)&dPlaneNormal, sizeof(double)*VECTOR3*planeN.size());
-    cudaMalloc((void**)&dLinePlaneI, sizeof(double)*VECTOR3*lineVA.size()*2);
+    cudaMalloc((void**)&dLineVertexA, sizeof(double)*VECTOR3*sumAmoutI);
+    cudaMalloc((void**)&dLineVertexB, sizeof(double)*VECTOR3*sumAmoutI);
+    cudaMalloc((void**)&dParaT, sizeof(double)*sumAmoutI);
+    cudaMalloc((void**)&dLinePlaneI, sizeof(double)*VECTOR3*sumAmoutI);
 
     // Copy host-side data to device-side memory
-    cudaMemcpy(dLineVertexA, hLineVertexA, sizeof(double)*VECTOR3*lineVA.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dLineVertexB, hLineVertexB, sizeof(double)*VECTOR3*lineVB.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dPlaneVertex, hPlaneVertex, sizeof(double)*VECTOR3*planeV.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dPlaneNormal, hPlaneNormal, sizeof(double)*VECTOR3*planeN.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dLineVertexA, hLineVertexA, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dLineVertexB, hLineVertexB, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dParaT, hParaT, sizeof(double)*sumAmoutI, cudaMemcpyHostToDevice);
 
     // GPU kernel function calls
-    int blockSize = 32;
-    dim3 dimBlock(blockSize, blockSize, blockSize);
-    dim3 dimGrid
-    (
-        (lineVA.size() + blockSize - 1) / blockSize, 
-        (planeV.size() + blockSize - 1) / blockSize, 
-        (VECTOR3 + blockSize - 1) / blockSize
-    );
-
-    // dim3 dimBlock(32, 32); // Thread block size
-    // dim3 dimGrid((lineVA.size() + dimBlock.x - 1) 
-    // / dimBlock.x, (lineVA.size() + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((sumAmoutI + dimBlock.x - 1) / dimBlock.x, 
+    (VECTOR3 + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
-    (dLineVertexA, dLineVertexB, dPlaneVertex, dPlaneNormal, dLinePlaneI, lineVA.size(), planeV.size());
+    (dLineVertexA, dLineVertexB, dParaT, dLinePlaneI, sumAmoutI);
 
     // Copy results from device memory to host memory
-    cudaMemcpy(hLinePlaneI, dLinePlaneI, sizeof(double)*VECTOR3*lineVA.size()*2, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hLinePlaneI, dLinePlaneI, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyDeviceToHost);
     
     // Assign the result to a Vector member variable
-    linePlaneI.resize(vecSize);
-    for (int i = 0; i < vecSize; ++i)
+    linePlaneI.resize(sumAmoutI);
+    for (int i = 0; i < sumAmoutI; ++i)
     {
         vec.inputVec3d
         (
@@ -653,15 +620,15 @@ void EQUATION::getLinePlaneI
 
     // Release all memory allocated by malloc
     free(hLineVertexA);
-    free(hLineVertexB);
     free(hPlaneVertex);
     free(hPlaneNormal);
+    free(hParaT);
     free(hLinePlaneI);
 
     cudaFree(dLineVertexA);
-    cudaFree(dLineVertexB);
     cudaFree(dPlaneVertex);
     cudaFree(dPlaneNormal);
+    cudaFree(dParaT);
     cudaFree(dLinePlaneI);
 }
 
