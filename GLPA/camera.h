@@ -8,7 +8,7 @@
 
 #include "cgmath.cuh"
 #include "file.h"
-#include "graphic.h"
+#include "graphic.h"\
 
 #define VP1 0
 #define VP2 1
@@ -40,6 +40,7 @@ public :
 
     MATRIX mtx;
     VECTOR vec;
+    EQUATION eq;
 
     std::vector<int> withinRangeAryNum;
     std::vector<INT2D> numPolyFacing;

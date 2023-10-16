@@ -294,7 +294,7 @@ class EQUATION
 public :
     VECTOR vec;
     std::vector<double> paraT;
-    std::vector<int> amoutIeachLine;
+    std::vector<INT2D> amoutIeachLine;
     std::vector<VECTOR3D> linePlaneI;
 
     double* hLineVertexA;

@@ -548,12 +548,15 @@ void EQUATION::getLinePlaneI
     getDenominateT(lineVB, planeN);
 
     // Checking the value of the mediating variable t to avoid division by zero
-    int amoutI = 0;
     int sumAmoutI = 0;
     amoutIeachLine.resize(0);
     std::vector<VECTOR3D> calcLineVA;
     std::vector<VECTOR3D> calcLineVB;
     std::vector<double> calcParaT;
+
+    std::vector<INT2D> iPerLine;
+    iPerLine.resize(1);
+    iPerLine[0].n.resize(planeN.size());
 
     for (int i = 0; i < lineVA.size(); ++i)
     {
@@ -564,12 +567,16 @@ void EQUATION::getLinePlaneI
                 calcLineVA.push_back(lineVA[i]);
                 calcLineVB.push_back(planeV[j]);
                 calcParaT.push_back(paraT[i]);
-                amoutI += 1;
+                iPerLine[0].n[j] = 1;
                 sumAmoutI += 1;
             }
         }
-        amoutIeachLine.push_back(amoutI);
-        amoutI = 0;
+        amoutIeachLine.push_back(iPerLine[0]);
+        
+        for (int j = 0; j < planeN.size(); ++j)
+        {
+            iPerLine[0].n[j] = 0;
+        }
     }
 
     // Allocate memory for each matrix size
