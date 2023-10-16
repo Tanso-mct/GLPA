@@ -207,20 +207,7 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
             {
                 if
                 (
-                    // Y-axis direction determination
-                    // ORIGIN
-                    (objData[i].range.origin.y < viewPointYZ[VP2].y &&
-                    objData[i].range.origin.y < 
-                    ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                    * (objData[i].range.origin.z - viewPointYZ[VP1].z) 
-                    + viewPointYZ[VP1].y) ||
-
-                    // OPPOSIT
-                    (objData[i].range.opposite.y > viewPointYZ[VP3].y &&
-                    objData[i].range.opposite.y > 
-                    ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                    * (objData[i].range.opposite.z - viewPointYZ[VP4].z) 
-                    + viewPointYZ[VP4].y)
+                    Å@
                 )
                 {
                     withinRangeAryNum.push_back(i);
@@ -323,7 +310,7 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
                 objData[i].v.world
                 [
                     objData[i].poly.v[numPolyFacing[i].n[j]].num3
-                ]
+                ]   
             );
         }
     }
@@ -334,10 +321,202 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
     polyVertex = mtx.resultMatrices;
 }
 
-void CAMERA::polyInViewVolumeJudge()
+void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 {
     // Create equations for each face of the view volume
-    std::vector<VECTOR3D> polyViewVolumeINTXN;
+    std::vector<VECTOR3D> polyLineVA;
+    std::vector<VECTOR3D> polyLineVB;
+
+    for (int i = 0; i < withinRangeAryNum.size(); ++i)
+    {
+        for (int j = 0; j < numPolyFacing.size(); ++j)
+        {
+            // Input vertex A
+            polyLineVA.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num1
+                ]
+            );
+
+            polyLineVA.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num2
+                ]
+            );
+
+            polyLineVA.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num3
+                ]
+            );
+
+            // Input vertex B
+            polyLineVB.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num2
+                ]
+            );
+
+            polyLineVB.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num3
+                ]
+            );
+
+            polyLineVB.push_back
+            (
+                objData[i].v.world
+                [
+                    objData[i].poly.v[numPolyFacing[i].n[j]].num1
+                ]
+            );
+        }
+    }
+
+    eq.getLinePlaneI
+    (
+        polyLineVA,
+        polyLineVB,
+        viewVolumeFaceVertex,
+        viewVolumeFaceNormal
+    );
+
+    numPolyInViewVolume.resize(0);
+    numPolyInViewVolume.resize(withinRangeAryNum.size());
+
+    int aryNum = 0;
+    bool existsI = false;
+
+    for (int k = 0; k < withinRangeAryNum.size(); ++k)
+    {
+        for (int j = 0; j < numPolyFacing.size(); ++j)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                // Judgment by XZ axis
+                if (eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP] == I_TRUE || eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM] == I_TRUE)
+                {
+                    if 
+                    (
+                        (eq.linePlaneI[aryNum].x < 
+                            ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+                            * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
+                            + viewPointXZ[VP4].x) &&
+
+                        (eq.linePlaneI[aryNum].x > 
+                        ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
+                        + viewPointXZ[VP1].x) &&
+
+                        eq.linePlaneI[aryNum].z > viewPointXZ[VP2].z &&
+                        eq.linePlaneI[aryNum].z < viewPointXZ[VP1].z
+                    )
+                    {
+                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
+                        existsI = true;
+                        break;
+                    }
+                    aryNum += 1;
+                }
+
+                if (existsI)
+                {
+                    existsI = false;
+                    break;
+                }
+
+                // Judgment by YZ axis
+                if (eq.amoutIeachLine[i].n[SURFACE_RIGHT] == I_TRUE || eq.amoutIeachLine[i].n[SURFACE_LEFT] == I_TRUE)
+                {
+                    if 
+                    (
+                        (eq.linePlaneI[aryNum].y < 
+                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
+                        + viewPointYZ[VP1].y) &&
+
+                        (eq.linePlaneI[aryNum].y > 
+                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
+                        + viewPointYZ[VP4].y) &&
+
+                        eq.linePlaneI[aryNum].z > viewPointXZ[VP2].z &&
+                        eq.linePlaneI[aryNum].z < viewPointXZ[VP1].z
+                    )
+                    {
+                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
+                        existsI = true;
+                        break;
+                    }
+                    aryNum += 1;
+                }
+
+                if (existsI)
+                {
+                    existsI = false;
+                    break;
+                }
+
+                // Judgment by XY axis
+                if (eq.amoutIeachLine[i].n[SURFACE_FRONT] == I_TRUE)
+                {
+                    if 
+                    (
+                        eq.linePlaneI[aryNum].x > viewPoint[0].x &&
+                        eq.linePlaneI[aryNum].x < viewPoint[1].x &&
+                        eq.linePlaneI[aryNum].y > viewPoint[4].y &&
+                        eq.linePlaneI[aryNum].y < viewPoint[0].y
+
+                    )
+                    {
+                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
+                        existsI = true;
+                        break;
+                    }
+                    aryNum += 1;
+                }
+
+                if (existsI)
+                {
+                    existsI = false;
+                    break;
+                }
+
+                if (eq.amoutIeachLine[i].n[SURFACE_BACK] == I_TRUE)
+                {
+                    if 
+                    (
+                        eq.linePlaneI[aryNum].x > viewPoint[5].x &&
+                        eq.linePlaneI[aryNum].x < viewPoint[6].x &&
+                        eq.linePlaneI[aryNum].y > viewPoint[8].y &&
+                        eq.linePlaneI[aryNum].y < viewPoint[5].y
+                    )
+                    {
+                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
+                        existsI = true;
+                        break;
+                    }
+                    aryNum += 1;
+                }
+
+                if (existsI)
+                {
+                    existsI = false;
+                    break;
+                }
+            }
+        }
+    }
     
 }
 

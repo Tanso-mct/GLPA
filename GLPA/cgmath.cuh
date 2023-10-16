@@ -75,6 +75,10 @@
 #define QY 1
 #define RZ 2
 
+// Used to see if an intersection exists
+#define I_FALSE 0
+#define I_TRUE 1
+
 typedef struct tagVECTOR2D
 {
     double x;

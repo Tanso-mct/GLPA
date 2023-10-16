@@ -567,7 +567,7 @@ void EQUATION::getLinePlaneI
                 calcLineVA.push_back(lineVA[i]);
                 calcLineVB.push_back(planeV[j]);
                 calcParaT.push_back(paraT[i]);
-                iPerLine[0].n[j] = 1;
+                iPerLine[0].n[j] = I_TRUE;
                 sumAmoutI += 1;
             }
         }
@@ -575,7 +575,7 @@ void EQUATION::getLinePlaneI
         
         for (int j = 0; j < planeN.size(); ++j)
         {
-            iPerLine[0].n[j] = 0;
+            iPerLine[0].n[j] = I_FALSE;
         }
     }
 

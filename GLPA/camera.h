@@ -44,8 +44,8 @@ public :
 
     std::vector<int> withinRangeAryNum;
     std::vector<INT2D> numPolyFacing;
-    std::vector<INT2D> numPolyInViewVolume;
     std::vector<VECTOR3D> polyVertex;
+    std::vector<INT2D> numPolyInViewVolume;
 
     void initialize(); // Initialize data
     void defViewVolume(); // define clipping area
@@ -61,8 +61,13 @@ public :
     // Coordinate transformation of the vertices of the surface to be drawn
     void coordinateTransV(std::vector<OBJ_FILE> objData);
 
+    bool confirmI
+    (
+        line_I_amout_data,
+        
+    )
     // Determine if polygon is in view volume and store array number
-    void polyInViewVolumeJudge();
+    void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 };
 
 #endif CAMERA_H_
