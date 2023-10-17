@@ -207,7 +207,20 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
             {
                 if
                 (
-                    Å@
+                    // Y-axis direction determination
+                    // ORIGIN
+                    (objData[i].range.origin.y < viewPointYZ[VP2].y &&
+                    objData[i].range.origin.y < 
+                    ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                    * (objData[i].range.origin.z - viewPointYZ[VP1].z) 
+                    + viewPointYZ[VP1].y) ||
+
+                    // OPPOSIT
+                    (objData[i].range.opposite.y > viewPointYZ[VP3].y &&
+                    objData[i].range.opposite.y > 
+                    ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                    * (objData[i].range.opposite.z - viewPointYZ[VP4].z) 
+                    + viewPointYZ[VP4].y)
                 )
                 {
                     withinRangeAryNum.push_back(i);
@@ -321,6 +334,35 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
     polyVertex = mtx.resultMatrices;
 }
 
+bool CAMERA::confirmI
+(
+    int exitsIdata, 
+    double leftLessThan1Data, double rightLessThan1Data,
+    double leftGreaterThan1Data, double rightGreaterThan1Data, 
+    double leftLessThan2Data, double rightLessThan2Data,
+    double leftGreaterThan2Data, double rightGreaterThan2Data,
+    int withInRangeAryNumdData, int numPolyfacingData
+)
+{
+    if (exitsIdata == I_TRUE)
+    {
+        if 
+        (
+            leftLessThan1Data < rightLessThan1Data &&
+            leftGreaterThan1Data > rightGreaterThan1Data &&
+            leftLessThan2Data < rightLessThan2Data &&
+            leftGreaterThan2Data > rightGreaterThan2Data
+        )
+        {
+            numPolyInViewVolume[withInRangeAryNumdData].n.push_back
+            (numPolyFacing[withInRangeAryNumdData].n[numPolyfacingData]);
+            return true;
+        }
+        return false;
+    }
+}
+
+
 void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 {
     // Create equations for each face of the view volume
@@ -404,6 +446,30 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             for (int i = 0; i < 3; ++i)
             {
                 // Judgment by XZ axis
+                if(
+                    confirmI(
+                        eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP],
+
+                        eq.linePlaneI[aryNum].x, 
+                        ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
+                        + viewPointXZ[VP4].x,
+
+                        eq.linePlaneI[aryNum].x,
+                        ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
+                        + viewPointXZ[VP1].x,
+
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+                        k, j
+                    )
+                )
+                {
+                    existsI = true;
+                    break;
+                }
+
                 if (eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP] == I_TRUE || eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM] == I_TRUE)
                 {
                     if 

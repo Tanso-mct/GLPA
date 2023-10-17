@@ -63,9 +63,13 @@ public :
 
     bool confirmI
     (
-        line_I_amout_data,
-        
-    )
+        int exits_Idata,
+        double left_GreaterThan1Data,  double right_GreaterThan1Data,
+        double left_LessThan1Data,  double right_LessThan1Data,
+        double left_GreaterThan2Data,  double right_GreaterThan2Data,
+        double left_LessThan2Data,  double right_LessThan2Data,
+        int withInRangeAryNumd_Oata, int numPolyfacing_Data
+    );
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 };
