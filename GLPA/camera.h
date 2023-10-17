@@ -8,7 +8,7 @@
 
 #include "cgmath.cuh"
 #include "file.h"
-#include "graphic.h"\
+#include "graphic.h"
 
 #define VP1 0
 #define VP2 1

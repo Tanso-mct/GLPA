@@ -95,21 +95,21 @@ void CAMERA::defViewVolume()
 
     // Assign a point on the surface
     viewVolumeFaceVertex.resize(6);
-    viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[6];
-    viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[4];
-    viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[6];
-    viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[4];
-    viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[6];
-    viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[4];
+    viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[5];
+    viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[3];
+    viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[5];
+    viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[3];
+    viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[5];
+    viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[3];
 
     std::vector<VECTOR3D> calcViewPoint;
     calcViewPoint.resize(6);
     calcViewPoint[SURFACE_TOP] = viewPoint[0];
     calcViewPoint[SURFACE_FRONT] = viewPoint[0];
-    calcViewPoint[SURFACE_RIGHT] = viewPoint[7];
+    calcViewPoint[SURFACE_RIGHT] = viewPoint[6];
     calcViewPoint[SURFACE_LEFT] = viewPoint[0];
-    calcViewPoint[SURFACE_BACK] = viewPoint[7];
-    calcViewPoint[SURFACE_BOTTOM] = viewPoint[7];
+    calcViewPoint[SURFACE_BACK] = viewPoint[6];
+    calcViewPoint[SURFACE_BOTTOM] = viewPoint[6];
 
     vec.crossProduct(viewVolumeFaceVertex, calcViewPoint);
 
@@ -371,7 +371,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
-        for (int j = 0; j < numPolyFacing.size(); ++j)
+        for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
         {
             // Input vertex A
             polyLineVA.push_back
@@ -437,11 +437,10 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     numPolyInViewVolume.resize(withinRangeAryNum.size());
 
     int aryNum = 0;
-    bool existsI = false;
 
     for (int k = 0; k < withinRangeAryNum.size(); ++k)
     {
-        for (int j = 0; j < numPolyFacing.size(); ++j)
+        for (int j = 0; j < numPolyFacing[k].n.size(); ++j)
         {
             for (int i = 0; i < 3; ++i)
             {
@@ -466,120 +465,139 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     )
                 )
                 {
-                    existsI = true;
-                    break;
-                }
-
-                if (eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP] == I_TRUE || eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM] == I_TRUE)
-                {
-                    if 
-                    (
-                        (eq.linePlaneI[aryNum].x < 
-                            ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
-                            * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
-                            + viewPointXZ[VP4].x) &&
-
-                        (eq.linePlaneI[aryNum].x > 
-                        ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
-                        + viewPointXZ[VP1].x) &&
-
-                        eq.linePlaneI[aryNum].z > viewPointXZ[VP2].z &&
-                        eq.linePlaneI[aryNum].z < viewPointXZ[VP1].z
-                    )
-                    {
-                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
-                        existsI = true;
-                        break;
-                    }
-                    aryNum += 1;
-                }
-
-                if (existsI)
-                {
-                    existsI = false;
-                    break;
-                }
-
-                // Judgment by YZ axis
-                if (eq.amoutIeachLine[i].n[SURFACE_RIGHT] == I_TRUE || eq.amoutIeachLine[i].n[SURFACE_LEFT] == I_TRUE)
-                {
-                    if 
-                    (
-                        (eq.linePlaneI[aryNum].y < 
-                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
-                        + viewPointYZ[VP1].y) &&
-
-                        (eq.linePlaneI[aryNum].y > 
-                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
-                        + viewPointYZ[VP4].y) &&
-
-                        eq.linePlaneI[aryNum].z > viewPointXZ[VP2].z &&
-                        eq.linePlaneI[aryNum].z < viewPointXZ[VP1].z
-                    )
-                    {
-                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
-                        existsI = true;
-                        break;
-                    }
-                    aryNum += 1;
-                }
-
-                if (existsI)
-                {
-                    existsI = false;
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
                     break;
                 }
 
                 // Judgment by XY axis
-                if (eq.amoutIeachLine[i].n[SURFACE_FRONT] == I_TRUE)
-                {
-                    if 
-                    (
-                        eq.linePlaneI[aryNum].x > viewPoint[0].x &&
-                        eq.linePlaneI[aryNum].x < viewPoint[1].x &&
-                        eq.linePlaneI[aryNum].y > viewPoint[4].y &&
-                        eq.linePlaneI[aryNum].y < viewPoint[0].y
+                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP];
+                if(
+                    confirmI(
+                        eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT],
 
+                        eq.linePlaneI[aryNum].x, viewPoint[1].x,
+                        eq.linePlaneI[aryNum].x, viewPoint[0].x,
+                        eq.linePlaneI[aryNum].y, viewPoint[0].y,
+                        eq.linePlaneI[aryNum].y, viewPoint[3].y,
+                        k, j
                     )
-                    {
-                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
-                        existsI = true;
-                        break;
-                    }
-                    aryNum += 1;
-                }
-
-                if (existsI)
+                )
                 {
-                    existsI = false;
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
                     break;
                 }
 
-                if (eq.amoutIeachLine[i].n[SURFACE_BACK] == I_TRUE)
-                {
-                    if 
-                    (
-                        eq.linePlaneI[aryNum].x > viewPoint[5].x &&
-                        eq.linePlaneI[aryNum].x < viewPoint[6].x &&
-                        eq.linePlaneI[aryNum].y > viewPoint[8].y &&
-                        eq.linePlaneI[aryNum].y < viewPoint[5].y
-                    )
-                    {
-                        numPolyInViewVolume[k].n.push_back(numPolyFacing[k].n[j]);
-                        existsI = true;
-                        break;
-                    }
-                    aryNum += 1;
-                }
+                // Judgment by YZ axis
+                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT];
+                if(
+                    confirmI(
+                        eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT],
 
-                if (existsI)
+                        eq.linePlaneI[aryNum].y,
+                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
+                        + viewPointYZ[VP1].y,
+
+                        eq.linePlaneI[aryNum].y,
+                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
+                        + viewPointYZ[VP4].y,
+
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+                        k, j
+                    )
+                )
                 {
-                    existsI = false;
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
                     break;
                 }
+
+                // Judgment by YZ axis
+                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
+                if(
+                    confirmI(
+                        eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT],
+
+                        eq.linePlaneI[aryNum].y,
+                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
+                        + viewPointYZ[VP1].y,
+
+                        eq.linePlaneI[aryNum].y,
+                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
+                        + viewPointYZ[VP4].y,
+
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+                        k, j
+                    )
+                )
+                {
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    break;
+                }
+
+                // Judgment by XY axis
+                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
+                if(
+                    confirmI(
+                        eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK],
+
+                        eq.linePlaneI[aryNum].x, viewPoint[5].x,
+                        eq.linePlaneI[aryNum].x, viewPoint[4].x,
+                        eq.linePlaneI[aryNum].y, viewPoint[4].y,
+                        eq.linePlaneI[aryNum].y, viewPoint[7].y,
+                        k, j
+                    )
+                )
+                {
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    break;
+                }
+
+                // Judgment by XZ axis
+                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                if(
+                    confirmI(
+                        eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM],
+
+                        eq.linePlaneI[aryNum].x, 
+                        ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
+                        + viewPointXZ[VP4].x,
+
+                        eq.linePlaneI[aryNum].x,
+                        ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
+                        + viewPointXZ[VP1].x,
+
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+                        k, j
+                    )
+                )
+                {
+                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    break;
+                }
+                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
             }
         }
     }

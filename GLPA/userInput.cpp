@@ -67,6 +67,7 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 deve001.cam.clippingRange(tempObject.data);
                 deve001.cam.polyBilateralJudge(tempObject.data);
                 deve001.cam.coordinateTransV(tempObject.data);
+                deve001.cam.polyInViewVolumeJudge(tempObject.data);
 
                 break;
         default :
