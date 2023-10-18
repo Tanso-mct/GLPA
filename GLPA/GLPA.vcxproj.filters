@@ -119,5 +119,8 @@
     <None Include="..\loadfiles\obj\temp_cube.obj">
       <Filter>リソース ファイル\obj</Filter>
     </None>
+    <None Include="..\loadfiles\obj\temp_farCube.obj">
+      <Filter>リソース ファイル\obj</Filter>
+    </None>
   </ItemGroup>
 </Project>

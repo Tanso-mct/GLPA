@@ -279,6 +279,8 @@ __global__ void gpuGetLinePlaneI
 (
     double* line_vertex_A,
     double* line_vertex_B,
+    double* plane_vertex,
+    double* plane_normal,
     double* parametor_t,
     double* line_plane_I,
     int i_amout
@@ -326,7 +328,9 @@ public :
         std::vector<VECTOR3D> line_vertex_A, // x1, y1, z1
         std::vector<VECTOR3D> line_vertex_B, // l, m, n
         std::vector<VECTOR3D> plane_vertex, // x0, y0, z0
-        std::vector<VECTOR3D> plane_normal // p, q, r
+        std::vector<VECTOR3D> plane_normal, // p, q, r
+        std::vector<VECTOR3D>* store_line_vertex_A,
+        std::vector<VECTOR3D>* store_line_vertex_B
     );
 
 };

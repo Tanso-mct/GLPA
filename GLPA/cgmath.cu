@@ -467,8 +467,10 @@ __global__ void gpuGetDenominateT
 
 __global__ void gpuGetLinePlaneI
 (
-    double* lineVA,
-    double* lineVB,
+    double* lineVA, // x1, y1, z1
+    double* lineVB, // l, m, n
+    double* planeV, // x0, y0, z0
+    double* planeN, // p, q, r
     double* t,
     double* lpI,
     int amoutI
@@ -481,7 +483,11 @@ __global__ void gpuGetLinePlaneI
     if (i < amoutI && j < VECTOR3)
     {
         lpI[i*VECTOR3 + j] = 
-        lineVA[i*VECTOR3 + j] + t[i] * lineVB[i*VECTOR3 + j];
+        lineVA[i*VECTOR3 + j] + 
+        ((planeN[i*VECTOR3 + PX] * (-lineVA[i*VECTOR3 + X1] + planeV[i*VECTOR3 + X0])
+        + planeN[i*VECTOR3 + QY] * (-lineVA[i*VECTOR3 + Y1] + planeV[i*VECTOR3 + Y0])
+        + planeN[i*VECTOR3 + RZ] * (-lineVA[i*VECTOR3 + Z1] + planeV[i*VECTOR3 + Z0]))
+        / t[i]) * lineVB[i*VECTOR3 + j];
     }
 }
 
@@ -541,7 +547,9 @@ void EQUATION::getLinePlaneI
     std::vector<VECTOR3D> lineVA,
     std::vector<VECTOR3D> lineVB,
     std::vector<VECTOR3D> planeV,
-    std::vector<VECTOR3D> planeN
+    std::vector<VECTOR3D> planeN,
+    std::vector<VECTOR3D>* storeLineVA,
+    std::vector<VECTOR3D>* storeLineVB
 )
 {
     // Obtaining the value of the denominator of the mediating variable t
@@ -552,6 +560,8 @@ void EQUATION::getLinePlaneI
     amoutIeachLine.resize(0);
     std::vector<VECTOR3D> calcLineVA;
     std::vector<VECTOR3D> calcLineVB;
+    std::vector<VECTOR3D> calcPlaneV;
+    std::vector<VECTOR3D> calcPlaneN;
     std::vector<double> calcParaT;
 
     std::vector<INT2D> iPerLine;
@@ -565,7 +575,9 @@ void EQUATION::getLinePlaneI
             if (paraT[i] != 0)
             {
                 calcLineVA.push_back(lineVA[i]);
-                calcLineVB.push_back(planeV[j]);
+                calcLineVB.push_back(lineVB[i]);
+                calcPlaneV.push_back(planeV[j]);
+                calcPlaneN.push_back(planeN[j]);
                 calcParaT.push_back(paraT[i]);
                 iPerLine[0].n[j] = I_TRUE;
                 sumAmoutI += 1;
@@ -579,26 +591,41 @@ void EQUATION::getLinePlaneI
         }
     }
 
+    // Saves the values of VertexA and VertexB. Later used to determine if the intersection is a 
+    // point on the line
+    storeLineVA->resize(calcLineVA.size());
+    storeLineVB->resize(calcLineVB.size());
+    *storeLineVA = calcLineVA;
+    *storeLineVB = calcLineVB;
+
     // Allocate memory for each matrix size
     hLineVertexA = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
     hLineVertexB = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
+    hPlaneVertex = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
+    hPlaneNormal = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
     hParaT = (double*)malloc(sizeof(double)*sumAmoutI);
     hLinePlaneI = (double*)malloc(sizeof(double)*VECTOR3*sumAmoutI);
 
     // Copy member variable
     memcpy(hLineVertexA, calcLineVA.data(), sizeof(double)*VECTOR3*sumAmoutI);
-    memcpy(hLineVertexB, calcLineVA.data(), sizeof(double)*VECTOR3*sumAmoutI);
+    memcpy(hLineVertexB, calcLineVB.data(), sizeof(double)*VECTOR3*sumAmoutI);
+    memcpy(hPlaneVertex, calcPlaneV.data(), sizeof(double)*VECTOR3*sumAmoutI);
+    memcpy(hPlaneNormal, calcPlaneN.data(), sizeof(double)*VECTOR3*sumAmoutI);
     memcpy(hParaT, calcParaT.data(), sizeof(double)*sumAmoutI);
 
     // Allocate device-side memory using CUDAMALLOC
     cudaMalloc((void**)&dLineVertexA, sizeof(double)*VECTOR3*sumAmoutI);
     cudaMalloc((void**)&dLineVertexB, sizeof(double)*VECTOR3*sumAmoutI);
+    cudaMalloc((void**)&dPlaneVertex, sizeof(double)*VECTOR3*sumAmoutI);
+    cudaMalloc((void**)&dPlaneNormal, sizeof(double)*VECTOR3*sumAmoutI);
     cudaMalloc((void**)&dParaT, sizeof(double)*sumAmoutI);
     cudaMalloc((void**)&dLinePlaneI, sizeof(double)*VECTOR3*sumAmoutI);
 
     // Copy host-side data to device-side memory
     cudaMemcpy(dLineVertexA, hLineVertexA, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyHostToDevice);
     cudaMemcpy(dLineVertexB, hLineVertexB, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPlaneVertex, hPlaneVertex, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPlaneNormal, hPlaneNormal, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyHostToDevice);
     cudaMemcpy(dParaT, hParaT, sizeof(double)*sumAmoutI, cudaMemcpyHostToDevice);
 
     // GPU kernel function calls
@@ -606,7 +633,7 @@ void EQUATION::getLinePlaneI
     dim3 dimGrid((VECTOR3 + dimBlock.x - 1) / dimBlock.x, 
     (sumAmoutI + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
-    (dLineVertexA, dLineVertexB, dParaT, dLinePlaneI, sumAmoutI);
+    (dLineVertexA, dLineVertexB, dPlaneVertex, dPlaneNormal, dParaT, dLinePlaneI, sumAmoutI);
 
     // Copy results from device memory to host memory
     cudaMemcpy(hLinePlaneI, dLinePlaneI, sizeof(double)*VECTOR3*sumAmoutI, cudaMemcpyDeviceToHost);
@@ -627,12 +654,14 @@ void EQUATION::getLinePlaneI
 
     // Release all memory allocated by malloc
     free(hLineVertexA);
+    free(hLineVertexB);
     free(hPlaneVertex);
     free(hPlaneNormal);
     free(hParaT);
     free(hLinePlaneI);
 
     cudaFree(dLineVertexA);
+    cudaFree(dLineVertexB);
     cudaFree(dPlaneVertex);
     cudaFree(dPlaneNormal);
     cudaFree(dParaT);

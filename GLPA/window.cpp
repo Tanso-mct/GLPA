@@ -162,8 +162,6 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 // sampleBmpFile.loadBinary(FILETYPE_BMP, ("temp.bmp"));
                 // sampleBmpFile.checkBinary();
                 
-                tempObject.inputData("temp_cube.obj");
-        
                 tempMtlFile.loadData("temp_cube.mtl");
                 
                 // //TODO:to make at texture.h,.cpp about load texture function

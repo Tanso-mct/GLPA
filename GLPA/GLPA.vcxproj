@@ -185,6 +185,11 @@
   <ItemGroup>
     <None Include="..\loadfiles\mtl\temp_cube.mtl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\loadfiles\obj\temp_farCube.obj">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.2.targets" />
