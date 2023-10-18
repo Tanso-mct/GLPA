@@ -459,9 +459,9 @@ __global__ void gpuGetDenominateT
     if (i < lineAmout && j < planeAmout)
     {
         t[i*planeAmout + j]
-        = planeN[i*6 + j*VECTOR3 + X0] * lineVB[i*VECTOR3 + X0]
-        + planeN[i*6 + j*VECTOR3 + Y0] * lineVB[i*VECTOR3 + Y0]
-        + planeN[i*6 + j*VECTOR3 + Z0] * lineVB[i*VECTOR3 + Z0];
+        = lineVB[i*VECTOR3 + X0] * planeN[j*VECTOR3 + X0]
+        + lineVB[i*VECTOR3 + Y0] * planeN[j*VECTOR3 + Y0]
+        + lineVB[i*VECTOR3 + Z0] * planeN[j*VECTOR3 + Z0];
     }
 }
 
@@ -507,8 +507,8 @@ void EQUATION::getDenominateT(std::vector<VECTOR3D> lineVB, std::vector<VECTOR3D
 
     // GPU kernel function calls
     dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((lineVB.size() + dimBlock.x - 1) / dimBlock.x, 
-    (planeN.size() + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    dim3 dimGrid((planeN.size() + dimBlock.x - 1) / dimBlock.x, 
+    (lineVB.size() + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuGetDenominateT<<<dimGrid, dimBlock>>>
     (dLineVertexB, dPlaneNormal, dParaT, lineVB.size(), planeN.size());
 
@@ -603,8 +603,8 @@ void EQUATION::getLinePlaneI
 
     // GPU kernel function calls
     dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((sumAmoutI + dimBlock.x - 1) / dimBlock.x, 
-    (VECTOR3 + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    dim3 dimGrid((VECTOR3 + dimBlock.x - 1) / dimBlock.x, 
+    (sumAmoutI + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
     (dLineVertexA, dLineVertexB, dParaT, dLinePlaneI, sumAmoutI);
 

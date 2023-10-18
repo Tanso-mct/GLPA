@@ -70,6 +70,8 @@ public :
         double left_LessThan2Data,  double right_LessThan2Data,
         int withInRangeAryNumd_Oata, int numPolyfacing_Data
     );
+
+    bool vertexInViewVolume(VECTOR3D vertex);
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 };

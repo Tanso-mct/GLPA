@@ -4,7 +4,7 @@
 void CAMERA::initialize()
 {
     wPos = {0, 0, 0};
-    rotAngle = {0, 0, 10};
+    rotAngle = {0, 0, 0};
 
     nearZ = 1;
     farZ = 1000;
@@ -362,69 +362,150 @@ bool CAMERA::confirmI
     }
 }
 
+bool CAMERA::vertexInViewVolume(VECTOR3D v)
+{
+    if 
+    (
+        v.z > viewPointXZ[VP2].z && v.z < viewPointXZ[VP1].z
+    )
+    {
+        // X-axis direction determination
+        if 
+        (
+            // ORIGIN
+            v.x < viewPointXZ[VP3].x &&
+            v.x < 
+            ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+            * (v.z - viewPointXZ[VP4].z) + viewPointXZ[VP4].x &&
+
+            // OPPOSITE
+            v.x > viewPointXZ[VP2].x &&
+            v.x > 
+            ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+            * (v.z - viewPointXZ[VP1].z) + viewPointXZ[VP1].x
+        )
+        {
+            if
+            (
+                // Y-axis direction determination
+                // ORIGIN
+                v.y < viewPointYZ[VP2].y &&
+                v.y < 
+                ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                * (v.z - viewPointYZ[VP1].z) + viewPointYZ[VP1].y &&
+
+                // OPPOSIT
+                v.y > viewPointYZ[VP3].y &&
+                v.y > 
+                ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                * (v.z - viewPointYZ[VP4].z) + viewPointYZ[VP4].y
+            )
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 
 void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 {
-    // Create equations for each face of the view volume
+    // Stores the vertices that make up the line segment
     std::vector<VECTOR3D> polyLineVA;
     std::vector<VECTOR3D> polyLineVB;
 
+    numPolyInViewVolume.resize(withinRangeAryNum.size());
+
+    // If one of the vertices is in the view volume, 
+    // it is excluded from the intersection determination as a drawing target.
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
         for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
         {
-            // Input vertex A
-            polyLineVA.push_back
-            (
-                objData[i].v.world
+            if(
+                vertexInViewVolume(objData[i].v.world
                 [
                     objData[i].poly.v[numPolyFacing[i].n[j]].num1
-                ]
-            );
-
-            polyLineVA.push_back
-            (
-                objData[i].v.world
+                ])
+            )
+            {
+                numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+            }
+            else if (
+                vertexInViewVolume(objData[i].v.world
                 [
                     objData[i].poly.v[numPolyFacing[i].n[j]].num2
-                ]
-            );
-
-            polyLineVA.push_back
-            (
-                objData[i].v.world
+                ])
+            )
+            {
+                numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+            }
+            else if (
+                vertexInViewVolume(objData[i].v.world
                 [
                     objData[i].poly.v[numPolyFacing[i].n[j]].num3
-                ]
-            );
+                ])
+            )
+            {
+                numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+            }
+            else
+            {
+                // Input vertex A
+                polyLineVA.push_back
+                (
+                    objData[i].v.world
+                    [
+                        objData[i].poly.v[numPolyFacing[i].n[j]].num1
+                    ]
+                );
 
-            // Input vertex B
-            polyLineVB.push_back
-            (
-                objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i].n[j]].num2
-                ]
-            );
+                polyLineVA.push_back
+                (
+                    objData[i].v.world
+                    [
+                        objData[i].poly.v[numPolyFacing[i].n[j]].num2
+                    ]
+                );
 
-            polyLineVB.push_back
-            (
-                objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i].n[j]].num3
-                ]
-            );
+                polyLineVA.push_back
+                (
+                    objData[i].v.world
+                    [
+                        objData[i].poly.v[numPolyFacing[i].n[j]].num3
+                    ]
+                );
 
-            polyLineVB.push_back
-            (
-                objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i].n[j]].num1
-                ]
-            );
+                // Input vertex B
+                polyLineVB.push_back
+                (
+                    objData[i].v.world
+                    [
+                        objData[i].poly.v[numPolyFacing[i].n[j]].num2
+                    ]
+                );
+
+                polyLineVB.push_back
+                (
+                    objData[i].v.world
+                    [
+                        objData[i].poly.v[numPolyFacing[i].n[j]].num3
+                    ]
+                );
+
+                polyLineVB.push_back
+                (
+                    objData[i].v.world
+                    [
+                        objData[i].poly.v[numPolyFacing[i].n[j]].num1
+                    ]
+                );
+            }
         }
     }
 
+    
     eq.getLinePlaneI
     (
         polyLineVA,
