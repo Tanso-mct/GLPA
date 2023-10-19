@@ -497,7 +497,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         &usedLineVB
     );
 
-    numPolyAllVNotInViewVolume.resize(withinRangeAryNum.size());
+    numPolyAllVINotInViewVolume.resize(withinRangeAryNum.size());
 
     aryNum = 0;
     bool findTrueI = false;
@@ -683,7 +683,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             // Stores the number of polygons for which all intersections did not meet the condition
             if (!findTrueI)
             {
-                numPolyAllVNotInViewVolume[k].n.push_back(numPolyNotInViewVolume[k].n[j]);
+                numPolyAllVINotInViewVolume[k].n.push_back(numPolyNotInViewVolume[k].n[j]);
             }
             findTrueI = false;
             

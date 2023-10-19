@@ -529,17 +529,13 @@ void EQUATION::getDenominateT(std::vector<VECTOR3D> lineVB, std::vector<VECTOR3D
     }
 
     // Release all memory allocated by malloc
-    free(hLineVertexA);
     free(hLineVertexB);
-    free(hPlaneVertex);
     free(hPlaneNormal);
-    free(hLinePlaneI);
+    free(hParaT);
 
-    cudaFree(dLineVertexA);
     cudaFree(dLineVertexB);
-    cudaFree(dPlaneVertex);
     cudaFree(dPlaneNormal);
-    cudaFree(dLinePlaneI);
+    cudaFree(dParaT);
 }
 
 void EQUATION::getLinePlaneI

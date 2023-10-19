@@ -64,17 +64,21 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 // sampleBmpFile.loadBinary(FILETYPE_BMP, ("temp.bmp"));
                 // sampleBmpFile.checkBinary();
                 
-                tempMtlFile.loadData("temp_cube");
-                tempObject.inputData("temp_cube");
-                tempObject.inputData("temp_farCube");
-                deve001.cam.initialize();
-                deve001.cam.defViewVolume();
+                OutputDebugStringW(_T("New scene\n"));
                 deve001.cam.coordinateTransRange(&tempObject.data);
                 deve001.cam.clippingRange(tempObject.data);
                 deve001.cam.polyBilateralJudge(tempObject.data);
                 deve001.cam.coordinateTransV(tempObject.data);
                 deve001.cam.polyInViewVolumeJudge(tempObject.data);
 
+                break;
+        case 'I' :
+                OutputDebugStringW(_T("Camera Initialize\n"));
+                tempMtlFile.loadData("temp_cube");
+                tempObject.inputData("temp_cube");
+                tempObject.inputData("temp_farCube");
+                deve001.cam.initialize();
+                deve001.cam.defViewVolume();
                 break;
         default :
                 _stprintf_s(szstr, _T("%s"), _T("ANY"));

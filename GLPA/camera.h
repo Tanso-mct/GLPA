@@ -47,7 +47,7 @@ public :
     std::vector<VECTOR3D> polyVertex;
     std::vector<INT2D> numPolyInViewVolume;
     std::vector<INT2D> numPolyNotInViewVolume;
-    std::vector<INT2D> numPolyAllVNotInViewVolume;
+    std::vector<INT2D> numPolyAllVINotInViewVolume;
 
 
     void initialize(); // Initialize data
