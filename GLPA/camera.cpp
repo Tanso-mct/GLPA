@@ -3,7 +3,7 @@
 
 void CAMERA::initialize()
 {
-    wPos = {0, -100, 0};
+    wPos = {0, 0, 0};
     rotAngle = {0, 0, 0};
 
     nearZ = 0.01;
@@ -424,33 +424,25 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     // If one of the vertices is in the view volume, 
     // it is excluded from the intersection determination as a drawing target.
+    int aryNum = 0;
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
         for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
         {
             if(
-                vertexInViewVolume(objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i].n[j]].num1
-                ])
+                vertexInViewVolume(polyVertex[aryNum + j*3 + 0])
             )
             {
                 numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
             }
             else if (
-                vertexInViewVolume(objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i].n[j]].num2
-                ])
+                vertexInViewVolume(polyVertex[aryNum + j*3 + 1])
             )
             {
                 numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
             }
             else if (
-                vertexInViewVolume(objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i].n[j]].num3
-                ])
+                vertexInViewVolume(polyVertex[aryNum + j*3 + 2])
             )
             {
                 numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
@@ -461,51 +453,33 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                 // Input vertex A
                 polyLineVA.push_back
                 (
-                    objData[i].v.world
-                    [
-                        objData[i].poly.v[numPolyFacing[i].n[j]].num1
-                    ]
+                    polyVertex[aryNum + j*3 + 0]
                 );
 
                 polyLineVA.push_back
                 (
-                    objData[i].v.world
-                    [
-                        objData[i].poly.v[numPolyFacing[i].n[j]].num2
-                    ]
+                    polyVertex[aryNum + j*3 + 1]
                 );
 
                 polyLineVA.push_back
                 (
-                    objData[i].v.world
-                    [
-                        objData[i].poly.v[numPolyFacing[i].n[j]].num3
-                    ]
+                    polyVertex[aryNum + j*3 + 2]
                 );
 
                 // Input vertex B
                 polyLineVB.push_back
                 (
-                    objData[i].v.world
-                    [
-                        objData[i].poly.v[numPolyFacing[i].n[j]].num2
-                    ]
+                    polyVertex[aryNum + j*3 + 1]
                 );
 
                 polyLineVB.push_back
                 (
-                    objData[i].v.world
-                    [
-                        objData[i].poly.v[numPolyFacing[i].n[j]].num3
-                    ]
+                    polyVertex[aryNum + j*3 + 2]
                 );
 
                 polyLineVB.push_back
                 (
-                    objData[i].v.world
-                    [
-                        objData[i].poly.v[numPolyFacing[i].n[j]].num1
-                    ]
+                    polyVertex[aryNum + j*3 + 0]
                 );
             }
         }
@@ -525,7 +499,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     numPolyAllVNotInViewVolume.resize(withinRangeAryNum.size());
 
-    int aryNum = 0;
+    aryNum = 0;
     bool findTrueI = false;
 
     for (int k = 0; k < withinRangeAryNum.size(); ++k)
@@ -710,8 +684,8 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             if (!findTrueI)
             {
                 numPolyAllVNotInViewVolume[k].n.push_back(numPolyNotInViewVolume[k].n[j]);
-                findTrueI = false;
             }
+            findTrueI = false;
             
         }
     }
