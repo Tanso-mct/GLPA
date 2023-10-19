@@ -15,6 +15,8 @@
 
 #define FILETYPE_BMP 0
 #define FILETYPE_PNG 1
+#define FILETYPE_OBJ 2
+#define FILETYPE_MTL 3
 
 // Load state
 #define LOAD_SUCCESS 0
@@ -28,8 +30,10 @@ class FILELOAD
 {
     public :
     std::string fileName;
+    std::string filePath;
     std::vector<std::string> binaryData;
     int loadStatus = NO_PROCESSED;
+    void setFilePath(int file_type, std::string input_file_name);
     int loadBinary(int file_type, std::string input_file_name);
     void checkBinary();
 };

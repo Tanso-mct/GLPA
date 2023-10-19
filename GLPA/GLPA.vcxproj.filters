@@ -108,18 +108,18 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\loadfiles\bmp\temp.bmp">
+    <Image Include="resource\bmp\temp.bmp">
       <Filter>リソース ファイル\bmp</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\loadfiles\mtl\temp_cube.mtl">
+    <None Include="resource\mtl\temp_cube.mtl">
       <Filter>リソース ファイル\mtl</Filter>
     </None>
-    <None Include="..\loadfiles\obj\temp_cube.obj">
+    <None Include="resource\obj\temp_cube.obj">
       <Filter>リソース ファイル\obj</Filter>
     </None>
-    <None Include="..\loadfiles\obj\temp_farCube.obj">
+    <None Include="resource\obj\temp_farCube.obj">
       <Filter>リソース ファイル\obj</Filter>
     </None>
   </ItemGroup>

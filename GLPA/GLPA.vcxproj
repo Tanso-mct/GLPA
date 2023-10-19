@@ -175,18 +175,16 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\loadfiles\bmp\temp.bmp" />
+    <Image Include="resource\bmp\temp.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\loadfiles\obj\temp_cube.obj">
+    <None Include="resource\mtl\temp_cube.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\obj\temp_cube.obj">
       <FileType>Document</FileType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\loadfiles\mtl\temp_cube.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\loadfiles\obj\temp_farCube.obj">
+    <None Include="resource\obj\temp_farCube.obj">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

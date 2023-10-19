@@ -61,8 +61,12 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 WndLAU.fpsSystem.setFps = 10;
                 break;
         case 'C' :
-                tempObject.inputData("temp_cube.obj");
-                tempObject.inputData("temp_farCube.obj");
+                // sampleBmpFile.loadBinary(FILETYPE_BMP, ("temp.bmp"));
+                // sampleBmpFile.checkBinary();
+                
+                tempMtlFile.loadData("temp_cube");
+                tempObject.inputData("temp_cube");
+                tempObject.inputData("temp_farCube");
                 deve001.cam.initialize();
                 deve001.cam.defViewVolume();
                 deve001.cam.coordinateTransRange(&tempObject.data);

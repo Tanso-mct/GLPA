@@ -3,10 +3,10 @@
 
 void CAMERA::initialize()
 {
-    wPos = {0, 0, 0};
+    wPos = {0, -100, 0};
     rotAngle = {0, 0, 0};
 
-    nearZ = 1;
+    nearZ = 0.01;
     farZ = 10000;
     viewAngle = 80;
     aspectRatio = {16, 9};
@@ -271,8 +271,7 @@ void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
     planeVertex = mtx.resultMatrices;
 
     // Camera coordinate transformation of the normal vector of a surface
-    vec.posTrans(planeNormal, wPos);
-    mtx.rotTrans(vec.resultVector3D, rotAngle);
+    mtx.rotTrans(planeNormal, rotAngle);
     planeNormal = mtx.resultMatrices;
 
     vec.dotProduct(planeNormal, planeVertex);

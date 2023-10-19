@@ -1,27 +1,48 @@
 // #define DEBUG_FILE_
 #include "file.h"
 
-int FILELOAD::loadBinary(int fileType, std::string inputFileName)
+void FILELOAD::setFilePath(int fileType, std::string inputFileName)
 {
-    std::string filePath ("../loadfiles/");
+    filePath.append("resource/");
     fileName = inputFileName;
-
     switch (fileType)
     {
-    case FILETYPE_BMP :
+    case FILETYPE_BMP:
         filePath.append("bmp");
+        filePath.append("/");
+        filePath.append(fileName);
+        filePath.append(".bmp");
         break;
-    
-    case FILETYPE_PNG :
+
+    case FILETYPE_PNG:
         filePath.append("png");
+        filePath.append("/");
+        filePath.append(fileName);
+        filePath.append(".png");
+        break;
+
+    case FILETYPE_OBJ:
+        filePath.append("obj");
+        filePath.append("/");
+        filePath.append(fileName);
+        filePath.append(".obj");
+        break;
+
+    case FILETYPE_MTL:
+        filePath.append("mtl");
+        filePath.append("/");
+        filePath.append(fileName);
+        filePath.append(".mtl");
         break;
     
     default:
         break;
     }
+}
 
-    filePath.append("/");
-    filePath.append(fileName);
+int FILELOAD::loadBinary(int fileType, std::string inputFileName)
+{
+    setFilePath(fileType, inputFileName);
     
     // Read in a binary file from a filename
     std::ifstream file(filePath, std::ios::binary);
@@ -114,12 +135,7 @@ int BMP_FILE::readBinary()
 
 int OBJ_FILE::loadData(std::string inputFileName)
 {
-    std::string filePath ("../loadfiles/");
-    fileName = inputFileName;
-
-    filePath.append("obj");
-    filePath.append("/");
-    filePath.append(fileName);
+    setFilePath(FILETYPE_OBJ, inputFileName);
 
     std::ifstream file(filePath);
 
@@ -453,12 +469,7 @@ int OBJ_FILE::loadData(std::string inputFileName)
 
 int MTL_FILE::loadData(std::string inputFileName)
 {
-    std::string filePath ("../loadfiles/");
-    fileName = inputFileName;
-
-    filePath.append("mtl");
-    filePath.append("/");
-    filePath.append(fileName);
+    setFilePath(FILETYPE_MTL, inputFileName);
 
     std::ifstream file(filePath);
 
