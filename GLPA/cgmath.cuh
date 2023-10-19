@@ -281,9 +281,9 @@ __global__ void gpuGetLinePlaneI
     double* line_vertex_B,
     double* plane_vertex,
     double* plane_normal,
-    double* parametor_t,
     double* line_plane_I,
-    int i_amout
+    int line_amout,
+    int plane_amout
 );
 
 __global__ void gpuGetDenominateT
@@ -300,37 +300,26 @@ class EQUATION
 public :
     VECTOR vec;
     std::vector<double> paraT;
-    std::vector<INT2D> amoutIeachLine;
     std::vector<VECTOR3D> linePlaneI;
 
     double* hLineVertexA;
     double* hLineVertexB;
     double* hPlaneVertex;
     double* hPlaneNormal;
-    double* hParaT;
     double* hLinePlaneI;
 
     double* dLineVertexA;
     double* dLineVertexB;
     double* dPlaneVertex;
     double* dPlaneNormal;
-    double* dParaT;
     double* dLinePlaneI;
-
-    void getDenominateT
-    (
-        std::vector<VECTOR3D> line_vertex_B, // l, m, n
-        std::vector<VECTOR3D> plane_normal // p, q, r
-    );
-
+    
     void getLinePlaneI
     (
         std::vector<VECTOR3D> line_vertex_A, // x1, y1, z1
         std::vector<VECTOR3D> line_vertex_B, // l, m, n
         std::vector<VECTOR3D> plane_vertex, // x0, y0, z0
-        std::vector<VECTOR3D> plane_normal, // p, q, r
-        std::vector<VECTOR3D>* store_line_vertex_A,
-        std::vector<VECTOR3D>* store_line_vertex_B
+        std::vector<VECTOR3D> plane_normal // p, q, r
     );
 
 };

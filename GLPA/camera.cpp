@@ -3,7 +3,7 @@
 
 void CAMERA::initialize()
 {
-    wPos = {0, 0, 0};
+    wPos = {0, -300, 0};
     rotAngle = {0, 0, 0};
 
     nearZ = 0.01;
@@ -335,7 +335,7 @@ void CAMERA::coordinateTransV(std::vector<OBJ_FILE> objData)
 
 bool CAMERA::confirmI
 (
-    int exitsIdata, 
+    double exitsI, 
     double leftLessThan1Data, double rightLessThan1Data,
     double leftGreaterThan1Data, double rightGreaterThan1Data, 
     double leftLessThan2Data, double rightLessThan2Data,
@@ -344,7 +344,7 @@ bool CAMERA::confirmI
     int withInRangeAryNumLoopN, int numPolyfacingLoopN
 )
 {
-    if (exitsIdata == I_TRUE)
+    if (!std::isinf(exitsI))
     {
         if 
         (
@@ -492,14 +492,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         polyLineVA,
         polyLineVB,
         viewVolumeFaceVertex,
-        viewVolumeFaceNormal,
-        &usedLineVA,
-        &usedLineVB
+        viewVolumeFaceNormal
     );
 
     numPolyAllVINotInViewVolume.resize(withinRangeAryNum.size());
 
     aryNum = 0;
+    int indexVertex = 0;
     bool findTrueI = false;
 
     for (int k = 0; k < withinRangeAryNum.size(); ++k)
@@ -511,7 +510,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                 // Judgment by XZ axis
                 if(
                     confirmI(
-                        eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP],
+                        eq.linePlaneI[aryNum].x,
 
                         eq.linePlaneI[aryNum].x, 
                         ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
@@ -526,50 +525,43 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], usedLineVA[aryNum], usedLineVB[aryNum],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
                         k, j
                     )
                 )
                 {
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    aryNum += 6;
+                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
 
                 // Judgment by XY axis
-                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_TOP];
+                aryNum += 1;
                 if(
                     confirmI(
-                        eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT],
+                        eq.linePlaneI[aryNum].x,
 
                         eq.linePlaneI[aryNum].x, viewPoint[1].x,
                         eq.linePlaneI[aryNum].x, viewPoint[0].x,
                         eq.linePlaneI[aryNum].y, viewPoint[0].y,
                         eq.linePlaneI[aryNum].y, viewPoint[3].y,
-                        eq.linePlaneI[aryNum], usedLineVA[aryNum], usedLineVB[aryNum],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
                         k, j
                     )
                 )
                 {
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    aryNum += 5;
+                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
 
                 // Judgment by YZ axis
-                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_FRONT];
+                aryNum += 1;
                 if(
                     confirmI(
-                        eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT],
+                        eq.linePlaneI[aryNum].x,
 
                         eq.linePlaneI[aryNum].y,
                         ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
@@ -584,24 +576,22 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], usedLineVA[aryNum], usedLineVB[aryNum],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
                         k, j
                     )
                 )
                 {
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    aryNum += 4;
+                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
 
                 // Judgment by YZ axis
-                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_RIGHT];
+                aryNum += 1;
                 if(
                     confirmI(
-                        eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT],
+                        eq.linePlaneI[aryNum].x,
 
                         eq.linePlaneI[aryNum].y,
                         ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
@@ -616,44 +606,43 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], usedLineVA[aryNum], usedLineVB[aryNum],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
                         k, j
                     )
                 )
                 {
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    aryNum += 3;
+                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
 
                 // Judgment by XY axis
-                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_LEFT];
+                aryNum += 1;
                 if(
                     confirmI(
-                        eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK],
+                        eq.linePlaneI[aryNum].x,
 
                         eq.linePlaneI[aryNum].x, viewPoint[5].x,
                         eq.linePlaneI[aryNum].x, viewPoint[4].x,
                         eq.linePlaneI[aryNum].y, viewPoint[4].y,
                         eq.linePlaneI[aryNum].y, viewPoint[7].y,
-                        eq.linePlaneI[aryNum], usedLineVA[aryNum], usedLineVB[aryNum],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
                         k, j
                     )
                 )
                 {
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    aryNum += 2;
+                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
 
                 // Judgment by XZ axis
-                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BACK];
+                aryNum += 1;
                 if(
                     confirmI(
-                        eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM],
+                        eq.linePlaneI[aryNum].x,
 
                         eq.linePlaneI[aryNum].x, 
                         ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
@@ -668,16 +657,17 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], usedLineVA[aryNum], usedLineVB[aryNum],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
                         k, j
                     )
                 )
                 {
-                    aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                    aryNum += 1;
+                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
-                aryNum += eq.amoutIeachLine[j*3 + i].n[SURFACE_BOTTOM];
+                aryNum += 1;
             }
 
             // Stores the number of polygons for which all intersections did not meet the condition
@@ -685,6 +675,8 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             {
                 numPolyAllVINotInViewVolume[k].n.push_back(numPolyNotInViewVolume[k].n[j]);
             }
+            
+            indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
             findTrueI = false;
             
         }

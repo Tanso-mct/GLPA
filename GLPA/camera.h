@@ -67,7 +67,7 @@ public :
     // Determine if a point is on the face of a specific plane and on a specific line segment
     bool confirmI
     (
-        int exits_Idata,
+        double exits_I,
         double left_GreaterThan1Data,  double right_GreaterThan1Data,
         double left_LessThan1Data,  double right_LessThan1Data,
         double left_GreaterThan2Data,  double right_GreaterThan2Data,
@@ -79,8 +79,6 @@ public :
     // Determines if a vertex is in the view volume
     bool vertexInViewVolume(VECTOR3D vertex);
     
-    std::vector<VECTOR3D> usedLineVA;
-    std::vector<VECTOR3D> usedLineVB;
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 };
