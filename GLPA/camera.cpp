@@ -492,6 +492,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
             inVolumeAmoutV = 0;
         }
+        aryNum += numPolyFacing[i].n.size() * VECTOR3;
     }
 
     // Obtaining the coordinates of the intersection of a line consisting of the vertices of a triangle 
@@ -507,7 +508,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     numPolyAllVINotInViewVolume.resize(withinRangeAryNum.size());
 
     aryNum = 0;
-    int indexVertex = 0;
+    int lineIndex = 0;
     bool findTrueI = false;
 
     for (int k = 0; k < withinRangeAryNum.size(); ++k)
@@ -516,178 +517,121 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         {
             for (int i = 0; i < 3; ++i)
             {
-                int l;
-                if (i == 0)
-                {
-                    l = 1;
-                } else if (i == 1)
-                {
-                    l = 2;
-                } else if (i == 2)
-                {
-                    l = 0;
-                }
                 // Judgment by XZ axis
-                if(
-                    confirmI(
-                        eq.linePlaneI[aryNum],
+                findTrueI =  confirmI(
+                    eq.linePlaneI[aryNum],
 
-                        eq.linePlaneI[aryNum].x, 
-                        ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
-                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
-                        + viewPointXZ[VP4].x,
+                    eq.linePlaneI[aryNum].x, 
+                    ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+                    * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
+                    + viewPointXZ[VP4].x,
 
-                        eq.linePlaneI[aryNum].x,
-                        ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
-                        + viewPointXZ[VP1].x,
+                    eq.linePlaneI[aryNum].x,
+                    ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+                    * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
+                    + viewPointXZ[VP1].x,
 
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + i], polyVertex[indexVertex + l],
-                        k, j
-                    )
-                )
-                {
-                    aryNum += 6;
-                    indexVertex += VECTOR3;
-                    findTrueI = true;
-                    break;
-                }
+                    eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
+                    k, j
+                );
+                aryNum += 1;
 
                 // Judgment by XY axis
-                aryNum += 1;
-                if(
-                    confirmI(
-                        eq.linePlaneI[aryNum],
+                findTrueI = confirmI(
+                    eq.linePlaneI[aryNum],
 
-                        eq.linePlaneI[aryNum].x, viewPoint[1].x,
-                        eq.linePlaneI[aryNum].x, viewPoint[0].x,
-                        eq.linePlaneI[aryNum].y, viewPoint[0].y,
-                        eq.linePlaneI[aryNum].y, viewPoint[3].y,
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + i], polyVertex[indexVertex + l],
-                        k, j
-                    )
-                )
-                {
-                    aryNum += 5;
-                    indexVertex += VECTOR3;
-                    findTrueI = true;
-                    break;
-                }
+                    eq.linePlaneI[aryNum].x, viewPoint[1].x,
+                    eq.linePlaneI[aryNum].x, viewPoint[0].x,
+                    eq.linePlaneI[aryNum].y, viewPoint[0].y,
+                    eq.linePlaneI[aryNum].y, viewPoint[3].y,
+                    eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
+                    k, j
+                );
+                aryNum += 1;
 
                 // Judgment by YZ axis
+                findTrueI = confirmI(
+                    eq.linePlaneI[aryNum],
+
+                    eq.linePlaneI[aryNum].y,
+                    ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                    * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
+                    + viewPointYZ[VP1].y,
+
+                    eq.linePlaneI[aryNum].y,
+                    ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                    * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
+                    + viewPointYZ[VP4].y,
+
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+
+                    eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
+                    k, j
+                );
                 aryNum += 1;
-                if(
-                    confirmI(
-                        eq.linePlaneI[aryNum],
-
-                        eq.linePlaneI[aryNum].y,
-                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
-                        + viewPointYZ[VP1].y,
-
-                        eq.linePlaneI[aryNum].y,
-                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
-                        + viewPointYZ[VP4].y,
-
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
-
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + i], polyVertex[indexVertex + l],
-                        k, j
-                    )
-                )
-                {
-                    aryNum += 4;
-                    indexVertex += VECTOR3;
-                    findTrueI = true;
-                    break;
-                }
 
                 // Judgment by YZ axis
+                findTrueI = confirmI(
+                    eq.linePlaneI[aryNum],
+
+                    eq.linePlaneI[aryNum].y,
+                    ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
+                    * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
+                    + viewPointYZ[VP1].y,
+
+                    eq.linePlaneI[aryNum].y,
+                    ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
+                    * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
+                    + viewPointYZ[VP4].y,
+
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+
+                    eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
+                    k, j
+                );
                 aryNum += 1;
-                if(
-                    confirmI(
-                        eq.linePlaneI[aryNum],
-
-                        eq.linePlaneI[aryNum].y,
-                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP1].z) 
-                        + viewPointYZ[VP1].y,
-
-                        eq.linePlaneI[aryNum].y,
-                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointYZ[VP4].z) 
-                        + viewPointYZ[VP4].y,
-
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
-
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + i], polyVertex[indexVertex + l],
-                        k, j
-                    )
-                )
-                {
-                    aryNum += 3;
-                    indexVertex += VECTOR3;
-                    findTrueI = true;
-                    break;
-                }
-
+                
                 // Judgment by XY axis
-                aryNum += 1;
-                if(
-                    confirmI(
-                        eq.linePlaneI[aryNum],
+                findTrueI = confirmI(
+                    eq.linePlaneI[aryNum],
 
-                        eq.linePlaneI[aryNum].x, viewPoint[5].x,
-                        eq.linePlaneI[aryNum].x, viewPoint[4].x,
-                        eq.linePlaneI[aryNum].y, viewPoint[4].y,
-                        eq.linePlaneI[aryNum].y, viewPoint[7].y,
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + i], polyVertex[indexVertex + l],
-                        k, j
-                    )
-                )
-                {
-                    aryNum += 2;
-                    indexVertex += VECTOR3;
-                    findTrueI = true;
-                    break;
-                }
+                    eq.linePlaneI[aryNum].x, viewPoint[5].x,
+                    eq.linePlaneI[aryNum].x, viewPoint[4].x,
+                    eq.linePlaneI[aryNum].y, viewPoint[4].y,
+                    eq.linePlaneI[aryNum].y, viewPoint[7].y,
+                    eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
+                    k, j
+                );
+                aryNum += 1;
 
                 // Judgment by XZ axis
+                findTrueI = confirmI(
+                    eq.linePlaneI[aryNum],
+
+                    eq.linePlaneI[aryNum].x, 
+                    ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
+                    * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
+                    + viewPointXZ[VP4].x,
+
+                    eq.linePlaneI[aryNum].x,
+                    ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
+                    * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
+                    + viewPointXZ[VP1].x,
+
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
+                    eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
+
+                    eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
+                    k, j
+                );
                 aryNum += 1;
-                if(
-                    confirmI(
-                        eq.linePlaneI[aryNum],
-
-                        eq.linePlaneI[aryNum].x, 
-                        ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
-                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP4].z) 
-                        + viewPointXZ[VP4].x,
-
-                        eq.linePlaneI[aryNum].x,
-                        ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
-                        * (eq.linePlaneI[aryNum].z - viewPointXZ[VP1].z) 
-                        + viewPointXZ[VP1].x,
-
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
-                        eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
-
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + i], polyVertex[indexVertex + l],
-                        k, j
-                    )
-                )
-                {
-                    aryNum += 1;
-                    indexVertex += VECTOR3;
-                    findTrueI = true;
-                    break;
-                }
-                aryNum += 1;
+                
+                lineIndex += 1;
             }
 
             // Stores the number of polygons for which all intersections did not meet the condition
@@ -696,7 +640,6 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                 numPolyAllVINotInViewVolume[k].n.push_back(numPolyExitsIViewVolume[k].n[j]);
             }
             
-            indexVertex += VECTOR3;
             findTrueI = false;
             
         }
