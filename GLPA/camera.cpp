@@ -357,7 +357,7 @@ bool CAMERA::confirmI
         )
         {
             numPolyInViewVolume[withInRangeAryNumLoopN].n.push_back
-            (numPolyNotInViewVolume[withInRangeAryNumLoopN].n[numPolyfacingLoopN]);
+            (numPolyExitsIViewVolume[withInRangeAryNumLoopN].n[numPolyfacingLoopN]);
             return true;
         }
         return false;
@@ -419,37 +419,43 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     numPolyInViewVolume.resize(0);
     numPolyInViewVolume.resize(withinRangeAryNum.size());
-    numPolyNotInViewVolume.resize(0);
-    numPolyNotInViewVolume.resize(withinRangeAryNum.size());
-
+    numPolyExitsIViewVolume.resize(0);
+    numPolyExitsIViewVolume.resize(withinRangeAryNum.size());
+    clippingPolyVertex.resize(0);
+    clippingPolyVertex.resize(withinRangeAryNum.size());
+    
     // If one of the vertices is in the view volume, 
     // it is excluded from the intersection determination as a drawing target.
     int aryNum = 0;
+    int inVolumeAmoutV = 0;
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
+        clippingPolyVertex[i].n.resize(numPolyFacing[i].n.size());
         for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
         {
-            if(
-                vertexInViewVolume(polyVertex[aryNum + j*3 + 0])
-            )
+            if (vertexInViewVolume(polyVertex[aryNum + j*3 + 0]))
             {
-                numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+                clippingPolyVertex[i].n[j].push_back(polyVertex[aryNum + j*3 + 0]);
+                inVolumeAmoutV += 1;
             }
-            else if (
-                vertexInViewVolume(polyVertex[aryNum + j*3 + 1])
-            )
+            if (vertexInViewVolume(polyVertex[aryNum + j*3 + 1]))
             {
-                numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+                clippingPolyVertex[i].n[j].push_back(polyVertex[aryNum + j*3 + 1]);
+                inVolumeAmoutV += 1;
             }
-            else if (
-                vertexInViewVolume(polyVertex[aryNum + j*3 + 2])
-            )
+            if (vertexInViewVolume(polyVertex[aryNum + j*3 + 2]))
+            {
+                clippingPolyVertex[i].n[j].push_back(polyVertex[aryNum + j*3 + 2]);
+                inVolumeAmoutV += 1;
+            }
+
+            if (inVolumeAmoutV == 3)
             {
                 numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
             }
             else
             {
-                numPolyNotInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+                numPolyExitsIViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
                 // Input vertex A
                 polyLineVA.push_back
                 (
@@ -482,6 +488,8 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     polyVertex[aryNum + j*3 + 0]
                 );
             }
+
+            inVolumeAmoutV = 0;
         }
     }
 
@@ -503,10 +511,21 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     for (int k = 0; k < withinRangeAryNum.size(); ++k)
     {
-        for (int j = 0; j < numPolyNotInViewVolume[k].n.size(); ++j)
+        for (int j = 0; j < numPolyExitsIViewVolume[k].n.size(); ++j)
         {
             for (int i = 0; i < 3; ++i)
             {
+                int l;
+                if (i == 0)
+                {
+                    l = 1;
+                } else if (i == 1)
+                {
+                    l = 2;
+                } else if (i == 2)
+                {
+                    l = 0;
+                }
                 // Judgment by XZ axis
                 if(
                     confirmI(
@@ -525,13 +544,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + l],
                         k, j
                     )
                 )
                 {
                     aryNum += 6;
-                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+                    indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
@@ -546,13 +565,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].x, viewPoint[0].x,
                         eq.linePlaneI[aryNum].y, viewPoint[0].y,
                         eq.linePlaneI[aryNum].y, viewPoint[3].y,
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + l],
                         k, j
                     )
                 )
                 {
                     aryNum += 5;
-                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+                    indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
@@ -576,13 +595,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + l],
                         k, j
                     )
                 )
                 {
                     aryNum += 4;
-                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+                    indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
@@ -606,13 +625,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + l],
                         k, j
                     )
                 )
                 {
                     aryNum += 3;
-                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+                    indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
@@ -627,13 +646,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].x, viewPoint[4].x,
                         eq.linePlaneI[aryNum].y, viewPoint[4].y,
                         eq.linePlaneI[aryNum].y, viewPoint[7].y,
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + l],
                         k, j
                     )
                 )
                 {
                     aryNum += 2;
-                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+                    indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
@@ -657,13 +676,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP1].z,
                         eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
-                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + i],
+                        eq.linePlaneI[aryNum], polyVertex[indexVertex + j*VECTOR3 + i], polyVertex[indexVertex + j*VECTOR3 + l],
                         k, j
                     )
                 )
                 {
                     aryNum += 1;
-                    indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+                    indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
                     findTrueI = true;
                     break;
                 }
@@ -673,10 +692,10 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             // Stores the number of polygons for which all intersections did not meet the condition
             if (!findTrueI)
             {
-                numPolyAllVINotInViewVolume[k].n.push_back(numPolyNotInViewVolume[k].n[j]);
+                numPolyAllVINotInViewVolume[k].n.push_back(numPolyExitsIViewVolume[k].n[j]);
             }
             
-            indexVertex += numPolyNotInViewVolume[k].n.size() * VECTOR3;
+            indexVertex += numPolyExitsIViewVolume[k].n.size() * VECTOR3;
             findTrueI = false;
             
         }

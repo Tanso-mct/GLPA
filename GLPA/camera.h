@@ -45,8 +45,10 @@ public :
     std::vector<int> withinRangeAryNum;
     std::vector<INT2D> numPolyFacing;
     std::vector<VECTOR3D> polyVertex;
+    std::vector<VECTOR3D2D> clippingPolyVertex;
+    std::vector<VECTOR3D2D> clippedPolyVertex;
     std::vector<INT2D> numPolyInViewVolume;
-    std::vector<INT2D> numPolyNotInViewVolume;
+    std::vector<INT2D> numPolyExitsIViewVolume;
     std::vector<INT2D> numPolyAllVINotInViewVolume;
 
 

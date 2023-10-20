@@ -131,6 +131,11 @@ typedef struct tagINT2D
     std::vector<int> n;
 } INT2D;
 
+typedef struct tagVECTOR3D2D
+{
+    std::vector<std::vector<VECTOR3D>> n;
+} VECTOR3D2D;
+
 __global__ void gpuVecAddition
 (
     double* source_vector, 
