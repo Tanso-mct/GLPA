@@ -64,7 +64,13 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 // sampleBmpFile.loadBinary(FILETYPE_BMP, ("temp.bmp"));
                 // sampleBmpFile.checkBinary();
                 
-                OutputDebugStringW(_T("New scene\n"));
+                // OutputDebugStringW(_T("New scene\n"));
+                OutputDebugStringW(_T("Camera Initialize\n"));
+                tempMtlFile.loadData("temp_cube");
+                tempObject.inputData("temp_cube");
+                tempObject.inputData("temp_farCube");
+                deve001.cam.initialize();
+                deve001.cam.defViewVolume();
                 deve001.cam.coordinateTransRange(&tempObject.data);
                 deve001.cam.clippingRange(tempObject.data);
                 deve001.cam.polyBilateralJudge(tempObject.data);

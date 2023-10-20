@@ -69,7 +69,7 @@ public :
     // Determine if a point is on the face of a specific plane and on a specific line segment
     bool confirmI
     (
-        double exits_I,
+        VECTOR3D exits_I,
         double left_GreaterThan1Data,  double right_GreaterThan1Data,
         double left_LessThan1Data,  double right_LessThan1Data,
         double left_GreaterThan2Data,  double right_GreaterThan2Data,
