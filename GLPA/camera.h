@@ -75,7 +75,7 @@ public :
         double left_GreaterThan2Data,  double right_GreaterThan2Data,
         double left_LessThan2Data,  double right_LessThan2Data,
         VECTOR3D line_plane_I, VECTOR3D line_vertex_A, VECTOR3D line_vertex_B,
-        int withInRangeAryNumd_Oata, int numPolyfacing_Data
+        int withInRangeAryNumd_Oata, int index_NumPoly
     );
 
     // Determines if a vertex is in the view volume

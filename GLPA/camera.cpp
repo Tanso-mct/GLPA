@@ -95,26 +95,52 @@ void CAMERA::defViewVolume()
 
     // Assign a point on the surface
     viewVolumeFaceVertex.resize(6);
-    viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[5];
-    viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[3];
-    viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[5];
-    viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[3];
-    viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[5];
-    viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[3];
+    viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[0];
+    viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[0];
+    viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[6];
+    viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[0];
+    viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[6];
+    viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[6];
 
-    std::vector<VECTOR3D> calcViewPoint;
-    calcViewPoint.resize(6);
-    calcViewPoint[SURFACE_TOP] = viewPoint[0];
-    calcViewPoint[SURFACE_FRONT] = viewPoint[0];
-    calcViewPoint[SURFACE_RIGHT] = viewPoint[6];
-    calcViewPoint[SURFACE_LEFT] = viewPoint[0];
-    calcViewPoint[SURFACE_BACK] = viewPoint[6];
-    calcViewPoint[SURFACE_BOTTOM] = viewPoint[6];
 
-    vec.crossProduct(viewVolumeFaceVertex, calcViewPoint);
+    std::vector<VECTOR3D> calcVecA;
+    calcVecA.resize(6);
+    std::vector<VECTOR3D> calcVecB;
+    calcVecB.resize(6);
+    vec.minusVec3d(viewPoint[1], viewPoint[0], &calcVecA[SURFACE_TOP]);
+    vec.minusVec3d(viewPoint[4], viewPoint[0], &calcVecB[SURFACE_TOP]);
+
+    vec.minusVec3d(viewPoint[1], viewPoint[0], &calcVecA[SURFACE_FRONT]);
+    vec.minusVec3d(viewPoint[3], viewPoint[0], &calcVecB[SURFACE_FRONT]);
+
+    vec.minusVec3d(viewPoint[2], viewPoint[6], &calcVecA[SURFACE_RIGHT]);
+    vec.minusVec3d(viewPoint[5], viewPoint[6], &calcVecB[SURFACE_RIGHT]);
+
+    vec.minusVec3d(viewPoint[3], viewPoint[0], &calcVecA[SURFACE_LEFT]);
+    vec.minusVec3d(viewPoint[4], viewPoint[0], &calcVecB[SURFACE_LEFT]);
+
+    vec.minusVec3d(viewPoint[5], viewPoint[6], &calcVecA[SURFACE_BACK]);
+    vec.minusVec3d(viewPoint[7], viewPoint[6], &calcVecB[SURFACE_BACK]);
+
+    vec.minusVec3d(viewPoint[2], viewPoint[6], &calcVecA[SURFACE_BOTTOM]);
+    vec.minusVec3d(viewPoint[7], viewPoint[6], &calcVecB[SURFACE_BOTTOM]);
+
+    vec.crossProduct(calcVecA, calcVecB);
 
     viewVolumeFaceNormal.resize(6);
     viewVolumeFaceNormal = vec.resultVector3D;
+
+    VECTOR3D storeNormal;
+    double inSqrt;
+    for (int i = 0; i < 6; ++i)
+    {
+        storeNormal = viewVolumeFaceNormal[i];
+        inSqrt = pow(storeNormal.x, 2) + pow(storeNormal.y, 2) + pow(storeNormal.z, 2);
+
+        viewVolumeFaceNormal[i].x = viewVolumeFaceNormal[i].x / sqrt(inSqrt);
+        viewVolumeFaceNormal[i].y = viewVolumeFaceNormal[i].y / sqrt(inSqrt);
+        viewVolumeFaceNormal[i].z = viewVolumeFaceNormal[i].z / sqrt(inSqrt);
+    }
 }
 
 void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
@@ -341,9 +367,35 @@ bool CAMERA::confirmI
     double leftLessThan2Data, double rightLessThan2Data,
     double leftGreaterThan2Data, double rightGreaterThan2Data,
     VECTOR3D linePlaneI, VECTOR3D lineVA, VECTOR3D lineVB,
-    int withInRangeAryNumLoopN, int numPolyfacingLoopN
+    int withInRangeAryNumLoopN, int indexNumPoly
 )
 {
+    double inSqrt;
+    VECTOR3D vecA
+    {
+        lineVB.x - lineVA.x,
+        lineVB.y - lineVA.y,
+        lineVB.z - lineVA.z
+    };
+
+    VECTOR3D vecB
+    {
+        linePlaneI.x - lineVA.x,
+        linePlaneI.y - lineVA.y,
+        linePlaneI.z - lineVA.z
+    };
+
+    inSqrt = vecA.x * vecA.x + vecA.y * vecA.y + vecA.z * vecA.z;
+    double sizeVecA = sqrt(inSqrt);
+
+    inSqrt = vecB.x * vecB.x + vecB.y * vecB.y + vecB.z * vecB.z;
+    double sizeVecB = sqrt(inSqrt);
+
+    inSqrt = (vecA.x * vecB.x) * (vecA.x * vecB.x) 
+    + (vecA.y * vecB.y) * (vecA.y * vecB.y) +
+     (vecA.z * vecB.z) * (vecA.z * vecB.z);
+
+    double dot = sqrt(inSqrt);
     if (!std::isinf(exitsI.x))
     {
         if 
@@ -352,13 +404,12 @@ bool CAMERA::confirmI
             leftGreaterThan1Data > rightGreaterThan1Data &&
             leftLessThan2Data < rightLessThan2Data &&
             leftGreaterThan2Data > rightGreaterThan2Data &&
-            sqrt(pow(lineVB.x - lineVA.x, 2) + pow(lineVB.y - lineVA.y, 2) + pow(lineVB.z - lineVA.z, 2))
-            > sqrt(pow(linePlaneI.x - lineVA.x, 2) + pow(linePlaneI.y - lineVA.y, 2) + pow(linePlaneI.z - lineVA.z, 2))
+            dot != sizeVecA * sizeVecB &&
+            sizeVecA > sizeVecB
         )
         {
-            numPolyInViewVolume[withInRangeAryNumLoopN].n.push_back
-            (numPolyExitsIViewVolume[withInRangeAryNumLoopN].n[numPolyfacingLoopN]);
-            clippingPolyVertex[withInRangeAryNumLoopN].n[numPolyfacingLoopN].push_back(exitsI);
+            numPolyInViewVolume[withInRangeAryNumLoopN].n[indexNumPoly] = numPolyFacing[withInRangeAryNumLoopN].n[indexNumPoly];
+            clippingPolyVertex[withInRangeAryNumLoopN].n[indexNumPoly].push_back(exitsI);
             return true;
         }
         return false;
@@ -429,8 +480,11 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     // it is excluded from the intersection determination as a drawing target.
     int aryNum = 0;
     int inVolumeAmoutV = 0;
+    std::vector<INT2D> indexNumPolyFacing;
+    indexNumPolyFacing.resize(withinRangeAryNum.size());
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
+        numPolyInViewVolume[i].n.resize(numPolyFacing[i].n.size(), -1);
         clippingPolyVertex[i].n.resize(numPolyFacing[i].n.size());
         for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
         {
@@ -452,11 +506,12 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
             if (inVolumeAmoutV == 3)
             {
-                numPolyInViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+                numPolyInViewVolume[i].n[j] = numPolyFacing[i].n[j];
             }
             else
             {
                 numPolyExitsIViewVolume[i].n.push_back(numPolyFacing[i].n[j]);
+                indexNumPolyFacing[i].n.push_back(j);
                 // Input vertex A
                 polyLineVA.push_back
                 (
@@ -517,8 +572,8 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         {
             for (int i = 0; i < 3; ++i)
             {
-                // Judgment by XZ axis
-                findTrueI =  confirmI(
+                // TOP
+                if (confirmI(
                     eq.linePlaneI[aryNum],
 
                     eq.linePlaneI[aryNum].x, 
@@ -535,12 +590,15 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
                     eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
-                    k, j
-                );
+                    k, indexNumPolyFacing[k].n[j]
+                ))
+                {
+                    findTrueI = true;
+                }
                 aryNum += 1;
 
-                // Judgment by XY axis
-                findTrueI = confirmI(
+                // FRONT
+                if(confirmI(
                     eq.linePlaneI[aryNum],
 
                     eq.linePlaneI[aryNum].x, viewPoint[1].x,
@@ -548,12 +606,15 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     eq.linePlaneI[aryNum].y, viewPoint[0].y,
                     eq.linePlaneI[aryNum].y, viewPoint[3].y,
                     eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
-                    k, j
-                );
+                    k, indexNumPolyFacing[k].n[j]
+                ))
+                {
+                    findTrueI = true;
+                }
                 aryNum += 1;
 
-                // Judgment by YZ axis
-                findTrueI = confirmI(
+                // RIGHT
+                if(confirmI(
                     eq.linePlaneI[aryNum],
 
                     eq.linePlaneI[aryNum].y,
@@ -570,12 +631,15 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
                     eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
-                    k, j
-                );
+                    k, indexNumPolyFacing[k].n[j]
+                ))
+                {
+                    findTrueI = true;
+                }
                 aryNum += 1;
 
-                // Judgment by YZ axis
-                findTrueI = confirmI(
+                // LEFT
+                if(confirmI(
                     eq.linePlaneI[aryNum],
 
                     eq.linePlaneI[aryNum].y,
@@ -592,12 +656,15 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
                     eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
-                    k, j
-                );
+                    k, indexNumPolyFacing[k].n[j]
+                ))
+                {
+                    findTrueI = true;
+                }
                 aryNum += 1;
                 
-                // Judgment by XY axis
-                findTrueI = confirmI(
+                // BACK
+                if(confirmI(
                     eq.linePlaneI[aryNum],
 
                     eq.linePlaneI[aryNum].x, viewPoint[5].x,
@@ -605,12 +672,15 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     eq.linePlaneI[aryNum].y, viewPoint[4].y,
                     eq.linePlaneI[aryNum].y, viewPoint[7].y,
                     eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
-                    k, j
-                );
+                    k, indexNumPolyFacing[k].n[j]
+                ))
+                {
+                    findTrueI = true;
+                }
                 aryNum += 1;
 
-                // Judgment by XZ axis
-                findTrueI = confirmI(
+                // BOTTOM
+                if(confirmI(
                     eq.linePlaneI[aryNum],
 
                     eq.linePlaneI[aryNum].x, 
@@ -627,8 +697,11 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     eq.linePlaneI[aryNum].z, viewPointXZ[VP2].z,
 
                     eq.linePlaneI[aryNum], polyLineVA[lineIndex], polyLineVB[lineIndex],
-                    k, j
-                );
+                    k, indexNumPolyFacing[k].n[j]
+                ))
+                {
+                    findTrueI = true;
+                }
                 aryNum += 1;
                 
                 lineIndex += 1;

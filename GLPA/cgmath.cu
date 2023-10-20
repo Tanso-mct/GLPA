@@ -68,6 +68,20 @@ __global__ void gpuVecCrossProduct
     }
 }
 
+void VECTOR::minusVec3d(VECTOR3D a, VECTOR3D b, VECTOR3D *result)
+{
+    (*result).x = b.x - a.x;
+    (*result).y = b.y - a.y;
+    (*result).z = b.z - a.z;
+}
+
+void VECTOR::decimalLimit(VECTOR3D *v)
+{
+    (*v).x = std::floor(v->x * DECIMAL_PLACES) / DECIMAL_PLACES;
+    (*v).y = std::floor(v->y * DECIMAL_PLACES) / DECIMAL_PLACES;
+    (*v).z = std::floor(v->z * DECIMAL_PLACES) / DECIMAL_PLACES;
+}
+
 void VECTOR::pushVec3d
 (
     double pushX,
@@ -455,22 +469,41 @@ __global__ void gpuGetLinePlaneI
 )
 {
     // Decide which (i,j) you are in charge of based on your back number
-    int i = blockIdx.z * blockDim.z + threadIdx.z;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-    int k = blockIdx.x * blockDim.x + threadIdx.x;
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < lineAmout && j < planeAmout && k < VECTOR3)
+    if (i < lineAmout && j < planeAmout)
     {
-        lpI[i*planeAmout + j*VECTOR3 + k] = 
-        lineVA[i*VECTOR3 + k] + 
+        lpI[i*planeAmout*VECTOR3 + j*VECTOR3 + X1] = 
+        lineVA[i*VECTOR3 + X1] + 
         ((planeN[j*VECTOR3 + PX] * (-lineVA[i*VECTOR3 + X1] + planeV[j*VECTOR3 + X0])
         + planeN[j*VECTOR3 + QY] * (-lineVA[i*VECTOR3 + Y1] + planeV[j*VECTOR3 + Y0])
         + planeN[j*VECTOR3 + RZ] * (-lineVA[i*VECTOR3 + Z1] + planeV[j*VECTOR3 + Z0]))
-        / (lineVB[i*VECTOR3 + X0] * planeN[j*VECTOR3 + X0]
-        + lineVB[i*VECTOR3 + Y0] * planeN[j*VECTOR3 + Y0]
-        + lineVB[i*VECTOR3 + Z0] * planeN[j*VECTOR3 + Z0]))
-        * lineVB[i*VECTOR3 + k];
-    }
+        / (lineVB[i*VECTOR3 + X0] * planeN[j*VECTOR3 + PX]
+        + lineVB[i*VECTOR3 + Y0] * planeN[j*VECTOR3 + QY]
+        + lineVB[i*VECTOR3 + Z0] * planeN[j*VECTOR3 + RZ]))
+        * lineVB[i*VECTOR3 + LX];
+
+        lpI[i*planeAmout*VECTOR3 + j*VECTOR3 + Y1] = 
+        lineVA[i*VECTOR3 + Y1] + 
+        ((planeN[j*VECTOR3 + PX] * (-lineVA[i*VECTOR3 + X1] + planeV[j*VECTOR3 + X0])
+        + planeN[j*VECTOR3 + QY] * (-lineVA[i*VECTOR3 + Y1] + planeV[j*VECTOR3 + Y0])
+        + planeN[j*VECTOR3 + RZ] * (-lineVA[i*VECTOR3 + Z1] + planeV[j*VECTOR3 + Z0]))
+        / (lineVB[i*VECTOR3 + X0] * planeN[j*VECTOR3 + PX]
+        + lineVB[i*VECTOR3 + Y0] * planeN[j*VECTOR3 + QY]
+        + lineVB[i*VECTOR3 + Z0] * planeN[j*VECTOR3 + RZ]))
+        * lineVB[i*VECTOR3 + MY];
+
+        lpI[i*planeAmout*VECTOR3 + j*VECTOR3 + Z1] = 
+        lineVA[i*VECTOR3 + Z1] + 
+        ((planeN[j*VECTOR3 + PX] * (-lineVA[i*VECTOR3 + X1] + planeV[j*VECTOR3 + X0])
+        + planeN[j*VECTOR3 + QY] * (-lineVA[i*VECTOR3 + Y1] + planeV[j*VECTOR3 + Y0])
+        + planeN[j*VECTOR3 + RZ] * (-lineVA[i*VECTOR3 + Z1] + planeV[j*VECTOR3 + Z0]))
+        / (lineVB[i*VECTOR3 + X0] * planeN[j*VECTOR3 + PX]
+        + lineVB[i*VECTOR3 + Y0] * planeN[j*VECTOR3 + QY]
+        + lineVB[i*VECTOR3 + Z0] * planeN[j*VECTOR3 + RZ]))
+        * lineVB[i*VECTOR3 + NZ];
+    } 
 }
 
 void EQUATION::getLinePlaneI
@@ -510,14 +543,9 @@ void EQUATION::getLinePlaneI
     cudaMemcpy(dPlaneNormal, hPlaneNormal, sizeof(double)*VECTOR3*planeAmout, cudaMemcpyHostToDevice);
 
     // GPU kernel function calls
-    int blockSize = 32;
-    dim3 dimBlock(blockSize, blockSize, blockSize);
-    dim3 dimGrid
-    (
-        (VECTOR3 + blockSize - 1) / blockSize, 
-        (planeN.size() + blockSize - 1) / blockSize, 
-        (lineVA.size() + blockSize - 1) / blockSize
-    );
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((planeAmout + dimBlock.x - 1) 
+    / dimBlock.x, (lineAmout + dimBlock.y - 1) / dimBlock.y); // Grid Size
     gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
     (dLineVertexA, dLineVertexB, dPlaneVertex, dPlaneNormal, dLinePlaneI, lineVA.size(), planeN.size());
 

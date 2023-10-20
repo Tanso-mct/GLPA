@@ -79,6 +79,9 @@
 #define I_FALSE 0
 #define I_TRUE 1
 
+// Limit the number of decimal places to the specified number of digits
+#define DECIMAL_PLACES 10000
+
 typedef struct tagVECTOR2D
 {
     double x;
@@ -178,6 +181,15 @@ public :
     double* dSouceVec;
     double* dCalcVec;
     double* dResultVec;
+
+    void minusVec3d
+    (
+        VECTOR3D vector_a,
+        VECTOR3D vector_b,
+        VECTOR3D* vector_result
+    );
+
+    void decimalLimit(VECTOR3D* v);
 
     void pushVec3d
     (
