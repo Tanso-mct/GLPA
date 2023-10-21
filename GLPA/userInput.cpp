@@ -67,8 +67,9 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 // OutputDebugStringW(_T("New scene\n"));
                 OutputDebugStringW(_T("Camera Initialize\n"));
                 tempMtlFile.loadData("temp_cube");
+                
                 tempObject.inputData("temp_cube");
-                tempObject.inputData("temp_farCube");
+                // tempObject.inputData("temp_farCube");
                 deve001.cam.initialize();
                 deve001.cam.defViewVolume();
                 deve001.cam.coordinateTransRange(&tempObject.data);

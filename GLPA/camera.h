@@ -45,11 +45,10 @@ public :
     std::vector<int> withinRangeAryNum;
     std::vector<INT2D> numPolyFacing;
     std::vector<VECTOR3D> polyVertex;
-    std::vector<VECTOR3D2D> clippingPolyVertex;
     std::vector<VECTOR3D2D> clippedPolyVertex;
     std::vector<INT2D> numPolyInViewVolume;
     std::vector<INT2D> numPolyExitsIViewVolume;
-    std::vector<INT2D> numPolyAllVINotInViewVolume;
+    std::vector<INT2D> numPolyAllVLINENotInViewVolume;
 
 
     void initialize(); // Initialize data
@@ -65,18 +64,6 @@ public :
 
     // Coordinate transformation of the vertices of the surface to be drawn
     void coordinateTransV(std::vector<OBJ_FILE> objData);
-
-    // Determine if a point is on the face of a specific plane and on a specific line segment
-    bool confirmI
-    (
-        VECTOR3D exits_I,
-        double left_GreaterThan1Data,  double right_GreaterThan1Data,
-        double left_LessThan1Data,  double right_LessThan1Data,
-        double left_GreaterThan2Data,  double right_GreaterThan2Data,
-        double left_LessThan2Data,  double right_LessThan2Data,
-        VECTOR3D line_plane_I, VECTOR3D line_vertex_A, VECTOR3D line_vertex_B,
-        int withInRangeAryNumd_Oata, int index_NumPoly
-    );
 
     // Determines if a vertex is in the view volume
     bool vertexInViewVolume(VECTOR3D vertex);

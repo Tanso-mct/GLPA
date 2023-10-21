@@ -129,6 +129,12 @@ typedef struct tagRANGE_CUBE
     std::vector<VECTOR3D> wVertex;
 } RANGE_CUBE;
 
+typedef struct tagRANGE_CUBE_POLY
+{
+    VECTOR3D origin;
+    VECTOR3D opposite;
+} RANGE_CUBE_POLY;
+
 typedef struct tagINT2D
 {
     std::vector<int> n;
@@ -145,6 +151,15 @@ __global__ void gpuVecAddition
     double* calc_vector, 
     double* result_vector, 
     int size_n // Number of array columns
+);
+
+
+__global__ void gpuVecMinus
+(
+    double *start_vertex, 
+    double *end_vertex, 
+    double *result_vector, 
+    int size_n
 );
 
 __global__ void gpuVecDotProduct
@@ -182,12 +197,7 @@ public :
     double* dCalcVec;
     double* dResultVec;
 
-    void minusVec3d
-    (
-        VECTOR3D vector_a,
-        VECTOR3D vector_b,
-        VECTOR3D* vector_result
-    );
+    void minusVec3d(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> endVs);
 
     void decimalLimit(VECTOR3D* v);
 
@@ -296,39 +306,35 @@ __global__ void gpuGetLinePlaneI
 (
     double* line_vertex_A,
     double* line_vertex_B,
-    double* plane_vertex,
-    double* plane_normal,
+    double* dot_pa_n,
+    double* dot_pb_n,
     double* line_plane_I,
-    int line_amout,
-    int plane_amout
-);
-
-__global__ void gpuGetDenominateT
-(
-    double* line_vertex_B,
-    double* plane_normal,
-    double* parameter_t,
-    int intersection_amout,
-    int planeAmout
+    int amout_i
 );
 
 class EQUATION
 {
 public :
     VECTOR vec;
-    std::vector<double> paraT;
+    std::vector<INT2D> existenceI;
     std::vector<VECTOR3D> linePlaneI;
 
-    double* hLineVertexA;
-    double* hLineVertexB;
-    double* hPlaneVertex;
-    double* hPlaneNormal;
+    std::vector<VECTOR3D> vPvLa;
+    std::vector<VECTOR3D> vPvLb;
+
+    std::vector<double> pnDotPvLa;
+    std::vector<double> pnDotPvLb;
+
+    double* hCalcLineVA;
+    double* hCalcLineVB;
+    double* hCalcPnDotPvLa;
+    double* hCalcPnDotPvLb;
     double* hLinePlaneI;
 
-    double* dLineVertexA;
-    double* dLineVertexB;
-    double* dPlaneVertex;
-    double* dPlaneNormal;
+    double* dCalcLineVA;
+    double* dCalcLineVB;
+    double* dCalcPnDotPvLa;
+    double* dCalcPnDotPvLb;
     double* dLinePlaneI;
     
     void getLinePlaneI
