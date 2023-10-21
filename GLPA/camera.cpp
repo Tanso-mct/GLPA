@@ -396,6 +396,7 @@ bool CAMERA::confirmI
      (vecA.z * vecB.z) * (vecA.z * vecB.z);
 
     double dot = sqrt(inSqrt);
+    double sizeAB = sizeVecA * sizeVecB;
     if (!std::isinf(exitsI.x))
     {
         if 
@@ -404,7 +405,7 @@ bool CAMERA::confirmI
             leftGreaterThan1Data > rightGreaterThan1Data &&
             leftLessThan2Data < rightLessThan2Data &&
             leftGreaterThan2Data > rightGreaterThan2Data &&
-            dot != sizeVecA * sizeVecB &&
+            dot == sizeVecA * sizeVecB &&
             sizeVecA > sizeVecB
         )
         {
