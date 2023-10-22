@@ -558,6 +558,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             if (!findTrueI)
             {
                 numPolyAllVLINENotInViewVolume[i].n.push_back(numPolyExitsIViewVolume[i].n[j]);
+                indexAllOutside[i].n.push_back(j);
             }
             findTrueI = false;
         }
@@ -565,6 +566,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     // Polygons that are outside the view volume at all three points and all three sides are converted to RANGE_CUBA
     std::vector<std::vector<RANGE_CUBE_POLY>> rangePolyAllOutside;
+    int indexLinePerObject = 0;
 
     rangePolyAllOutside.resize(withinRangeAryNum.size());
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
@@ -572,119 +574,94 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         rangePolyAllOutside[i].resize(numPolyAllVLINENotInViewVolume[i].n.size());
         for (int j = 0; j < numPolyAllVLINENotInViewVolume[i].n.size(); ++j)
         {
-            rangePolyAllOutside[i][j].origin = objData[i].v.world[
-            objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num1];
+            rangePolyAllOutside[i][j].origin = polyVertex[indexLinePerObject + j*VECTOR3 + 0];
 
-            rangePolyAllOutside[i][j].opposite = objData[i].v.world[
-            objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num1];
+            rangePolyAllOutside[i][j].opposite = polyVertex[indexLinePerObject + j*VECTOR3 + 0];
 
             // origin
             // num2
             if (
-                rangePolyAllOutside[i][j].origin.x > objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].x
+                rangePolyAllOutside[i][j].origin.x > polyVertex[indexLinePerObject + j*VECTOR3 + 1].x
             )
             {
-                rangePolyAllOutside[i][j].origin.x = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].x;
+                rangePolyAllOutside[i][j].origin.x = polyVertex[indexLinePerObject + j*VECTOR3 + 1].x;
             }
             if (
-                rangePolyAllOutside[i][j].origin.y > objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].y
+                rangePolyAllOutside[i][j].origin.y > polyVertex[indexLinePerObject + j*VECTOR3 + 1].y
             )
             {
-                rangePolyAllOutside[i][j].origin.y = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].y;
+                rangePolyAllOutside[i][j].origin.y = polyVertex[indexLinePerObject + j*VECTOR3 + 1].y;
             }
             if (
-                rangePolyAllOutside[i][j].origin.z < objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].z
+                rangePolyAllOutside[i][j].origin.z < polyVertex[indexLinePerObject + j*VECTOR3 + 1].z
             )
             {
-                rangePolyAllOutside[i][j].origin.z = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].z;
+                rangePolyAllOutside[i][j].origin.z = polyVertex[indexLinePerObject + j*VECTOR3 + 1].z;
             }
 
             // num3
             if (
-                rangePolyAllOutside[i][j].origin.x > objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].x
+                rangePolyAllOutside[i][j].origin.x > polyVertex[indexLinePerObject + j*VECTOR3 + 2].x
             )
             {
-                rangePolyAllOutside[i][j].origin.x = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].x;
+                rangePolyAllOutside[i][j].origin.x = polyVertex[indexLinePerObject + j*VECTOR3 + 2].x;
             }
             if (
-                rangePolyAllOutside[i][j].origin.y > objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].y
+                rangePolyAllOutside[i][j].origin.y > polyVertex[indexLinePerObject + j*VECTOR3 + 2].y
             )
             {
-                rangePolyAllOutside[i][j].origin.y = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].y;
+                rangePolyAllOutside[i][j].origin.y = polyVertex[indexLinePerObject + j*VECTOR3 + 2].y;
             }
             if (
-                rangePolyAllOutside[i][j].origin.z < objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].z
+                rangePolyAllOutside[i][j].origin.z < polyVertex[indexLinePerObject + j*VECTOR3 + 2].z
             )
             {
-                rangePolyAllOutside[i][j].origin.z = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].z;
+                rangePolyAllOutside[i][j].origin.z = polyVertex[indexLinePerObject + j*VECTOR3 + 2].z;
             }
 
 
             // opposite
             // num2
             if (
-                rangePolyAllOutside[i][j].opposite.x < objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].x
+                rangePolyAllOutside[i][j].opposite.x < polyVertex[indexLinePerObject + j*VECTOR3 + 1].x
             )
             {
-                rangePolyAllOutside[i][j].opposite.x = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].x;
+                rangePolyAllOutside[i][j].opposite.x = polyVertex[indexLinePerObject + j*VECTOR3 + 1].x;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.y < objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].y
+                rangePolyAllOutside[i][j].opposite.y < polyVertex[indexLinePerObject + j*VECTOR3 + 1].y
             )
             {
-                rangePolyAllOutside[i][j].opposite.y = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].y;
+                rangePolyAllOutside[i][j].opposite.y = polyVertex[indexLinePerObject + j*VECTOR3 + 1].y;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.z > objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].z
+                rangePolyAllOutside[i][j].opposite.z > polyVertex[indexLinePerObject + j*VECTOR3 + 1].z
             )
             {
-                rangePolyAllOutside[i][j].opposite.z = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num2].z;
+                rangePolyAllOutside[i][j].opposite.z = polyVertex[indexLinePerObject + j*VECTOR3 + 1].z;
             }
 
             // num3
             if (
-                rangePolyAllOutside[i][j].opposite.x < objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].x
+                rangePolyAllOutside[i][j].opposite.x < polyVertex[indexLinePerObject + j*VECTOR3 + 2].x
             )
             {
-                rangePolyAllOutside[i][j].opposite.x = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].x;
+                rangePolyAllOutside[i][j].opposite.x = polyVertex[indexLinePerObject + j*VECTOR3 + 2].x;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.y < objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].y
+                rangePolyAllOutside[i][j].opposite.y < polyVertex[indexLinePerObject + j*VECTOR3 + 2].y
             )
             {
-                rangePolyAllOutside[i][j].opposite.y = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].y;
+                rangePolyAllOutside[i][j].opposite.y = polyVertex[indexLinePerObject + j*VECTOR3 + 2].y;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.z > objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].z
+                rangePolyAllOutside[i][j].opposite.z > polyVertex[indexLinePerObject + j*VECTOR3 + 2].z
             )
             {
-                rangePolyAllOutside[i][j].opposite.z = objData[i].v.world[
-                objData[i].poly.v[numPolyAllVLINENotInViewVolume[i].n[j]].num3].z;
+                rangePolyAllOutside[i][j].opposite.z = polyVertex[indexLinePerObject + j*VECTOR3 + 2].z;
             }
         }
-    }
+    indexLinePerObject += numPolyAllVLINENotInViewVolume[i].n.size() * 3;
+    }   
 }
 
