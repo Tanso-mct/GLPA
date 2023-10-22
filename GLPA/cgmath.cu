@@ -527,10 +527,10 @@ void MATRIX::scaleTrans(std::vector<VECTOR3D> sourceCoordinates, VECTOR3D scalin
 
 __global__ void gpuGetLinePlaneI
 (
-    double* lineVA, // x1, y1, z1
-    double* lineVB, // l, m, n
-    double* dotPaN, // x0, y0, z0
-    double* dotPbN, // p, q, r
+    double* lineVA,
+    double* lineVB,
+    double* dotPaN,
+    double* dotPbN,
     double* lpI,
     int amoutI
 )
@@ -542,7 +542,7 @@ __global__ void gpuGetLinePlaneI
     if (i < amoutI && j < VECTOR3)
     {
         lpI[i*VECTOR3 + j] = lineVA[i*VECTOR3 + j] + 
-        (lineVB[i*VECTOR3 + j] - lineVA[i*VECTOR3 + j]) * (dotPaN[i] / (dotPaN[i] + dotPbN[i]));
+        (lineVB[i*VECTOR3 + j] - lineVA[i*VECTOR3 + j]) * (abs(dotPaN[i]) / (abs(dotPaN[i]) + abs(dotPbN[i])));
     } 
 }
 

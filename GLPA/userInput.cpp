@@ -52,30 +52,37 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 // OutputDebugStringW(_T("SHIFT\n"));
                 break;
         case 'W' :
-                _stprintf_s(szstr, _T("%s"), _T("W ON"));
-                WndLAU.fpsSystem.setFps = 240;
+                // _stprintf_s(szstr, _T("%s"), _T("W ON"));
+                // WndLAU.fpsSystem.setFps = 240;
+                deve001.cam.wPos.y -= 10;
+                _stprintf_s(szstr, _T("%lf"), (deve001.cam.wPos.y));
                 // OutputDebugStringW(_T("W\n"));
                 break;
         case 'S' :
-                _stprintf_s(szstr, _T("%s"), _T("S ON"));
-                WndLAU.fpsSystem.setFps = 10;
+                // _stprintf_s(szstr, _T("%s"), _T("S ON"));
+                deve001.cam.wPos.y += 10;
+                _stprintf_s(szstr, _T("%lf"), (deve001.cam.wPos.y));
+                // WndLAU.fpsSystem.setFps = 10;
                 break;
         case 'C' :
                 // sampleBmpFile.loadBinary(FILETYPE_BMP, ("temp.bmp"));
                 // sampleBmpFile.checkBinary();
                 
-                // OutputDebugStringW(_T("New scene\n"));
-                OutputDebugStringW(_T("Camera Initialize\n"));
-                tempMtlFile.loadData("temp_cube");
-                
-                tempObject.inputData("temp_cube");
-                // tempObject.inputData("temp_farCube");
-                deve001.cam.initialize();
-                deve001.cam.defViewVolume();
+                if (!deve001.cam.initialized)
+                {
+                        OutputDebugStringW(_T("Camera Initialize\n"));
+                        tempMtlFile.loadData("temp_cube");
+                        
+                        tempObject.inputData("temp_cube");
+                        // tempObject.inputData("temp_farCube");
+                        deve001.cam.initialize();
+                        deve001.cam.defViewVolume();
+                }
+                OutputDebugStringW(_T("New scene\n"));
                 deve001.cam.coordinateTransRange(&tempObject.data);
                 deve001.cam.clippingRange(tempObject.data);
                 deve001.cam.polyBilateralJudge(tempObject.data);
-                deve001.cam.coordinateTransV(tempObject.data);
+                deve001.cam.coordinateTrans(tempObject.data);
                 deve001.cam.polyInViewVolumeJudge(tempObject.data);
 
                 break;
@@ -110,11 +117,11 @@ void WndLAUInput ::keyUp(WPARAM wParam)
                         // OutputDebugStringW(_T("SHIFT UP\n"));
                         break;
                 case 'W' :
-                        _stprintf_s(szstr, _T("%s"), _T("W OFF"));
+                        // _stprintf_s(szstr, _T("%s"), _T("W OFF"));
                         // OutputDebugStringW(_T("W UP\n"));
                         break;
                 case 'S' :
-                        _stprintf_s(szstr, _T("%s"), _T("S OFF"));
+                        // _stprintf_s(szstr, _T("%s"), _T("S OFF"));
                         break;
                 default :
                         _stprintf_s(szstr, _T("%s"), _T("NAN"));

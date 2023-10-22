@@ -44,12 +44,15 @@ public :
 
     std::vector<int> withinRangeAryNum;
     std::vector<INT2D> numPolyFacing;
+
     std::vector<VECTOR3D> polyVertex;
+    std::vector<VECTOR3D> polyNormal;
+
     std::vector<VECTOR3D2D> clippedPolyVertex;
+    
     std::vector<INT2D> numPolyInViewVolume;
     std::vector<INT2D> numPolyExitsIViewVolume;
     std::vector<INT2D> numPolyAllVLINENotInViewVolume;
-
 
     void initialize(); // Initialize data
     void defViewVolume(); // define clipping area
@@ -57,19 +60,24 @@ public :
     // Range coordinate transformation
     void coordinateTransRange(std::vector<OBJ_FILE>* objData);
 
+    // Determination of intersection of OBJECT with view volume
     void clippingRange(std::vector<OBJ_FILE> objData);
 
     // Determining whether the face is front or back
     void polyBilateralJudge(std::vector<OBJ_FILE> objData);
 
     // Coordinate transformation of the vertices of the surface to be drawn
-    void coordinateTransV(std::vector<OBJ_FILE> objData);
+    void coordinateTrans(std::vector<OBJ_FILE> objData);
 
     // Determines if a vertex is in the view volume
     bool vertexInViewVolume(VECTOR3D vertex);
     
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
+
+    // Intersection judgment between polygon and view volume
+    std::vector<INT2D> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);
+
 };
 
 #endif CAMERA_H_
