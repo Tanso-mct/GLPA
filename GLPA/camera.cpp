@@ -577,7 +577,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
             inVolumeAmoutV = 0;
         }
-        aryNum += numPolyFacing[i].n.size() * VECTOR3;
+        aryNum += numPolyFacing[i].n.size() * 3;
     }
 
     // Obtaining the coordinates of the intersection of a line consisting of the vertices of a triangle 
@@ -595,9 +595,14 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     aryNum = 0;
     int linePlaneIindex = 0;
+    int amoutPolyFacing = 0;
     bool findTrueI = false;
-    std::vector<INT2D> indexAllOutside;
-    indexAllOutside.resize(withinRangeAryNum.size());
+    numPolyTrueIViewVolume.resize(withinRangeAryNum.size());
+
+    // Find and store the value of one vertex and normal vector of a polygon outside the view volume 
+    // for all three lines and all three points and polygons with intersections
+    std::vector<VECTOR3D> polyPlaneVertex;
+    std::vector<VECTOR3D> polyPlaneNormal;
 
     // Store intersection coordinates for each polygon, if any
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
@@ -622,15 +627,30 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             // Stores polygon numbers without a single intersection
             if (!findTrueI)
             {
-                numPolyAllVLINENotInViewVolume[i].n.push_back(numPolyExitsIViewVolume[i].n[j]);
-                indexAllOutside[i].n.push_back(j);
+                numPolyAllVLINENotInViewVolume[i].n.push_back(j);
+            }
+            else
+            {
+                numPolyTrueIViewVolume[i].n.push_back(j);
+                polyPlaneVertex.push_back
+                (
+                    polyVertex[amoutPolyFacing + indexNumPolyFacing[i].n[j]*VECTOR3]
+                );
+
+                polyPlaneNormal.push_back
+                (
+                    polyNormal[amoutPolyFacing / 3 + indexNumPolyFacing[i].n[j]]
+                );
             }
             findTrueI = false;
         }
+        amoutPolyFacing += numPolyFacing[i].n.size() * 3;
     }
 
     // Polygons that are outside the view volume at all three points and all three sides are converted to RANGE_CUBA
     std::vector<std::vector<RANGE_CUBE_POLY>> rangePolyAllOutside;
+
+    amoutPolyFacing = 0;
 
     rangePolyAllOutside.resize(withinRangeAryNum.size());
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
@@ -638,135 +658,155 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         rangePolyAllOutside[i].resize(numPolyAllVLINENotInViewVolume[i].n.size());
         for (int j = 0; j < numPolyAllVLINENotInViewVolume[i].n.size(); ++j)
         {
-            rangePolyAllOutside[i][j].origin = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 0];
+            rangePolyAllOutside[i][j].origin 
+            = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 0];
 
-            rangePolyAllOutside[i][j].opposite = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 0];
+            rangePolyAllOutside[i][j].opposite 
+            = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 0];
 
             // origin
             // num2
             if (
-                rangePolyAllOutside[i][j].origin.x > polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].x
+                rangePolyAllOutside[i][j].origin.x 
+                > polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].x
             )
             {
-                rangePolyAllOutside[i][j].origin.x = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].x;
+                rangePolyAllOutside[i][j].origin.x 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].x;
             }
             if (
-                rangePolyAllOutside[i][j].origin.y > polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].y
+                rangePolyAllOutside[i][j].origin.y 
+                > polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].y
             )
             {
-                rangePolyAllOutside[i][j].origin.y = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].y;
+                rangePolyAllOutside[i][j].origin.y 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].y;
             }
             if (
-                rangePolyAllOutside[i][j].origin.z < polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].z
+                rangePolyAllOutside[i][j].origin.z 
+                < polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].z
             )
             {
-                rangePolyAllOutside[i][j].origin.z = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].z;
+                rangePolyAllOutside[i][j].origin.z 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].z;
             }
 
             // num3
             if (
-                rangePolyAllOutside[i][j].origin.x > polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].x
+                rangePolyAllOutside[i][j].origin.x 
+                > polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].x
             )
             {
-                rangePolyAllOutside[i][j].origin.x = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].x;
+                rangePolyAllOutside[i][j].origin.x 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].x;
             }
             if (
-                rangePolyAllOutside[i][j].origin.y > polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].y
+                rangePolyAllOutside[i][j].origin.y 
+                > polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].y
             )
             {
-                rangePolyAllOutside[i][j].origin.y = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].y;
+                rangePolyAllOutside[i][j].origin.y 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].y;
             }
             if (
-                rangePolyAllOutside[i][j].origin.z < polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].z
+                rangePolyAllOutside[i][j].origin.z 
+                < polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].z
             )
             {
-                rangePolyAllOutside[i][j].origin.z = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].z;
+                rangePolyAllOutside[i][j].origin.z 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].z;
             }
 
 
             // opposite
             // num2
             if (
-                rangePolyAllOutside[i][j].opposite.x < polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].x
+                rangePolyAllOutside[i][j].opposite.x 
+                < polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].x
             )
             {
-                rangePolyAllOutside[i][j].opposite.x = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].x;
+                rangePolyAllOutside[i][j].opposite.x 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].x;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.y < polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].y
+                rangePolyAllOutside[i][j].opposite.y 
+                < polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].y
             )
             {
-                rangePolyAllOutside[i][j].opposite.y = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].y;
+                rangePolyAllOutside[i][j].opposite.y 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].y;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.z > polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].z
+                rangePolyAllOutside[i][j].opposite.z 
+                > polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].z
             )
             {
-                rangePolyAllOutside[i][j].opposite.z = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 1].z;
+                rangePolyAllOutside[i][j].opposite.z 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 1].z;
             }
 
             // num3
             if (
-                rangePolyAllOutside[i][j].opposite.x < polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].x
+                rangePolyAllOutside[i][j].opposite.x 
+                < polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].x
             )
             {
-                rangePolyAllOutside[i][j].opposite.x = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].x;
+                rangePolyAllOutside[i][j].opposite.x 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].x;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.y < polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].y
+                rangePolyAllOutside[i][j].opposite.y 
+                < polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].y
             )
             {
-                rangePolyAllOutside[i][j].opposite.y = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].y;
+                rangePolyAllOutside[i][j].opposite.y 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].y;
             }
             if (
-                rangePolyAllOutside[i][j].opposite.z > polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].z
+                rangePolyAllOutside[i][j].opposite.z 
+                > polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].z
             )
             {
-                rangePolyAllOutside[i][j].opposite.z = polyVertex[indexAllOutside[i].n[j]*VECTOR3 + 2].z;
+                rangePolyAllOutside[i][j].opposite.z 
+                = polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[j]*VECTOR3 + 2].z;
             }
         }
+        amoutPolyFacing += numPolyFacing[i].n.size() * 3;
     }   
 
     // If the polygon range intersects the view volume, store the polygon number with its index number
     // This index number refers to the number of the numPollyAllVLINENotInViewVolume
-    std::vector<INT2D> indexInViewVolumePoly = clippingRange(rangePolyAllOutside, withinRangeAryNum.size());
+    std::vector<INT2D> indexInViewVolumeAllOutside = clippingRange(rangePolyAllOutside, withinRangeAryNum.size());
 
-    // Find and store the value of one vertex and normal vector of a polygon outside the view volume 
-    // for all three lines and all three points
-    std::vector<VECTOR3D> polyPlaneVertex;
-    std::vector<VECTOR3D> polyPlaneNormal;
+    amoutPolyFacing = 0;
 
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
-        for (int j = 0; j < indexInViewVolumePoly[i].n.size(); ++j)
+        for (int j = 0; j < indexInViewVolumeAllOutside[i].n.size(); ++j)
         {
             polyPlaneVertex.push_back
             (
-                polyVertex[indexAllOutside[i].n[indexInViewVolumePoly[i].n[j]]*VECTOR3]
+                polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[j]]*VECTOR3]
             );
 
             polyPlaneNormal.push_back
             (
-                polyNormal[indexAllOutside[i].n[indexInViewVolumePoly[i].n[j]]]
+                polyNormal[amoutPolyFacing / 3 + numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[j]]]
             );
         }
+        amoutPolyFacing += numPolyFacing[i].n.size() * 3;
     }
 
     // Stores the start and end points of the 12 lines of the view volume
     std::vector<VECTOR3D> viewVolumeLineA;
     std::vector<VECTOR3D> viewVolumeLineB;
 
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         if (i == 3)
         {
             viewVolumeLineA.push_back(viewPoint[i]);
             viewVolumeLineB.push_back(viewPoint[0]);
-        }
-        else if (i == 7)
-        {
-            viewVolumeLineA.push_back(viewPoint[i]);
-            viewVolumeLineB.push_back(viewPoint[4]);
         }
         else
         {
@@ -775,6 +815,27 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         }
     }
 
+    for (int i = 0; i < 4; ++i)
+    {
+        viewVolumeLineA.push_back(viewPoint[i]);
+        viewVolumeLineB.push_back(viewPoint[i + 4]);
+    }
+
+    for (int i = 4; i < 8; ++i)
+    {
+        if (i == 7)
+        {
+            viewVolumeLineA.push_back(viewPoint[i]);
+            viewVolumeLineB.push_back(viewPoint[0]);
+        }
+        else
+        {
+            viewVolumeLineA.push_back(viewPoint[i]);
+            viewVolumeLineB.push_back(viewPoint[i + 1]);
+        }
+    }
+
+    // Obtain intersection with view volume edges
     eq.getLinePlaneI
     (
         viewVolumeLineA,
@@ -782,5 +843,49 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         polyPlaneVertex,
         polyPlaneNormal
     );
-}
 
+    // After determining whether the intersection is inside a polygon or not, if it is inside, 
+    // it is stored in ClippedPolyVertex.
+    aryNum = 0;
+    linePlaneIindex = 0;
+    
+    for (int j = 0; j < viewVolumeLineA.size(); ++j)
+    {
+        for (int i = 0; i < withinRangeAryNum.size(); ++i)
+        {
+            for (int k = 0; k < numPolyTrueIViewVolume[i].n.size(); ++k)
+            {
+                if (eq.existenceI[j].n[k] == I_TRUE)
+                {
+                    clippedPolyVertex[i].n
+                    [
+                        indexNumPolyFacing[i].n[numPolyTrueIViewVolume[i].n[k]]*2 + 1
+                    ].push_back(eq.linePlaneI[linePlaneIindex]);
+                    linePlaneIindex += 1;
+                }
+            }
+            aryNum += numPolyTrueIViewVolume[i].n.size();
+        }
+
+        for (int i = 0; i < withinRangeAryNum.size(); ++i)
+        {
+            for (int k = 0; k < indexInViewVolumeAllOutside[i].n.size(); ++k)
+            {
+                if (eq.existenceI[j].n[aryNum + k] == I_TRUE)
+                {
+                    numPolyInViewVolume[i].n
+                    [
+                        indexNumPolyFacing[i].n[indexInViewVolumeAllOutside[i].n[k]]
+                    ] = numPolyExitsIViewVolume[i].n[indexInViewVolumeAllOutside[i].n[k]];
+                    clippedPolyVertex[i].n
+                    [
+                        indexNumPolyFacing[i].n[indexInViewVolumeAllOutside[i].n[k]]*2 + 1
+                    ].push_back(eq.linePlaneI[linePlaneIindex]);
+                    linePlaneIindex += 1;
+                }
+            }
+            aryNum += indexInViewVolumeAllOutside[i].n.size();
+        }
+    }
+    
+}

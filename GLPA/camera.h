@@ -48,10 +48,19 @@ public :
     std::vector<VECTOR3D> polyVertex;
     std::vector<VECTOR3D> polyNormal;
 
-    std::vector<VECTOR3D2D> clippedPolyVertex;
-    
     std::vector<INT2D> numPolyInViewVolume;
+
+    // Polygon clipped vertices in view volume
+    // The index is numPolyInViewVolume
+    std::vector<VECTOR3D2D> clippedPolyVertex;
+
+    // Stores polygons where possible intersections between polygon line segments and view volume surfaces exist
     std::vector<INT2D> numPolyExitsIViewVolume;
+
+    // Stores polygons with intersections with the view volume plane
+    std::vector<INT2D> numPolyTrueIViewVolume;
+
+    // Store polygons that are outside of the view volume at all three points and all three sides
     std::vector<INT2D> numPolyAllVLINENotInViewVolume;
 
     void initialize(); // Initialize data
