@@ -24,6 +24,7 @@
     <ProjectGuid>{aa084d8f-1cc4-49b4-b7b3-5af803a6149f}</ProjectGuid>
     <RootNamespace>GLPA</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>GRPA</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
