@@ -508,7 +508,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     
     // If one of the vertices is in the view volume, 
     // it is excluded from the intersection determination as a drawing target.
-    int aryNum = 0;
+    int polySum = 0;
     int inVolumeAmoutV = 0;
     std::vector<INT2D> indexNumPolyFacing;
     indexNumPolyFacing.resize(withinRangeAryNum.size());
@@ -518,19 +518,19 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         clippedPolyVertex[i].n.resize(numPolyFacing[i].n.size()*2);
         for (int j = 0; j < numPolyFacing[i].n.size(); ++j)
         {
-            if (vertexInViewVolume(polyVertex[aryNum + j*3 + 0]))
+            if (vertexInViewVolume(polyVertex[polySum + j*3 + 0]))
             {
-                clippedPolyVertex[i].n[j*2].push_back(polyVertex[aryNum + j*3 + 0]);
+                clippedPolyVertex[i].n[j*2].push_back(polyVertex[polySum + j*3 + 0]);
                 inVolumeAmoutV += 1;
             }
-            if (vertexInViewVolume(polyVertex[aryNum + j*3 + 1]))
+            if (vertexInViewVolume(polyVertex[polySum + j*3 + 1]))
             {
-                clippedPolyVertex[i].n[j*2].push_back(polyVertex[aryNum + j*3 + 1]);
+                clippedPolyVertex[i].n[j*2].push_back(polyVertex[polySum + j*3 + 1]);
                 inVolumeAmoutV += 1;
             }
-            if (vertexInViewVolume(polyVertex[aryNum + j*3 + 2]))
+            if (vertexInViewVolume(polyVertex[polySum + j*3 + 2]))
             {
-                clippedPolyVertex[i].n[j*2].push_back(polyVertex[aryNum + j*3 + 2]);
+                clippedPolyVertex[i].n[j*2].push_back(polyVertex[polySum + j*3 + 2]);
                 inVolumeAmoutV += 1;
             }
 
@@ -545,39 +545,39 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                 // Input vertex A
                 polyLineVA.push_back
                 (
-                    polyVertex[aryNum + j*3 + 0]
+                    polyVertex[polySum + j*3 + 0]
                 );
 
                 polyLineVA.push_back
                 (
-                    polyVertex[aryNum + j*3 + 1]
+                    polyVertex[polySum + j*3 + 1]
                 );
 
                 polyLineVA.push_back
                 (
-                    polyVertex[aryNum + j*3 + 2]
+                    polyVertex[polySum + j*3 + 2]
                 );
 
                 // Input vertex B
                 polyLineVB.push_back
                 (
-                    polyVertex[aryNum + j*3 + 1]
+                    polyVertex[polySum + j*3 + 1]
                 );
 
                 polyLineVB.push_back
                 (
-                    polyVertex[aryNum + j*3 + 2]
+                    polyVertex[polySum + j*3 + 2]
                 );
 
                 polyLineVB.push_back
                 (
-                    polyVertex[aryNum + j*3 + 0]
+                    polyVertex[polySum + j*3 + 0]
                 );
             }
 
             inVolumeAmoutV = 0;
         }
-        aryNum += numPolyFacing[i].n.size() * 3;
+        polySum += numPolyFacing[i].n.size() * 3;
     }
 
     // Obtaining the coordinates of the intersection of a line consisting of the vertices of a triangle 
@@ -593,7 +593,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     numPolyAllVLINENotInViewVolume.resize(0);
     numPolyAllVLINENotInViewVolume.resize(withinRangeAryNum.size());
 
-    aryNum = 0;
+    polySum = 0;
     int linePlaneIindex = 0;
     int amoutPolyFacing = 0;
     bool findTrueI = false;
@@ -613,7 +613,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             {
                 for (int l = 0; l < viewVolumeFaceNormal.size(); ++l)
                 {   
-                    if (eq.existenceI[aryNum].n[l] == I_TRUE)
+                    if (eq.existenceI[polySum].n[l] == I_TRUE)
                     {
                         numPolyInViewVolume[i].n[indexNumPolyFacing[i].n[j]] = numPolyExitsIViewVolume[i].n[j];
                         clippedPolyVertex[i].n[indexNumPolyFacing[i].n[j]*2 + 1].push_back(eq.linePlaneI[linePlaneIindex]);
@@ -621,7 +621,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         findTrueI = true;
                     }
                 }
-                aryNum += 1;
+                polySum += 1;
             }
 
             // Stores polygon numbers without a single intersection
@@ -786,12 +786,14 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         {
             polyPlaneVertex.push_back
             (
-                polyVertex[amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[j]]*VECTOR3]
+                polyVertex
+                [amoutPolyFacing + numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[j]]*VECTOR3]
             );
 
             polyPlaneNormal.push_back
             (
-                polyNormal[amoutPolyFacing / 3 + numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[j]]]
+                polyNormal
+                [amoutPolyFacing / 3 + numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[j]]]
             );
         }
         amoutPolyFacing += numPolyFacing[i].n.size() * 3;
@@ -846,7 +848,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     // After determining whether the intersection is inside a polygon or not, if it is inside, 
     // it is stored in ClippedPolyVertex.
-    aryNum = 0;
+    polySum = 0;
     linePlaneIindex = 0;
     
     for (int j = 0; j < viewVolumeLineA.size(); ++j)
@@ -864,14 +866,14 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     linePlaneIindex += 1;
                 }
             }
-            aryNum += numPolyTrueIViewVolume[i].n.size();
+            polySum += numPolyTrueIViewVolume[i].n.size();
         }
 
         for (int i = 0; i < withinRangeAryNum.size(); ++i)
         {
             for (int k = 0; k < indexInViewVolumeAllOutside[i].n.size(); ++k)
             {
-                if (eq.existenceI[j].n[aryNum + k] == I_TRUE)
+                if (eq.existenceI[j].n[polySum + k] == I_TRUE)
                 {
                     numPolyInViewVolume[i].n
                     [
@@ -884,7 +886,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     linePlaneIindex += 1;
                 }
             }
-            aryNum += indexInViewVolumeAllOutside[i].n.size();
+            polySum += indexInViewVolumeAllOutside[i].n.size();
         }
     }
     
