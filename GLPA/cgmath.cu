@@ -618,14 +618,14 @@ void EQUATION::getLinePlaneI
     bool findI = false;
     for (int i = 0; i < lineVA.size(); ++i)
     {
-        existenceI[i].n.resize(planeN.size(), I_FALSE);
+        existenceI[i].resize(planeN.size(), I_FALSE);
         for (int j = 0; j < planeN.size(); ++j)
         {
             if (pnDotPvLa[i*planeN.size() + j] >= 0)
             {
                 if (pnDotPvLb[i*planeN.size() + j] <= 0)
                 {
-                    existenceI[i].n[j] = I_TRUE;
+                    existenceI[i][j] = I_TRUE;
                     findI = true;
                     calcLineVA.push_back(lineVA[i]);
                     calcLineVB.push_back(lineVB[i]);
@@ -638,7 +638,7 @@ void EQUATION::getLinePlaneI
             {
                 if (pnDotPvLb[i*planeN.size() + j] >= 0)
                 {
-                    existenceI[i].n[j] = I_TRUE;
+                    existenceI[i][j] = I_TRUE;
                     calcLineVA.push_back(lineVA[i]);
                     calcLineVB.push_back(lineVB[i]);
                     calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);

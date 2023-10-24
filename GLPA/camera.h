@@ -43,25 +43,25 @@ public :
     EQUATION eq;
 
     std::vector<int> withinRangeAryNum;
-    std::vector<INT2D> numPolyFacing;
+    std::vector<std::vector<int>> numPolyFacing;
 
     std::vector<VECTOR3D> polyVertex;
     std::vector<VECTOR3D> polyNormal;
 
-    std::vector<INT2D> numPolyInViewVolume;
+    std::vector<std::vector<int>> numPolyInViewVolume;
 
     // Polygon clipped vertices in view volume
     // The index is numPolyInViewVolume
-    std::vector<VECTOR3D2D> clippedPolyVertex;
+    std::vector<std::vector<std::vector<VECTOR3D>>> clippedPolyVertex;
 
     // Stores polygons where possible intersections between polygon line segments and view volume surfaces exist
-    std::vector<INT2D> numPolyExitsIViewVolume;
+    std::vector<std::vector<int>> numPolyExitsIViewVolume;
 
     // Stores polygons with intersections with the view volume plane
-    std::vector<INT2D> numPolyTrueIViewVolume;
+    std::vector<std::vector<int>> numPolyTrueIViewVolume;
 
     // Store polygons that are outside of the view volume at all three points and all three sides
-    std::vector<INT2D> numPolyAllVLINENotInViewVolume;
+    std::vector<std::vector<int>> numPolyAllVLINENotInViewVolume;
 
     void initialize(); // Initialize data
     void defViewVolume(); // define clipping area
@@ -85,7 +85,7 @@ public :
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 
     // Intersection judgment between polygon and view volume
-    std::vector<INT2D> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);
+    std::vector<std::vector<int>> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);
 
 };
 

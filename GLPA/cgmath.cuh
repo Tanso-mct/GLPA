@@ -135,16 +135,6 @@ typedef struct tagRANGE_CUBE_POLY
     VECTOR3D opposite;
 } RANGE_CUBE_POLY;
 
-typedef struct tagINT2D
-{
-    std::vector<int> n;
-} INT2D;
-
-typedef struct tagVECTOR3D2D
-{
-    std::vector<std::vector<VECTOR3D>> n;
-} VECTOR3D2D;
-
 __global__ void gpuVecAddition
 (
     double* source_vector, 
@@ -316,7 +306,7 @@ class EQUATION
 {
 public :
     VECTOR vec;
-    std::vector<INT2D> existenceI;
+    std::vector<std::vector<int>> existenceI;
     std::vector<VECTOR3D> linePlaneI;
 
     std::vector<VECTOR3D> vPvLa;
