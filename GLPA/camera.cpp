@@ -857,7 +857,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         {
             for (int k = 0; k < numPolyTrueIViewVolume[i].n.size(); ++k)
             {
-                if (eq.existenceI[j].n[k] == I_TRUE)
+                if (eq.existenceI[j].n[polySum + k] == I_TRUE)
                 {
                     clippedPolyVertex[i].n
                     [
@@ -866,7 +866,8 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     linePlaneIindex += 1;
                 }
             }
-            polySum += numPolyTrueIViewVolume[i].n.size();
+
+            polySum +=  numPolyTrueIViewVolume[i].n.size();
         }
 
         for (int i = 0; i < withinRangeAryNum.size(); ++i)
@@ -877,17 +878,20 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                 {
                     numPolyInViewVolume[i].n
                     [
-                        indexNumPolyFacing[i].n[indexInViewVolumeAllOutside[i].n[k]]
+                        indexNumPolyFacing[i].n[numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[k]]]
                     ] = numPolyExitsIViewVolume[i].n[indexInViewVolumeAllOutside[i].n[k]];
                     clippedPolyVertex[i].n
                     [
-                        indexNumPolyFacing[i].n[indexInViewVolumeAllOutside[i].n[k]]*2 + 1
+                        indexNumPolyFacing[i].n
+                        [numPolyAllVLINENotInViewVolume[i].n[indexInViewVolumeAllOutside[i].n[k]]] * 2 + 1
                     ].push_back(eq.linePlaneI[linePlaneIindex]);
                     linePlaneIindex += 1;
                 }
             }
-            polySum += indexInViewVolumeAllOutside[i].n.size();
+            polySum +=  indexInViewVolumeAllOutside[i].n.size();
         }
+        
+        polySum = 0;
     }
     
 }
