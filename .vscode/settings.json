@@ -81,5 +81,7 @@
         "__split_buffer": "cpp",
         "string_view": "cpp",
         "__locale": "cpp"
-    }
+    },
+    "commentTranslate.hover.enabled": true,
+    "dotnet.defaultSolution": "disable"
 }

@@ -15,6 +15,14 @@
 #define VP3 2
 #define VP4 3
 
+typedef struct tagPOLYSURFACE_I_INFO
+{
+    int indexViewVolumeLineA;
+    int indexWithinRangeAryNum;
+    bool polyTrueI;
+    int polySum;
+} POLYSURFACE_I_INFO;
+
 class CAMERA
 {
 public :
