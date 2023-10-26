@@ -131,7 +131,7 @@ void CAMERA::defViewVolume()
     calcVecB.push_back(viewPoint[6]);
     calcVecB.push_back(viewPoint[6]);
 
-    vec.minusVec3d(calcVecA, calcVecB);
+    vec.minusVec3d(calcVecA, calcVecB, VECTOTR_MINUS_SAMESIZE);
 
     std::vector<VECTOR3D> lineA;
     std::vector<VECTOR3D> lineB;
@@ -855,6 +855,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     std::vector<VECTOR3D> calcPolyVertex;
     std::vector<VECTOR3D> calcPolySurfaceIpoint;
     std::vector<POLYSURFACE_I_INFO> polySurfaceIinfo;
+    POLYSURFACE_I_INFO useInLoopPolySurfaceIinfo;
     for (int j = 0; j < viewVolumeLineA.size(); ++j)
     {
         for (int i = 0; i < withinRangeAryNum.size(); ++i)
@@ -880,6 +881,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     (
                         eq.linePlaneI[linePlaneIindex]
                     );
+
+                    useInLoopPolySurfaceIinfo.indexViewVolumeLineA = j;
+                    useInLoopPolySurfaceIinfo.indexWithinRangeAryNum = i;
+                    useInLoopPolySurfaceIinfo.polySum = polySum;
+                    useInLoopPolySurfaceIinfo.polyTrueI = true;
+                    useInLoopPolySurfaceIinfo.indexPolyI = k;
+                    polySurfaceIinfo.push_back(useInLoopPolySurfaceIinfo);
                     
                     linePlaneIindex += 1;
                 }
@@ -894,15 +902,58 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             {
                 if (eq.existenceI[j][polySum + k] == I_TRUE)
                 {
-                    numPolyInViewVolume[i]
-                    [
-                        indexNumPolyFacing[i][numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]]
-                    ] = numPolyExitsIViewVolume[i][indexInViewVolumeAllOutside[i][k]];
-                    clippedPolyVertex[i]
-                    [
-                        indexNumPolyFacing[i]
-                        [numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]] * 2 + 1
-                    ].push_back(eq.linePlaneI[linePlaneIindex]);
+                    // numPolyInViewVolume[i]
+                    // [
+                    //     indexNumPolyFacing[i][numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]]
+                    // ] = numPolyExitsIViewVolume[i][indexInViewVolumeAllOutside[i][k]];
+                    // clippedPolyVertex[i]
+                    // [
+                    //     indexNumPolyFacing[i]
+                    //     [numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]] * 2 + 1
+                    // ].push_back(eq.linePlaneI[linePlaneIindex]);
+
+                    calcPolyVertex.push_back
+                    (
+                        polyVertex
+                        [
+                            indexNumPolyFacing[i]
+                            [
+                                numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]
+                            ]*3 + 0
+                        ]
+                    );
+                    calcPolyVertex.push_back
+                    (
+                        polyVertex
+                        [
+                            indexNumPolyFacing[i]
+                            [
+                                numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]
+                            ]*3 + 1
+                        ]
+                    );
+                    calcPolyVertex.push_back
+                    (
+                        polyVertex
+                        [
+                            indexNumPolyFacing[i]
+                            [
+                                numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]
+                            ]*3 + 2
+                        ]
+                    );
+
+                    calcPolySurfaceIpoint.push_back
+                    (
+                        eq.linePlaneI[linePlaneIindex]
+                    );
+
+                    useInLoopPolySurfaceIinfo.indexViewVolumeLineA = j;
+                    useInLoopPolySurfaceIinfo.indexWithinRangeAryNum = i;
+                    useInLoopPolySurfaceIinfo.polySum = polySum;
+                    useInLoopPolySurfaceIinfo.polyTrueI = false;
+                    useInLoopPolySurfaceIinfo.indexPolyI = k;
+                    polySurfaceIinfo.push_back(useInLoopPolySurfaceIinfo);
                     linePlaneIindex += 1;
                 }
             }

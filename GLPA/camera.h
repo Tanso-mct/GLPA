@@ -20,6 +20,7 @@ typedef struct tagPOLYSURFACE_I_INFO
     int indexViewVolumeLineA;
     int indexWithinRangeAryNum;
     bool polyTrueI;
+    int indexPolyI;
     int polySum;
 } POLYSURFACE_I_INFO;
 
