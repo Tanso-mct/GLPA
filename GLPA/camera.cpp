@@ -3,7 +3,7 @@
 
 void CAMERA::initialize()
 {
-    wPos = {0, -350, 0};
+    wPos = {0, 0, 0};
     rotAngle = {0, 0, 0};
 
     nearZ = 1;
@@ -226,6 +226,8 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
 void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
 {
     withinRangeAryNum.resize(0);
+    double debug_Num1;
+    double debug_Num2;
     for (int i = 0; i < objData.size(); ++i)
     {
         // Z-axis direction determination
@@ -235,11 +237,17 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
             objData[i].range.opposite.z < viewPointXZ[VP1].z
         )
         {
+            debug_Num1 = ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
+                * (objData[i].range.origin.x - viewPointXZ[VP4].x) 
+                + viewPointXZ[VP4].z;
+            debug_Num2 = ((viewPointXZ[VP2].z - viewPointXZ[VP1].z) / (viewPointXZ[VP2].x - viewPointXZ[VP1].x)) 
+                * (objData[i].range.opposite.x - viewPointXZ[VP1].x) 
+                + viewPointXZ[VP1].z;
             // X-axis direction determination
             if 
             (
                 // ORIGIN
-                objData[i].range.origin.z < 
+                objData[i].range.opposite.z < 
                 ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
                 * (objData[i].range.origin.x - viewPointXZ[VP4].x) 
                 + viewPointXZ[VP4].z &&
@@ -924,16 +932,6 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
             {
                 if (eq.existenceI[j][polySum + k] == I_TRUE)
                 {
-                    // numPolyInViewVolume[i]
-                    // [
-                    //     indexNumPolyFacing[i][numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]]
-                    // ] = numPolyExitsIViewVolume[i][indexInViewVolumeAllOutside[i][k]];
-                    // clippedPolyVertex[i]
-                    // [
-                    //     indexNumPolyFacing[i]
-                    //     [numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]] * 2 + 1
-                    // ].push_back(eq.linePlaneI[linePlaneIindex]);
-
                     calcPolyVertex.push_back
                     (
                         polyVertex

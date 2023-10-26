@@ -73,7 +73,9 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                         OutputDebugStringW(_T("Camera Initialize\n"));
                         tempMtlFile.loadData("temp_cube");
                         
-                        tempObject.inputData("temp_cube");
+                        // tempObject.inputData("temp_cube");
+                        tempObject.inputData("temp_secondCube");
+
                         // tempObject.inputData("temp_farCube");
                         deve001.cam.initialize();
                         deve001.cam.defViewVolume();

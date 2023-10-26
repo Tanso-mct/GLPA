@@ -119,7 +119,7 @@
     <None Include="resource\obj\temp_cube.obj">
       <Filter>リソース ファイル\obj</Filter>
     </None>
-    <None Include="resource\obj\temp_farCube.obj">
+    <None Include="resource\obj\temp_secondCube.obj">
       <Filter>リソース ファイル\obj</Filter>
     </None>
   </ItemGroup>

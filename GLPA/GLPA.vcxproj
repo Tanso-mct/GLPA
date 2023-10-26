@@ -185,7 +185,9 @@
     <None Include="resource\obj\temp_cube.obj">
       <FileType>Document</FileType>
     </None>
-    <None Include="resource\obj\temp_farCube.obj">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\obj\temp_secondCube.obj">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
