@@ -93,7 +93,7 @@ __global__ void gpuVecCrossProduct
 }
 
 
-void VECTOR::minusVec3d(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> endVs, int mode)
+void VECTOR::minusVec3d(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> endVs)
 {
     // Allocate memory for each vector size
     hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*startVs.size());
@@ -119,16 +119,9 @@ void VECTOR::minusVec3d(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> end
         (startVs.size()*VECTOR3 + dimBlock.x - 1) / dimBlock.x, 
         (startVs.size()*VECTOR3 + dimBlock.y - 1) / dimBlock.y
     ); // Grid Size
-    if (mode == VECTOTR_MINUS_SAMESIZE)
-    {
-        gpuVecMinus<<<dimGrid, dimBlock>>>
-        (dSouceVec, dCalcVec, dResultVec, startVs.size());
-    }
-    else if (mode == VECTOR_MINUS_TOPOINT)
-    {
-        gpuVecMinusToPoint<<<dimGrid, dimBlock>>>
-        (dSouceVec, dCalcVec, dResultVec, startVs.size());
-    }
+    
+    gpuVecMinus<<<dimGrid, dimBlock>>>
+    (dSouceVec, dCalcVec, dResultVec, startVs.size());
 
     // Copy results from device memory to host memory
     cudaMemcpy(hResultVec, dResultVec, sizeof(double)*VECTOR3*startVs.size(), cudaMemcpyDeviceToHost);
@@ -593,10 +586,10 @@ void EQUATION::getLinePlaneI
     }
 
     // Find a vector from a point on the surface to a polygon vertex
-    vec.minusVec3d(planeVperLine, lineVAperPlne, VECTOTR_MINUS_SAMESIZE);
+    vec.minusVec3d(planeVperLine, lineVAperPlne);
     vPvLa = vec.resultVector3D;
 
-    vec.minusVec3d(planeVperLine, lineVBperPlne, VECTOTR_MINUS_SAMESIZE);
+    vec.minusVec3d(planeVperLine, lineVBperPlne);
     vPvLb = vec.resultVector3D;
 
     std::vector<VECTOR3D> planeNperLine;

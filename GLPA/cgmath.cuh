@@ -82,10 +82,6 @@
 // Limit the number of decimal places to the specified number of digits
 #define DECIMAL_PLACES 10000
 
-// Vector minus modes
-#define VECTOTR_MINUS_SAMESIZE 0
-#define VECTOR_MINUS_TOPOINT 1
-
 typedef struct tagVECTOR2D
 {
     double x;
@@ -191,7 +187,7 @@ public :
     double* dCalcVec;
     double* dResultVec;
 
-    void minusVec3d(std::vector<VECTOR3D> start_vertexcies, std::vector<VECTOR3D> end_vertexcies, int calc_mode);
+    void minusVec3d(std::vector<VECTOR3D> start_vertexcies, std::vector<VECTOR3D> end_vertexcies);
 
     void decimalLimit(VECTOR3D* v);
 
