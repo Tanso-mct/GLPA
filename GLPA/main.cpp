@@ -2,11 +2,11 @@
 #include "main.h"
 
 int WINAPI WinMain(
-    _In_ HINSTANCE hInstance,          //アプリケーションのインスタンスハンドル
-    _In_opt_ HINSTANCE hPrevInstance,  //アプリケーション以前のインスタンスハンドルが入る。Win32アプリケーションでは常にNULL
-    _In_ LPSTR lpCmdLine,              //コマンドラインが格納された、NULLで終わる文字列へのポインタが入る。
-                                       //プログラム名は含まれない
-    _In_ int nCmdShow                  //ウィンドウをどのように表示するかの指定が入る。SW_MESSAGENAMEの値が入る
+    _In_ HINSTANCE hInstance,          // Application instance handle
+    _In_opt_ HINSTANCE hPrevInstance,  // Contains the instance handle before the application; always NULL for Win32 applications
+    _In_ LPSTR lpCmdLine,              // Contains a pointer to a null-terminated string containing the command line.
+                                       // Program name not included
+    _In_ int nCmdShow                  // Contains the value of SW_MESSAGENAME.
 )                      
 {
     // Launcher Class Registration
@@ -52,16 +52,16 @@ int WINAPI WinMain(
     }
 
     // Creation of WndLAU window
-    WndLAU.hWnd = CreateWindow(             //HWND ウィンドウハンドル
-        L"window_LAU",                      //LPCSTR 登録されたクラス名のアドレス
-        L"LAUNCHER",                        //LPCSTR ウィンドウテキストのアドレス
-        WS_OVERLAPPEDWINDOW,                //DWORD ウィンドウスタイル。WS_MESSAGENAMEのパラメータで指定できる
-        CW_USEDEFAULT, CW_USEDEFAULT,       //int ウィンドウの水平座標の位置, ウィンドウの垂直座標の位置
-        WndLAU.windowSize.width, WndLAU.windowSize.height,  //int ウィンドウの幅, ウィンドウの高さ
-        HWND_DESKTOP,                       //HWND 親ウィンドウのハンドル
-        NULL,                               //HMENU メニューのハンドルまたは子ウィンドウのID
-        hInstance,                          //HINSTANCE アプリケーションインスタンスのハンドル
-        NULL                                //void FAR* ウィンドウ作成データのアドレス
+    WndLAU.hWnd = CreateWindow(             // HWND window handle
+        L"window_LAU",                      // LPCSTR Registered class name address
+        L"LAUNCHER",                        // LPCSTR Window text address
+        WS_OVERLAPPEDWINDOW,                // DWORD Window style, which can be specified with the parameter WS_MESSAGENAME
+        CW_USEDEFAULT, CW_USEDEFAULT,       // int Window horizontal coordinate position, Window vertical coordinate position
+        WndLAU.windowSize.width, WndLAU.windowSize.height,  // int Window Width, Window Height
+        HWND_DESKTOP,                       // HWND Parent Window Handle
+        NULL,                               // HMENU Menu handle or child window ID
+        hInstance,                          // HINSTANCE Application instance handle
+        NULL                                // void FAR* Address of window creation data
     );
 
     if (!WndMain.checkWindow(WndLAU.hWnd))
@@ -127,6 +127,6 @@ int WINAPI WinMain(
 
     
     
-    return (int)msg.wParam;             //関数がWM_QUITメッセージを受け取って終了したときは、メッセージのwParamパラメータが
-							            //持つ終了コードを返す。関数がメッセージループに入る前に終了したときは、０を返す
+    return (int)msg.wParam;             // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is
+							            // Returns the exit code that has If the function exits before entering the message loop, return 0
 }
