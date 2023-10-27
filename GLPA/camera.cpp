@@ -8,7 +8,7 @@ void CAMERA::initialize()
 
     nearZ = 1;
     farZ = 10000;
-    viewAngle = 80;
+    horizAngle = 80;
     aspectRatio = {16, 9};
 }
 
@@ -24,8 +24,10 @@ void CAMERA::defViewVolume()
     }
 
     // define screen size
-    nearScreenSize.width = tan(viewAngle / 2 * PI / 180) * nearZ * 2;
+    nearScreenSize.width = tan(horizAngle / 2 * PI / 180) * nearZ * 2;
     nearScreenSize.height = nearScreenSize.width * aspectRatio.y / aspectRatio.x;
+
+    vertAngle = atan2(nearScreenSize.height / 2, nearZ) * 180 / PI * 2;
 
     farScreenSize.width = nearScreenSize.width / 2 * farZ / nearZ;
     farScreenSize.height = farScreenSize.width * aspectRatio.y / aspectRatio.x;
@@ -225,6 +227,32 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
 
 void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
 {
+    std::vector<double> vertValue;
+    std::vector<double> horizValue;
+
+    vertValue.resize(objData.size() * 4);
+    horizValue.resize(objData.size() * 4);
+
+    for (int i = 0; i < objData.size(); ++i)
+    {
+        // origin XZ
+        vertValue[i*4 + 0] = objData[i].range.origin.z;
+        horizValue[i*4 + 0] = objData[i].range.opposite.x;
+
+        // origin YZ
+        vertValue[i*4 + 1] = objData[i].range.opposite.z;
+        horizValue[i*4 + 1] = objData[i].range.origin.y;
+
+        // opposite XZ
+        vertValue[i*4 + 2] = objData[i].range.opposite.z;
+        horizValue[i*4 + 2] = objData[i].range.opposite.x;
+
+        // opposite YZ
+        vertValue[i*4 + 3] = objData[i].range.opposite.z;
+        horizValue[i*4 + 3] = objData[i].range.opposite.y;
+    }
+
+    tri.get2dVecAngle(vertValue, horizValue);
     withinRangeAryNum.resize(0);
     for (int i = 0; i < objData.size(); ++i)
     {
@@ -239,32 +267,20 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
             if 
             (
                 // ORIGIN
-                objData[i].range.opposite.z < 
-                ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
-                * (objData[i].range.origin.x - viewPointXZ[VP4].x) 
-                + viewPointXZ[VP4].z &&
+                tri.resultDegree[i*4 + 0] <= horizAngle / 2 &&
 
                 // OPPOSITE
-                objData[i].range.opposite.z < 
-                ((viewPointXZ[VP2].z - viewPointXZ[VP1].z) / (viewPointXZ[VP2].x - viewPointXZ[VP1].x)) 
-                * (objData[i].range.opposite.x - viewPointXZ[VP1].x) 
-                + viewPointXZ[VP1].z
+                tri.resultDegree[i*4 + 2] >= -horizAngle / 2
             )
             {
+                // Y-axis direction determination
                 if
                 (
-                    // Y-axis direction determination
                     // ORIGIN
-                    objData[i].range.origin.y < 
-                    ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                    * (objData[i].range.origin.z - viewPointYZ[VP1].z) 
-                    + viewPointYZ[VP1].y &&
+                    tri.resultDegree[i*4 + 1] <= -90 + vertAngle / 2  &&
 
-                    // OPPOSIT
-                    objData[i].range.opposite.y > 
-                    ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                    * (objData[i].range.opposite.z - viewPointYZ[VP4].z) 
-                    + viewPointYZ[VP4].y
+                    // OPPOSITE
+                    tri.resultDegree[i*4 + 3] >= -90 - vertAngle / 2
                 )
                 {
                     withinRangeAryNum.push_back(i);
@@ -389,60 +405,88 @@ void CAMERA::coordinateTrans(std::vector<OBJ_FILE> objData)
     polyNormal = mtx.resultMatrices;
 }
 
-bool CAMERA::vertexInViewVolume(VECTOR3D v)
+std::vector<bool> CAMERA::vertexInViewVolume(std::vector<VECTOR3D> v)
 {
-    double debug_n1;
-    double debug_n2;
-    // Z-axis direction determination
-    if 
-    (
-        v.z > viewPointXZ[VP2].z &&
-        v.z < viewPointXZ[VP1].z
-    )
+    std::vector<double> vertValue;
+    std::vector<double> horizValue;
+
+    vertValue.resize(v.size() * 2);
+    horizValue.resize(v.size() * 2);
+
+    for (int i = 0; i < v.size(); ++i)
     {
-        // X-axis direction determination
+        // XZ
+        vertValue[i*2 + 0] = v[i].z;
+        horizValue[i*2 + 0] = v[i].x;
+
+        // YZ
+        vertValue[i*2 + 1] = v[i].z;
+        horizValue[i*2 + 1] = v[i].y;
+    }
+
+    tri.get2dVecAngle(vertValue, horizValue);
+
+    std::vector<bool> vInViewVolume;
+    vInViewVolume.resize(v.size(), false);
+    // Z-axis direction determination
+    for (int i = 0; i < v.size(); ++i)
+    {
         if 
         (
-            // ORIGIN
-            v.z < 
-            ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
-            * (v.x - viewPointXZ[VP4].x) 
-            + viewPointXZ[VP4].z &&
-
-            // OPPOSITE
-            v.z < 
-            ((viewPointXZ[VP2].z - viewPointXZ[VP1].z) / (viewPointXZ[VP2].x - viewPointXZ[VP1].x)) 
-            * (v.x - viewPointXZ[VP1].x)
-            + viewPointXZ[VP1].z
+            v[i].z > viewPointXZ[VP2].z &&
+            v[i].z < viewPointXZ[VP1].z
         )
         {
-            if
-            (
-                // Y-axis direction determination
-                // ORIGIN
-                v.y < 
-                ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                * (v.z - viewPointYZ[VP1].z) 
-                + viewPointYZ[VP1].y &&
-
-                // OPPOSIT
-                v.y > 
-                ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                * (v.z - viewPointYZ[VP4].z) 
-                + viewPointYZ[VP4].y
-            )
+            // X-axis direction determination
+            if 
+            (tri.resultDegree[i*2 + 0] <= -horizAngle / 2 && tri.resultDegree[i*2 + 0] >= -180 + horizAngle / 2)
             {
-                return true;
+                // Y-axis direction determination
+                if(tri.resultDegree[i*2 + 1] <= -vertAngle / 2 && tri.resultDegree[i*2 + 1] >= -180 + vertAngle / 2)
+                {
+                    vInViewVolume[i] = true;
+                }
             }
         }
     }
-    return false;
+    return vInViewVolume;
 }
 
 std::vector<std::vector<int>> CAMERA::clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> rangePoly, int processObjectAmout)
 {
     std::vector<std::vector<int>> indexInViewVolumePoly;
     indexInViewVolumePoly.resize(processObjectAmout);
+
+    std::vector<double> vertValue;
+    std::vector<double> horizValue;
+
+    vertValue.resize(rangePoly.size() * 4);
+    horizValue.resize(rangePoly.size() * 4);
+
+    for (int i = 0; i < rangePoly.size(); ++i)
+    {
+        for (int j = 0; j < rangePoly[i].size(); ++j)
+        {
+            // origin XZ
+            vertValue[i*4 + 0] = rangePoly[i][j].origin.z;
+            horizValue[i*4 + 0] = rangePoly[i][j].opposite.x;
+
+            // origin YZ
+            vertValue[i*4 + 1] = rangePoly[i][j].opposite.z;
+            horizValue[i*4 + 1] = rangePoly[i][j].origin.y;
+
+            // opposite XZ
+            vertValue[i*4 + 2] = rangePoly[i][j].opposite.z;
+            horizValue[i*4 + 2] = rangePoly[i][j].opposite.x;
+
+            // opposite YZ
+            vertValue[i*4 + 3] = rangePoly[i][j].opposite.z;
+            horizValue[i*4 + 3] = rangePoly[i][j].opposite.y;
+        }
+    }
+
+    tri.get2dVecAngle(vertValue, horizValue);
+    withinRangeAryNum.resize(0);
     for (int i = 0; i < processObjectAmout; ++i)
     {
         for (int j = 0; j < rangePoly[i].size(); ++j)
@@ -458,32 +502,20 @@ std::vector<std::vector<int>> CAMERA::clippingRange(std::vector<std::vector<RANG
                 if 
                 (
                     // ORIGIN
-                    rangePoly[i][j].origin.z < 
-                    ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
-                    * (rangePoly[i][j].origin.x - viewPointXZ[VP4].x) 
-                    + viewPointXZ[VP4].z &&
+                    tri.resultDegree[i*4 + 0] <= horizAngle / 2 &&
 
                     // OPPOSITE
-                    rangePoly[i][j].opposite.z < 
-                    ((viewPointXZ[VP2].z - viewPointXZ[VP1].z) / (viewPointXZ[VP2].x - viewPointXZ[VP1].x)) 
-                    * (rangePoly[i][j].opposite.x - viewPointXZ[VP1].x) 
-                    + viewPointXZ[VP1].z
+                    tri.resultDegree[i*4 + 2] >= -horizAngle / 2
                 )
                 {
+                    // Y-axis direction determination
                     if
                     (
-                        // Y-axis direction determination
                         // ORIGIN
-                        rangePoly[i][j].origin.y < 
-                        ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                        * (rangePoly[i][j].origin.z - viewPointYZ[VP1].z) 
-                        + viewPointYZ[VP1].y &&
+                        tri.resultDegree[i*4 + 1] <= -90 + vertAngle / 2  &&
 
-                        // OPPOSIT
-                        rangePoly[i][j].opposite.y > 
-                        ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                        * (rangePoly[i][j].opposite.z - viewPointYZ[VP4].z) 
-                        + viewPointYZ[VP4].y
+                        // OPPOSITE
+                        tri.resultDegree[i*4 + 3] >= -90 - vertAngle / 2
                     )
                     {
                         indexInViewVolumePoly[i].push_back(j);
@@ -516,23 +548,25 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     int inVolumeAmoutV = 0;
     std::vector<std::vector<int>> indexNumPolyFacing;
     indexNumPolyFacing.resize(withinRangeAryNum.size());
+    
+    std::vector<bool> vInViewVolume = vertexInViewVolume(polyVertex);
     for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
         numPolyInViewVolume[i].resize(numPolyFacing[i].size(), -1);
         clippedPolyVertex[i].resize(numPolyFacing[i].size()*2);
         for (int j = 0; j < numPolyFacing[i].size(); ++j)
         {
-            if (vertexInViewVolume(polyVertex[polySum + j*3 + 0]))
+            if (vInViewVolume[polySum + j*3 + 0])
             {
                 clippedPolyVertex[i][j*2].push_back(polyVertex[polySum + j*3 + 0]);
                 inVolumeAmoutV += 1;
             }
-            if (vertexInViewVolume(polyVertex[polySum + j*3 + 1]))
+            if (vInViewVolume[polySum + j*3 + 1])
             {
                 clippedPolyVertex[i][j*2].push_back(polyVertex[polySum + j*3 + 1]);
                 inVolumeAmoutV += 1;
             }
-            if (vertexInViewVolume(polyVertex[polySum + j*3 + 2]))
+            if (vInViewVolume[polySum + j*3 + 2])
             {
                 clippedPolyVertex[i][j*2].push_back(polyVertex[polySum + j*3 + 2]);
                 inVolumeAmoutV += 1;

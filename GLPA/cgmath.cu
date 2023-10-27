@@ -715,3 +715,64 @@ void EQUATION::getLinePlaneI
     cudaFree(dLinePlaneI);
 }
 
+__global__ void gpuGet2dAngle(double *vertValue, double *horizValue, double* resultValue, int size)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < size)
+    {
+        resultValue[i] = atan2(vertValue[i], horizValue[i]) * 180 / PI;
+    }
+}
+
+void TRIANGLE_RATIO::get2dVecAngle(std::vector<double> vertValue, std::vector<double> horizValue)
+{
+    // Allocate memory for each vector size
+    hHorizValue = (double*)malloc(sizeof(double)*horizValue.size());
+    hVertValue = (double*)malloc(sizeof(double)*vertValue.size());
+    hResultValue = (double*)malloc(sizeof(double)*horizValue.size());
+
+    memcpy(hHorizValue, horizValue.data(), sizeof(double)*horizValue.size());
+    memcpy(hVertValue, vertValue.data(), sizeof(double)*vertValue.size());
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dHorizValue, sizeof(double)*VECTOR3*horizValue.size());
+    cudaMalloc((void**)&dVertValue, sizeof(double)*VECTOR3*vertValue.size());
+    cudaMalloc((void**)&dResultValue, sizeof(double)*VECTOR3*horizValue.size());
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dHorizValue, hHorizValue, sizeof(double)*horizValue.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dVertValue, hVertValue, sizeof(double)*vertValue.size(), cudaMemcpyHostToDevice);
+    
+    // GPU kernel function calls
+    int blockSize = 1024;
+    int numBlocks = (horizValue.size()*VECTOR3 + blockSize - 1) / blockSize;
+    dim3 dimBlock(blockSize, 1, 1);
+    dim3 dimGrid(numBlocks, 1, 1);
+    (
+        (horizValue.size()*VECTOR3 + dimBlock.x - 1) / dimBlock.x, 
+        (horizValue.size()*VECTOR3 + dimBlock.y - 1) / dimBlock.y
+    ); // Grid Size
+    gpuGet2dAngle<<<dimGrid, dimBlock>>>
+    (dVertValue, dHorizValue, dResultValue, horizValue.size());
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResultValue, dResultValue, sizeof(double)*horizValue.size(), cudaMemcpyDeviceToHost);
+
+    // Assign the result to a Vector member variable
+    resultDegree.resize(horizValue.size());
+    for (int i = 0; i < horizValue.size(); ++i)
+    {
+        resultDegree[i] = hResultValue[i];
+    }
+
+    // Release all memory allocated by malloc
+    free(hHorizValue);
+    free(hVertValue);
+    free(hResultValue);
+
+    cudaFree(dHorizValue);
+    cudaFree(dVertValue);
+    cudaFree(dResultValue);
+}
+

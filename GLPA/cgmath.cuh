@@ -337,4 +337,24 @@ public :
 
 };
 
+__global__ void gpuGet2dAngle(double* vertical_value, double* horizontal_value, double* result_value, int size_n);
+
+class TRIANGLE_RATIO
+{
+public :
+    std::vector<double> resultDegree;
+
+    // Calculate the angle of a 2D vector
+    void get2dVecAngle(std::vector<double> vertical_value, std::vector<double> horizontal_value);
+
+    double* hHorizValue;
+    double* hVertValue;
+    double* hResultValue;
+
+    double* dHorizValue;
+    double* dVertValue;
+    double* dResultValue;
+
+};
+
 #endif CGMATH_H_

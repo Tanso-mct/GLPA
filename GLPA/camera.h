@@ -34,7 +34,8 @@ public :
 
     double nearZ;
     double farZ;
-    double viewAngle;
+    double horizAngle;
+    double vertAngle;
     VECTOR2D aspectRatio;
 
     SIZE2 nearScreenSize;
@@ -50,6 +51,7 @@ public :
     MATRIX mtx;
     VECTOR vec;
     EQUATION eq;
+    TRIANGLE_RATIO tri;
 
     std::vector<int> withinRangeAryNum;
     std::vector<std::vector<int>> numPolyFacing;
@@ -88,7 +90,7 @@ public :
     void coordinateTrans(std::vector<OBJ_FILE> objData);
 
     // Determines if a vertex is in the view volume
-    bool vertexInViewVolume(VECTOR3D vertex);
+    std::vector<bool> vertexInViewVolume(std::vector<VECTOR3D> vertex);
     
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
