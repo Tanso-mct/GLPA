@@ -226,8 +226,6 @@ void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
 void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
 {
     withinRangeAryNum.resize(0);
-    double debug_Num1;
-    double debug_Num2;
     for (int i = 0; i < objData.size(); ++i)
     {
         // Z-axis direction determination
@@ -237,12 +235,6 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
             objData[i].range.opposite.z < viewPointXZ[VP1].z
         )
         {
-            debug_Num1 = ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
-                * (objData[i].range.origin.x - viewPointXZ[VP4].x) 
-                + viewPointXZ[VP4].z;
-            debug_Num2 = ((viewPointXZ[VP2].z - viewPointXZ[VP1].z) / (viewPointXZ[VP2].x - viewPointXZ[VP1].x)) 
-                * (objData[i].range.opposite.x - viewPointXZ[VP1].x) 
-                + viewPointXZ[VP1].z;
             // X-axis direction determination
             if 
             (
@@ -399,41 +391,45 @@ void CAMERA::coordinateTrans(std::vector<OBJ_FILE> objData)
 
 bool CAMERA::vertexInViewVolume(VECTOR3D v)
 {
+    double debug_n1;
+    double debug_n2;
+    // Z-axis direction determination
     if 
     (
-        v.z > viewPointXZ[VP2].z && v.z < viewPointXZ[VP1].z
+        v.z > viewPointXZ[VP2].z &&
+        v.z < viewPointXZ[VP1].z
     )
     {
         // X-axis direction determination
         if 
         (
             // ORIGIN
-            v.x < viewPointXZ[VP3].x &&
-            v.x < 
-            ((viewPointXZ[VP3].x - viewPointXZ[VP4].x) / (viewPointXZ[VP3].z - viewPointXZ[VP4].z))
-            * (v.z - viewPointXZ[VP4].z) + viewPointXZ[VP4].x &&
+            v.z < 
+            ((viewPointXZ[VP3].z - viewPointXZ[VP4].z) / (viewPointXZ[VP3].x - viewPointXZ[VP4].x))
+            * (v.x - viewPointXZ[VP4].x) 
+            + viewPointXZ[VP4].z &&
 
             // OPPOSITE
-            v.x > viewPointXZ[VP2].x &&
-            v.x > 
-            ((viewPointXZ[VP2].x - viewPointXZ[VP1].x) / (viewPointXZ[VP2].z - viewPointXZ[VP1].z)) 
-            * (v.z - viewPointXZ[VP1].z) + viewPointXZ[VP1].x
+            v.z < 
+            ((viewPointXZ[VP2].z - viewPointXZ[VP1].z) / (viewPointXZ[VP2].x - viewPointXZ[VP1].x)) 
+            * (v.x - viewPointXZ[VP1].x)
+            + viewPointXZ[VP1].z
         )
         {
             if
             (
                 // Y-axis direction determination
                 // ORIGIN
-                v.y < viewPointYZ[VP2].y &&
                 v.y < 
                 ((viewPointYZ[VP2].y - viewPointYZ[VP1].y) / (viewPointYZ[VP2].z - viewPointYZ[VP1].z)) 
-                * (v.z - viewPointYZ[VP1].z) + viewPointYZ[VP1].y &&
+                * (v.z - viewPointYZ[VP1].z) 
+                + viewPointYZ[VP1].y &&
 
                 // OPPOSIT
-                v.y > viewPointYZ[VP3].y &&
                 v.y > 
                 ((viewPointYZ[VP3].y - viewPointYZ[VP4].y) / (viewPointYZ[VP3].z - viewPointYZ[VP4].z)) 
-                * (v.z - viewPointYZ[VP4].z) + viewPointYZ[VP4].y
+                * (v.z - viewPointYZ[VP4].z) 
+                + viewPointYZ[VP4].y
             )
             {
                 return true;
@@ -1044,7 +1040,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         calcDotB[i + 1] = vec.resultVector3D[i + 2];
     }
 
-    vec.crossProduct(calcDotA, calcDotB);
+    vec.dotProduct(calcDotA, calcDotB);
 
     // polySum = 0;
     // linePlaneIindex = 0;
