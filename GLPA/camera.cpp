@@ -161,9 +161,9 @@ void CAMERA::defViewVolume()
         storeNormal = viewVolumeFaceNormal[i];
         inSqrt = pow(storeNormal.x, 2) + pow(storeNormal.y, 2) + pow(storeNormal.z, 2);
 
-        viewVolumeFaceNormal[i].x = viewVolumeFaceNormal[i].x / sqrt(inSqrt);
-        viewVolumeFaceNormal[i].y = viewVolumeFaceNormal[i].y / sqrt(inSqrt);
-        viewVolumeFaceNormal[i].z = viewVolumeFaceNormal[i].z / sqrt(inSqrt);
+        viewVolumeFaceNormal[i].x = viewVolumeFaceNormal[i].x / abs(sqrt(inSqrt));
+        viewVolumeFaceNormal[i].y = viewVolumeFaceNormal[i].y / abs(sqrt(inSqrt));
+        viewVolumeFaceNormal[i].z = viewVolumeFaceNormal[i].z / abs(sqrt(inSqrt));
     }
 }
 
