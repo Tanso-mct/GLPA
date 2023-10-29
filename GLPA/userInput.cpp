@@ -74,7 +74,9 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                         tempMtlFile.loadData("temp_cube");
                         
                         // tempObject.inputData("temp_cube");
-                        tempObject.inputData("temp_secondCube");
+                        // tempObject.inputData("temp_secondCube");
+                        tempObject.inputData("temp_third_cube");
+
 
                         // tempObject.inputData("temp_farCube");
                         deve001.cam.initialize();

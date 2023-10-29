@@ -13,7 +13,6 @@ public :
     std::vector<OBJ_FILE> data;
 
     // Class data used for loading
-    OBJ_FILE objFile;
     void inputData(std::string inputFileName);
 };
 

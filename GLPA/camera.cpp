@@ -236,8 +236,8 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
     for (int i = 0; i < objData.size(); ++i)
     {
         // origin XZ
-        vertValue[i*4 + 0] = objData[i].range.origin.z;
-        horizValue[i*4 + 0] = objData[i].range.opposite.x;
+        vertValue[i*4 + 0] = objData[i].range.opposite.z;
+        horizValue[i*4 + 0] = objData[i].range.origin.x;
 
         // origin YZ
         vertValue[i*4 + 1] = objData[i].range.opposite.z;
@@ -267,10 +267,10 @@ void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
             if 
             (
                 // ORIGIN
-                tri.resultDegree[i*4 + 0] <= horizAngle / 2 &&
+                tri.resultDegree[i*4 + 0] <= -90 + horizAngle / 2 &&
 
                 // OPPOSITE
-                tri.resultDegree[i*4 + 2] >= -horizAngle / 2
+                tri.resultDegree[i*4 + 2] >= -90 -horizAngle / 2
             )
             {
                 // Y-axis direction determination
@@ -439,10 +439,10 @@ std::vector<bool> CAMERA::vertexInViewVolume(std::vector<VECTOR3D> v)
         {
             // X-axis direction determination
             if 
-            (tri.resultDegree[i*2 + 0] <= -horizAngle / 2 && tri.resultDegree[i*2 + 0] >= -180 + horizAngle / 2)
+            (tri.resultDegree[i*2 + 0] <= -90 + horizAngle / 2 && tri.resultDegree[i*2 + 0] >= -90 -horizAngle / 2)
             {
                 // Y-axis direction determination
-                if(tri.resultDegree[i*2 + 1] <= -vertAngle / 2 && tri.resultDegree[i*2 + 1] >= -180 + vertAngle / 2)
+                if(tri.resultDegree[i*2 + 1] <= -90 + vertAngle / 2 && tri.resultDegree[i*2 + 1] >= -90 - vertAngle / 2)
                 {
                     vInViewVolume[i] = true;
                 }
@@ -468,8 +468,8 @@ std::vector<std::vector<int>> CAMERA::clippingRange(std::vector<std::vector<RANG
         for (int j = 0; j < rangePoly[i].size(); ++j)
         {
             // origin XZ
-            vertValue[i*4 + 0] = rangePoly[i][j].origin.z;
-            horizValue[i*4 + 0] = rangePoly[i][j].opposite.x;
+            vertValue[i*4 + 0] = rangePoly[i][j].opposite.z;
+            horizValue[i*4 + 0] = rangePoly[i][j].origin.x;
 
             // origin YZ
             vertValue[i*4 + 1] = rangePoly[i][j].opposite.z;
@@ -486,7 +486,6 @@ std::vector<std::vector<int>> CAMERA::clippingRange(std::vector<std::vector<RANG
     }
 
     tri.get2dVecAngle(vertValue, horizValue);
-    withinRangeAryNum.resize(0);
     for (int i = 0; i < processObjectAmout; ++i)
     {
         for (int j = 0; j < rangePoly[i].size(); ++j)
@@ -502,10 +501,10 @@ std::vector<std::vector<int>> CAMERA::clippingRange(std::vector<std::vector<RANG
                 if 
                 (
                     // ORIGIN
-                    tri.resultDegree[i*4 + 0] <= horizAngle / 2 &&
+                    tri.resultDegree[i*4 + 0] <= -90 + horizAngle / 2 &&
 
                     // OPPOSITE
-                    tri.resultDegree[i*4 + 2] >= -horizAngle / 2
+                    tri.resultDegree[i*4 + 2] >= -90 -horizAngle / 2
                 )
                 {
                     // Y-axis direction determination
@@ -652,7 +651,6 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
     viewVolumePoint1[9] = viewPoint[5];
     viewVolumePoint1[10] = viewPoint[6];
     viewVolumePoint1[11] = viewPoint[7];
-
 
     // Ending point of the front side
     viewVolumePoint2[0] = viewPoint[1];
@@ -1078,7 +1076,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         if (i == 7)
         {
             viewVolumeLineA.push_back(viewPoint[i]);
-            viewVolumeLineB.push_back(viewPoint[0]);
+            viewVolumeLineB.push_back(viewPoint[4]);
         }
         else
         {
@@ -1103,7 +1101,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     // Stores information on polygons with intersections to find cross products
     std::vector<VECTOR3D> calcPolyVertex;
-    std::vector<VECTOR3D> calcPolyVertexFrom;
+    std::vector<VECTOR3D> calcPolyVertexTo;
     std::vector<VECTOR3D> calcPolySurfaceIpoint;
     std::vector<POLYSURFACE_I_INFO> polySurfaceIinfo;
     POLYSURFACE_I_INFO useInLoopPolySurfaceIinfo;
@@ -1128,17 +1126,17 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         polyVertex[indexNumPolyFacing[i][numPolyTrueIViewVolume[i][k]]*3 + 2]
                     );
 
-                    calcPolyVertexFrom.push_back
+                    calcPolyVertexTo.push_back
+                    (
+                        polyVertex[indexNumPolyFacing[i][numPolyTrueIViewVolume[i][k]]*3 + 1]
+                    );
+                    calcPolyVertexTo.push_back
                     (
                         polyVertex[indexNumPolyFacing[i][numPolyTrueIViewVolume[i][k]]*3 + 2]
                     );
-                    calcPolyVertexFrom.push_back
+                    calcPolyVertexTo.push_back
                     (
                         polyVertex[indexNumPolyFacing[i][numPolyTrueIViewVolume[i][k]]*3 + 0]
-                    );
-                    calcPolyVertexFrom.push_back
-                    (
-                        polyVertex[indexNumPolyFacing[i][numPolyTrueIViewVolume[i][k]]*3 + 1]
                     );
 
                     calcPolySurfaceIpoint.push_back
@@ -1159,6 +1157,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     useInLoopPolySurfaceIinfo.polySum = polySum;
                     useInLoopPolySurfaceIinfo.polyTrueI = true;
                     useInLoopPolySurfaceIinfo.indexPolyI = k;
+                    
                     polySurfaceIinfo.push_back(useInLoopPolySurfaceIinfo);
                     
                     linePlaneIindex += 1;
@@ -1205,7 +1204,17 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                         ]
                     );
 
-                    calcPolyVertexFrom.push_back
+                    calcPolyVertexTo.push_back
+                    (
+                        polyVertex
+                        [
+                            indexNumPolyFacing[i]
+                            [
+                                numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]
+                            ]*3 + 1
+                        ]
+                    );
+                    calcPolyVertexTo.push_back
                     (
                         polyVertex
                         [
@@ -1215,7 +1224,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                             ]*3 + 2
                         ]
                     );
-                    calcPolyVertexFrom.push_back
+                    calcPolyVertexTo.push_back
                     (
                         polyVertex
                         [
@@ -1223,16 +1232,6 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                             [
                                 numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]
                             ]*3 + 0
-                        ]
-                    );
-                    calcPolyVertexFrom.push_back
-                    (
-                        polyVertex
-                        [
-                            indexNumPolyFacing[i]
-                            [
-                                numPolyAllVLINENotInViewVolume[i][indexInViewVolumeAllOutside[i][k]]
-                            ]*3 + 1
                         ]
                     );
 
@@ -1255,6 +1254,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     useInLoopPolySurfaceIinfo.polyTrueI = false;
                     useInLoopPolySurfaceIinfo.indexPolyI = k;
                     polySurfaceIinfo.push_back(useInLoopPolySurfaceIinfo);
+
                     linePlaneIindex += 1;
                 }
             }
@@ -1264,13 +1264,13 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
         polySum = 0;
     }
 
-    vec.minusVec3d(calcPolyVertex, calcPolySurfaceIpoint);
+    vec.minusVec3d(calcPolyVertexTo, calcPolySurfaceIpoint);
     std::vector<VECTOR3D> vecPolyVtoI = vec.resultVector3D;
 
-    vec.minusVec3d(calcPolyVertex, calcPolyVertexFrom);
+    vec.minusVec3d(calcPolyVertex, calcPolyVertexTo);
     std::vector<VECTOR3D> vecPolyLine = vec.resultVector3D;
 
-    vec.crossProduct(vecPolyLine, vecPolyVtoI);
+    vec.crossProduct(vecPolyVtoI, vecPolyLine);
 
     std::vector<VECTOR3D> calcDotA;
     std::vector<VECTOR3D> calcDotB;
@@ -1279,11 +1279,11 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     for (int i = 0; i < vec.resultVector3D.size() / 3; ++i)
     {
-        calcDotA[i + 0] = vec.resultVector3D[i + 0];
-        calcDotA[i + 1] = vec.resultVector3D[i + 0];
+        calcDotA[i*2 + 0] = vec.resultVector3D[i*3 + 0];
+        calcDotA[i*2 + 1] = vec.resultVector3D[i*3 + 0];
 
-        calcDotB[i + 0] = vec.resultVector3D[i + 1];
-        calcDotB[i + 1] = vec.resultVector3D[i + 2];
+        calcDotB[i*2 + 0] = vec.resultVector3D[i*3 + 1];
+        calcDotB[i*2 + 1] = vec.resultVector3D[i*3 + 2];
     }
 
     vec.dotProduct(calcDotA, calcDotB);
@@ -1293,7 +1293,7 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 
     for (int i = 0; i < polySurfaceIinfo.size(); ++i)
     {
-        if (vec.resultVector[i*2 + 0] > 0 || vec.resultVector[i*2 + 1] > 0)
+        if (vec.resultVector[i*2 + 0] > 0 && vec.resultVector[i*2 + 1] > 0)
         {
             if (polySurfaceIinfo[i].polyTrueI)
             {
@@ -1326,8 +1326,11 @@ void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
                     polySurfaceIinfo[i].indexWithinRangeAryNum
                 ]
                 [
-                    indexInViewVolumeAllOutside
-                    [polySurfaceIinfo[i].indexWithinRangeAryNum][polySurfaceIinfo[i].indexPolyI]
+                    numPolyAllVLINENotInViewVolume[polySurfaceIinfo[i].indexWithinRangeAryNum]
+                    [
+                        indexInViewVolumeAllOutside
+                        [polySurfaceIinfo[i].indexWithinRangeAryNum][polySurfaceIinfo[i].indexPolyI]
+                    ]
                 ];
 
                 clippedPolyVertex[polySurfaceIinfo[i].indexWithinRangeAryNum]

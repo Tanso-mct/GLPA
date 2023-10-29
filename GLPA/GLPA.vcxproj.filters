@@ -122,5 +122,8 @@
     <None Include="resource\obj\temp_secondCube.obj">
       <Filter>リソース ファイル\obj</Filter>
     </None>
+    <None Include="resource\obj\temp_third_cube.obj">
+      <Filter>リソース ファイル\obj</Filter>
+    </None>
   </ItemGroup>
 </Project>
