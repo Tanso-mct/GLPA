@@ -1,109 +1,91 @@
 #define DEBUG_CAMERA_
 #include "camera.h"
 
-void CAMERA::initialize()
+void VIEWVOLUME::define
+(
+    double nearZ, double farZ,
+    SIZE2 nearScrPxSize, SIZE2 farScrPxSize,
+    ANGLE angle, VECTOR2D aspectRatio
+)
 {
-    wPos = {0, 0, 0};
-    rotAngle = {0, 0, 0};
-
-    nearZ = 1;
-    farZ = 10000;
-    horizAngle = 80;
-    aspectRatio = {16, 9};
-}
-
-void CAMERA::defViewVolume()
-{
-    // Processing to be done only for the first execution
-    if (!initialized)
-    {
-        viewPointXZ.resize(4);
-        viewPointYZ.resize(4);
-
-        initialized = true;
-    }
-
     // define screen size
-    nearScreenSize.width = tan(horizAngle / 2 * PI / 180) * nearZ * 2;
-    nearScreenSize.height = nearScreenSize.width * aspectRatio.y / aspectRatio.x;
+    nearScrPxSize.width = tan(angle.horiz / 2 * PI / 180) * nearZ * 2;
+    nearScrPxSize.height = nearScrPxSize.width * aspectRatio.y / aspectRatio.x;
 
-    vertAngle = atan2(nearScreenSize.height / 2, nearZ) * 180 / PI * 2;
+    angle.vert = atan2(nearScrPxSize.height / 2, nearZ) * 180 / PI * 2;
 
-    farScreenSize.width = nearScreenSize.width / 2 * farZ / nearZ;
-    farScreenSize.height = farScreenSize.width * aspectRatio.y / aspectRatio.x;
+    farScrPxSize.width = nearScrPxSize.width / 2 * farZ / nearZ;
+    farScrPxSize.height = farScrPxSize.width * aspectRatio.y / aspectRatio.x;
     
     // Define coordinates of view area vertices on xz axis
-    viewPointXZ[VP1].x = -nearScreenSize.width / 2;
-    viewPointXZ[VP2].x = -farScreenSize.width / 2;
-    viewPointXZ[VP3].x = farScreenSize.width / 2;
-    viewPointXZ[VP4].x = nearScreenSize.width / 2;
+    pointXZ[VP1].x = -nearScrPxSize.width / 2;
+    pointXZ[VP2].x = -farScrPxSize.width / 2;
+    pointXZ[VP3].x = farScrPxSize.width / 2;
+    pointXZ[VP4].x = nearScrPxSize.width / 2;
 
-    viewPointXZ[VP1].z = -nearZ;
-    viewPointXZ[VP2].z = -farZ;
-    viewPointXZ[VP3].z = -farZ;
-    viewPointXZ[VP4].z = -nearZ;
+    pointXZ[VP1].z = -nearZ;
+    pointXZ[VP2].z = -farZ;
+    pointXZ[VP3].z = -farZ;
+    pointXZ[VP4].z = -nearZ;
 
     // Define coordinates of view area vertices on yz axis
-    viewPointYZ[VP1].y = nearScreenSize.height / 2;
-    viewPointYZ[VP2].y = farScreenSize.height / 2;
-    viewPointYZ[VP3].y = -farScreenSize.height / 2;
-    viewPointYZ[VP4].y = -nearScreenSize.height / 2;
+    pointYZ[VP1].y = nearScrPxSize.height / 2;
+    pointYZ[VP2].y = farScrPxSize.height / 2;
+    pointYZ[VP3].y = -farScrPxSize.height / 2;
+    pointYZ[VP4].y = -nearScrPxSize.height / 2;
 
-    viewPointYZ[VP1].z = -nearZ;
-    viewPointYZ[VP2].z = -farZ;
-    viewPointYZ[VP3].z = -farZ;
-    viewPointYZ[VP4].z = -nearZ;
+    pointYZ[VP1].z = -nearZ;
+    pointYZ[VP2].z = -farZ;
+    pointYZ[VP3].z = -farZ;
+    pointYZ[VP4].z = -nearZ;
 
-    viewPoint.resize(8);
     // 0
-    viewPoint[0].x = viewPointXZ[VP1].x;
-    viewPoint[0].y = viewPointYZ[VP1].y;
-    viewPoint[0].z = -nearZ;
+    point3D[0].x = pointXZ[VP1].x;
+    point3D[0].y = pointYZ[VP1].y;
+    point3D[0].z = -nearZ;
 
     // 1
-    viewPoint[1].x = viewPointXZ[VP4].x;
-    viewPoint[1].y = viewPointYZ[VP1].y;
-    viewPoint[1].z = -nearZ;
+    point3D[1].x = pointXZ[VP4].x;
+    point3D[1].y = pointYZ[VP1].y;
+    point3D[1].z = -nearZ;
 
     // 2
-    viewPoint[2].x = viewPointXZ[VP4].x;
-    viewPoint[2].y = viewPointYZ[VP4].y;
-    viewPoint[2].z = -nearZ;
+    point3D[2].x = pointXZ[VP4].x;
+    point3D[2].y = pointYZ[VP4].y;
+    point3D[2].z = -nearZ;
 
     // 3
-    viewPoint[3].x = viewPointXZ[VP1].x;
-    viewPoint[3].y = viewPointYZ[VP4].y;
-    viewPoint[3].z = -nearZ;
+    point3D[3].x = pointXZ[VP1].x;
+    point3D[3].y = pointYZ[VP4].y;
+    point3D[3].z = -nearZ;
 
     // 4
-    viewPoint[4].x = viewPointXZ[VP2].x;
-    viewPoint[4].y = viewPointYZ[VP2].y;
-    viewPoint[4].z = -farZ;
+    point3D[4].x = pointXZ[VP2].x;
+    point3D[4].y = pointYZ[VP2].y;
+    point3D[4].z = -farZ;
 
     // 5
-    viewPoint[5].x = viewPointXZ[VP3].x;
-    viewPoint[5].y = viewPointYZ[VP2].y;
-    viewPoint[5].z = -farZ;
+    point3D[5].x = pointXZ[VP3].x;
+    point3D[5].y = pointYZ[VP2].y;
+    point3D[5].z = -farZ;
 
     // 6
-    viewPoint[6].x = viewPointXZ[VP3].x;
-    viewPoint[6].y = viewPointYZ[VP3].y;
-    viewPoint[6].z = -farZ;
+    point3D[6].x = pointXZ[VP3].x;
+    point3D[6].y = pointYZ[VP3].y;
+    point3D[6].z = -farZ;
 
     // 7
-    viewPoint[7].x = viewPointXZ[VP2].x;
-    viewPoint[7].y = viewPointYZ[VP3].y;
-    viewPoint[7].z = -farZ;
+    point3D[7].x = pointXZ[VP2].x;
+    point3D[7].y = pointYZ[VP3].y;
+    point3D[7].z = -farZ;
 
     // Assign a point on the surface
-    viewVolumeFaceVertex.resize(6);
     viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[0];
     viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[0];
     viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[6];
     viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[0];
     viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[6];
     viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[6];
-
 
     std::vector<VECTOR3D> calcVecA;
     calcVecA.push_back(viewPoint[1]);
