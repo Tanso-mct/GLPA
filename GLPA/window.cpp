@@ -159,7 +159,6 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 );
                 SelectObject(WndLAU.buffer.hBufDC, WndLAU.buffer.hBufBmp);
                 
-                // //TODO:to make at texture.h,.cpp about load texture function
                 // //load texture
                 // sample.load(TEXT("sample.bmp"), WND_LAU.hWndDC);
                 // sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, WndLAU.buffer.hBufDC, WND_LAU.lpPixel);
@@ -192,7 +191,6 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 DestroyWindow(hWnd);
 
         case WM_DESTROY :
-                //TODO:Change PostQuitMessage to send only when no windows are displayed.
                 if (!WndPLAY.state.open)
                 {
                     PostQuitMessage(0);
@@ -322,7 +320,6 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 );
                 SelectObject(WndPLAY.buffer.hBufDC, WndPLAY.buffer.hBufBmp);
                 
-                // //TODO:to make at texture.h,.cpp about load texture function
                 // //load texture
                 // sample.load(TEXT("sample.bmp"), WndPLAY.hWndDC);
                 // sample.create(WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, WndPLAY.buffer.hBufDC, WND_PLAY.lpPixel);
@@ -355,7 +352,6 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 DestroyWindow(hWnd);
 
         case WM_DESTROY :
-                //TODO:Change PostQuitMessage to send only when no windows are displayed.
                 if (!WndLAU.state.open)
                 {
                     PostQuitMessage(0);

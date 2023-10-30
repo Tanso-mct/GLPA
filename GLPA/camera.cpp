@@ -5,14 +5,14 @@ void VIEWVOLUME::define
 (
     double nearZ, double farZ,
     SIZE2 nearScrPxSize, SIZE2 farScrPxSize,
-    ANGLE angle, VECTOR2D aspectRatio
+    ANGLE* angle, VECTOR2D aspectRatio
 )
 {
     // define screen size
-    nearScrPxSize.width = tan(angle.horiz / 2 * PI / 180) * nearZ * 2;
+    nearScrPxSize.width = tan((*angle).horiz / 2 * PI / 180) * nearZ * 2;
     nearScrPxSize.height = nearScrPxSize.width * aspectRatio.y / aspectRatio.x;
 
-    angle.vert = atan2(nearScrPxSize.height / 2, nearZ) * 180 / PI * 2;
+    (*angle).vert = atan2(nearScrPxSize.height / 2, nearZ) * 180 / PI * 2;
 
     farScrPxSize.width = nearScrPxSize.width / 2 * farZ / nearZ;
     farScrPxSize.height = farScrPxSize.width * aspectRatio.y / aspectRatio.x;
@@ -39,113 +39,108 @@ void VIEWVOLUME::define
     pointYZ[VP3].z = -farZ;
     pointYZ[VP4].z = -nearZ;
 
-    // 0
-    point3D[0].x = pointXZ[VP1].x;
-    point3D[0].y = pointYZ[VP1].y;
-    point3D[0].z = -nearZ;
+    // Enter 3D camera coordinates for view volume
+    point3D[RECT_FRONT_TOP_LEFT].x = pointXZ[VP1].x;
+    point3D[RECT_FRONT_TOP_LEFT].y = pointYZ[VP1].y;
+    point3D[RECT_FRONT_TOP_LEFT].z = -nearZ;
 
-    // 1
-    point3D[1].x = pointXZ[VP4].x;
-    point3D[1].y = pointYZ[VP1].y;
-    point3D[1].z = -nearZ;
+    point3D[RECT_FRONT_TOP_RIGHT].x = pointXZ[VP4].x;
+    point3D[RECT_FRONT_TOP_RIGHT].y = pointYZ[VP1].y;
+    point3D[RECT_FRONT_TOP_RIGHT].z = -nearZ;
 
-    // 2
-    point3D[2].x = pointXZ[VP4].x;
-    point3D[2].y = pointYZ[VP4].y;
-    point3D[2].z = -nearZ;
+    point3D[RECT_FRONT_BOTTOM_RIGHT].x = pointXZ[VP4].x;
+    point3D[RECT_FRONT_BOTTOM_RIGHT].y = pointYZ[VP4].y;
+    point3D[RECT_FRONT_BOTTOM_RIGHT].z = -nearZ;
 
-    // 3
-    point3D[3].x = pointXZ[VP1].x;
-    point3D[3].y = pointYZ[VP4].y;
-    point3D[3].z = -nearZ;
+    point3D[RECT_FRONT_BOTTOM_LEFT].x = pointXZ[VP1].x;
+    point3D[RECT_FRONT_BOTTOM_LEFT].y = pointYZ[VP4].y;
+    point3D[RECT_FRONT_BOTTOM_LEFT].z = -nearZ;
 
-    // 4
-    point3D[4].x = pointXZ[VP2].x;
-    point3D[4].y = pointYZ[VP2].y;
-    point3D[4].z = -farZ;
+    point3D[RECT_BACK_TOP_LEFT].x = pointXZ[VP2].x;
+    point3D[RECT_BACK_TOP_LEFT].y = pointYZ[VP2].y;
+    point3D[RECT_BACK_TOP_LEFT].z = -farZ;
 
-    // 5
-    point3D[5].x = pointXZ[VP3].x;
-    point3D[5].y = pointYZ[VP2].y;
-    point3D[5].z = -farZ;
+    point3D[RECT_BACK_TOP_RIGHT].x = pointXZ[VP3].x;
+    point3D[RECT_BACK_TOP_RIGHT].y = pointYZ[VP2].y;
+    point3D[RECT_BACK_TOP_RIGHT].z = -farZ;
 
-    // 6
-    point3D[6].x = pointXZ[VP3].x;
-    point3D[6].y = pointYZ[VP3].y;
-    point3D[6].z = -farZ;
+    point3D[RECT_BACK_BOTTOM_RIGHT].x = pointXZ[VP3].x;
+    point3D[RECT_BACK_BOTTOM_RIGHT].y = pointYZ[VP3].y;
+    point3D[RECT_BACK_BOTTOM_RIGHT].z = -farZ;
 
-    // 7
-    point3D[7].x = pointXZ[VP2].x;
-    point3D[7].y = pointYZ[VP3].y;
-    point3D[7].z = -farZ;
+    point3D[RECT_BACK_BOTTOM_LEFT].x = pointXZ[VP2].x;
+    point3D[RECT_BACK_BOTTOM_LEFT].y = pointYZ[VP3].y;
+    point3D[RECT_BACK_BOTTOM_LEFT].z = -farZ;
 
-    // Assign a point on the surface
-    viewVolumeFaceVertex[SURFACE_TOP] = viewPoint[0];
-    viewVolumeFaceVertex[SURFACE_FRONT] = viewPoint[0];
-    viewVolumeFaceVertex[SURFACE_RIGHT] = viewPoint[6];
-    viewVolumeFaceVertex[SURFACE_LEFT] = viewPoint[0];
-    viewVolumeFaceVertex[SURFACE_BACK] = viewPoint[6];
-    viewVolumeFaceVertex[SURFACE_BOTTOM] = viewPoint[6];
+    // Enter a point on the surface
+    face[SURFACE_TOP].oneV = point3D[0];
+    face[SURFACE_FRONT].oneV = point3D[0];
+    face[SURFACE_RIGHT].oneV = point3D[6];
+    face[SURFACE_LEFT].oneV = point3D[0];
+    face[SURFACE_BACK].oneV = point3D[6];
+    face[SURFACE_BOTTOM].oneV = point3D[6];
 
-    std::vector<VECTOR3D> calcVecA;
-    calcVecA.push_back(viewPoint[1]);
-    calcVecA.push_back(viewPoint[4]);
-    calcVecA.push_back(viewPoint[1]);
-    calcVecA.push_back(viewPoint[3]);
-    calcVecA.push_back(viewPoint[2]);
-    calcVecA.push_back(viewPoint[5]);
-    calcVecA.push_back(viewPoint[3]);
-    calcVecA.push_back(viewPoint[4]);
-    calcVecA.push_back(viewPoint[5]);
-    calcVecA.push_back(viewPoint[7]);
-    calcVecA.push_back(viewPoint[2]);
-    calcVecA.push_back(viewPoint[7]);
+    // Enter the starting and ending points of the line segments of the view volume
+    lineStartPoint[RECT_L1] = point3D[RECT_L1_STARTPT];
+    lineStartPoint[RECT_L2] = point3D[RECT_L2_STARTPT];
+    lineStartPoint[RECT_L3] = point3D[RECT_L3_STARTPT];
+    lineStartPoint[RECT_L4] = point3D[RECT_L4_STARTPT];
+    lineStartPoint[RECT_L5] = point3D[RECT_L5_STARTPT];
+    lineStartPoint[RECT_L6] = point3D[RECT_L6_STARTPT];
+    lineStartPoint[RECT_L7] = point3D[RECT_L7_STARTPT];
+    lineStartPoint[RECT_L8] = point3D[RECT_L8_STARTPT];
+    lineStartPoint[RECT_L9] = point3D[RECT_L9_STARTPT];
+    lineStartPoint[RECT_L10] = point3D[RECT_L10_STARTPT];
+    lineStartPoint[RECT_L11] = point3D[RECT_L11_STARTPT];
+    lineStartPoint[RECT_L12] = point3D[RECT_L12_STARTPT];
 
-    std::vector<VECTOR3D> calcVecB;
-    calcVecB.push_back(viewPoint[0]);
-    calcVecB.push_back(viewPoint[0]);
-    calcVecB.push_back(viewPoint[0]);
-    calcVecB.push_back(viewPoint[0]);
-    calcVecB.push_back(viewPoint[6]);
-    calcVecB.push_back(viewPoint[6]);
-    calcVecB.push_back(viewPoint[0]);
-    calcVecB.push_back(viewPoint[0]);
-    calcVecB.push_back(viewPoint[6]);
-    calcVecB.push_back(viewPoint[6]);
-    calcVecB.push_back(viewPoint[6]);
-    calcVecB.push_back(viewPoint[6]);
+    lineEndPoint[RECT_L1] = point3D[RECT_L1_ENDPT];
+    lineEndPoint[RECT_L2] = point3D[RECT_L2_ENDPT];
+    lineEndPoint[RECT_L3] = point3D[RECT_L3_ENDPT];
+    lineEndPoint[RECT_L4] = point3D[RECT_L4_ENDPT];
+    lineEndPoint[RECT_L5] = point3D[RECT_L5_ENDPT];
+    lineEndPoint[RECT_L6] = point3D[RECT_L6_ENDPT];
+    lineEndPoint[RECT_L7] = point3D[RECT_L7_ENDPT];
+    lineEndPoint[RECT_L8] = point3D[RECT_L8_ENDPT];
+    lineEndPoint[RECT_L9] = point3D[RECT_L9_ENDPT];
+    lineEndPoint[RECT_L10] = point3D[RECT_L10_ENDPT];
+    lineEndPoint[RECT_L11] = point3D[RECT_L11_ENDPT];
+    lineEndPoint[RECT_L12] = point3D[RECT_L12_ENDPT];
 
-    vec.minusVec3d(calcVecB, calcVecA);
+    vec.minusVec3d(lineStartPoint, lineEndPoint);
 
-    std::vector<VECTOR3D> lineA;
-    std::vector<VECTOR3D> lineB;
-    lineA.resize(6);
-    lineB.resize(6);
+    lineVec = vec.resultVector3D;
 
-    for (int i = 0; i < 6; ++i)
+    std::vector<VECTOR3D> calcLineVecA(6);
+    std::vector<VECTOR3D> calcLineVecB(6);
+
+    calcLineVecA[SURFACE_TOP] = lineVec[RECT_L1];
+    calcLineVecB[SURFACE_TOP] = lineVec[RECT_L5];
+
+    calcLineVecA[SURFACE_FRONT] = lineVec[RECT_L1];
+    calcLineVecB[SURFACE_FRONT] = lineVec[RECT_L2];
+
+    calcLineVecA[SURFACE_RIGHT] = lineVec[RECT_L2];
+    calcLineVecB[SURFACE_RIGHT] = lineVec[RECT_L6];
+
+    calcLineVecA[SURFACE_LEFT] = lineVec[RECT_L4];
+    calcLineVecB[SURFACE_LEFT] = lineVec[RECT_L5];
+
+    calcLineVecA[SURFACE_BACK] = lineVec[RECT_L9];
+    calcLineVecB[SURFACE_BACK] = lineVec[RECT_L10];
+
+    calcLineVecA[SURFACE_BOTTOM] = lineVec[RECT_L3];
+    calcLineVecB[SURFACE_BOTTOM] = lineVec[RECT_L7];
+
+    vec.crossProduct(calcLineVecA, calcLineVecB);
+
+    double calcInSqrt;
+    for (int i = 0; i < face.size(); ++i)
     {
-        for (int j = 0; j < 2; ++j)
-        {
-            lineA[i] = vec.resultVector3D[i*2 + 0];
-            lineB[i] = vec.resultVector3D[i*2 + 1];
-        }
-    }
-
-    vec.crossProduct(lineA, lineB);
-
-    viewVolumeFaceNormal.resize(6);
-    viewVolumeFaceNormal = vec.resultVector3D;
-
-    VECTOR3D storeNormal;
-    double inSqrt;
-    for (int i = 0; i < 6; ++i)
-    {
-        storeNormal = viewVolumeFaceNormal[i];
-        inSqrt = pow(storeNormal.x, 2) + pow(storeNormal.y, 2) + pow(storeNormal.z, 2);
-
-        viewVolumeFaceNormal[i].x = viewVolumeFaceNormal[i].x / abs(sqrt(inSqrt));
-        viewVolumeFaceNormal[i].y = viewVolumeFaceNormal[i].y / abs(sqrt(inSqrt));
-        viewVolumeFaceNormal[i].z = viewVolumeFaceNormal[i].z / abs(sqrt(inSqrt));
+        calcInSqrt = pow(vec.resultVector3D[i].x, 2) + pow(vec.resultVector3D[i].y, 2) + pow(vec.resultVector3D[i].z, 2);
+        face[i].normal.x = vec.resultVector3D[i].x / abs(sqrt(calcInSqrt));
+        face[i].normal.y = vec.resultVector3D[i].y / abs(sqrt(calcInSqrt));
+        face[i].normal.z = vec.resultVector3D[i].z / abs(sqrt(calcInSqrt));
     }
 }
 

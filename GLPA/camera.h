@@ -32,7 +32,6 @@ typedef struct tagANGLE
 
 typedef struct tagCALCFACE
 {
-    std::string faceName;
     VECTOR3D oneV;
     VECTOR3D normal;
 } CALCFACE;
@@ -75,22 +74,30 @@ public :
 
     std::vector<CALCFACE> face;
 
-    std::vector<VECTOR3D> line;
+    std::vector<VECTOR3D> lineStartPoint;
+    std::vector<VECTOR3D> lineEndPoint;
+    std::vector<VECTOR3D> lineVec;
+
+    VECTOR vec;
 
     VIEWVOLUME()
     {
         point3D.resize(8);
         pointXZ.resize(4);
         pointYZ.resize(4);
+
         face.resize(6);
-        line.resize(12);
+
+        lineStartPoint.resize(12);
+        lineEndPoint.resize(12);
+        lineVec.resize(12);
     }
 
     void define
     (
         double near_screen_z, double far_screen_z,
         SIZE2 near_screen_pixel_size, SIZE2 far_screen_pixel_size,
-        ANGLE view_angle, VECTOR2D aspect_ratio
+        ANGLE* view_angle, VECTOR2D aspect_ratio
     );
 };
 
