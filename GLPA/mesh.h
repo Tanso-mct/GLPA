@@ -1,12 +1,12 @@
-#ifndef OBJECT_H_
-#define OBJECT_H_
+#ifndef MESH_H_
+#define MESH_H_
 
 #include "file.h"
 #include "cgmath.cuh"
 
 #include <string>
 #include <vector>
-class OBJECT
+class MESH
 {
 public :
     // Object File data
@@ -16,6 +16,6 @@ public :
     void inputData(std::string inputFileName);
 };
 
-extern OBJECT tempObject;
+extern MESH tempMesh;
 
-#endif OBJECT_H_
+#endif MESH_H_

@@ -15,15 +15,6 @@
 #define VP3 2
 #define VP4 3
 
-// typedef struct tagPOLYSURFACE_I_INFO
-// {
-//     int indexViewVolumeLineA;
-//     int indexWithinRangeAryNum;
-//     bool polyTrueI;
-//     int indexPolyI;
-//     int polySum;
-// } POLYSURFACE_I_INFO;
-
 typedef struct tagANGLE
 {
     double vert;
@@ -48,6 +39,14 @@ typedef struct tagPOLYINFO
     std::vector<int> viewVoluneIExistID;
     std::vector<VECTOR3D> vecI;
 } POLYINFO;
+
+typedef struct tagSMALL_POLYINFO
+{
+    int meshID;
+    int polyID;
+    VECTOR3D oneV;
+    VECTOR3D nomarl;
+} SMALL_POLYINFO;
 
 typedef struct tagRENDERSOURCE
 {
@@ -119,6 +118,7 @@ public :
     
     std::vector<MESHINFO> meshInfo;
 
+    std::vector<POLYINFO> sourcePolyInfo;
     std::vector<POLYINFO> calcPolyInfo;
     std::vector<POLYINFO> searchPolyInfo;
 
@@ -139,6 +139,19 @@ public :
         viewAngle.horiz = 80;
         aspectRatio = {16, 9};
     }
+
+    // Rect Range coordinate transformation
+    void coordinateTransRectRange(std::vector<OBJ_FILE>* meshData);
+
+    // Determination of intersection of OBJECT with view volume
+    std::vector<std::vector<SMALL_POLYINFO>> clippingMeshRectRange(std::vector<OBJ_FILE> meshData);
+
+    // Determining whether the face is front or back
+    void polyBilateralJudge
+    (
+        std::vector<OBJ_FILE>* meshData,
+        std::vector<std::vector<SMALL_POLYINFO>> in_view_volume_poly_data
+    );
 
     // bool initialized = false;
 
@@ -176,23 +189,14 @@ public :
 
     // void defViewVolume(); // define clipping area
 
-    // Range coordinate transformation
-    void coordinateTransRange(std::vector<OBJ_FILE>* objData);
-
-    // Determination of intersection of OBJECT with view volume
-    void clippingRange(std::vector<OBJ_FILE> objData);
-
-    // Determining whether the face is front or back
-    void polyBilateralJudge(std::vector<OBJ_FILE> objData);
-
     // Coordinate transformation of the vertices of the surface to be drawn
-    void coordinateTrans(std::vector<OBJ_FILE> objData);
+    void coordinateTrans(std::vector<OBJ_FILE> meshData);
 
     // Determines if a vertex is in the view volume
     std::vector<bool> vertexInViewVolume(std::vector<VECTOR3D> vertex);
     
     // Determine if polygon is in view volume and store array number
-    void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
+    void polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData);
 
     // Intersection judgment between polygon and view volume
     std::vector<std::vector<int>> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);
