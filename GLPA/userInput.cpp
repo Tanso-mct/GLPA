@@ -73,28 +73,28 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                         OutputDebugStringW(_T("Camera Initialize\n"));
                         tempMtlFile.loadData("temp_cube");
                         
-                        // tempMesh.inputData("temp_cube");
-                        // tempMesh.inputData("temp_secondCube");
-                        tempMesh.inputData("temp_third_cube");
+                        // tempObject.inputData("temp_cube");
+                        // tempObject.inputData("temp_secondCube");
+                        tempObject.inputData("temp_third_cube");
 
 
-                        // tempMesh.inputData("temp_farCube");
+                        // tempObject.inputData("temp_farCube");
                         deve001.cam.initialize();
                         deve001.cam.defViewVolume();
                 }
                 OutputDebugStringW(_T("New scene\n"));
-                deve001.cam.coordinateTransRange(&tempMesh.data);
-                deve001.cam.clippingRange(tempMesh.data);
-                deve001.cam.polyBilateralJudge(tempMesh.data);
-                deve001.cam.coordinateTrans(tempMesh.data);
-                deve001.cam.polyInViewVolumeJudge(tempMesh.data);
+                deve001.cam.coordinateTransRange(&tempObject.data);
+                deve001.cam.clippingRange(tempObject.data);
+                deve001.cam.polyBilateralJudge(tempObject.data);
+                deve001.cam.coordinateTrans(tempObject.data);
+                deve001.cam.polyInViewVolumeJudge(tempObject.data);
 
                 break;
         case 'I' :
                 OutputDebugStringW(_T("Camera Initialize\n"));
                 tempMtlFile.loadData("temp_cube");
-                tempMesh.inputData("temp_cube");
-                tempMesh.inputData("temp_farCube");
+                tempObject.inputData("temp_cube");
+                tempObject.inputData("temp_farCube");
                 deve001.cam.initialize();
                 deve001.cam.defViewVolume();
                 break;

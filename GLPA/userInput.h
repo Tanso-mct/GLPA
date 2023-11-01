@@ -6,7 +6,7 @@
 
 #include "graphic.h"
 #include "camera.h"
-#include "mesh.h"
+#include "object.h"
 #include "player.h"
 
 // class UserInput

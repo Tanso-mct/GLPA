@@ -144,201 +144,193 @@ void VIEWVOLUME::define
     }
 }
 
-void CAMERA::coordinateTransRectRange(std::vector<OBJ_FILE>* meshData)
+void CAMERA::coordinateTransRange(std::vector<OBJ_FILE>* objData)
 {
     // origin and opposite point data
     std::vector<VECTOR3D> pointData;
 
-    for (int i = 0; i < (*meshData).size(); ++i)
+    for (int i = 0; i < (*objData).size(); ++i)
     {
         for (int j = 0; j < 8; ++j)
         {
-            pointData.push_back((*meshData)[i].range.wVertex[j]);
+            pointData.push_back((*objData)[i].range.wVertex[j]);
         }
     }
 
     vec.posTrans(pointData, wPos);
     mtx.rotTrans(vec.resultVector3D, rotAngle);
 
-    for (int i = 0; i < (*meshData).size(); ++i)
+    for (int i = 0; i < (*objData).size(); ++i)
     {
-        (*meshData)[i].range.origin = mtx.resultMatrices[i*8];
-        (*meshData)[i].range.opposite = mtx.resultMatrices[i*8];
+        (*objData)[i].range.origin = mtx.resultMatrices[i*8];
+        (*objData)[i].range.opposite = mtx.resultMatrices[i*8];
     }
     
-    for (int i = 0; i < (*meshData).size(); ++i)
+    for (int i = 0; i < (*objData).size(); ++i)
     {
         for (int j = 1; j < 8; ++j)
         {
             // Processing with respect to origin point
-            if ((*meshData)[i].range.origin.x > mtx.resultMatrices[i*8 + j].x)
+            if ((*objData)[i].range.origin.x > mtx.resultMatrices[i*8 + j].x)
             {   
-                (*meshData)[i].range.origin.x = mtx.resultMatrices[i*8 + j].x;
+                (*objData)[i].range.origin.x = mtx.resultMatrices[i*8 + j].x;
             }
-            if ((*meshData)[i].range.origin.y > mtx.resultMatrices[i*8 + j].y)
+            if ((*objData)[i].range.origin.y > mtx.resultMatrices[i*8 + j].y)
             {
-                (*meshData)[i].range.origin.y = mtx.resultMatrices[i*8 + j].y;
+                (*objData)[i].range.origin.y = mtx.resultMatrices[i*8 + j].y;
             }
-            if ((*meshData)[i].range.origin.z < mtx.resultMatrices[i*8 + j].z)
+            if ((*objData)[i].range.origin.z < mtx.resultMatrices[i*8 + j].z)
             {
-                (*meshData)[i].range.origin.z = mtx.resultMatrices[i*8 + j].z;
+                (*objData)[i].range.origin.z = mtx.resultMatrices[i*8 + j].z;
             }
 
             // Processing with respect to opposite point
-            if ((*meshData)[i].range.opposite.x < mtx.resultMatrices[i*8 + j].x)
+            if ((*objData)[i].range.opposite.x < mtx.resultMatrices[i*8 + j].x)
             {
-                (*meshData)[i].range.opposite.x = mtx.resultMatrices[i*8 + j].x;
+                (*objData)[i].range.opposite.x = mtx.resultMatrices[i*8 + j].x;
             }
-            if ((*meshData)[i].range.opposite.y < mtx.resultMatrices[i*8 + j].y)
+            if ((*objData)[i].range.opposite.y < mtx.resultMatrices[i*8 + j].y)
             {
-                (*meshData)[i].range.opposite.y = mtx.resultMatrices[i*8 + j].y;
+                (*objData)[i].range.opposite.y = mtx.resultMatrices[i*8 + j].y;
             }
-            if ((*meshData)[i].range.opposite.z > mtx.resultMatrices[i*8 + j].z)
+            if ((*objData)[i].range.opposite.z > mtx.resultMatrices[i*8 + j].z)
             {
-                (*meshData)[i].range.opposite.z = mtx.resultMatrices[i*8 + j].z;
+                (*objData)[i].range.opposite.z = mtx.resultMatrices[i*8 + j].z;
             }
         }
     }
     
 }
 
-std::vector<std::vector<SMALL_POLYINFO>> CAMERA::clippingMeshRectRange(std::vector<OBJ_FILE> meshData)
+void CAMERA::clippingRange(std::vector<OBJ_FILE> objData)
 {
     std::vector<double> vertValue;
     std::vector<double> horizValue;
 
-    vertValue.resize(meshData.size() * 4);
-    horizValue.resize(meshData.size() * 4);
+    vertValue.resize(objData.size() * 4);
+    horizValue.resize(objData.size() * 4);
 
-    for (int i = 0; i < meshData.size(); ++i)
+    for (int i = 0; i < objData.size(); ++i)
     {
         // origin XZ
-        vertValue[i*4 + 0] = meshData[i].range.opposite.z;
-        horizValue[i*4 + 0] = meshData[i].range.origin.x;
+        vertValue[i*4 + 0] = objData[i].range.opposite.z;
+        horizValue[i*4 + 0] = objData[i].range.origin.x;
 
         // origin YZ
-        vertValue[i*4 + 1] = meshData[i].range.opposite.z;
-        horizValue[i*4 + 1] = meshData[i].range.origin.y;
+        vertValue[i*4 + 1] = objData[i].range.opposite.z;
+        horizValue[i*4 + 1] = objData[i].range.origin.y;
 
         // opposite XZ
-        vertValue[i*4 + 2] = meshData[i].range.opposite.z;
-        horizValue[i*4 + 2] = meshData[i].range.opposite.x;
+        vertValue[i*4 + 2] = objData[i].range.opposite.z;
+        horizValue[i*4 + 2] = objData[i].range.opposite.x;
 
         // opposite YZ
-        vertValue[i*4 + 3] = meshData[i].range.opposite.z;
-        horizValue[i*4 + 3] = meshData[i].range.opposite.y;
+        vertValue[i*4 + 3] = objData[i].range.opposite.z;
+        horizValue[i*4 + 3] = objData[i].range.opposite.y;
     }
 
     tri.get2dVecAngle(vertValue, horizValue);
-    MESHINFO pushMeshData;
-    SMALL_POLYINFO pushSmallPolyInfo;
-    std::vector<std::vector<SMALL_POLYINFO>> rtInViewVolumePolyData;
-    rtInViewVolumePolyData.resize(meshData.size());
-    for (int i = 0; i < meshData.size(); ++i)
+    withinRangeAryNum.resize(0);
+    for (int i = 0; i < objData.size(); ++i)
     {
         // Z-axis direction determination
         if 
         (
-            meshData[i].range.origin.z > viewVolume.pointXZ[VP2].z &&
-            meshData[i].range.opposite.z < viewVolume.pointXZ[VP1].z
+            objData[i].range.origin.z > viewPointXZ[VP2].z &&
+            objData[i].range.opposite.z < viewPointXZ[VP1].z
         )
         {
             // X-axis direction determination
             if 
             (
                 // ORIGIN
-                tri.resultDegree[i*4 + 0] <= -90 + viewAngle.horiz / 2 &&
+                tri.resultDegree[i*4 + 0] <= -90 + horizAngle / 2 &&
 
                 // OPPOSITE
-                tri.resultDegree[i*4 + 2] >= -90 -viewAngle.horiz / 2
+                tri.resultDegree[i*4 + 2] >= -90 -horizAngle / 2
             )
             {
                 // Y-axis direction determination
                 if
                 (
                     // ORIGIN
-                    tri.resultDegree[i*4 + 1] <= -90 + viewAngle.vert / 2  &&
+                    tri.resultDegree[i*4 + 1] <= -90 + vertAngle / 2  &&
 
                     // OPPOSITE
-                    tri.resultDegree[i*4 + 3] >= -90 - viewAngle.vert / 2
+                    tri.resultDegree[i*4 + 3] >= -90 - vertAngle / 2
                 )
                 {
-                    pushMeshData.meshID = i;
-                    meshInfo.push_back(pushMeshData);
-
-                    for (int j = 0; j < meshData[i].poly.v.size(); ++j)
-                    {
-                        pushSmallPolyInfo.meshID = i;
-                        pushSmallPolyInfo.polyID = j;
-
-                        pushSmallPolyInfo.oneV = meshData[i].v.world
-                        [meshData[i].poly.v[j].num1];
-
-                        pushSmallPolyInfo.nomarl = meshData[i].v.normal
-                        [meshData[i].poly.normal[j].num1];
-
-                        rtInViewVolumePolyData[i].push_back(pushSmallPolyInfo);
-                    }
+                    withinRangeAryNum.push_back(i);
                 }
             }
         }
     }
-    return rtInViewVolumePolyData;
 }
 
-void CAMERA::polyBilateralJudge
-(
-        std::vector<OBJ_FILE>* meshData,
-        std::vector<std::vector<SMALL_POLYINFO>> inViewVolumePolyData
-)
+void CAMERA::polyBilateralJudge(std::vector<OBJ_FILE> objData)
 {
-    std::vector<VECTOR3D> calcPolyV;
-    std::vector<VECTOR3D> calcPolyNormal;
+    // Stores the number of faces of each object in the clipping area
+    std::vector<int> faceAmout;
 
-    for (int i = 0; i < inViewVolumePolyData.size(); ++i)
+    // Stores the coordinates of the vertices of the face corresponding to the normal vector of the face
+    std::vector<VECTOR3D> planeVertex;
+
+    // Stores the normals of the faces of objects in the clipping area
+    std::vector<VECTOR3D> planeNormal;
+
+    // Stores all normal vectors and vertex world cooridinate of the surface to be calculated
+    for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
-        for (int j = 0; j < inViewVolumePolyData[i].size(); ++j)
+        for (int j = 0; j < objData[withinRangeAryNum[i]].poly.normal.size(); ++j)
         {
-            calcPolyV.push_back(inViewVolumePolyData[i][j].oneV);
-            calcPolyNormal.push_back(inViewVolumePolyData[i][j].nomarl);
+            planeVertex.push_back
+            (
+                objData[withinRangeAryNum[i]].v.world
+                [
+                    objData[withinRangeAryNum[i]].poly.v[j].num1
+                ]
+            );
+
+            planeNormal.push_back
+            (
+                objData[withinRangeAryNum[i]].v.normal
+                [
+                    objData[withinRangeAryNum[i]].poly.normal[j].num1
+                ]
+            );
         }
+        faceAmout.push_back(objData[withinRangeAryNum[i]].poly.normal.size());
     }
 
     // Camera coordinate transformation of the vertices of a face
-    vec.posTrans(calcPolyV, wPos);
+    vec.posTrans(planeVertex, wPos);
     mtx.rotTrans(vec.resultVector3D, rotAngle);
-    calcPolyV = mtx.resultMatrices;
+    planeVertex = mtx.resultMatrices;
 
     // Camera coordinate transformation of the normal vector of a surface
-    mtx.rotTrans(calcPolyNormal, rotAngle);
-    calcPolyNormal = mtx.resultMatrices;
+    mtx.rotTrans(planeNormal, rotAngle);
+    planeNormal = mtx.resultMatrices;
 
-    vec.dotProduct(calcPolyV, calcPolyNormal);
+    vec.dotProduct(planeNormal, planeVertex);
 
     // Stores which polygons of which objects are facing front
-    POLYINFO pushPolyInfo;
     int sumFaceAmout = 0;
-    for (int i = 0; i < inViewVolumePolyData.size(); ++i)
+    numPolyFacing.resize(0);
+    numPolyFacing.resize(withinRangeAryNum.size());
+    for (int i = 0; i < withinRangeAryNum.size(); ++i)
     {
-        meshInfo[i].facingPolyID.resize(0);
-        for (int j = 0; j < inViewVolumePolyData[i].size(); ++j)
+        for (int j = 0; j < faceAmout[i]; ++j)
         {
             if (vec.resultVector[sumFaceAmout + j] < 0)
             {
-                meshInfo[i].facingPolyID.push_back(j);
-
-                // Creation of polygon information structure
-                pushPolyInfo.meshID = inViewVolumePolyData[i][j].meshID;
-                pushPolyInfo.polyID = inViewVolumePolyData[i][j].polyID;
-
-
+                numPolyFacing[i].push_back(j);
             }
-            sumFaceAmout += inViewVolumePolyData[i].size();
         }
+        sumFaceAmout += faceAmout[i];
     }
 }
 
-void CAMERA::coordinateTrans(std::vector<OBJ_FILE> meshData)
+void CAMERA::coordinateTrans(std::vector<OBJ_FILE> objData)
 {
     // Stores all vertices of surface polygons
     polyVertex.resize(0);
@@ -349,33 +341,33 @@ void CAMERA::coordinateTrans(std::vector<OBJ_FILE> meshData)
         {
             polyVertex.push_back
             (
-                meshData[i].v.world
+                objData[i].v.world
                 [
-                    meshData[i].poly.v[numPolyFacing[i][j]].num1
+                    objData[i].poly.v[numPolyFacing[i][j]].num1
                 ]
             );
 
             polyVertex.push_back
             (
-                meshData[i].v.world
+                objData[i].v.world
                 [
-                    meshData[i].poly.v[numPolyFacing[i][j]].num2
+                    objData[i].poly.v[numPolyFacing[i][j]].num2
                 ]
             );
 
             polyVertex.push_back
             (
-                meshData[i].v.world
+                objData[i].v.world
                 [
-                    meshData[i].poly.v[numPolyFacing[i][j]].num3
+                    objData[i].poly.v[numPolyFacing[i][j]].num3
                 ]   
             );
 
             polyNormal.push_back
             (
-                meshData[i].v.normal
+                objData[i].v.normal
                 [
-                    meshData[i].poly.normal[numPolyFacing[i][j]].num1
+                    objData[i].poly.normal[numPolyFacing[i][j]].num1
                 ]   
             );
         }
@@ -513,7 +505,7 @@ std::vector<std::vector<int>> CAMERA::clippingRange(std::vector<std::vector<RANG
 }
 
 
-void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData)
+void CAMERA::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 {
     // Stores the vertices that make up the line segment
     std::vector<VECTOR3D> polyLineVA;

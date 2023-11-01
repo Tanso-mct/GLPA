@@ -12,7 +12,7 @@
 #include "file.h"
 #include "userInput.h"
 #include "camera.h"
-#include "mesh.h"
+#include "object.h"
 
 // WINDOW SETTINGS
 #define DISPLAY_RESOLUTION 1
