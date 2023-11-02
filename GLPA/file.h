@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "graphic.h"
+#include "cg.h"
 #include "cgmath.cuh"
 
 #define FILETYPE_BMP 0

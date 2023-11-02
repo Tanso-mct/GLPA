@@ -1,6 +1,19 @@
 #define DEBUG_CAMERA_
 #include "camera.h"
 
+void Camera::initialize()
+{
+    clipPolyInfo.meshID.resize(0);
+    clipPolyInfo.polyID.resize(0);
+    clipPolyInfo.oneV.resize(0);
+    clipPolyInfo.normal.resize(0);
+
+    sourcePolyInfo.resize(0);
+    calcPolyInfo.resize(0);
+    searchPolyInfo.resize(0);
+    renderSouce.resize(0);
+}
+
 void Camera::coordinateTransRange(std::vector<OBJ_FILE>* objData)
 {
     // origin and opposite point data
@@ -87,129 +100,105 @@ void Camera::clipRange(std::vector<OBJ_FILE> objData)
     }
 
     tri.get2dVecAngle(vertValue, horizValue);
-    clipPolyInfo.resize(0);
     for (int i = 0; i < objData.size(); ++i)
     {
         if (viewVolume.clip(objData, tri.resultDegree, viewAngle, i) != -1)
         {
-
-        }
-    }
-}
-
-void Camera::polyBilateralJudge(std::vector<OBJ_FILE> objData)
-{
-    // Stores the number of faces of each object in the clipping area
-    std::vector<int> faceAmout;
-
-    // Stores the coordinates of the vertices of the face corresponding to the normal vector of the face
-    std::vector<VECTOR3D> planeVertex;
-
-    // Stores the normals of the faces of objects in the clipping area
-    std::vector<VECTOR3D> planeNormal;
-
-    // Stores all normal vectors and vertex world cooridinate of the surface to be calculated
-    for (int i = 0; i < withinRangeAryNum.size(); ++i)
-    {
-        for (int j = 0; j < objData[withinRangeAryNum[i]].poly.normal.size(); ++j)
-        {
-            planeVertex.push_back
-            (
-                objData[withinRangeAryNum[i]].v.world
-                [
-                    objData[withinRangeAryNum[i]].poly.v[j].num1
-                ]
-            );
-
-            planeNormal.push_back
-            (
-                objData[withinRangeAryNum[i]].v.normal
-                [
-                    objData[withinRangeAryNum[i]].poly.normal[j].num1
-                ]
-            );
-        }
-        faceAmout.push_back(objData[withinRangeAryNum[i]].poly.normal.size());
-    }
-
-    // Camera coordinate transformation of the vertices of a face
-    vec.posTrans(planeVertex, wPos);
-    mtx.rotTrans(vec.resultVector3D, rotAngle);
-    planeVertex = mtx.resultMatrices;
-
-    // Camera coordinate transformation of the normal vector of a surface
-    mtx.rotTrans(planeNormal, rotAngle);
-    planeNormal = mtx.resultMatrices;
-
-    vec.dotProduct(planeNormal, planeVertex);
-
-    // Stores which polygons of which objects are facing front
-    int sumFaceAmout = 0;
-    numPolyFacing.resize(0);
-    numPolyFacing.resize(withinRangeAryNum.size());
-    for (int i = 0; i < withinRangeAryNum.size(); ++i)
-    {
-        for (int j = 0; j < faceAmout[i]; ++j)
-        {
-            if (vec.resultVector[sumFaceAmout + j] < 0)
+            for (int j = 0; j < objData[i].poly.v.size(); ++j)
             {
-                numPolyFacing[i].push_back(j);
+                clipPolyInfo.meshID.push_back(i);
+                clipPolyInfo.polyID.push_back(j);
+                clipPolyInfo.oneV.push_back(objData[i].v.world[objData[i].poly.v[j].num1]);
+                clipPolyInfo.normal.push_back(objData[i].v.normal[objData[i].poly.normal[j].num1]);
             }
         }
-        sumFaceAmout += faceAmout[i];
     }
 }
 
-void Camera::coordinateTrans(std::vector<OBJ_FILE> objData)
+std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::polyBilateralJudge(std::vector<OBJ_FILE> objData)
 {
-    // Stores all vertices of surface polygons
-    polyVertex.resize(0);
-    polyNormal.resize(0);
-    for (int i = 0; i < withinRangeAryNum.size(); ++i)
+    // Camera coordinate transformation of the vertices of a face
+    vec.posTrans(clipPolyInfo.oneV, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
+    clipPolyInfo.oneV = mtx.resultMatrices;
+
+    // Camera coordinate transformation of the normal vector of a surface
+    mtx.rotTrans(clipPolyInfo.normal, rotAngle);
+    clipPolyInfo.normal = mtx.resultMatrices;
+
+    vec.dotProduct(clipPolyInfo.normal, clipPolyInfo.oneV);
+
+    // Creation of source polygon information structure
+    std::vector<VECTOR3D> rtCalcPolyV;
+    std::vector<VECTOR3D> rtCalcPolyNormal;
+    POLYINFO pushPolyInfo;
+    pushPolyInfo.lineStartPoint.resize(3);
+    pushPolyInfo.lineEndPoint.resize(3);
+    pushPolyInfo.lineVec.resize(3);
+    for (int i = 0; i < clipPolyInfo.meshID.size(); ++i)
     {
-        for (int j = 0; j < numPolyFacing[i].size(); ++j)
+        if (vec.resultVector[i] < 0)
         {
-            polyVertex.push_back
-            (
-                objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i][j]].num1
-                ]
-            );
+            pushPolyInfo.meshID = clipPolyInfo.meshID[i];
+            pushPolyInfo.polyID = clipPolyInfo.polyID[i];
 
-            polyVertex.push_back
-            (
-                objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i][j]].num2
-                ]
-            );
+            pushPolyInfo.lineStartPoint[0]
+            = objData[clipPolyInfo.meshID[i]].v.world
+            [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num1];
 
-            polyVertex.push_back
-            (
-                objData[i].v.world
-                [
-                    objData[i].poly.v[numPolyFacing[i][j]].num3
-                ]   
-            );
+            pushPolyInfo.lineStartPoint[1]
+            = objData[clipPolyInfo.meshID[i]].v.world
+            [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num2];
 
-            polyNormal.push_back
-            (
-                objData[i].v.normal
-                [
-                    objData[i].poly.normal[numPolyFacing[i][j]].num1
-                ]   
-            );
+            pushPolyInfo.lineStartPoint[2]
+            = objData[clipPolyInfo.meshID[i]].v.world
+            [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num3];
+
+            pushPolyInfo.polyNormal
+            = objData[clipPolyInfo.meshID[i]].v.normal
+            [objData[clipPolyInfo.meshID[i]].poly.normal[clipPolyInfo.polyID[i]].num1];
+
+            sourcePolyInfo.push_back(pushPolyInfo);
+
+            rtCalcPolyV.push_back(pushPolyInfo.lineStartPoint[0]);
+            rtCalcPolyV.push_back(pushPolyInfo.lineStartPoint[1]);
+            rtCalcPolyV.push_back(pushPolyInfo.lineStartPoint[2]);
+            rtCalcPolyNormal.push_back(pushPolyInfo.polyNormal);
         }
     }
 
-    // Camera coordinate transformation of vertex data
-    vec.posTrans(polyVertex, wPos);
-    mtx.rotTrans(vec.resultVector3D, rotAngle);
-    polyVertex = mtx.resultMatrices;
+    return std::make_tuple(rtCalcPolyV, rtCalcPolyNormal);
+}
 
-    mtx.rotTrans(polyNormal, rotAngle);
-    polyNormal = mtx.resultMatrices;
+void Camera::coordinateTrans(std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>>, std::vector<OBJ_FILE> objData)
+{
+    // Stores all vertices of surface polygons
+    std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> calcPolyData = polyBilateralJudge(objData);
+
+    std::vector<VECTOR3D> calcPolyV = std::get<0>(calcPolyData);
+    std::vector<VECTOR3D> calcPolyNormal = std::get<1>(calcPolyData);
+
+    // Camera coordinate transformation of vertex data
+    vec.posTrans(calcPolyV, wPos);
+    mtx.rotTrans(vec.resultVector3D, rotAngle);
+    calcPolyV = mtx.resultMatrices;
+
+    mtx.rotTrans(calcPolyNormal, rotAngle);
+    calcPolyNormal = mtx.resultMatrices;
+
+    // Input to source polygon information structure
+    for (int i = 0; i < sourcePolyInfo.size(); ++i)
+    {
+        sourcePolyInfo[i].lineStartPoint[0]= calcPolyV[i*3 + 0];
+        sourcePolyInfo[i].lineStartPoint[1]= calcPolyV[i*3 + 1];
+        sourcePolyInfo[i].lineStartPoint[2]= calcPolyV[i*3 + 2];
+
+        sourcePolyInfo[i].lineEndPoint[0]= calcPolyV[i*3 + 1];
+        sourcePolyInfo[i].lineEndPoint[1]= calcPolyV[i*3 + 2];
+        sourcePolyInfo[i].lineEndPoint[2]= calcPolyV[i*3 + 0];
+
+        sourcePolyInfo[i].polyNormal = calcPolyNormal[i];
+    }
 }
 
 std::vector<bool> Camera::vertexInViewVolume(std::vector<VECTOR3D> v)

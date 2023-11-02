@@ -5,6 +5,7 @@
 #include <math.h>
 #include <windows.h>
 #include <stdio.h>
+#include <tuple>
 
 #include "cgmath.cuh"
 #include "file.h"
@@ -19,6 +20,9 @@ public :
         
     }
 
+    // Initialize member variables. Required for each drawing update.
+    void initialize();
+
     // Range coordinate transformation
     void coordinateTransRange(std::vector<OBJ_FILE>* objData);
 
@@ -26,19 +30,19 @@ public :
     void clipRange(std::vector<OBJ_FILE> objData);
 
     // Determining whether the face is front or back
-    void polyBilateralJudge(std::vector<OBJ_FILE> objData);
+    std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> polyBilateralJudge(std::vector<OBJ_FILE> objData);
 
     // Coordinate transformation of the vertices of the surface to be drawn
-    void coordinateTrans(std::vector<OBJ_FILE> objData);
+    void coordinateTrans(std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>>, std::vector<OBJ_FILE> objData);
 
     // Determines if a vertex is in the view volume
-    std::vector<bool> vertexInViewVolume(std::vector<VECTOR3D> vertex);
+    // std::vector<bool> vertexInViewVolume(std::vector<VECTOR3D> vertex);
     
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 
     // Intersection judgment between polygon and view volume
-    std::vector<std::vector<int>> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);
+    // std::vector<std::vector<int>> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);
 
 private : 
     VECTOR3D wPos = {0, 0, 0};
@@ -54,9 +58,7 @@ private :
 
     ViewVolume viewVolume;
     
-    std::vector<MESHINFO> meshInfo;
-
-    std::vector<std::vector<SMALL_POLYINFO>> clipPolyInfo;
+    SMALL_POLYINFO clipPolyInfo;
     std::vector<POLYINFO> sourcePolyInfo;
     std::vector<POLYINFO> calcPolyInfo;
     std::vector<POLYINFO> searchPolyInfo;

@@ -131,10 +131,10 @@ typedef struct tagPOLYINFO
 
 typedef struct tagSMALL_POLYINFO
 {
-    int meshID;
-    int polyID;
-    VECTOR3D oneV;
-    VECTOR3D normal;
+    std::vector<int> meshID;
+    std::vector<int> polyID;
+    std::vector<VECTOR3D> oneV;
+    std::vector<VECTOR3D> normal;
 } SMALL_POLYINFO;
 
 typedef struct tagRENDERSOURCE
@@ -146,11 +146,5 @@ typedef struct tagRENDERSOURCE
     std::vector<VECTOR2D> scrPolyV;
     std::vector<VECTOR2D> scrIV;
 } RENDERSOUCE;
-
-typedef struct tagMESHINFO
-{
-    int meshID;
-    std::vector<int> facingPolyID;
-} MESHINFO;
 
 #endif CG_H_
