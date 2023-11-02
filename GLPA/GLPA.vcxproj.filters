@@ -90,9 +90,6 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル\main</Filter>
     </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>ソース ファイル\window</Filter>
-    </ClCompile>
     <ClCompile Include="system.cpp">
       <Filter>ソース ファイル\window</Filter>
     </ClCompile>
@@ -101,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="window.cpp">
       <Filter>ソース ファイル\window</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル\object3d</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +122,6 @@
     <ClInclude Include="main.h">
       <Filter>ヘッダー ファイル\main</Filter>
     </ClInclude>
-    <ClInclude Include="object.h">
-      <Filter>ヘッダー ファイル\window</Filter>
-    </ClInclude>
     <ClInclude Include="system.h">
       <Filter>ヘッダー ファイル\window</Filter>
     </ClInclude>
@@ -133,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="window.h">
       <Filter>ヘッダー ファイル\window</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル\object3d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
