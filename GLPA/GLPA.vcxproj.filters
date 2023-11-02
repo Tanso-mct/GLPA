@@ -22,89 +22,137 @@
     <Filter Include="リソース ファイル\bmp">
       <UniqueIdentifier>{64759888-1138-4685-bbdc-a6c15f568ca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\main">
+      <UniqueIdentifier>{7e1b02d5-c313-429e-a720-e77e47a49993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\window">
+      <UniqueIdentifier>{ce3dde2d-bf79-4493-8870-7a85716591c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\file">
+      <UniqueIdentifier>{7b931e86-6c54-4a79-b697-5f2712bc8cb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\math">
+      <UniqueIdentifier>{7e058fb9-9e9a-416b-a842-b402eeaec48e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphic">
+      <UniqueIdentifier>{a00c6504-3955-4d8f-a0e6-82380e6d69c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object3d">
+      <UniqueIdentifier>{3f725cb4-16d6-42ec-a276-5dc73eebd889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\player3d">
+      <UniqueIdentifier>{31ee7fad-b817-4960-9ba9-e72621dde8b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3dcg">
+      <UniqueIdentifier>{3d626b63-b794-4d5c-bff6-589a388a2810}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\main">
+      <UniqueIdentifier>{1df0ef1b-3dd5-4a0a-94f9-371ce69afeb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\window">
+      <UniqueIdentifier>{1767cb7e-12f4-40d9-aaf4-7fd39cd65880}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\math">
+      <UniqueIdentifier>{841ed84f-f877-4edf-9db3-3a9b7ac71884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\file">
+      <UniqueIdentifier>{faf8220d-5295-4ef6-90ec-c86172f94345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\graphic">
+      <UniqueIdentifier>{40c04978-633a-4b8d-8004-66b3359dd538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\object3d">
+      <UniqueIdentifier>{3117f40e-7d6f-4e39-87bb-4b4a8bc69610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\player3d">
+      <UniqueIdentifier>{0df3f21a-6670-4b6e-837d-aa89cf2ede17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3dcg">
+      <UniqueIdentifier>{b6fb7cbe-b788-4b7b-8ef6-4c4d4219b73e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="file.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="graphic.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="userinput.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="system.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="animation.cpp">
+      <Filter>ソース ファイル\3dcg</Filter>
     </ClCompile>
     <ClCompile Include="buffer.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="animation.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="graphic.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="file.cpp">
+      <Filter>ソース ファイル\player3d</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\main</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\main</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\window</Filter>
+    </ClCompile>
+    <ClCompile Include="system.cpp">
+      <Filter>ソース ファイル\window</Filter>
+    </ClCompile>
+    <ClCompile Include="userinput.cpp">
+      <Filter>ソース ファイル\window</Filter>
+    </ClCompile>
+    <ClCompile Include="window.cpp">
+      <Filter>ソース ファイル\window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="graphic.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="file.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="userinput.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="window.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="system.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="animation.h">
+      <Filter>ヘッダー ファイル\3dcg</Filter>
     </ClInclude>
     <ClInclude Include="buffer.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="animation.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="graphic.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="file.h">
+      <Filter>ヘッダー ファイル\player3d</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\player3d</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\main</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\window</Filter>
+    </ClInclude>
+    <ClInclude Include="system.h">
+      <Filter>ヘッダー ファイル\window</Filter>
+    </ClInclude>
+    <ClInclude Include="userinput.h">
+      <Filter>ヘッダー ファイル\window</Filter>
+    </ClInclude>
+    <ClInclude Include="window.h">
+      <Filter>ヘッダー ファイル\window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="camera.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </CudaCompile>
     <CudaCompile Include="cgmath.cu">
-      <Filter>ソース ファイル</Filter>
-    </CudaCompile>
-    <CudaCompile Include="cgmath.cuh">
-      <Filter>ヘッダー ファイル</Filter>
-    </CudaCompile>
-    <CudaCompile Include="hitbox.cuh">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\file</Filter>
     </CudaCompile>
     <CudaCompile Include="hitbox.cu">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\player3d</Filter>
     </CudaCompile>
     <CudaCompile Include="camera.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\3dcg</Filter>
     </CudaCompile>
-    <CudaCompile Include="camera.cpp">
-      <Filter>ソース ファイル</Filter>
+    <CudaCompile Include="cgmath.cuh">
+      <Filter>ヘッダー ファイル\math</Filter>
+    </CudaCompile>
+    <CudaCompile Include="hitbox.cuh">
+      <Filter>ヘッダー ファイル\player3d</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
