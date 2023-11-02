@@ -78,15 +78,6 @@
     <ClCompile Include="buffer.cpp">
       <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="graphic.cpp">
-      <Filter>ソース ファイル\math</Filter>
-    </ClCompile>
-    <ClCompile Include="file.cpp">
-      <Filter>ソース ファイル\player3d</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル\main</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル\main</Filter>
     </ClCompile>
@@ -102,6 +93,18 @@
     <ClCompile Include="object.cpp">
       <Filter>ソース ファイル\object3d</Filter>
     </ClCompile>
+    <ClCompile Include="graphic.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="file.cpp">
+      <Filter>ソース ファイル\file</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\player3d</Filter>
+    </ClCompile>
+    <ClCompile Include="view_volume.cpp">
+      <Filter>ソース ファイル\3dcg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h">
@@ -112,9 +115,6 @@
     </ClInclude>
     <ClInclude Include="graphic.h">
       <Filter>ヘッダー ファイル\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="file.h">
-      <Filter>ヘッダー ファイル\player3d</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>ヘッダー ファイル\player3d</Filter>
@@ -134,14 +134,17 @@
     <ClInclude Include="object.h">
       <Filter>ヘッダー ファイル\object3d</Filter>
     </ClInclude>
+    <ClInclude Include="file.h">
+      <Filter>ヘッダー ファイル\file</Filter>
+    </ClInclude>
+    <ClInclude Include="view_volume.h">
+      <Filter>ヘッダー ファイル\3dcg</Filter>
+    </ClInclude>
+    <ClInclude Include="cg.h">
+      <Filter>ヘッダー ファイル\3dcg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="camera.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
-    </CudaCompile>
-    <CudaCompile Include="cgmath.cu">
-      <Filter>ソース ファイル\file</Filter>
-    </CudaCompile>
     <CudaCompile Include="hitbox.cu">
       <Filter>ソース ファイル\player3d</Filter>
     </CudaCompile>
@@ -153,6 +156,12 @@
     </CudaCompile>
     <CudaCompile Include="hitbox.cuh">
       <Filter>ヘッダー ファイル\player3d</Filter>
+    </CudaCompile>
+    <CudaCompile Include="camera.cpp">
+      <Filter>ソース ファイル\3dcg</Filter>
+    </CudaCompile>
+    <CudaCompile Include="cgmath.cu">
+      <Filter>ソース ファイル\math</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

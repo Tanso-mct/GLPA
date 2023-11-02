@@ -144,9 +144,11 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="userinput.cpp" />
+    <ClCompile Include="view_volume.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cg.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="buffer.h" />
     <CudaCompile Include="cgmath.cuh">
@@ -168,6 +170,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="userinput.h" />
+    <ClInclude Include="view_volume.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
