@@ -146,11 +146,7 @@ void ViewVolume::define
 int ViewVolume::clip(std::vector<OBJ_FILE> objData, std::vector<double> degree, ANGLE angle, int loopI)
 {
     // Z-axis direction determination
-    if 
-    (
-        objData[loopI].range.origin.z > pointXZ[VP2].z &&
-        objData[loopI].range.opposite.z < pointXZ[VP1].z
-    )
+    if (objData[loopI].range.origin.z > pointXZ[VP2].z && objData[loopI].range.opposite.z < pointXZ[VP1].z)
     {
         // X-axis direction determination
         if 
@@ -173,6 +169,24 @@ int ViewVolume::clip(std::vector<OBJ_FILE> objData, std::vector<double> degree, 
             )
             {
                 return loopI;
+            }
+        }
+    }
+    return -1;
+}
+
+int ViewVolume::clip(std::vector<VECTOR3D> v, std::vector<double> degree, ANGLE angle, int loopI)
+{
+    if (v[loopI].z > pointXZ[VP2].z &&v[loopI].z < pointXZ[VP1].z)
+    {
+        // X-axis direction determination
+        if 
+        (degree[loopI*2 + 0] <= -90 + angle.horiz / 2 && degree[loopI*2 + 0] >= -90 -angle.horiz / 2)
+        {
+            // Y-axis direction determination
+            if(degree[loopI*2 + 1] <= -90 + angle.vert / 2 && degree[loopI*2 + 1] >= -90 - angle.vert / 2)
+            {
+                return  loopI;
             }
         }
     }

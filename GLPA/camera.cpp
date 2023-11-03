@@ -142,28 +142,31 @@ std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::polyBilateralJu
             pushPolyInfo.meshID = clipPolyInfo.meshID[i];
             pushPolyInfo.polyID = clipPolyInfo.polyID[i];
 
-            pushPolyInfo.lineStartPoint[0]
-            = objData[clipPolyInfo.meshID[i]].v.world
-            [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num1];
-
-            pushPolyInfo.lineStartPoint[1]
-            = objData[clipPolyInfo.meshID[i]].v.world
-            [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num2];
-
-            pushPolyInfo.lineStartPoint[2]
-            = objData[clipPolyInfo.meshID[i]].v.world
-            [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num3];
-
-            pushPolyInfo.polyNormal
-            = objData[clipPolyInfo.meshID[i]].v.normal
-            [objData[clipPolyInfo.meshID[i]].poly.normal[clipPolyInfo.polyID[i]].num1];
-
             sourcePolyInfo.push_back(pushPolyInfo);
 
-            rtCalcPolyV.push_back(pushPolyInfo.lineStartPoint[0]);
-            rtCalcPolyV.push_back(pushPolyInfo.lineStartPoint[1]);
-            rtCalcPolyV.push_back(pushPolyInfo.lineStartPoint[2]);
-            rtCalcPolyNormal.push_back(pushPolyInfo.polyNormal);
+            rtCalcPolyV.push_back
+            (
+                objData[clipPolyInfo.meshID[i]].v.world
+                [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num1]
+            );
+
+            rtCalcPolyV.push_back
+            (
+                objData[clipPolyInfo.meshID[i]].v.world
+                [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num2]
+            );
+
+            rtCalcPolyV.push_back
+            (
+                objData[clipPolyInfo.meshID[i]].v.world
+                [objData[clipPolyInfo.meshID[i]].poly.v[clipPolyInfo.polyID[i]].num3]
+            );
+            
+            rtCalcPolyNormal.push_back
+            (
+                objData[clipPolyInfo.meshID[i]].v.normal
+                [objData[clipPolyInfo.meshID[i]].poly.normal[clipPolyInfo.polyID[i]].num1]
+            );
         }
     }
 
@@ -247,82 +250,6 @@ std::vector<bool> Camera::vertexInViewVolume(std::vector<VECTOR3D> v)
     }
     return vInViewVolume;
 }
-
-std::vector<std::vector<int>> Camera::clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> rangePoly, int processObjectAmout)
-{
-    std::vector<std::vector<int>> indexInViewVolumePoly;
-    indexInViewVolumePoly.resize(processObjectAmout);
-
-    std::vector<double> vertValue;
-    std::vector<double> horizValue;
-
-    vertValue.resize(rangePoly.size() * 4);
-    horizValue.resize(rangePoly.size() * 4);
-
-    for (int i = 0; i < rangePoly.size(); ++i)
-    {
-        for (int j = 0; j < rangePoly[i].size(); ++j)
-        {
-            // origin XZ
-            vertValue[i*4 + 0] = rangePoly[i][j].opposite.z;
-            horizValue[i*4 + 0] = rangePoly[i][j].origin.x;
-
-            // origin YZ
-            vertValue[i*4 + 1] = rangePoly[i][j].opposite.z;
-            horizValue[i*4 + 1] = rangePoly[i][j].origin.y;
-
-            // opposite XZ
-            vertValue[i*4 + 2] = rangePoly[i][j].opposite.z;
-            horizValue[i*4 + 2] = rangePoly[i][j].opposite.x;
-
-            // opposite YZ
-            vertValue[i*4 + 3] = rangePoly[i][j].opposite.z;
-            horizValue[i*4 + 3] = rangePoly[i][j].opposite.y;
-        }
-    }
-
-    tri.get2dVecAngle(vertValue, horizValue);
-    for (int i = 0; i < processObjectAmout; ++i)
-    {
-        for (int j = 0; j < rangePoly[i].size(); ++j)
-        {
-            // Z-axis direction determination
-            if 
-            (
-                rangePoly[i][j].origin.z > viewPointXZ[VP2].z &&
-                rangePoly[i][j].opposite.z < viewPointXZ[VP1].z
-            )
-            {
-                // X-axis direction determination
-                if 
-                (
-                    // ORIGIN
-                    tri.resultDegree[i*4 + 0] <= -90 + horizAngle / 2 &&
-
-                    // OPPOSITE
-                    tri.resultDegree[i*4 + 2] >= -90 -horizAngle / 2
-                )
-                {
-                    // Y-axis direction determination
-                    if
-                    (
-                        // ORIGIN
-                        tri.resultDegree[i*4 + 1] <= -90 + vertAngle / 2  &&
-
-                        // OPPOSITE
-                        tri.resultDegree[i*4 + 3] >= -90 - vertAngle / 2
-                    )
-                    {
-                        indexInViewVolumePoly[i].push_back(j);
-                    }
-                }
-            }
-        }
-    }
-
-    return indexInViewVolumePoly;
-}
-
 
 void Camera::polyInViewVolumeJudge(std::vector<OBJ_FILE> objData)
 {

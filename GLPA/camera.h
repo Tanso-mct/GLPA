@@ -35,9 +35,6 @@ public :
     // Coordinate transformation of the vertices of the surface to be drawn
     void coordinateTrans(std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>>, std::vector<OBJ_FILE> objData);
 
-    // Determines if a vertex is in the view volume
-    // std::vector<bool> vertexInViewVolume(std::vector<VECTOR3D> vertex);
-    
     // Determine if polygon is in view volume and store array number
     void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
 

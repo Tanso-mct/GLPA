@@ -33,6 +33,11 @@ public :
     // Clip rectangular range and view volume   
     int clip(std::vector<OBJ_FILE> object_data, std::vector<double> range_degree, ANGLE view_angle, int loop_i);
 
+    // Clip vertex and view volume
+    int clip(std::vector<VECTOR3D> vertex, std::vector<double> vertex_degree, ANGLE view_angle, int loop_i);
+
+
+
 private :
     std::vector<VECTOR3D> point3D;
     std::vector<VECTOR_XZ> pointXZ;
