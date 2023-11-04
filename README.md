@@ -1,1 +1,60 @@
-# GLPA
+ # **GLPA (Graphic loop painter)**
+- [**GLPA (Graphic loop painter)**](#glpa-graphic-loop-painter)
+  - [Summary](#summary)
+  - [Description](#description)
+  - [Coding convention](#coding-convention)
+    - [1. Objective](#1-objective)
+    - [2. Naming Rules](#2-naming-rules)
+    - [3. Coding style](#3-coding-style)
+
+## Summary
+Source code for GLPA (Graphic loop painter) library.Personal work, started for the purpose of using in 3D games.
+The creator is a Japanese person who is not fluent in English, so DeepL is used for English text as appropriate. Therefore, there is a possibility that mistranslations may exist. If you find one, please contact the creator.
+
+## Description
+
+
+## Coding convention
+### 1. Objective
+This library is a personal work, but here are some things to keep in mind to make it more readable and easier to modify for distribution or for your own review
+
+### 2. Naming Rules
+| Naming Rule Name         | Use        |
+|---------------|-----------|
+| PascalCase    | class name      |
+| camelCase     | Function name, Variable name   |
+| snake_case    | File name     |
+| SNAKE_CASE    | Macro name, Structure name |
+| tagSNAKE_CASE | Structure tag name    |
+
+### 3. Coding style
+- Always write the file description at the top of the header file. See below for how to write it.
+    ```C++
+    /**
+     * @file file_name.h
+     * @brief Brief Description
+     * @author Name of person who wrote this
+     * @date DateÅiyear-monthÅj
+     */
+    ```
+- Header file functions should be accompanied by a description. See below for how to write them.However, @sa and @details may be omitted if they can be omitted.
+    ```C++
+    /**
+     * @fn
+     * Write the function description here
+     * @brief Summary Explanation
+     * @param (argument name) Argument Description
+     * @param (argument name) Argument Description
+     * @return Return Value Description
+     * @sa If you write a function that should be referenced, you can link to it.
+     * @details Detailed Description
+     */
+    ```
+
+- The maximum number of horizontal characters on a page is 120. If you use vscode, it is recommended to add the following code to setting.json for easier coding.     
+    ```json
+    "editor.rulers": [
+        120
+    ],
+    ```
+- 

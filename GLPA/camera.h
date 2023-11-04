@@ -1,3 +1,10 @@
+/**
+ * @file Camera.h
+ * @brief Describes a process related to a camera that exists in 3D
+ * @author Tanso
+ * @date 2023-10
+ */
+
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
@@ -15,12 +22,16 @@
 class Camera
 {
 public :
-    Camera()
-    {
-        
-    }
-
-    // Initialize member variables. Required for each drawing update.
+    /**
+     * @fn
+     * To handle vector type variables, it is necessary to update the data array each time it is redrawn.
+     * Therefore, initialize vector variables that need to be updated
+     * Also initializes any variables that need initialization other than vector types
+     * @brief Initialize variables that need to be initialized each time they are redrawn
+     * @details
+     * Initialize the small polygon information structure 
+     * and the source, calculation, and search polygon information structures. 
+     */
     void initialize();
 
     // Range coordinate transformation
