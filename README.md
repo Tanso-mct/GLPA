@@ -19,13 +19,13 @@ The creator is a Japanese person who is not fluent in English, so DeepL is used 
 This library is a personal work, but here are some things to keep in mind to make it more readable and easier to modify for distribution or for your own review
 
 ### 2. Naming Rules
-| Naming Rule Name         | Use        |
-|---------------|-----------|
-| PascalCase    | class name      |
-| camelCase     | Function name, Variable name   |
-| snake_case    | File name     |
-| SNAKE_CASE    | Macro name, Structure name |
-| tagSNAKE_CASE | Structure tag name    |
+| Naming Rule Name         | Use                |
+|---------------|-------------------|
+| PascalCase    | Class name              |
+| camelCase     | Function name, Variable name           |
+| snake_case    | File name, Header file argument name |
+| SNAKE_CASE    | Macro name, Structure name         |
+| tagSNAKE_CASE | Structure tag name            |
 
 ### 3. Coding style
 The following coding style was set up for personal production. Therefore, detailed explanations may be omitted in some cases. Please read with this in mind.

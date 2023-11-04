@@ -34,8 +34,17 @@ public :
      */
     void initialize();
 
-    // Range coordinate transformation
-    void coordinateTransRange(std::vector<OBJ_FILE>* objData);
+    /**
+     * @fn
+     * Performs camera coordinate transformation for a rectangular area of a mesh, 
+     * inputting and using data for a rectangular area from meshData.
+     * @brief Perform camera coordinate transformation of the rectangular range of the mesh.
+     * @param (mesh_data) The loaded 3D data is saved as a vector type variable for each mesh.
+     * @details The 8 vertices of the rectangular range are obtained from the 3D coordinates of the origin and opposite 
+     * vertex of the mesh at the read stage, and then transformed to camera coordinates, From those vertices, 
+     * origin and opposite are determined again.
+     */
+    void coordinateTransRange(std::vector<OBJ_FILE>* mesh_data);
 
     // Determination of intersection of OBJECT with view volume
     void clipRange(std::vector<OBJ_FILE> objData);
