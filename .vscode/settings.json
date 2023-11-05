@@ -83,5 +83,17 @@
         "__locale": "cpp"
     },
     "commentTranslate.hover.enabled": true,
-    "dotnet.defaultSolution": "disable"
+    "dotnet.defaultSolution": "disable",
+    "cSpell.words": [
+        "CALCFACE",
+        "NUMCOMB",
+        "POLYINFO",
+        "POLYVS",
+        "RECTLINES",
+        "RECTSURFACES",
+        "RECTVS",
+        "RENDERSOUCE",
+        "RENDERSOURCE",
+        "SQUAREVS"
+    ]
 }

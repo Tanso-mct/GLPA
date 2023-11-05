@@ -21,7 +21,7 @@ void Camera::coordinateTransRange(std::vector<OBJ_FILE>* meshData)
 
     for (int i = 0; i < (*meshData).size(); ++i)
     {
-        for (int j = 0; j < RECTV; ++j)
+        for (int j = 0; j < RECTVS; ++j)
         {
             pointData.push_back((*meshData)[i].range.wVertex[j]);
         }
@@ -32,40 +32,40 @@ void Camera::coordinateTransRange(std::vector<OBJ_FILE>* meshData)
 
     for (int i = 0; i < (*meshData).size(); ++i)
     {
-        (*meshData)[i].range.origin = mtx.resultMatrices[i*RECTV];
-        (*meshData)[i].range.opposite = mtx.resultMatrices[i*RECTV];
+        (*meshData)[i].range.origin = mtx.resultMatrices[i*RECTVS];
+        (*meshData)[i].range.opposite = mtx.resultMatrices[i*RECTVS];
     }
     
     for (int i = 0; i < (*meshData).size(); ++i)
     {
-        for (int j = 1; j < RECTV; ++j)
+        for (int j = 1; j < RECTVS; ++j)
         {
             // Processing with respect to origin point
-            if ((*meshData)[i].range.origin.x > mtx.resultMatrices[i*RECTV + j].x)
+            if ((*meshData)[i].range.origin.x > mtx.resultMatrices[i*RECTVS + j].x)
             {   
-                (*meshData)[i].range.origin.x = mtx.resultMatrices[i*RECTV + j].x;
+                (*meshData)[i].range.origin.x = mtx.resultMatrices[i*RECTVS + j].x;
             }
-            if ((*meshData)[i].range.origin.y > mtx.resultMatrices[i*RECTV + j].y)
+            if ((*meshData)[i].range.origin.y > mtx.resultMatrices[i*RECTVS + j].y)
             {
-                (*meshData)[i].range.origin.y = mtx.resultMatrices[i*RECTV + j].y;
+                (*meshData)[i].range.origin.y = mtx.resultMatrices[i*RECTVS + j].y;
             }
-            if ((*meshData)[i].range.origin.z < mtx.resultMatrices[i*RECTV + j].z)
+            if ((*meshData)[i].range.origin.z < mtx.resultMatrices[i*RECTVS + j].z)
             {
-                (*meshData)[i].range.origin.z = mtx.resultMatrices[i*RECTV + j].z;
+                (*meshData)[i].range.origin.z = mtx.resultMatrices[i*RECTVS + j].z;
             }
 
             // Processing with respect to opposite point
-            if ((*meshData)[i].range.opposite.x < mtx.resultMatrices[i*RECTV + j].x)
+            if ((*meshData)[i].range.opposite.x < mtx.resultMatrices[i*RECTVS + j].x)
             {
-                (*meshData)[i].range.opposite.x = mtx.resultMatrices[i*RECTV + j].x;
+                (*meshData)[i].range.opposite.x = mtx.resultMatrices[i*RECTVS + j].x;
             }
-            if ((*meshData)[i].range.opposite.y < mtx.resultMatrices[i*RECTV + j].y)
+            if ((*meshData)[i].range.opposite.y < mtx.resultMatrices[i*RECTVS + j].y)
             {
-                (*meshData)[i].range.opposite.y = mtx.resultMatrices[i*RECTV + j].y;
+                (*meshData)[i].range.opposite.y = mtx.resultMatrices[i*RECTVS + j].y;
             }
-            if ((*meshData)[i].range.opposite.z > mtx.resultMatrices[i*RECTV + j].z)
+            if ((*meshData)[i].range.opposite.z > mtx.resultMatrices[i*RECTVS + j].z)
             {
-                (*meshData)[i].range.opposite.z = mtx.resultMatrices[i*RECTV + j].z;
+                (*meshData)[i].range.opposite.z = mtx.resultMatrices[i*RECTVS + j].z;
             }
         }
     }
@@ -102,7 +102,7 @@ void Camera::clipRange(std::vector<OBJ_FILE> meshData)
     tri.get2dVecAngle(vertValue, horizValue);
     for (int i = 0; i < meshData.size(); ++i)
     {
-        if (viewVolume.clip(meshData, tri.resultDegree, viewAngle, i) != -1)
+        if (viewVolume.clipRange(meshData, tri.resultDegree, viewAngle, i) != NULL_INDEX)
         {
             for (int j = 0; j < meshData[i].poly.v.size(); ++j)
             {
@@ -192,16 +192,35 @@ void Camera::coordinateTrans(std::vector<OBJ_FILE> meshData)
     // Input to source polygon information structure
     for (int i = 0; i < sourcePolyInfo.size(); ++i)
     {
-        sourcePolyInfo[i].lineStartPoint[VX]= calcPolyV[i*POLYV + VX];
-        sourcePolyInfo[i].lineStartPoint[VY]= calcPolyV[i*POLYV + VY];
-        sourcePolyInfo[i].lineStartPoint[VZ]= calcPolyV[i*POLYV + VZ];
+        sourcePolyInfo[i].lineStartPoint[V0]= calcPolyV[i*POLYVS + V0];
+        sourcePolyInfo[i].lineStartPoint[V1]= calcPolyV[i*POLYVS + V1];
+        sourcePolyInfo[i].lineStartPoint[V2]= calcPolyV[i*POLYVS + V2];
 
-        sourcePolyInfo[i].lineEndPoint[VX]= calcPolyV[i*POLYV + VY];
-        sourcePolyInfo[i].lineEndPoint[VY]= calcPolyV[i*POLYV + VZ];
-        sourcePolyInfo[i].lineEndPoint[VZ]= calcPolyV[i*POLYV + VX];
+        sourcePolyInfo[i].lineEndPoint[V0]= calcPolyV[i*POLYVS + V1];
+        sourcePolyInfo[i].lineEndPoint[V1]= calcPolyV[i*POLYVS + V2];
+        sourcePolyInfo[i].lineEndPoint[V2]= calcPolyV[i*POLYVS + V0];
 
         sourcePolyInfo[i].polyNormal = calcPolyNormal[i];
     }
+}
+
+std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::pushCalcPolyInfo(int loopI)
+{
+    RENDERSOUCE pushRenderSauceSt;
+    POLYINFO pushPolyInfo;
+
+    pushRenderSauceSt.meshID = sourcePolyInfo[loopI].meshID;
+    pushRenderSauceSt.polyID = sourcePolyInfo[loopI].polyID;
+    pushRenderSauceSt.polyV.push_back(sourcePolyInfo[loopI].lineStartPoint[V0]);
+    renderSouce.push_back(pushRenderSauceSt);
+
+    pushPolyInfo.relRenderingSourceSt = renderSouce.size() - 1;
+    pushPolyInfo.meshID = sourcePolyInfo[loopI].meshID;
+    pushPolyInfo.polyID = sourcePolyInfo[loopI].polyID;
+    pushPolyInfo.lineStartPoint = sourcePolyInfo[loopI].lineStartPoint;
+    pushPolyInfo.lineEndPoint = sourcePolyInfo[loopI].lineEndPoint;
+
+    return std::make_tuple(sourcePolyInfo[loopI].lineStartPoint, sourcePolyInfo[loopI].lineEndPoint);
 }
 
 bool Camera::clipVerticesViewVolume()
@@ -209,7 +228,51 @@ bool Camera::clipVerticesViewVolume()
     std::vector<double> calcVertValue;
     std::vector<double> calcHorizValue;
 
-    calcVertValue.resize(sourcePolyInfo.size() * 3 * 2)
+    calcVertValue.resize(sourcePolyInfo.size() * POLYVS * 2);
+    calcHorizValue.resize(sourcePolyInfo.size() * POLYVS * 2);
+
+    // Stores vertex coordinates in XZ and ZY axes respectively.
+    for (int i = 0; i < sourcePolyInfo.size(); ++i)
+    {   
+        calcVertValue[i*POLYVS*2 + 0] = sourcePolyInfo[i].lineStartPoint[V0].z;
+        calcHorizValue[i*POLYVS*2 + 0] = sourcePolyInfo[i].lineStartPoint[V0].x;
+        calcVertValue[i*POLYVS*2 + 1] = sourcePolyInfo[i].lineStartPoint[V0].z;
+        calcHorizValue[i*POLYVS*2 + 1] = sourcePolyInfo[i].lineStartPoint[V0].y;
+
+        calcVertValue[i*POLYVS*2 + 2] = sourcePolyInfo[i].lineStartPoint[V1].z;
+        calcHorizValue[i*POLYVS*2 + 2] = sourcePolyInfo[i].lineStartPoint[V1].x;
+        calcVertValue[i*POLYVS*2 + 3] = sourcePolyInfo[i].lineStartPoint[V1].z;
+        calcHorizValue[i*POLYVS*2 + 3] = sourcePolyInfo[i].lineStartPoint[V1].y;
+
+        calcVertValue[i*POLYVS*2 + 4] = sourcePolyInfo[i].lineStartPoint[V2].z;
+        calcHorizValue[i*POLYVS*2 + 4] = sourcePolyInfo[i].lineStartPoint[V2].x;
+        calcVertValue[i*POLYVS*2 + 5] = sourcePolyInfo[i].lineStartPoint[V2].z;
+        calcHorizValue[i*POLYVS*2 + 5] = sourcePolyInfo[i].lineStartPoint[V2].y;
+    }
+
+    // Obtain the angle from the origin of each of the XZ and ZY axes of the vertex
+    tri.get2dVecAngle(calcVertValue, calcHorizValue);
+
+    // Determines whether each vertex is in the view volume and creates a rendering source and a polygon information 
+    // structure to be computed.
+    bool alreadyPushed = false;
+    for (int i = 0; i < sourcePolyInfo.size(); ++i)
+    {
+        if 
+        (
+            viewVolume.clipV
+            (
+                sourcePolyInfo[i].lineStartPoint[V0].z,
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 0],
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 1],
+                viewAngle,
+                i
+            )
+        )
+        {
+
+        }
+    }
 }
 
 std::vector<bool> Camera::vertexInViewVolume(std::vector<VECTOR3D> v)

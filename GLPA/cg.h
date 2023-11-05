@@ -4,27 +4,27 @@
 #include <vector>
 #include "cgmath.cuh"
 
-/** @def
- * In a sequence, XYZ.
- */
+/// @def Indicate XYZ by index.
 #define VX 0
 #define VY 1
 #define VZ 2
 
-/** @def
- * Indicates the number of polygon vertices.
- */
-#define POLYV 3
+/// @def Indicates vertex number by index.
+#define V0 0
+#define V1 1
+#define V2 2
 
-/** @def
- * The number of vertices of the rectangle.
- */
-#define RECTV 8
+/// @def The number of each element of the figure.
+#define POLYVS 3
+#define SQUAREVS 4
+#define RECTVS 8
+#define RECTLINES 12
+#define RECTSURFACES 6
 
-/** @def
- * The vertex number when viewing the view volume in each of the XZ and ZY axes. The order is clockwise from the bottom 
- * left vertex.
- */
+
+/// @def NULL notation for indexes
+#define NULL_INDEX -1
+
 #define VP1 0
 #define VP2 1
 #define VP3 2
@@ -150,7 +150,7 @@ typedef struct tagPOLYINFO
     std::vector<VECTOR3D> lineEndPoint;
     std::vector<VECTOR3D> lineVec;
     VECTOR3D polyNormal;
-    std::vector<int> viewVoluneIExistID;
+    std::vector<int> viewVolumeIExistID;
     std::vector<VECTOR3D> vecI;
 } POLYINFO;
 

@@ -45,6 +45,8 @@ public :
     /// @param mesh_data 
     void coordinateTrans(std::vector<OBJ_FILE> mesh_data);
 
+    std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> pushCalcPolyInfo(int loop_i);
+
     bool clipVerticesViewVolume();
 
     void inputRenderSourceSt();

@@ -3,24 +3,24 @@
 void ViewVolume::define
 (
     double nearZ, double farZ,
-    SIZE2 nearScrPxSize, SIZE2 farScrPxSize,
+    SIZE2* nearScrSize, SIZE2* farScrSize,
     ANGLE* angle, VECTOR2D aspectRatio
 )
 {
     // define screen size
-    nearScrPxSize.width = tan((*angle).horiz / 2 * PI / 180) * nearZ * 2;
-    nearScrPxSize.height = nearScrPxSize.width * aspectRatio.y / aspectRatio.x;
+    (*nearScrSize).width = tan((*angle).horiz / 2 * PI / 180) * nearZ * 2;
+    (*nearScrSize).height = (*nearScrSize).width * aspectRatio.y / aspectRatio.x;
 
-    (*angle).vert = atan2(nearScrPxSize.height / 2, nearZ) * 180 / PI * 2;
+    (*angle).vert = atan2((*nearScrSize).height / 2, nearZ) * 180 / PI * 2;
 
-    farScrPxSize.width = nearScrPxSize.width / 2 * farZ / nearZ;
-    farScrPxSize.height = farScrPxSize.width * aspectRatio.y / aspectRatio.x;
+    (*farScrSize).width = (*nearScrSize).width / 2 * farZ / nearZ;
+    (*farScrSize).height = (*farScrSize).width * aspectRatio.y / aspectRatio.x;
     
     // Define coordinates of view area vertices on xz axis
-    pointXZ[VP1].x = -nearScrPxSize.width / 2;
-    pointXZ[VP2].x = -farScrPxSize.width / 2;
-    pointXZ[VP3].x = farScrPxSize.width / 2;
-    pointXZ[VP4].x = nearScrPxSize.width / 2;
+    pointXZ[VP1].x = -(*nearScrSize).width / 2;
+    pointXZ[VP2].x = -(*farScrSize).width / 2;
+    pointXZ[VP3].x = (*farScrSize).width / 2;
+    pointXZ[VP4].x = (*nearScrSize).width / 2;
 
     pointXZ[VP1].z = -nearZ;
     pointXZ[VP2].z = -farZ;
@@ -28,10 +28,10 @@ void ViewVolume::define
     pointXZ[VP4].z = -nearZ;
 
     // Define coordinates of view area vertices on yz axis
-    pointYZ[VP1].y = nearScrPxSize.height / 2;
-    pointYZ[VP2].y = farScrPxSize.height / 2;
-    pointYZ[VP3].y = -farScrPxSize.height / 2;
-    pointYZ[VP4].y = -nearScrPxSize.height / 2;
+    pointYZ[VP1].y = (*nearScrSize).height / 2;
+    pointYZ[VP2].y = (*farScrSize).height / 2;
+    pointYZ[VP3].y = -(*farScrSize).height / 2;
+    pointYZ[VP4].y = -(*nearScrSize).height / 2;
 
     pointYZ[VP1].z = -nearZ;
     pointYZ[VP2].z = -farZ;
@@ -72,12 +72,12 @@ void ViewVolume::define
     point3D[RECT_BACK_BOTTOM_LEFT].z = -farZ;
 
     // Enter a point on the surface
-    face[SURFACE_TOP].oneV = point3D[0];
-    face[SURFACE_FRONT].oneV = point3D[0];
-    face[SURFACE_RIGHT].oneV = point3D[6];
-    face[SURFACE_LEFT].oneV = point3D[0];
-    face[SURFACE_BACK].oneV = point3D[6];
-    face[SURFACE_BOTTOM].oneV = point3D[6];
+    face[SURFACE_TOP].oneV = point3D[RECT_FRONT_TOP_LEFT];
+    face[SURFACE_FRONT].oneV = point3D[RECT_FRONT_TOP_LEFT];
+    face[SURFACE_RIGHT].oneV = point3D[RECT_BACK_BOTTOM_RIGHT];
+    face[SURFACE_LEFT].oneV = point3D[RECT_FRONT_TOP_LEFT];
+    face[SURFACE_BACK].oneV = point3D[RECT_BACK_BOTTOM_RIGHT];
+    face[SURFACE_BOTTOM].oneV = point3D[RECT_BACK_BOTTOM_RIGHT];
 
     // Enter the starting and ending points of the line segments of the view volume
     lineStartPoint[RECT_L1] = point3D[RECT_L1_STARTPT];
@@ -136,14 +136,15 @@ void ViewVolume::define
     double calcInSqrt;
     for (int i = 0; i < face.size(); ++i)
     {
-        calcInSqrt = pow(vec.resultVector3D[i].x, 2) + pow(vec.resultVector3D[i].y, 2) + pow(vec.resultVector3D[i].z, 2);
+        calcInSqrt 
+        = pow(vec.resultVector3D[i].x, 2) + pow(vec.resultVector3D[i].y, 2) + pow(vec.resultVector3D[i].z, 2);
         face[i].normal.x = vec.resultVector3D[i].x / abs(sqrt(calcInSqrt));
         face[i].normal.y = vec.resultVector3D[i].y / abs(sqrt(calcInSqrt));
         face[i].normal.z = vec.resultVector3D[i].z / abs(sqrt(calcInSqrt));
     }
 }
 
-int ViewVolume::clip(std::vector<OBJ_FILE> objData, std::vector<double> degree, ANGLE angle, int loopI)
+int ViewVolume::clipRange(std::vector<OBJ_FILE> objData, std::vector<double> degree, ANGLE angle, int loopI)
 {
     // Z-axis direction determination
     if (objData[loopI].range.origin.z > pointXZ[VP2].z && objData[loopI].range.opposite.z < pointXZ[VP1].z)
@@ -172,23 +173,23 @@ int ViewVolume::clip(std::vector<OBJ_FILE> objData, std::vector<double> degree, 
             }
         }
     }
-    return -1;
+    return NULL_INDEX;
 }
 
-int ViewVolume::clip(std::vector<VECTOR3D> v, std::vector<double> degree, ANGLE angle, int loopI)
+bool ViewVolume::clipV(double v, double degreeXZ, double degreeZY, ANGLE angle, int loopI)
 {
-    if (v[loopI].z > pointXZ[VP2].z &&v[loopI].z < pointXZ[VP1].z)
+    if (v > pointXZ[VP2].z && v < pointXZ[VP1].z)
     {
         // X-axis direction determination
         if 
-        (degree[loopI*2 + 0] <= -90 + angle.horiz / 2 && degree[loopI*2 + 0] >= -90 -angle.horiz / 2)
+        (degreeXZ <= -90 + angle.horiz / 2 && degreeXZ >= -90 -angle.horiz / 2)
         {
             // Y-axis direction determination
-            if(degree[loopI*2 + 1] <= -90 + angle.vert / 2 && degree[loopI*2 + 1] >= -90 - angle.vert / 2)
+            if(degreeZY <= -90 + angle.vert / 2 && degreeZY >= -90 - angle.vert / 2)
             {
-                return  loopI;
+                return  true;
             }
         }
     }
-    return -1;
+    return false;
 }
