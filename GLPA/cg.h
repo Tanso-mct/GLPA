@@ -81,6 +81,10 @@
 #define RECT_L11 10
 #define RECT_L12 11
 
+/**
+ * @struct NUMCOMB3
+ * @brief An int type integer with three values. Created for use with vector type variables.
+**/
 typedef struct tagNUMCOMB3
 {
     int num1; // number 1

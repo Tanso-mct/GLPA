@@ -96,7 +96,7 @@ public :
 
     bool clipVerticesViewVolume();
 
-    void inputRenderSouceSt();
+    void inputRenderSourceSt();
 
     void inputCalcSourceSt();
 

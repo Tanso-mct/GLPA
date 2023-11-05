@@ -21,7 +21,8 @@ This library is a personal work, but here are some things to keep in mind to mak
 ### 2. Naming Rules
 | Naming Rule Name         | Use                |
 |---------------|-------------------|
-| PascalCase    | Class name              |
+| P
+ascalCase    | Class name              |
 | camelCase     | Function name, Variable name           |
 | snake_case    | File name, Header file argument name |
 | SNAKE_CASE    | Macro name, Structure name         |
@@ -67,6 +68,23 @@ The following coding style was set up for personal production. Therefore, detail
     /** @def
      * Macro Comments
      */
+    ```
+
+- Comments to the structure should be as follows
+
+    ```C++
+    /**
+    * @struct Structure name
+    * @brief Structure description
+    **/
+    ```
+
+- Comments to the class should be as follows
+
+    ```C++
+    /*! @class Class name
+        @brief Class description
+    */
     ```
 
 - The maximum number of horizontal characters on a page is 120. If you use vscode, it is recommended to add the following code to setting.json for easier coding.     
