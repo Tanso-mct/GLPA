@@ -47,16 +47,73 @@ public :
     void coordinateTransRange(std::vector<OBJ_FILE>* mesh_data);
 
     // Determination of intersection of OBJECT with view volume
-    void clipRange(std::vector<OBJ_FILE> objData);
+
+    /**
+     * @fn
+     * Determine which meshes are in the view volume from the rectangular extent of the mesh.
+     * @brief Determine which meshes are in the view volume from the rectangular extent of the mesh.
+     * @param (mesh_data) The loaded 3D data is saved as a vector type variable for each mesh.
+     * @details Calculate the angles of the vertices in the rectangular range of the mesh data in the XZ and YZ axes, 
+     * determine whether the mesh is in the view volume based on the angles, and store the data of the mesh in the view 
+     * volume in the small polygon information structure.
+     */
+    void clipRange(std::vector<OBJ_FILE> mesh_data);
 
     // Determining whether the face is front or back
-    std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> polyBilateralJudge(std::vector<OBJ_FILE> objData);
+    /**
+     * @fn
+     * The vertices and normal 3D vectors from the data of the small polygon information structure are converted to 
+     * camera coordinates to determine the front and back of polygons.
+     * @brief Performs front-to-back determination of polygons in the view volume.
+     * @param (mesh_data) The loaded 3D data is saved as a vector type variable for each mesh.
+     * @return A variable of type tuple that stores the three vertices of the polygons in the view volume that face the
+     * table and the normal vector of the face.
+     * @details The world 3D vertex coordinates and world polygon normal vector in the small polygon information
+     * structure are converted to camera coordinates. In this case, the normal vectors are normalized, so the position
+     * information remains unchanged. Using these camera 3D vertex coordinates and camera polygon normal vectors, the
+     * camera determines whether the surface is facing the front or not. If the result is facing the surface, the three
+     * vertices of the polygon and the normal vector are stored in a vector type variable and returned as a return
+     * value using tuple. This value is used in the next camera coordinate transformation function.
+     */
+    std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> polyBilateralJudge(std::vector<OBJ_FILE> mesh_data);
 
     // Coordinate transformation of the vertices of the surface to be drawn
-    void coordinateTrans(std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>>, std::vector<OBJ_FILE> objData);
+    /**
+     * @fn
+     * The world 3D vertex coordinates of the source polygon information structure and the camera coordinate
+     * transformation of the world normal vector are performed using the return value of the polyBilateralJudge 
+     * function.
+     * @brief Performs camera coordinate transformation of the vertices and normal vectors of the source polygon 
+     * information structure.
+     * @param (mesh_data) The loaded 3D data is saved as a vector type variable for each mesh.
+     * @sa polyBilateralJudge()
+     * @details Since the order of the array of vector variables in the return value of the polyBilateralJudge function 
+     * and the order of the array of the source polygon information structure are equal, the return value is camera 
+     * coordinate transformed and the camera coordinate transformed data is input into the source polygon information 
+     * structure in turn by loop processing.
+     */
+    void coordinateTrans(std::vector<OBJ_FILE> mesh_data);
+
+    bool clipVerticesViewVolume();
+
+    void inputRenderSouceSt();
+
+    void inputCalcSourceSt();
+
+    void createRangeFromPoly();
+
+    void clipPolyRangeViewVolume();
+
+    void clipPolyLineViewVolume();
+
+    void judgeVertexInViewVolume();
+
+    void clipViewVolumeLinePoly();
+
+    void judgeVertexInPoly();
 
     // Determine if polygon is in view volume and store array number
-    void polyInViewVolumeJudge(std::vector<OBJ_FILE> objData);
+    void clipPolyViewVolume(std::vector<OBJ_FILE> mesh_data);
 
     // Intersection judgment between polygon and view volume
     // std::vector<std::vector<int>> clippingRange(std::vector<std::vector<RANGE_CUBE_POLY>> range_polygon, int process_object_amout);

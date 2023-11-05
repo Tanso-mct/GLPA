@@ -4,6 +4,22 @@
 #include <vector>
 #include "cgmath.cuh"
 
+/** @def
+ * In a sequence, XYZ. Used to add to the index number.
+ */
+#define VX 0
+#define VY 1
+#define VZ 2
+
+/** @def
+ * Indicates the number of polygon vertices. It is added to the index number.
+ */
+#define POLYV 3
+
+/** @def
+ * The vertex number when viewing the view volume in each of the XZ and ZY axes. The order is clockwise from the bottom 
+ * left vertex.
+ */
 #define VP1 0
 #define VP2 1
 #define VP3 2
