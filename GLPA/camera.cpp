@@ -21,7 +21,7 @@ void Camera::coordinateTransRange(std::vector<OBJ_FILE>* meshData)
 
     for (int i = 0; i < (*meshData).size(); ++i)
     {
-        for (int j = 0; j < 8; ++j)
+        for (int j = 0; j < RECTV; ++j)
         {
             pointData.push_back((*meshData)[i].range.wVertex[j]);
         }
@@ -32,40 +32,40 @@ void Camera::coordinateTransRange(std::vector<OBJ_FILE>* meshData)
 
     for (int i = 0; i < (*meshData).size(); ++i)
     {
-        (*meshData)[i].range.origin = mtx.resultMatrices[i*8];
-        (*meshData)[i].range.opposite = mtx.resultMatrices[i*8];
+        (*meshData)[i].range.origin = mtx.resultMatrices[i*RECTV];
+        (*meshData)[i].range.opposite = mtx.resultMatrices[i*RECTV];
     }
     
     for (int i = 0; i < (*meshData).size(); ++i)
     {
-        for (int j = 1; j < 8; ++j)
+        for (int j = 1; j < RECTV; ++j)
         {
             // Processing with respect to origin point
-            if ((*meshData)[i].range.origin.x > mtx.resultMatrices[i*8 + j].x)
+            if ((*meshData)[i].range.origin.x > mtx.resultMatrices[i*RECTV + j].x)
             {   
-                (*meshData)[i].range.origin.x = mtx.resultMatrices[i*8 + j].x;
+                (*meshData)[i].range.origin.x = mtx.resultMatrices[i*RECTV + j].x;
             }
-            if ((*meshData)[i].range.origin.y > mtx.resultMatrices[i*8 + j].y)
+            if ((*meshData)[i].range.origin.y > mtx.resultMatrices[i*RECTV + j].y)
             {
-                (*meshData)[i].range.origin.y = mtx.resultMatrices[i*8 + j].y;
+                (*meshData)[i].range.origin.y = mtx.resultMatrices[i*RECTV + j].y;
             }
-            if ((*meshData)[i].range.origin.z < mtx.resultMatrices[i*8 + j].z)
+            if ((*meshData)[i].range.origin.z < mtx.resultMatrices[i*RECTV + j].z)
             {
-                (*meshData)[i].range.origin.z = mtx.resultMatrices[i*8 + j].z;
+                (*meshData)[i].range.origin.z = mtx.resultMatrices[i*RECTV + j].z;
             }
 
             // Processing with respect to opposite point
-            if ((*meshData)[i].range.opposite.x < mtx.resultMatrices[i*8 + j].x)
+            if ((*meshData)[i].range.opposite.x < mtx.resultMatrices[i*RECTV + j].x)
             {
-                (*meshData)[i].range.opposite.x = mtx.resultMatrices[i*8 + j].x;
+                (*meshData)[i].range.opposite.x = mtx.resultMatrices[i*RECTV + j].x;
             }
-            if ((*meshData)[i].range.opposite.y < mtx.resultMatrices[i*8 + j].y)
+            if ((*meshData)[i].range.opposite.y < mtx.resultMatrices[i*RECTV + j].y)
             {
-                (*meshData)[i].range.opposite.y = mtx.resultMatrices[i*8 + j].y;
+                (*meshData)[i].range.opposite.y = mtx.resultMatrices[i*RECTV + j].y;
             }
-            if ((*meshData)[i].range.opposite.z > mtx.resultMatrices[i*8 + j].z)
+            if ((*meshData)[i].range.opposite.z > mtx.resultMatrices[i*RECTV + j].z)
             {
-                (*meshData)[i].range.opposite.z = mtx.resultMatrices[i*8 + j].z;
+                (*meshData)[i].range.opposite.z = mtx.resultMatrices[i*RECTV + j].z;
             }
         }
     }

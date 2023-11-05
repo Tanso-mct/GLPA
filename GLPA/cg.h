@@ -5,16 +5,21 @@
 #include "cgmath.cuh"
 
 /** @def
- * In a sequence, XYZ. Used to add to the index number.
+ * In a sequence, XYZ.
  */
 #define VX 0
 #define VY 1
 #define VZ 2
 
 /** @def
- * Indicates the number of polygon vertices. It is added to the index number.
+ * Indicates the number of polygon vertices.
  */
 #define POLYV 3
+
+/** @def
+ * The number of vertices of the rectangle.
+ */
+#define RECTV 8
 
 /** @def
  * The vertex number when viewing the view volume in each of the XZ and ZY axes. The order is clockwise from the bottom 
