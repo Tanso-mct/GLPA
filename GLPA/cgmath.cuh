@@ -187,7 +187,7 @@ public :
     double* dCalcVec;
     double* dResultVec;
 
-    void minusVec3d(std::vector<VECTOR3D> start_vertexcies, std::vector<VECTOR3D> end_vertexcies);
+    void getVec3dFromV(std::vector<VECTOR3D> start_vertexcies, std::vector<VECTOR3D> end_vertexcies);
 
     void decimalLimit(VECTOR3D* v);
 

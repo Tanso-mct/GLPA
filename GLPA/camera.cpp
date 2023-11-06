@@ -204,6 +204,18 @@ void Camera::coordinateTrans(std::vector<OBJ_FILE> meshData)
     }
 }
 
+void Camera::calcPolyLineVec(std::vector<VECTOR3D> lineStartPoint, std::vector<VECTOR3D> lineEndPoint)
+{
+    vec.getVec3dFromV(lineStartPoint, lineEndPoint);
+
+    for (int i = 0; i < calcPolyInfo.size(); ++i)
+    {
+        calcPolyInfo[i].lineVec[L0] = vec.resultVector3D[i*POLYLINES + L0];
+        calcPolyInfo[i].lineVec[L1] = vec.resultVector3D[i*POLYLINES + L1];
+        calcPolyInfo[i].lineVec[L2] = vec.resultVector3D[i*POLYLINES + L2];
+    }
+}
+
 std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::pushCalcPolyInfo(int loopI)
 {
     RENDERSOUCE pushRenderSauceSt;
@@ -212,6 +224,7 @@ std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::pushCalcPolyInf
     pushRenderSauceSt.meshID = sourcePolyInfo[loopI].meshID;
     pushRenderSauceSt.polyID = sourcePolyInfo[loopI].polyID;
     pushRenderSauceSt.polyV.push_back(sourcePolyInfo[loopI].lineStartPoint[V0]);
+
     renderSouce.push_back(pushRenderSauceSt);
 
     pushPolyInfo.relRenderingSourceSt = renderSouce.size() - 1;
@@ -219,11 +232,34 @@ std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::pushCalcPolyInf
     pushPolyInfo.polyID = sourcePolyInfo[loopI].polyID;
     pushPolyInfo.lineStartPoint = sourcePolyInfo[loopI].lineStartPoint;
     pushPolyInfo.lineEndPoint = sourcePolyInfo[loopI].lineEndPoint;
+    pushPolyInfo.polyNormal = sourcePolyInfo[loopI].polyNormal;
+
+    calcPolyInfo.push_back(pushPolyInfo);
 
     return std::make_tuple(sourcePolyInfo[loopI].lineStartPoint, sourcePolyInfo[loopI].lineEndPoint);
 }
 
-bool Camera::clipVerticesViewVolume()
+void Camera::createStRenderSourceCalcPolyInfo
+(
+    int loopI,
+    std::vector<VECTOR3D>* ptCalcPolyStartPoint,
+    std::vector<VECTOR3D>* ptCalcPolyEndPoint,
+    bool* alreadyPushed
+)
+{
+    std::tuple<std::vector<VECTOR3D>, std::vector<VECTOR3D>> calcLineData = pushCalcPolyInfo(loopI);
+    (*ptCalcPolyStartPoint).insert
+    (
+        (*ptCalcPolyStartPoint).end(), std::get<0>(calcLineData).begin(), std::get<0>(calcLineData).end()
+    );
+    (*ptCalcPolyEndPoint).insert
+    (
+        (*ptCalcPolyEndPoint).end(), std::get<1>(calcLineData).begin(), std::get<1>(calcLineData).end()
+    );
+    (*alreadyPushed) = true;
+}
+
+void Camera::clipVerticesViewVolume()
 {
     std::vector<double> calcVertValue;
     std::vector<double> calcHorizValue;
@@ -256,6 +292,8 @@ bool Camera::clipVerticesViewVolume()
     // Determines whether each vertex is in the view volume and creates a rendering source and a polygon information 
     // structure to be computed.
     bool alreadyPushed = false;
+    std::vector<VECTOR3D> calcPolyLineStartPoint;
+    std::vector<VECTOR3D> calcPolyLineEndPoint;
     for (int i = 0; i < sourcePolyInfo.size(); ++i)
     {
         if 
@@ -263,16 +301,62 @@ bool Camera::clipVerticesViewVolume()
             viewVolume.clipV
             (
                 sourcePolyInfo[i].lineStartPoint[V0].z,
-                tri.resultDegree[i*sourcePolyInfo.size()*2 + 0],
-                tri.resultDegree[i*sourcePolyInfo.size()*2 + 1],
-                viewAngle,
-                i
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 0], tri.resultDegree[i*sourcePolyInfo.size()*2 + 1],
+                viewAngle, i
             )
         )
         {
+            createStRenderSourceCalcPolyInfo(i, &calcPolyLineStartPoint, &calcPolyLineStartPoint, &alreadyPushed);
+        }
 
+        if 
+        (
+            viewVolume.clipV
+            (
+                sourcePolyInfo[i].lineStartPoint[V1].z,
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 2], tri.resultDegree[i*sourcePolyInfo.size()*2 + 3],
+                viewAngle, i
+            ) && !alreadyPushed
+        )
+        {
+            createStRenderSourceCalcPolyInfo(i, &calcPolyLineStartPoint, &calcPolyLineStartPoint, &alreadyPushed);
+        }
+        else
+        {
+            renderSouce[renderSouce.size() - 1].polyV.push_back(sourcePolyInfo[i].lineStartPoint[V1]);
+        }
+
+        if 
+        (
+            viewVolume.clipV
+            (
+                sourcePolyInfo[i].lineStartPoint[V2].z,
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 4], tri.resultDegree[i*sourcePolyInfo.size()*2 + 5],
+                viewAngle, i
+            ) && !alreadyPushed
+        )
+        {
+            createStRenderSourceCalcPolyInfo(i, &calcPolyLineStartPoint, &calcPolyLineStartPoint, &alreadyPushed);
+        }
+        else
+        {
+            renderSouce[renderSouce.size() - 1].polyV.push_back(sourcePolyInfo[i].lineStartPoint[V2]);
+        }
+
+        if (!alreadyPushed)
+        {
+            POLYINFO pushSerachPolyInfo;
+            pushSerachPolyInfo.meshID = sourcePolyInfo[i].meshID;
+            pushSerachPolyInfo.polyID = sourcePolyInfo[i].polyID;
+            pushSerachPolyInfo.lineStartPoint = sourcePolyInfo[i].lineStartPoint;
+            pushSerachPolyInfo.lineEndPoint = sourcePolyInfo[i].lineEndPoint;
+            pushSerachPolyInfo.polyNormal = sourcePolyInfo[i].polyNormal;
+
+            searchPolyInfo.push_back(pushSerachPolyInfo);
         }
     }
+
+    calcPolyLineVec(calcPolyLineStartPoint, calcPolyLineEndPoint);
 }
 
 std::vector<bool> Camera::vertexInViewVolume(std::vector<VECTOR3D> v)
@@ -464,7 +548,7 @@ void Camera::polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData)
     viewVolumePoint2[10] = viewPoint[7];
     viewVolumePoint2[11] = viewPoint[4];
 
-    vec.minusVec3d(viewVolumePoint1, viewVolumePoint2);
+    vec.getVec3dFromV(viewVolumePoint1, viewVolumePoint2);
     std::vector<VECTOR3D> vecViewVolumeLine = vec.resultVector3D;
 
     // Stores view volume line vectors
@@ -602,7 +686,7 @@ void Camera::polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData)
         }
     }
 
-    vec.minusVec3d(viewVolumePoint1, viewVolumeFaceI);
+    vec.getVec3dFromV(viewVolumePoint1, viewVolumeFaceI);
     std::vector<VECTOR3D> calcViewVolumeI = vec.resultVector3D;
 
     vec.crossProduct(calcViewVolumeLine, calcViewVolumeI);
@@ -1058,10 +1142,10 @@ void Camera::polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData)
         polySum = 0;
     }
 
-    vec.minusVec3d(calcPolyVertexTo, calcPolySurfaceIpoint);
+    vec.getVec3dFromV(calcPolyVertexTo, calcPolySurfaceIpoint);
     std::vector<VECTOR3D> vecPolyVtoI = vec.resultVector3D;
 
-    vec.minusVec3d(calcPolyVertex, calcPolyVertexTo);
+    vec.getVec3dFromV(calcPolyVertex, calcPolyVertexTo);
     std::vector<VECTOR3D> vecPolyLine = vec.resultVector3D;
 
     vec.crossProduct(vecPolyVtoI, vecPolyLine);

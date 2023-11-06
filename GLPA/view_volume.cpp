@@ -106,7 +106,7 @@ void ViewVolume::define
     lineEndPoint[RECT_L11] = point3D[RECT_L11_ENDPT];
     lineEndPoint[RECT_L12] = point3D[RECT_L12_ENDPT];
 
-    vec.minusVec3d(lineStartPoint, lineEndPoint);
+    vec.getVec3dFromV(lineStartPoint, lineEndPoint);
 
     lineVec = vec.resultVector3D;
 

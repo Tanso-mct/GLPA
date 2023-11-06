@@ -14,8 +14,14 @@
 #define V1 1
 #define V2 2
 
+/// @def Indicates line number by index
+#define L0 0
+#define L1 1
+#define L2 2
+
 /// @def The number of each element of the figure.
 #define POLYVS 3
+#define POLYLINES 3
 #define SQUAREVS 4
 #define RECTVS 8
 #define RECTLINES 12

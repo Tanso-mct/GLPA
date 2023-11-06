@@ -93,7 +93,7 @@ __global__ void gpuVecCrossProduct
 }
 
 
-void VECTOR::minusVec3d(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> endVs)
+void VECTOR::getVec3dFromV(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> endVs)
 {
     // Allocate memory for each vector size
     hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*startVs.size());
@@ -586,10 +586,10 @@ void EQUATION::getLinePlaneI
     }
 
     // Find a vector from a point on the surface to a polygon vertex
-    vec.minusVec3d(planeVperLine, lineVAperPlne);
+    vec.getVec3dFromV(planeVperLine, lineVAperPlne);
     vPvLa = vec.resultVector3D;
 
-    vec.minusVec3d(planeVperLine, lineVBperPlne);
+    vec.getVec3dFromV(planeVperLine, lineVBperPlne);
     vPvLb = vec.resultVector3D;
 
     std::vector<VECTOR3D> planeNperLine;

@@ -95,5 +95,27 @@
         "RENDERSOUCE",
         "RENDERSOURCE",
         "SQUAREVS"
+    ],
+    "commentTranslate.multiLineMerge": true,
+    "commentTranslate.targetLanguage": "en",
+    "textmarker.savedHighlights": [
+        {
+            "pattern": {
+                "type": "string",
+                "expression": "///",
+                "ignoreCase": true,
+                "wholeMatch": false
+            },
+            "color": "white"
+        },
+        {
+            "pattern": {
+                "type": "string",
+                "expression": "@brief",
+                "ignoreCase": true,
+                "wholeMatch": false
+            },
+            "color": "#ffffff"
+        }
     ]
 }
