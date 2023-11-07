@@ -47,6 +47,12 @@ public :
     /// is returned. otherwise, NULL_INDEX(-1) is returned.
     int clipRange(std::vector<OBJ_FILE> mesh_data, std::vector<double> range_degree, ANGLE view_angle, int loop_i);
 
+    /// @brief Clip rectangular range and view volume   
+    /// @param range_rect 
+    /// @param range_degree 
+    /// @param view_angle 
+    /// @param loop_i 
+    /// @return 
     int clipRange
     (
         std::vector<RANGE_RECT> range_rect, std::vector<double> range_degree, ANGLE view_angle, int loop_i

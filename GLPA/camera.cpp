@@ -59,6 +59,7 @@ void Camera::createRectRange(std::vector<OBJ_FILE>* meshData, std::vector<VECTOR
 
 void Camera::createRectRange(std::vector<RANGE_RECT> *rangeRect, std::vector<POLYINFO> polyInfo)
 {
+    (*rangeRect).resize(polyInfo.size());
     for (int i = 0; i < polyInfo.size(); ++i)
     {
         (*rangeRect)[i].origin = polyInfo[i].lineStartPoint[V0];
@@ -306,11 +307,79 @@ void Camera::createStRenderSourceCalcPolyInfo
     (*alreadyPushed) = true;
 }
 
-std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::createRangeFromPolyInfo()
+void Camera::clipVerticesViewVolume
+(
+    std::vector<VECTOR3D>* calcPolyLineStartPoint, std::vector<VECTOR3D>* calcPolyLineEndPoint
+)
+{
+    bool alreadyPushed = false;
+    for (int i = 0; i < sourcePolyInfo.size(); ++i)
+    {
+        if 
+        (
+            viewVolume.clipV
+            (
+                sourcePolyInfo[i].lineStartPoint[V0].z,
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 0], tri.resultDegree[i*sourcePolyInfo.size()*2 + 1],
+                viewAngle, i
+            )
+        )
+        {
+            createStRenderSourceCalcPolyInfo(i, calcPolyLineStartPoint, calcPolyLineEndPoint, &alreadyPushed);
+        }
+
+        if 
+        (
+            viewVolume.clipV
+            (
+                sourcePolyInfo[i].lineStartPoint[V1].z,
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 2], tri.resultDegree[i*sourcePolyInfo.size()*2 + 3],
+                viewAngle, i
+            ) && !alreadyPushed
+        )
+        {
+            createStRenderSourceCalcPolyInfo(i, calcPolyLineStartPoint, calcPolyLineEndPoint, &alreadyPushed);
+        }
+        else
+        {
+            renderSouce[renderSouce.size() - 1].polyV.push_back(sourcePolyInfo[i].lineStartPoint[V1]);
+        }
+
+        if 
+        (
+            viewVolume.clipV
+            (
+                sourcePolyInfo[i].lineStartPoint[V2].z,
+                tri.resultDegree[i*sourcePolyInfo.size()*2 + 4], tri.resultDegree[i*sourcePolyInfo.size()*2 + 5],
+                viewAngle, i
+            ) && !alreadyPushed
+        )
+        {
+            createStRenderSourceCalcPolyInfo(i, calcPolyLineStartPoint, calcPolyLineEndPoint, &alreadyPushed);
+        }
+        else
+        {
+            renderSouce[renderSouce.size() - 1].polyV.push_back(sourcePolyInfo[i].lineStartPoint[V2]);
+        }
+
+        if (!alreadyPushed)
+        {
+            POLYINFO pushSearchPolyInfo;
+            pushSearchPolyInfo.meshID = sourcePolyInfo[i].meshID;
+            pushSearchPolyInfo.polyID = sourcePolyInfo[i].polyID;
+            pushSearchPolyInfo.lineStartPoint = sourcePolyInfo[i].lineStartPoint;
+            pushSearchPolyInfo.lineEndPoint = sourcePolyInfo[i].lineEndPoint;
+            pushSearchPolyInfo.polyNormal = sourcePolyInfo[i].polyNormal;
+
+            searchPolyInfo.push_back(pushSearchPolyInfo);
+        }
+        alreadyPushed = false;
+    }
+}
+
+std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::getOtherCalcPoly()
 {
     std::vector<RANGE_RECT> searchPolyInfoRangeRect;
-    searchPolyInfoRangeRect.resize(searchPolyInfo.size());
-
     createRectRange(&searchPolyInfoRangeRect, searchPolyInfo);
 
     std::vector<double> vertValue;
@@ -366,7 +435,7 @@ std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::createRang
     return std::make_tuple(rtBeforeCalcPolyInfoSize, rtCalcPolyLineStartPoint, rtCalcPolyLineEndPoint);
 }
 
-void Camera::clipVerticesViewVolume()
+void Camera::getCalcPolyInfoSt()
 {
     std::vector<double> calcVertValue;
     std::vector<double> calcHorizValue;
@@ -398,72 +467,12 @@ void Camera::clipVerticesViewVolume()
 
     // Determines whether each vertex is in the view volume and creates a rendering source and a polygon information 
     // structure to be computed.
-    bool alreadyPushed = false;
     std::vector<VECTOR3D> calcPolyLineStartPoint;
     std::vector<VECTOR3D> calcPolyLineEndPoint;
-    for (int i = 0; i < sourcePolyInfo.size(); ++i)
-    {
-        if 
-        (
-            viewVolume.clipV
-            (
-                sourcePolyInfo[i].lineStartPoint[V0].z,
-                tri.resultDegree[i*sourcePolyInfo.size()*2 + 0], tri.resultDegree[i*sourcePolyInfo.size()*2 + 1],
-                viewAngle, i
-            )
-        )
-        {
-            createStRenderSourceCalcPolyInfo(i, &calcPolyLineStartPoint, &calcPolyLineStartPoint, &alreadyPushed);
-        }
+    
+    clipVerticesViewVolume(&calcPolyLineStartPoint, &calcPolyLineEndPoint);
 
-        if 
-        (
-            viewVolume.clipV
-            (
-                sourcePolyInfo[i].lineStartPoint[V1].z,
-                tri.resultDegree[i*sourcePolyInfo.size()*2 + 2], tri.resultDegree[i*sourcePolyInfo.size()*2 + 3],
-                viewAngle, i
-            ) && !alreadyPushed
-        )
-        {
-            createStRenderSourceCalcPolyInfo(i, &calcPolyLineStartPoint, &calcPolyLineStartPoint, &alreadyPushed);
-        }
-        else
-        {
-            renderSouce[renderSouce.size() - 1].polyV.push_back(sourcePolyInfo[i].lineStartPoint[V1]);
-        }
-
-        if 
-        (
-            viewVolume.clipV
-            (
-                sourcePolyInfo[i].lineStartPoint[V2].z,
-                tri.resultDegree[i*sourcePolyInfo.size()*2 + 4], tri.resultDegree[i*sourcePolyInfo.size()*2 + 5],
-                viewAngle, i
-            ) && !alreadyPushed
-        )
-        {
-            createStRenderSourceCalcPolyInfo(i, &calcPolyLineStartPoint, &calcPolyLineStartPoint, &alreadyPushed);
-        }
-        else
-        {
-            renderSouce[renderSouce.size() - 1].polyV.push_back(sourcePolyInfo[i].lineStartPoint[V2]);
-        }
-
-        if (!alreadyPushed)
-        {
-            POLYINFO pushSearchPolyInfo;
-            pushSearchPolyInfo.meshID = sourcePolyInfo[i].meshID;
-            pushSearchPolyInfo.polyID = sourcePolyInfo[i].polyID;
-            pushSearchPolyInfo.lineStartPoint = sourcePolyInfo[i].lineStartPoint;
-            pushSearchPolyInfo.lineEndPoint = sourcePolyInfo[i].lineEndPoint;
-            pushSearchPolyInfo.polyNormal = sourcePolyInfo[i].polyNormal;
-
-            searchPolyInfo.push_back(pushSearchPolyInfo);
-        }
-    }
-
-    std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> dataReturn = createRangeFromPolyInfo();
+    std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> dataReturn = getOtherCalcPoly();
 
     int beforeCalcPolyInfoSize = std::get<0>(dataReturn);
     std::vector<VECTOR3D> insertPolyLineStartPoint = std::get<1>(dataReturn);
@@ -480,53 +489,6 @@ void Camera::clipVerticesViewVolume()
     );
 
     calcPolyLineVec(calcPolyLineStartPoint, calcPolyLineEndPoint);
-}
-
-std::vector<bool> Camera::vertexInViewVolume(std::vector<VECTOR3D> v)
-{
-    std::vector<double> vertValue;
-    std::vector<double> horizValue;
-
-    vertValue.resize(v.size() * 2);
-    horizValue.resize(v.size() * 2);
-
-    for (int i = 0; i < v.size(); ++i)
-    {
-        // XZ
-        vertValue[i*2 + 0] = v[i].z;
-        horizValue[i*2 + 0] = v[i].x;
-
-        // YZ
-        vertValue[i*2 + 1] = v[i].z;
-        horizValue[i*2 + 1] = v[i].y;
-    }
-
-    tri.get2dVecAngle(vertValue, horizValue);
-
-    std::vector<bool> vInViewVolume;
-    vInViewVolume.resize(v.size(), false);
-    // Z-axis direction determination
-    for (int i = 0; i < v.size(); ++i)
-    {
-        if 
-        (
-            v[i].z > viewPointXZ[VP2].z &&
-            v[i].z < viewPointXZ[VP1].z
-        )
-        {
-            // X-axis direction determination
-            if 
-            (tri.resultDegree[i*2 + 0] <= -90 + horizAngle / 2 && tri.resultDegree[i*2 + 0] >= -90 -horizAngle / 2)
-            {
-                // Y-axis direction determination
-                if(tri.resultDegree[i*2 + 1] <= -90 + vertAngle / 2 && tri.resultDegree[i*2 + 1] >= -90 - vertAngle / 2)
-                {
-                    vInViewVolume[i] = true;
-                }
-            }
-        }
-    }
-    return vInViewVolume;
 }
 
 void Camera::polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData)

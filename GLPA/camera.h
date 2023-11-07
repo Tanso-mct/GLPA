@@ -26,8 +26,18 @@ public :
     /// @brief Initialize variables that need to be initialized each time they are redrawn.
     void initialize();
 
+    /// @brief The 3D coordinates of the lower left front and upper right back of the rectangular range are updated 
+    /// from the data of the 8 vertices of the rectangular range.
+    /// @param mesh_data A summary of the imported 3D data stored together.
+    /// @param vertex 3D coordinates of the 8 vertices of the rectangular range.
+    /// @overload void createRectRange(std::vector<RANGE_RECT>* range_rect, std::vector<POLYINFO> poly_info);
     void createRectRange(std::vector<OBJ_FILE>* mesh_data, std::vector<VECTOR3D> vertex);
 
+    /// @brief Create a rectangular range from the 3 vertices of the polygon.
+    /// @param range_rect Stores data for the rectangular range created.
+    /// @param poly_info Polygon information structure, which is the data of the polygons for which you want to create 
+    /// a rectangular range.
+    /// @overload oid createRectRange(std::vector<OBJ_FILE>* mesh_data, std::vector<VECTOR3D> vertex);
     void createRectRange(std::vector<RANGE_RECT>* range_rect, std::vector<POLYINFO> poly_info);
 
     /// @brief Perform camera coordinate transformation of the rectangular range of the mesh.
@@ -80,18 +90,28 @@ public :
     /// @param line_end_point 3-D coordinates of the endpoints of polygonal line segments stored together.
     void calcPolyLineVec(std::vector<VECTOR3D> line_start_point, std::vector<VECTOR3D> line_end_point);
 
-    std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> createRangeFromPolyInfo();
+    /// @brief Determine if the polygon vertices exist in the view volume, and if so, after adding them to the 
+    /// calculation target, store the starting and ending points to obtain the 3D vectors of the polygon edges, and if 
+    /// not, add them to the poly information structure under investigation.
+    /// @param calc_poly_line_start_point Pointer to store the starting point of the polygon line segment.
+    /// @param calc_poly_line_end_point Pointer to store the ending point of the polygon line segment.
+    void clipVerticesViewVolume
+    (
+        std::vector<VECTOR3D>* calc_poly_line_start_point, std::vector<VECTOR3D>* calc_poly_line_end_point
+    );
 
-    /// @brief The vertex data in the source polygon information structure is clipped in the view volume, and the result 
-    /// inputs information to the target polygon information structure for calculation and retrieval and the rendering 
-    /// source structure. 
-    /// @include createStRenderSourceCalcPolyInfo()
+    /// @brief Find polygons in the view volume that do not contain any of the three vertices but are to be calculated 
+    ///  and add them to the calculation.
+    /// @return The number of polygons to be calculated at the time before adding to the symmetry, and the 3D 
+    /// coordinates of the starting and ending points of the polygons added to the calculation.
+    /// @include createRectRange()
+    std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> getOtherCalcPoly();
+
+    /// @brief Obtains the polygon information structure to be calculated.
+    /// @include clipVerticesViewVolume()
+    /// @include getOtherCalcPoly()
     /// @include calcPolyLineVec()
-    /// @include createRangeFromPolyInfo()
-    void clipVerticesViewVolume();
-
-
-    void clipPolyRangeViewVolume();
+    void getCalcPolyInfoSt();
 
     void clipPolyLineViewVolume();
 

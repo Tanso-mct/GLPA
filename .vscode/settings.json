@@ -82,7 +82,7 @@
         "string_view": "cpp",
         "__locale": "cpp"
     },
-    "commentTranslate.hover.enabled": true,
+    "commentTranslate.hover.enabled": false,
     "dotnet.defaultSolution": "disable",
     "cSpell.words": [
         "CALCFACE",
@@ -98,7 +98,7 @@
         "SQUAREVS"
     ],
     "commentTranslate.multiLineMerge": true,
-    "commentTranslate.targetLanguage": "en",
+    "commentTranslate.targetLanguage": "ja",
     "textmarker.savedHighlights": [
         {
             "pattern": {
