@@ -15,7 +15,7 @@
 #define V2 2
 
 /// @def Indicates line number by index
-#define L0 0
+#define L0 
 #define L1 1
 #define L2 2
 

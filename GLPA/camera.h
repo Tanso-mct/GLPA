@@ -80,14 +80,16 @@ public :
     /// @param line_end_point 3-D coordinates of the endpoints of polygonal line segments stored together.
     void calcPolyLineVec(std::vector<VECTOR3D> line_start_point, std::vector<VECTOR3D> line_end_point);
 
+    std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> createRangeFromPolyInfo();
+
     /// @brief The vertex data in the source polygon information structure is clipped in the view volume, and the result 
     /// inputs information to the target polygon information structure for calculation and retrieval and the rendering 
     /// source structure. 
     /// @include createStRenderSourceCalcPolyInfo()
     /// @include calcPolyLineVec()
+    /// @include createRangeFromPolyInfo()
     void clipVerticesViewVolume();
 
-    void createRangeFromPolyInfo();
 
     void clipPolyRangeViewVolume();
 

@@ -306,6 +306,66 @@ void Camera::createStRenderSourceCalcPolyInfo
     (*alreadyPushed) = true;
 }
 
+std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> Camera::createRangeFromPolyInfo()
+{
+    std::vector<RANGE_RECT> searchPolyInfoRangeRect;
+    searchPolyInfoRangeRect.resize(searchPolyInfo.size());
+
+    createRectRange(&searchPolyInfoRangeRect, searchPolyInfo);
+
+    std::vector<double> vertValue;
+    std::vector<double> horizValue;
+
+    vertValue.resize(searchPolyInfo.size() * 4);
+    horizValue.resize(searchPolyInfo.size() * 4);
+
+    for (int i = 0; i < searchPolyInfo.size(); ++i)
+    {
+        // origin XZ
+        vertValue[i*4 + 0] = searchPolyInfoRangeRect[i].opposite.z;
+        horizValue[i*4 + 0] = searchPolyInfoRangeRect[i].origin.x;
+
+        // origin YZ
+        vertValue[i*4 + 1] = searchPolyInfoRangeRect[i].opposite.z;
+        horizValue[i*4 + 1] = searchPolyInfoRangeRect[i].origin.y;
+
+        // opposite XZ
+        vertValue[i*4 + 2] = searchPolyInfoRangeRect[i].opposite.z;
+        horizValue[i*4 + 2] = searchPolyInfoRangeRect[i].opposite.x;
+
+        // opposite YZ
+        vertValue[i*4 + 3] = searchPolyInfoRangeRect[i].opposite.z;
+        horizValue[i*4 + 3] = searchPolyInfoRangeRect[i].opposite.y;
+    }
+
+    tri.get2dVecAngle(vertValue, horizValue);
+
+    int rtBeforeCalcPolyInfoSize = calcPolyInfo.size();
+    std::vector<VECTOR3D> rtCalcPolyLineStartPoint;
+    std::vector<VECTOR3D> rtCalcPolyLineEndPoint;
+    for (int i = 0; i < searchPolyInfo.size(); ++i)
+    {
+        if (viewVolume.clipRange(searchPolyInfoRangeRect, tri.resultDegree, viewAngle, i) != NULL_INDEX)
+        {
+            calcPolyInfo.push_back(searchPolyInfo[i]);
+            
+            rtCalcPolyLineStartPoint.insert
+            (
+                rtCalcPolyLineStartPoint.end(), 
+                searchPolyInfo[i].lineStartPoint.begin(), searchPolyInfo[i].lineStartPoint.end()
+            );
+
+            rtCalcPolyLineEndPoint.insert
+            (
+                rtCalcPolyLineEndPoint.end(), 
+                searchPolyInfo[i].lineEndPoint.begin(), searchPolyInfo[i].lineEndPoint.end()
+            );
+        }
+    }
+
+    return std::make_tuple(rtBeforeCalcPolyInfoSize, rtCalcPolyLineStartPoint, rtCalcPolyLineEndPoint);
+}
+
 void Camera::clipVerticesViewVolume()
 {
     std::vector<double> calcVertValue;
@@ -403,57 +463,23 @@ void Camera::clipVerticesViewVolume()
         }
     }
 
+    std::tuple<int, std::vector<VECTOR3D>, std::vector<VECTOR3D>> dataReturn = createRangeFromPolyInfo();
+
+    int beforeCalcPolyInfoSize = std::get<0>(dataReturn);
+    std::vector<VECTOR3D> insertPolyLineStartPoint = std::get<1>(dataReturn);
+    std::vector<VECTOR3D> insertPolyLineEndPoint = std::get<2>(dataReturn);
+
+    calcPolyLineStartPoint.insert
+    (
+        calcPolyLineStartPoint.end(), insertPolyLineStartPoint.begin(), insertPolyLineStartPoint.end()
+    );
+
+    calcPolyLineEndPoint.insert
+    (
+        calcPolyLineEndPoint.end(), insertPolyLineEndPoint.begin(), insertPolyLineEndPoint.end()
+    );
+
     calcPolyLineVec(calcPolyLineStartPoint, calcPolyLineEndPoint);
-}
-
-void Camera::createRangeFromPolyInfo()
-{
-    std::vector<RANGE_RECT> searchPolyInfoRangeRect;
-    searchPolyInfoRangeRect.resize(searchPolyInfo.size());
-
-    createRectRange(&searchPolyInfoRangeRect, searchPolyInfo);
-
-    std::vector<double> vertValue;
-    std::vector<double> horizValue;
-
-    vertValue.resize(searchPolyInfo.size() * 4);
-    horizValue.resize(searchPolyInfo.size() * 4);
-
-    for (int i = 0; i < searchPolyInfo.size(); ++i)
-    {
-        // origin XZ
-        vertValue[i*4 + 0] = searchPolyInfoRangeRect[i].opposite.z;
-        horizValue[i*4 + 0] = searchPolyInfoRangeRect[i].origin.x;
-
-        // origin YZ
-        vertValue[i*4 + 1] = searchPolyInfoRangeRect[i].opposite.z;
-        horizValue[i*4 + 1] = searchPolyInfoRangeRect[i].origin.y;
-
-        // opposite XZ
-        vertValue[i*4 + 2] = searchPolyInfoRangeRect[i].opposite.z;
-        horizValue[i*4 + 2] = searchPolyInfoRangeRect[i].opposite.x;
-
-        // opposite YZ
-        vertValue[i*4 + 3] = searchPolyInfoRangeRect[i].opposite.z;
-        horizValue[i*4 + 3] = searchPolyInfoRangeRect[i].opposite.y;
-    }
-
-    tri.get2dVecAngle(vertValue, horizValue);
-    for (int i = 0; i < searchPolyInfo.size(); ++i)
-    {
-        if (viewVolume.clipRange(searchPolyInfoRangeRect, tri.resultDegree, viewAngle, i) != NULL_INDEX)
-        {
-            // TODO:Add the data of the polygon information structure under investigation to the structure on the 
-            // polygon to be calculated using the loop counter variable.
-            for (int j = 0; j < meshData[i].poly.v.size(); ++j)
-            {
-                clipPolyInfo.meshID.push_back(i);
-                clipPolyInfo.polyID.push_back(j);
-                clipPolyInfo.oneV.push_back(meshData[i].v.world[meshData[i].poly.v[j].num1]);
-                clipPolyInfo.normal.push_back(meshData[i].v.normal[meshData[i].poly.normal[j].num1]);
-            }
-        }
-    }
 }
 
 std::vector<bool> Camera::vertexInViewVolume(std::vector<VECTOR3D> v)
