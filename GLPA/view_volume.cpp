@@ -176,6 +176,41 @@ int ViewVolume::clipRange(std::vector<OBJ_FILE> objData, std::vector<double> deg
     return NULL_INDEX;
 }
 
+int ViewVolume::clipRange
+(
+    std::vector<RANGE_RECT> rangeRect, std::vector<double> degree, ANGLE angle, int loopI
+)
+{
+    // Z-axis direction determination
+    if (rangeRect[loopI].origin.z > pointXZ[VP2].z && rangeRect[loopI].opposite.z < pointXZ[VP1].z)
+    {
+        // X-axis direction determination
+        if 
+        (
+            // ORIGIN
+            degree[loopI*4 + 0] <= -90 + angle.horiz / 2 &&
+
+            // OPPOSITE
+            degree[loopI*4 + 2] >= -90 -angle.horiz / 2
+        )
+        {
+            // Y-axis direction determination
+            if
+            (
+                // ORIGIN
+                degree[loopI*4 + 1] <= -90 + angle.vert / 2  &&
+
+                // OPPOSITE
+                degree[loopI*4 + 3] >= -90 - angle.vert / 2
+            )
+            {
+                return loopI;
+            }
+        }
+    }
+    return NULL_INDEX;
+}
+
 bool ViewVolume::clipV(double v, double degreeXZ, double degreeZY, ANGLE angle, int loopI)
 {
     if (v > pointXZ[VP2].z && v < pointXZ[VP1].z)

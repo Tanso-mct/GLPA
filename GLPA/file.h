@@ -48,7 +48,7 @@ class BMP_FILE : public FILELOAD
 class OBJ_FILE : public FILELOAD
 {
     public :
-    RANGE_CUBE range;
+    RANGE_RECT range;
     VERTEX v;
     POLYGON poly;
     int loadData(std::string inputFileName);

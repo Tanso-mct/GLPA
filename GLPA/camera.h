@@ -26,6 +26,10 @@ public :
     /// @brief Initialize variables that need to be initialized each time they are redrawn.
     void initialize();
 
+    void createRectRange(std::vector<OBJ_FILE>* mesh_data, std::vector<VECTOR3D> vertex);
+
+    void createRectRange(std::vector<RANGE_RECT>* range_rect, std::vector<POLYINFO> poly_info);
+
     /// @brief Perform camera coordinate transformation of the rectangular range of the mesh.
     /// @param mesh_data A summary of the imported 3D data stored together.
     void coordinateTransRange(std::vector<OBJ_FILE>* mesh_data);
@@ -59,13 +63,14 @@ public :
     /// starting point of a polygon line segment.
     /// @param pt_calc_poly_end_line A pointer to a variable that collectively stores the 3D coordinates of the 
     /// starting point of a polygon line segment.
-    /// @param pt_alredy_pushed A pointer to a variable to be specified to indicate that it has been done, since this 
+    /// @param pt_already_pushed A pointer to a variable to be specified to indicate that it has been done, since this 
     /// process is done only once for each polygon.
+    /// @include pushCalcPolyInfo()
     void createStRenderSourceCalcPolyInfo
     (
         int loop_i,
         std::vector<VECTOR3D>* pt_calc_poly_start_line, std::vector<VECTOR3D>* pt_calc_poly_end_line,
-        bool* pt_alredy_pushed
+        bool* pt_already_pushed
     );
 
     /// @brief Using variables that summarize the 3D coordinates of the start and end points of the polygon line 
@@ -78,12 +83,11 @@ public :
     /// @brief The vertex data in the source polygon information structure is clipped in the view volume, and the result 
     /// inputs information to the target polygon information structure for calculation and retrieval and the rendering 
     /// source structure. 
-    /// @include pushCalcPolyInfo()
     /// @include createStRenderSourceCalcPolyInfo()
     /// @include calcPolyLineVec()
     void clipVerticesViewVolume();
 
-    void createRangeFromPoly();
+    void createRangeFromPolyInfo();
 
     void clipPolyRangeViewVolume();
 

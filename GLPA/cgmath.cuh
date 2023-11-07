@@ -127,7 +127,7 @@ typedef struct tagRANGE_CUBE
     VECTOR3D origin;
     VECTOR3D opposite;
     std::vector<VECTOR3D> wVertex;
-} RANGE_CUBE;
+} RANGE_RECT;
 
 typedef struct tagRANGE_CUBE_POLY
 {

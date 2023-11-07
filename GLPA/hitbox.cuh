@@ -7,7 +7,7 @@ class HITBOX
 {
 public :
     SIZE2 boxSize;
-    RANGE_CUBE boxRange;
+    RANGE_RECT boxRange;
     void examineHit();
 };
 

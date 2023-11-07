@@ -47,6 +47,12 @@ public :
     /// is returned. otherwise, NULL_INDEX(-1) is returned.
     int clipRange(std::vector<OBJ_FILE> mesh_data, std::vector<double> range_degree, ANGLE view_angle, int loop_i);
 
+    int clipRange
+    (
+        std::vector<RANGE_RECT> range_rect, std::vector<double> range_degree, ANGLE view_angle, int loop_i
+    );
+
+
     /// @brief Clip vertex and view volume
     /// @param vertex_z z-value of the vertex to be calculated.
     /// @param vertex_degree_xz Angle of the vertex in the XZ axis from the origin
