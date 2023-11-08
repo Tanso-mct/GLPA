@@ -58,23 +58,23 @@ WNDCLASSEX WNDMAIN::registerClass
     wndClass.cbWndExtra = wndExtra;         //int ウィンドウインスタンスの跡に割り当てるバイト数を示す
     wndClass.hInstance = hInstance;         //HINSTANCE インスタンスハンドル
     wndClass.hIcon = (HICON)LoadImage       //HICON クラスアイコンを指定するLoadImage
-        (
-            NULL, 
-            MAKEINTRESOURCE(loadIcon),
-            IMAGE_ICON,
-            0,
-            0,
-            LR_DEFAULTSIZE | LR_SHARED
-        );
+    (
+        NULL, 
+        MAKEINTRESOURCE(loadIcon),
+        IMAGE_ICON,
+        0,
+        0,
+        LR_DEFAULTSIZE | LR_SHARED
+    );
     wndClass.hCursor = (HCURSOR)LoadImage   //HCURSOR クラスカーソルを指定する
-        (
-            NULL, 
-            MAKEINTRESOURCE(loadIcon),
-            IMAGE_CURSOR,
-            0,
-            0,
-            LR_DEFAULTSIZE | LR_SHARED
-        );                                                 
+    (
+        NULL, 
+        MAKEINTRESOURCE(loadIcon),
+        IMAGE_CURSOR,
+        0,
+        0,
+        LR_DEFAULTSIZE | LR_SHARED
+    );                                                 
     wndClass.hbrBackground = (HBRUSH)GetStockObject(backgroundColor);       //HBRUSH クラス背景ブラシを指定する
     wndClass.lpszMenuName = menuResName;                                    //LPCSTR クラスメニューのリソース名を指定する
     wndClass.lpszClassName = name;                                          //LPCSTR ウィンドウクラスの名前を指定する
@@ -119,13 +119,13 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
     switch (message)
     {
         case WM_KILLFOCUS:
-            WndLAU.state.foucus = false;
+            WndLAU.state.focus = false;
             OutputDebugString(L"WND_LAU K\n");
             return 0;
 
 
         case WM_SETFOCUS:
-            WndLAU.state.foucus = true;
+            WndLAU.state.focus = true;
             OutputDebugString(L"WND_LAU S\n");
             return 0;
 
@@ -233,7 +233,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return 0;
                 
         case WM_KEYDOWN :
-                if (!WndLAU.state.foucus)
+                if (!WndLAU.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -243,7 +243,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return 0;
 
         case WM_KEYUP :
-                if (!WndLAU.state.foucus)
+                if (!WndLAU.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -252,7 +252,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return 0;
 
         case WM_LBUTTONDOWN :
-                if (!WndLAU.state.foucus)
+                if (!WndLAU.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -261,7 +261,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                 return 0;
 
         case WM_MOUSEMOVE :
-                if (!WndLAU.state.foucus)
+                if (!WndLAU.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -280,13 +280,13 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
     switch (message)
     {
         case WM_KILLFOCUS:
-            WndPLAY.state.foucus = false;
+            WndPLAY.state.focus = false;
             OutputDebugString(L"WND_PLAY K\n");
 
             return 0;
 
         case WM_SETFOCUS:
-            WndPLAY.state.foucus = true;
+            WndPLAY.state.focus = true;
             OutputDebugString(L"WND_PLAY S\n");
 
             return 0;   
@@ -393,7 +393,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 }
                 
         case WM_KEYDOWN :
-                if (!WndPLAY.state.foucus)
+                if (!WndPLAY.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -403,7 +403,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 return 0;
 
         case WM_KEYUP :
-                if (!WndPLAY.state.foucus)
+                if (!WndPLAY.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -412,7 +412,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 return 0;
 
         case WM_LBUTTONDOWN :
-                if (!WndPLAY.state.foucus)
+                if (!WndPLAY.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }
@@ -421,7 +421,7 @@ LRESULT CALLBACK WINDOW_PLAY::wndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                 return 0;
 
         case WM_MOUSEMOVE :
-                if (!WndPLAY.state.foucus)
+                if (!WndPLAY.state.focus)
                 {
                     return DefWindowProc(hWnd, message, wParam, lParam);
                 }

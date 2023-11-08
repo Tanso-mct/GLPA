@@ -10,7 +10,7 @@ int WINAPI WinMain(
 )                      
 {
     // Launcher Class Registration
-    WNDCLASSEX wcex_LAU = WndMain.registerClass
+    WNDCLASSEX windowClassEx_LAU = WndMain.registerClass
     (
         CS_HREDRAW | CS_VREDRAW,
         WndLAU.wndProc,
@@ -25,13 +25,13 @@ int WINAPI WinMain(
         IDI_APPLICATION
     );
 
-    if (!WndMain.checkClass(&wcex_LAU))
+    if (!WndMain.checkClass(&windowClassEx_LAU))
     {
         return 1;
     }
 
     // Play Class Registration
-    WNDCLASSEX wcex_PLAY = WndMain.registerClass
+    WNDCLASSEX windowClassEx_PLAY = WndMain.registerClass
     (
         CS_HREDRAW | CS_VREDRAW,
         WndPLAY.wndProc,
@@ -46,7 +46,7 @@ int WINAPI WinMain(
         IDI_APPLICATION
     );
 
-    if (!WndMain.checkClass(&wcex_PLAY))
+    if (!WndMain.checkClass(&windowClassEx_PLAY))
     {
         return 1;
     }
@@ -90,7 +90,7 @@ int WINAPI WinMain(
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} 
-        else if (WndPLAY.state.foucus)
+        else if (WndPLAY.state.focus)
         {
             WndPLAY.fpsSystem.fpsLimiter();
 
@@ -106,7 +106,7 @@ int WINAPI WinMain(
 
             InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
         }
-        else if (WndLAU.state.foucus)
+        else if (WndLAU.state.focus)
         {
             WndLAU.fpsSystem.fpsLimiter();
 
@@ -125,8 +125,7 @@ int WINAPI WinMain(
         
     }
 
-    
-    
-    return (int)msg.wParam;             // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is
-							            // Returns the exit code that has If the function exits before entering the message loop, return 0
+    // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is
+    // Returns the exit code that has If the function exits before entering the message loop, return 0
+    return (int)msg.wParam;             
 }

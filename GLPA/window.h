@@ -25,7 +25,7 @@
 
 typedef struct tagWND_STATE
 {
-    bool foucus = false;
+    bool focus = false;
     bool open = false;
 } WND_STATE;
 
