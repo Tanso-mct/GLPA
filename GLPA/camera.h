@@ -143,8 +143,8 @@ private :
     
     SMALL_POLYINFO clipPolyInfo;
     std::vector<POLYINFO> sourcePolyInfo;
-    std::vector<POLYINFO> calcPolyInfo;
     std::vector<POLYINFO> searchPolyInfo;
+    std::vector<POLYINFO> calcPolyInfo;
 
     std::vector<RENDERSOUCE> renderSouce;
 

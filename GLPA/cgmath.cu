@@ -150,6 +150,182 @@ void VECTOR::getVec3dFromV(std::vector<VECTOR3D> startVs, std::vector<VECTOR3D> 
     cudaFree(dResultVec);
 }
 
+void VECTOR::getVec3dFaceToPolyLineStart(std::vector<CALCFACE> face, std::vector<POLYINFO> polyInfo)
+{
+    // Allocate memory for each vector size
+    hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    hResultVec = (double*)malloc(sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+
+    for (int i = 0; i < polyInfo.size() * POLYLINES; ++i)
+    {
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hSouceVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = face[j].oneV.x;
+            hSouceVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = face[j].oneV.y;
+            hSouceVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = face[j].oneV.z;
+        }
+    }
+
+    for (int i = 0; i < polyInfo.size(); ++i)
+    {
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = polyInfo[i].lineStartPoint[V0].x;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = polyInfo[i].lineStartPoint[V0].y;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = polyInfo[i].lineStartPoint[V0].z;
+        }
+
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = polyInfo[i].lineStartPoint[V1].x;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = polyInfo[i].lineStartPoint[V1].y;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = polyInfo[i].lineStartPoint[V1].z;
+        }
+
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = polyInfo[i].lineStartPoint[V2].x;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = polyInfo[i].lineStartPoint[V2].y;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = polyInfo[i].lineStartPoint[V2].z;
+        }
+    }
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dSouceVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    cudaMalloc((void**)&dResultVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES, cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES, cudaMemcpyHostToDevice);
+    
+    // GPU kernel function calls
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid
+    (
+        (VECTOR3*face.size() * polyInfo.size() * POLYLINES + dimBlock.x - 1) / dimBlock.x, 
+        (VECTOR3*face.size() * polyInfo.size() * POLYLINES + dimBlock.y - 1) / dimBlock.y
+    ); // Grid Size
+    
+    gpuVecMinus<<<dimGrid, dimBlock>>>
+    (dSouceVec, dCalcVec, dResultVec, face.size() * polyInfo.size() * POLYLINES);
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES, cudaMemcpyDeviceToHost);
+
+    // Assign the result to a Vector member variable
+    resultVector3D.resize(face.size() * polyInfo.size() * POLYLINES);
+    for (int i = 0; i < face.size() * polyInfo.size() * POLYLINES; ++i)
+    {
+        inputVec3d
+        (
+            hResultVec[i*VECTOR3 + X0], 
+            hResultVec[i*VECTOR3 + Y0], 
+            hResultVec[i*VECTOR3 + Z0], 
+            i,
+            &resultVector3D
+        );
+    }
+
+    // Release all memory allocated by malloc
+    free(hSouceVec);
+    free(hCalcVec);
+    free(hResultVec);
+
+    cudaFree(dSouceVec);
+    cudaFree(dCalcVec);
+    cudaFree(dResultVec);
+}
+
+void VECTOR::getVec3dFaceToPolyLineEnd(std::vector<CALCFACE> face, std::vector<POLYINFO> polyInfo)
+{
+    // Allocate memory for each vector size
+    hSouceVec = (double*)malloc(sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    hCalcVec = (double*)malloc(sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    hResultVec = (double*)malloc(sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+
+    for (int i = 0; i < polyInfo.size() * POLYLINES; ++i)
+    {
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hSouceVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = face[j].oneV.x;
+            hSouceVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = face[j].oneV.y;
+            hSouceVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = face[j].oneV.z;
+        }
+    }
+
+    for (int i = 0; i < polyInfo.size(); ++i)
+    {
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = polyInfo[i].lineEndPoint[V0].x;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = polyInfo[i].lineEndPoint[V0].y;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = polyInfo[i].lineEndPoint[V0].z;
+        }
+
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = polyInfo[i].lineEndPoint[V1].x;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = polyInfo[i].lineEndPoint[V1].y;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = polyInfo[i].lineEndPoint[V1].z;
+        }
+
+        for (int j = 0; j < face.size(); ++j)
+        {
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = polyInfo[i].lineEndPoint[V2].x;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VY] = polyInfo[i].lineEndPoint[V2].y;
+            hCalcVec[i*face.size()*VECTOR3 + j*VECTOR3 + VZ] = polyInfo[i].lineEndPoint[V2].z;
+        }
+    }
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dSouceVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    cudaMalloc((void**)&dCalcVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+    cudaMalloc((void**)&dResultVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES);
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dSouceVec, hSouceVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES, cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcVec, hCalcVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES, cudaMemcpyHostToDevice);
+    
+    // GPU kernel function calls
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid
+    (
+        (VECTOR3*face.size() * polyInfo.size() * POLYLINES + dimBlock.x - 1) / dimBlock.x, 
+        (VECTOR3*face.size() * polyInfo.size() * POLYLINES + dimBlock.y - 1) / dimBlock.y
+    ); // Grid Size
+    
+    gpuVecMinus<<<dimGrid, dimBlock>>>
+    (dSouceVec, dCalcVec, dResultVec, face.size() * polyInfo.size() * POLYLINES);
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResultVec, dResultVec, sizeof(double)*VECTOR3*face.size() * polyInfo.size() * POLYLINES, cudaMemcpyDeviceToHost);
+
+    // Assign the result to a Vector member variable
+    resultVector3D.resize(face.size() * polyInfo.size() * POLYLINES);
+    for (int i = 0; i < face.size() * polyInfo.size() * POLYLINES; ++i)
+    {
+        inputVec3d
+        (
+            hResultVec[i*VECTOR3 + X0], 
+            hResultVec[i*VECTOR3 + Y0], 
+            hResultVec[i*VECTOR3 + Z0], 
+            i,
+            &resultVector3D
+        );
+    }
+
+    // Release all memory allocated by malloc
+    free(hSouceVec);
+    free(hCalcVec);
+    free(hResultVec);
+
+    cudaFree(dSouceVec);
+    cudaFree(dCalcVec);
+    cudaFree(dResultVec);
+}
+
 void VECTOR::decimalLimit(VECTOR3D *v)
 {
     (*v).x = std::floor(v->x * DECIMAL_PLACES) / DECIMAL_PLACES;
@@ -565,13 +741,13 @@ void EQUATION::getLinePlaneI
         }
     }
 
-    std::vector<VECTOR3D> lineVAperPlne;
-    lineVAperPlne.resize(planeV.size() * lineVA.size());
+    std::vector<VECTOR3D> lineVAperPlane;
+    lineVAperPlane.resize(planeV.size() * lineVA.size());
     for (int i = 0; i < lineVA.size(); ++i)
     {
         for (int j = 0; j < planeV.size(); ++j)
         {
-            lineVAperPlne[i*planeV.size() + j] = lineVA[i];
+            lineVAperPlane[i*planeV.size() + j] = lineVA[i];
         }
     }
 
@@ -586,7 +762,7 @@ void EQUATION::getLinePlaneI
     }
 
     // Find a vector from a point on the surface to a polygon vertex
-    vec.getVec3dFromV(planeVperLine, lineVAperPlne);
+    vec.getVec3dFromV(planeVperLine, lineVAperPlane);
     vPvLa = vec.resultVector3D;
 
     vec.getVec3dFromV(planeVperLine, lineVBperPlne);
@@ -607,6 +783,137 @@ void EQUATION::getLinePlaneI
 
     vec.dotProduct(vPvLb, planeNperLine);
     pnDotPvLb = vec.resultVector;
+
+    existenceI.resize(0);
+    existenceI.resize(lineVA.size());
+
+    std::vector<VECTOR3D> calcLineVA;
+    std::vector<VECTOR3D> calcLineVB;
+    std::vector<double> calcPnDotPvLa;
+    std::vector<double> calcPnDotPvLb;
+
+    bool findI = false;
+    for (int i = 0; i < lineVA.size(); ++i)
+    {
+        existenceI[i].resize(planeN.size(), I_FALSE);
+        for (int j = 0; j < planeN.size(); ++j)
+        {
+            if (pnDotPvLa[i*planeN.size() + j] >= 0)
+            {
+                if (pnDotPvLb[i*planeN.size() + j] <= 0)
+                {
+                    existenceI[i][j] = I_TRUE;
+                    findI = true;
+                    calcLineVA.push_back(lineVA[i]);
+                    calcLineVB.push_back(lineVB[i]);
+                    calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);
+                    calcPnDotPvLb.push_back(pnDotPvLb[i*planeN.size() + j]);
+                }
+            }
+
+            if (pnDotPvLa[i*planeN.size() + j] <= 0 && !findI)
+            {
+                if (pnDotPvLb[i*planeN.size() + j] >= 0)
+                {
+                    existenceI[i][j] = I_TRUE;
+                    calcLineVA.push_back(lineVA[i]);
+                    calcLineVB.push_back(lineVB[i]);
+                    calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);
+                    calcPnDotPvLb.push_back(pnDotPvLb[i*planeN.size() + j]);
+                }
+            }
+            findI = false;
+        }
+    }
+
+    int amoutI = calcLineVA.size();
+    // Allocate memory for each matrix size
+    hCalcLineVA = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
+    hCalcLineVB = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
+    hCalcPnDotPvLa = (double*)malloc(sizeof(double)*amoutI);
+    hCalcPnDotPvLb = (double*)malloc(sizeof(double)*amoutI);
+    hLinePlaneI = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
+
+    // Copy member variable
+    memcpy(hCalcLineVA, calcLineVA.data(), sizeof(double)*VECTOR3*amoutI);
+    memcpy(hCalcLineVB, calcLineVB.data(), sizeof(double)*VECTOR3*amoutI);
+    memcpy(hCalcPnDotPvLa, calcPnDotPvLa.data(), sizeof(double)*amoutI);
+    memcpy(hCalcPnDotPvLb, calcPnDotPvLb.data(), sizeof(double)*amoutI);
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dCalcLineVA, sizeof(double)*VECTOR3*amoutI);
+    cudaMalloc((void**)&dCalcLineVB, sizeof(double)*VECTOR3*amoutI);
+    cudaMalloc((void**)&dCalcPnDotPvLa, sizeof(double)*amoutI);
+    cudaMalloc((void**)&dCalcPnDotPvLb, sizeof(double)*amoutI);
+    cudaMalloc((void**)&dLinePlaneI, sizeof(double)*VECTOR3*amoutI);
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dCalcLineVA, hCalcLineVA, sizeof(double)*VECTOR3*amoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcLineVB, hCalcLineVB, sizeof(double)*VECTOR3*amoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcPnDotPvLa, hCalcPnDotPvLa, sizeof(double)*amoutI, cudaMemcpyHostToDevice);
+    cudaMemcpy(dCalcPnDotPvLb, hCalcPnDotPvLb, sizeof(double)*amoutI, cudaMemcpyHostToDevice);
+
+    // GPU kernel function calls
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((VECTOR3 + dimBlock.x - 1) 
+    / dimBlock.x, (amoutI + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
+    (dCalcLineVA, dCalcLineVB, dCalcPnDotPvLa, dCalcPnDotPvLb, dLinePlaneI, amoutI);
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hLinePlaneI, dLinePlaneI, sizeof(double)*VECTOR3*amoutI, cudaMemcpyDeviceToHost);
+    
+    // Assign the result to a Vector member variable
+    linePlaneI.resize(amoutI);
+    for (int i = 0; i < amoutI; ++i)
+    {
+        vec.inputVec3d
+        (
+            hLinePlaneI[i*VECTOR3+X0], 
+            hLinePlaneI[i*VECTOR3+Y0], 
+            hLinePlaneI[i*VECTOR3+Z0], 
+            i,
+            &linePlaneI
+        );
+    }
+
+    // Release all memory allocated by malloc
+    free(hCalcLineVA);
+    free(hCalcLineVB);
+    free(hCalcPnDotPvLa);
+    free(hCalcPnDotPvLb);
+    free(hLinePlaneI);
+
+    cudaFree(dCalcLineVA);
+    cudaFree(dCalcLineVB);
+    cudaFree(dCalcPnDotPvLa);
+    cudaFree(dCalcPnDotPvLb);
+    cudaFree(dLinePlaneI);
+}
+
+void EQUATION::getLinePlaneI(std::vector<POLYINFO> polyInfo, std::vector<CALCFACE> face)
+{
+    vec.getVec3dFaceToPolyLineStart(face, polyInfo);
+    std::vector<VECTOR3D> vecPlaneVLineStart = vec.resultVector3D;
+
+    vec.getVec3dFaceToPolyLineEnd(face, polyInfo);
+    std::vector<VECTOR3D> vecPlaneVLineEnd = vec.resultVector3D;
+
+    std::vector<VECTOR3D> planeNperLine;
+    planeNperLine.resize(polyInfo.size() * POLYLINES * face.size());
+    for (int i = 0; i < polyInfo.size() * POLYLINES; ++i)
+    {
+        for (int j = 0; j < face.size(); ++j)
+        {
+            planeNperLine[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = face[j].normal;
+        }
+    }
+
+    vec.dotProduct(vecPlaneVLineStart, planeNperLine);
+    std::vector<double> pnDotPlaneVLineStart = vec.resultVector;
+
+    vec.dotProduct(vecPlaneVLineEnd, planeNperLine);
+    std::vector<double> pnDotPlaneVLineEnd = vec.resultVector;
 
     existenceI.resize(0);
     existenceI.resize(lineVA.size());

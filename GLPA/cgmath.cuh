@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <Windows.h>
 
+#include "cg.h"
+
 //******************************************************************
 // Kernel function call-related processing method in 3 dimensions
 // int blockSize = 32;
@@ -46,11 +48,6 @@
 #define R2 1
 #define R3 2
 #define R4 3
-
-// Vector axis
-#define VX 0
-#define VY 1
-#define VZ 2
 
 // Vector 3d
 #define VECTOR3 3
@@ -189,6 +186,11 @@ public :
 
     void getVec3dFromV(std::vector<VECTOR3D> start_vertexcies, std::vector<VECTOR3D> end_vertexcies);
 
+    void getVec3dFaceToPolyLineStart(std::vector<CALCFACE> face, std::vector<POLYINFO> polyInfo);
+
+    void getVec3dFaceToPolyLineEnd(std::vector<CALCFACE> face, std::vector<POLYINFO> polyInfo);
+
+
     void decimalLimit(VECTOR3D* v);
 
     void pushVec3d
@@ -305,9 +307,25 @@ __global__ void gpuGetLinePlaneI
 class EQUATION
 {
 public :
-    VECTOR vec;
     std::vector<std::vector<int>> existenceI;
     std::vector<VECTOR3D> linePlaneI;
+
+    void getLinePlaneI
+    (
+        std::vector<VECTOR3D> line_vertex_A, // x1, y1, z1
+        std::vector<VECTOR3D> line_vertex_B, // l, m, n
+        std::vector<VECTOR3D> plane_vertex, // x0, y0, z0
+        std::vector<VECTOR3D> plane_normal // p, q, r
+    );
+
+    void getLinePlaneI
+    (
+        std::vector<POLYINFO> polyInfo,
+        std::vector<CALCFACE> face
+    );
+
+private :
+    VECTOR vec;
 
     std::vector<VECTOR3D> vPvLa;
     std::vector<VECTOR3D> vPvLb;
@@ -326,15 +344,6 @@ public :
     double* dCalcPnDotPvLa;
     double* dCalcPnDotPvLb;
     double* dLinePlaneI;
-    
-    void getLinePlaneI
-    (
-        std::vector<VECTOR3D> line_vertex_A, // x1, y1, z1
-        std::vector<VECTOR3D> line_vertex_B, // l, m, n
-        std::vector<VECTOR3D> plane_vertex, // x0, y0, z0
-        std::vector<VECTOR3D> plane_normal // p, q, r
-    );
-
 };
 
 __global__ void gpuGet2dAngle(double* vertical_value, double* horizontal_value, double* result_value, int size_n);

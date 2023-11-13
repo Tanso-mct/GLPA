@@ -491,6 +491,11 @@ void Camera::getCalcPolyInfoSt()
     calcPolyLineVec(calcPolyLineStartPoint, calcPolyLineEndPoint);
 }
 
+void Camera::clipPolyLineViewVolume()
+{
+    
+}
+
 void Camera::polyInViewVolumeJudge(std::vector<OBJ_FILE> meshData)
 {
     // Stores the vertices that make up the line segment

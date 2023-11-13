@@ -24,6 +24,8 @@ public :
         lineVec.resize(RECTLINES);
     }
 
+    std::vector<CALCFACE> face;
+
     /// @brief Define the view volume range. Required whenever the view angle changes.
     /// @param near_screen_z z-value of near screen surface.
     /// @param far_screen_z z-value of far screen surface.
@@ -72,8 +74,6 @@ private :
     std::vector<VECTOR3D> point3D;
     std::vector<VECTOR_XZ> pointXZ;
     std::vector<VECTOR_YZ> pointYZ;
-
-    std::vector<CALCFACE> face;
 
     std::vector<VECTOR3D> lineStartPoint;
     std::vector<VECTOR3D> lineEndPoint;
