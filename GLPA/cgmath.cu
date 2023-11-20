@@ -891,136 +891,136 @@ void EQUATION::getLinePlaneI
     cudaFree(dLinePlaneI);
 }
 
-void EQUATION::getLinePlaneI(std::vector<POLYINFO> polyInfo, std::vector<CALCFACE> face)
-{
-    vec.getVec3dFaceToPolyLineStart(face, polyInfo);
-    std::vector<VECTOR3D> vecPlaneVLineStart = vec.resultVector3D;
+// void EQUATION::getLinePlaneI(std::vector<POLYINFO> polyInfo, std::vector<CALCFACE> face)
+// {
+//     vec.getVec3dFaceToPolyLineStart(face, polyInfo);
+//     std::vector<VECTOR3D> vecPlaneVLineStart = vec.resultVector3D;
 
-    vec.getVec3dFaceToPolyLineEnd(face, polyInfo);
-    std::vector<VECTOR3D> vecPlaneVLineEnd = vec.resultVector3D;
+//     vec.getVec3dFaceToPolyLineEnd(face, polyInfo);
+//     std::vector<VECTOR3D> vecPlaneVLineEnd = vec.resultVector3D;
 
-    std::vector<VECTOR3D> planeNperLine;
-    planeNperLine.resize(polyInfo.size() * POLYLINES * face.size());
-    for (int i = 0; i < polyInfo.size() * POLYLINES; ++i)
-    {
-        for (int j = 0; j < face.size(); ++j)
-        {
-            planeNperLine[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = face[j].normal;
-        }
-    }
+//     std::vector<VECTOR3D> planeNperLine;
+//     planeNperLine.resize(polyInfo.size() * POLYLINES * face.size());
+//     for (int i = 0; i < polyInfo.size() * POLYLINES; ++i)
+//     {
+//         for (int j = 0; j < face.size(); ++j)
+//         {
+//             planeNperLine[i*face.size()*VECTOR3 + j*VECTOR3 + VX] = face[j].normal;
+//         }
+//     }
 
-    vec.dotProduct(vecPlaneVLineStart, planeNperLine);
-    std::vector<double> pnDotPlaneVLineStart = vec.resultVector;
+//     vec.dotProduct(vecPlaneVLineStart, planeNperLine);
+//     std::vector<double> pnDotPlaneVLineStart = vec.resultVector;
 
-    vec.dotProduct(vecPlaneVLineEnd, planeNperLine);
-    std::vector<double> pnDotPlaneVLineEnd = vec.resultVector;
+//     vec.dotProduct(vecPlaneVLineEnd, planeNperLine);
+//     std::vector<double> pnDotPlaneVLineEnd = vec.resultVector;
 
-    existenceI.resize(0);
-    existenceI.resize(lineVA.size());
+//     existenceI.resize(0);
+//     existenceI.resize(lineVA.size());
 
-    std::vector<VECTOR3D> calcLineVA;
-    std::vector<VECTOR3D> calcLineVB;
-    std::vector<double> calcPnDotPvLa;
-    std::vector<double> calcPnDotPvLb;
+//     std::vector<VECTOR3D> calcLineVA;
+//     std::vector<VECTOR3D> calcLineVB;
+//     std::vector<double> calcPnDotPvLa;
+//     std::vector<double> calcPnDotPvLb;
 
-    bool findI = false;
-    for (int i = 0; i < lineVA.size(); ++i)
-    {
-        existenceI[i].resize(planeN.size(), I_FALSE);
-        for (int j = 0; j < planeN.size(); ++j)
-        {
-            if (pnDotPvLa[i*planeN.size() + j] >= 0)
-            {
-                if (pnDotPvLb[i*planeN.size() + j] <= 0)
-                {
-                    existenceI[i][j] = I_TRUE;
-                    findI = true;
-                    calcLineVA.push_back(lineVA[i]);
-                    calcLineVB.push_back(lineVB[i]);
-                    calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);
-                    calcPnDotPvLb.push_back(pnDotPvLb[i*planeN.size() + j]);
-                }
-            }
+//     bool findI = false;
+//     for (int i = 0; i < lineVA.size(); ++i)
+//     {
+//         existenceI[i].resize(planeN.size(), I_FALSE);
+//         for (int j = 0; j < planeN.size(); ++j)
+//         {
+//             if (pnDotPvLa[i*planeN.size() + j] >= 0)
+//             {
+//                 if (pnDotPvLb[i*planeN.size() + j] <= 0)
+//                 {
+//                     existenceI[i][j] = I_TRUE;
+//                     findI = true;
+//                     calcLineVA.push_back(lineVA[i]);
+//                     calcLineVB.push_back(lineVB[i]);
+//                     calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);
+//                     calcPnDotPvLb.push_back(pnDotPvLb[i*planeN.size() + j]);
+//                 }
+//             }
 
-            if (pnDotPvLa[i*planeN.size() + j] <= 0 && !findI)
-            {
-                if (pnDotPvLb[i*planeN.size() + j] >= 0)
-                {
-                    existenceI[i][j] = I_TRUE;
-                    calcLineVA.push_back(lineVA[i]);
-                    calcLineVB.push_back(lineVB[i]);
-                    calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);
-                    calcPnDotPvLb.push_back(pnDotPvLb[i*planeN.size() + j]);
-                }
-            }
-            findI = false;
-        }
-    }
+//             if (pnDotPvLa[i*planeN.size() + j] <= 0 && !findI)
+//             {
+//                 if (pnDotPvLb[i*planeN.size() + j] >= 0)
+//                 {
+//                     existenceI[i][j] = I_TRUE;
+//                     calcLineVA.push_back(lineVA[i]);
+//                     calcLineVB.push_back(lineVB[i]);
+//                     calcPnDotPvLa.push_back(pnDotPvLa[i*planeN.size() + j]);
+//                     calcPnDotPvLb.push_back(pnDotPvLb[i*planeN.size() + j]);
+//                 }
+//             }
+//             findI = false;
+//         }
+//     }
 
-    int amoutI = calcLineVA.size();
-    // Allocate memory for each matrix size
-    hCalcLineVA = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
-    hCalcLineVB = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
-    hCalcPnDotPvLa = (double*)malloc(sizeof(double)*amoutI);
-    hCalcPnDotPvLb = (double*)malloc(sizeof(double)*amoutI);
-    hLinePlaneI = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
+//     int amoutI = calcLineVA.size();
+//     // Allocate memory for each matrix size
+//     hCalcLineVA = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
+//     hCalcLineVB = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
+//     hCalcPnDotPvLa = (double*)malloc(sizeof(double)*amoutI);
+//     hCalcPnDotPvLb = (double*)malloc(sizeof(double)*amoutI);
+//     hLinePlaneI = (double*)malloc(sizeof(double)*VECTOR3*amoutI);
 
-    // Copy member variable
-    memcpy(hCalcLineVA, calcLineVA.data(), sizeof(double)*VECTOR3*amoutI);
-    memcpy(hCalcLineVB, calcLineVB.data(), sizeof(double)*VECTOR3*amoutI);
-    memcpy(hCalcPnDotPvLa, calcPnDotPvLa.data(), sizeof(double)*amoutI);
-    memcpy(hCalcPnDotPvLb, calcPnDotPvLb.data(), sizeof(double)*amoutI);
+//     // Copy member variable
+//     memcpy(hCalcLineVA, calcLineVA.data(), sizeof(double)*VECTOR3*amoutI);
+//     memcpy(hCalcLineVB, calcLineVB.data(), sizeof(double)*VECTOR3*amoutI);
+//     memcpy(hCalcPnDotPvLa, calcPnDotPvLa.data(), sizeof(double)*amoutI);
+//     memcpy(hCalcPnDotPvLb, calcPnDotPvLb.data(), sizeof(double)*amoutI);
 
-    // Allocate device-side memory using CUDAMALLOC
-    cudaMalloc((void**)&dCalcLineVA, sizeof(double)*VECTOR3*amoutI);
-    cudaMalloc((void**)&dCalcLineVB, sizeof(double)*VECTOR3*amoutI);
-    cudaMalloc((void**)&dCalcPnDotPvLa, sizeof(double)*amoutI);
-    cudaMalloc((void**)&dCalcPnDotPvLb, sizeof(double)*amoutI);
-    cudaMalloc((void**)&dLinePlaneI, sizeof(double)*VECTOR3*amoutI);
+//     // Allocate device-side memory using CUDAMALLOC
+//     cudaMalloc((void**)&dCalcLineVA, sizeof(double)*VECTOR3*amoutI);
+//     cudaMalloc((void**)&dCalcLineVB, sizeof(double)*VECTOR3*amoutI);
+//     cudaMalloc((void**)&dCalcPnDotPvLa, sizeof(double)*amoutI);
+//     cudaMalloc((void**)&dCalcPnDotPvLb, sizeof(double)*amoutI);
+//     cudaMalloc((void**)&dLinePlaneI, sizeof(double)*VECTOR3*amoutI);
 
-    // Copy host-side data to device-side memory
-    cudaMemcpy(dCalcLineVA, hCalcLineVA, sizeof(double)*VECTOR3*amoutI, cudaMemcpyHostToDevice);
-    cudaMemcpy(dCalcLineVB, hCalcLineVB, sizeof(double)*VECTOR3*amoutI, cudaMemcpyHostToDevice);
-    cudaMemcpy(dCalcPnDotPvLa, hCalcPnDotPvLa, sizeof(double)*amoutI, cudaMemcpyHostToDevice);
-    cudaMemcpy(dCalcPnDotPvLb, hCalcPnDotPvLb, sizeof(double)*amoutI, cudaMemcpyHostToDevice);
+//     // Copy host-side data to device-side memory
+//     cudaMemcpy(dCalcLineVA, hCalcLineVA, sizeof(double)*VECTOR3*amoutI, cudaMemcpyHostToDevice);
+//     cudaMemcpy(dCalcLineVB, hCalcLineVB, sizeof(double)*VECTOR3*amoutI, cudaMemcpyHostToDevice);
+//     cudaMemcpy(dCalcPnDotPvLa, hCalcPnDotPvLa, sizeof(double)*amoutI, cudaMemcpyHostToDevice);
+//     cudaMemcpy(dCalcPnDotPvLb, hCalcPnDotPvLb, sizeof(double)*amoutI, cudaMemcpyHostToDevice);
 
-    // GPU kernel function calls
-    dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((VECTOR3 + dimBlock.x - 1) 
-    / dimBlock.x, (amoutI + dimBlock.y - 1) / dimBlock.y); // Grid Size
-    gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
-    (dCalcLineVA, dCalcLineVB, dCalcPnDotPvLa, dCalcPnDotPvLb, dLinePlaneI, amoutI);
+//     // GPU kernel function calls
+//     dim3 dimBlock(32, 32); // Thread block size
+//     dim3 dimGrid((VECTOR3 + dimBlock.x - 1) 
+//     / dimBlock.x, (amoutI + dimBlock.y - 1) / dimBlock.y); // Grid Size
+//     gpuGetLinePlaneI<<<dimGrid, dimBlock>>>
+//     (dCalcLineVA, dCalcLineVB, dCalcPnDotPvLa, dCalcPnDotPvLb, dLinePlaneI, amoutI);
 
-    // Copy results from device memory to host memory
-    cudaMemcpy(hLinePlaneI, dLinePlaneI, sizeof(double)*VECTOR3*amoutI, cudaMemcpyDeviceToHost);
+//     // Copy results from device memory to host memory
+//     cudaMemcpy(hLinePlaneI, dLinePlaneI, sizeof(double)*VECTOR3*amoutI, cudaMemcpyDeviceToHost);
     
-    // Assign the result to a Vector member variable
-    linePlaneI.resize(amoutI);
-    for (int i = 0; i < amoutI; ++i)
-    {
-        vec.inputVec3d
-        (
-            hLinePlaneI[i*VECTOR3+X0], 
-            hLinePlaneI[i*VECTOR3+Y0], 
-            hLinePlaneI[i*VECTOR3+Z0], 
-            i,
-            &linePlaneI
-        );
-    }
+//     // Assign the result to a Vector member variable
+//     linePlaneI.resize(amoutI);
+//     for (int i = 0; i < amoutI; ++i)
+//     {
+//         vec.inputVec3d
+//         (
+//             hLinePlaneI[i*VECTOR3+X0], 
+//             hLinePlaneI[i*VECTOR3+Y0], 
+//             hLinePlaneI[i*VECTOR3+Z0], 
+//             i,
+//             &linePlaneI
+//         );
+//     }
 
-    // Release all memory allocated by malloc
-    free(hCalcLineVA);
-    free(hCalcLineVB);
-    free(hCalcPnDotPvLa);
-    free(hCalcPnDotPvLb);
-    free(hLinePlaneI);
+//     // Release all memory allocated by malloc
+//     free(hCalcLineVA);
+//     free(hCalcLineVB);
+//     free(hCalcPnDotPvLa);
+//     free(hCalcPnDotPvLb);
+//     free(hLinePlaneI);
 
-    cudaFree(dCalcLineVA);
-    cudaFree(dCalcLineVB);
-    cudaFree(dCalcPnDotPvLa);
-    cudaFree(dCalcPnDotPvLb);
-    cudaFree(dLinePlaneI);
-}
+//     cudaFree(dCalcLineVA);
+//     cudaFree(dCalcLineVB);
+//     cudaFree(dCalcPnDotPvLa);
+//     cudaFree(dCalcPnDotPvLb);
+//     cudaFree(dLinePlaneI);
+// }
 
 __global__ void gpuGet2dAngle(double *vertValue, double *horizValue, double* resultValue, int size)
 {

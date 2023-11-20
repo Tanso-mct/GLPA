@@ -79,19 +79,6 @@
 // Limit the number of decimal places to the specified number of digits
 #define DECIMAL_PLACES 10000
 
-typedef struct tagVECTOR2D
-{
-    double x;
-    double y;
-} VECTOR2D;
-
-typedef struct tagVECTOR3D
-{
-    double x;
-    double y;
-    double z;
-} VECTOR3D;
-
 typedef struct tagVECTOR4D
 {
     double x;

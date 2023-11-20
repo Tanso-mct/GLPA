@@ -16,7 +16,7 @@
 
 #include "cgmath.cuh"
 #include "file.h"
-#include "cg.h"
+// #include "cg.h"
 #include "view_volume.h"
 
 /// @brief Has data related to the 3DCG camera.

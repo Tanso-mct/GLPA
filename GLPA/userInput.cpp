@@ -54,40 +54,40 @@ void WndLAUInput ::keyDown(WPARAM wParam)
         case 'W' :
                 // _stprintf_s(szstr, _T("%s"), _T("W ON"));
                 // WndLAU.fpsSystem.setFps = 240;
-                deve001.cam.wPos.y -= 10;
-                _stprintf_s(szstr, _T("%lf"), (deve001.cam.wPos.y));
+                // deve001.cam.wPos.y -= 10;
+                // _stprintf_s(szstr, _T("%lf"), (deve001.cam.wPos.y));
                 // OutputDebugStringW(_T("W\n"));
                 break;
         case 'S' :
                 // _stprintf_s(szstr, _T("%s"), _T("S ON"));
-                deve001.cam.wPos.y += 10;
-                _stprintf_s(szstr, _T("%lf"), (deve001.cam.wPos.y));
+                // deve001.cam.wPos.y += 10;
+                // _stprintf_s(szstr, _T("%lf"), (deve001.cam.wPos.y));
                 // WndLAU.fpsSystem.setFps = 10;
                 break;
         case 'C' :
                 // sampleBmpFile.loadBinary(FILETYPE_BMP, ("temp.bmp"));
                 // sampleBmpFile.checkBinary();
                 
-                if (!deve001.cam.initialized)
-                {
-                        OutputDebugStringW(_T("Camera Initialize\n"));
-                        tempMtlFile.loadData("temp_cube");
+                // if (!deve001.cam.initialized)
+                // {
+                //         OutputDebugStringW(_T("Camera Initialize\n"));
+                //         tempMtlFile.loadData("temp_cube");
                         
-                        // tempObject.inputData("temp_cube");
-                        // tempObject.inputData("temp_secondCube");
-                        tempObject.inputData("temp_third_cube");
+                //         // tempObject.inputData("temp_cube");
+                //         // tempObject.inputData("temp_secondCube");
+                //         tempObject.inputData("temp_third_cube");
 
 
-                        // tempObject.inputData("temp_farCube");
-                        deve001.cam.initialize();
-                        deve001.cam.defViewVolume();
-                }
+                //         // tempObject.inputData("temp_farCube");
+                //         deve001.cam.initialize();
+                //         // deve001.cam.defViewVolume();
+                // }
                 OutputDebugStringW(_T("New scene\n"));
-                deve001.cam.coordinateTransRange(&tempObject.data);
-                deve001.cam.clippingRange(tempObject.data);
-                deve001.cam.polyBilateralJudge(tempObject.data);
-                deve001.cam.coordinateTrans(tempObject.data);
-                deve001.cam.polyInViewVolumeJudge(tempObject.data);
+                // deve001.cam.coordinateTransRange(&tempObject.data);
+                // deve001.cam.clippingRange(tempObject.data);
+                // deve001.cam.polyBilateralJudge(tempObject.data);
+                // deve001.cam.coordinateTrans(tempObject.data);
+                // deve001.cam.polyInViewVolumeJudge(tempObject.data);
 
                 break;
         case 'I' :
@@ -95,8 +95,8 @@ void WndLAUInput ::keyDown(WPARAM wParam)
                 tempMtlFile.loadData("temp_cube");
                 tempObject.inputData("temp_cube");
                 tempObject.inputData("temp_farCube");
-                deve001.cam.initialize();
-                deve001.cam.defViewVolume();
+                // deve001.cam.initialize();
+                // deve001.cam.defViewVolume();
                 break;
         default :
                 _stprintf_s(szstr, _T("%s"), _T("ANY"));

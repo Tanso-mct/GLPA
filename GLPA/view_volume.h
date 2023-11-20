@@ -4,7 +4,7 @@
 #include <vector>
 #include <math.h>
 
-#include "cg.h"
+// #include "cg.h"
 #include "file.h"
 
 /// @brief Within 3DCG, it has data related to the view volume.
@@ -59,7 +59,6 @@ public :
     (
         std::vector<RANGE_RECT> range_rect, std::vector<double> range_degree, ANGLE view_angle, int loop_i
     );
-
 
     /// @brief Clip vertex and view volume
     /// @param vertex_z z-value of the vertex to be calculated.

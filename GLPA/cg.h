@@ -2,7 +2,20 @@
 #define CG_H_
 
 #include <vector>
-#include "cgmath.cuh"
+// #include "cgmath.cuh"
+
+typedef struct tagVECTOR3D
+{
+    double x;
+    double y;
+    double z;
+} VECTOR3D;
+
+typedef struct tagVECTOR2D
+{
+    double x;
+    double y;
+} VECTOR2D;
 
 /// @def Indicate XYZ by index.
 #define VX 0

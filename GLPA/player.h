@@ -44,7 +44,7 @@ public :
     void scaleTrans();
 
     // Camera Transform
-    CAMERA cam;
+    Camera cam;
     int cameraMode;
     void changeCameMode();
 
