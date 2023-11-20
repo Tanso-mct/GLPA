@@ -22,9 +22,6 @@
     <Filter Include="リソース ファイル\bmp">
       <UniqueIdentifier>{64759888-1138-4685-bbdc-a6c15f568ca5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\main">
-      <UniqueIdentifier>{7e1b02d5-c313-429e-a720-e77e47a49993}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\window">
       <UniqueIdentifier>{ce3dde2d-bf79-4493-8870-7a85716591c9}</UniqueIdentifier>
     </Filter>
@@ -42,9 +39,6 @@
     </Filter>
     <Filter Include="ソース ファイル\3dcg">
       <UniqueIdentifier>{3d626b63-b794-4d5c-bff6-589a388a2810}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\main">
-      <UniqueIdentifier>{1df0ef1b-3dd5-4a0a-94f9-371ce69afeb1}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\window">
       <UniqueIdentifier>{1767cb7e-12f4-40d9-aaf4-7fd39cd65880}</UniqueIdentifier>
@@ -70,13 +64,16 @@
     <Filter Include="ヘッダー ファイル\graphicbefore">
       <UniqueIdentifier>{40c04978-633a-4b8d-8004-66b3359dd538}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\graphic">
+      <UniqueIdentifier>{cf1c65ed-3998-4766-95eb-d86618658b65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphic">
+      <UniqueIdentifier>{ecad95fc-7cf9-4668-8758-5a32206b4ac1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp">
       <Filter>ソース ファイル\graphicbefore</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル\main</Filter>
     </ClCompile>
     <ClCompile Include="system.cpp">
       <Filter>ソース ファイル\window</Filter>
@@ -99,107 +96,110 @@
     <ClCompile Include="graphicbefore.cpp">
       <Filter>ソース ファイル\graphicbefore</Filter>
     </ClCompile>
-    <ClCompile Include="graphic.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="hitbox.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="window_api.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="user_input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="launcher.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="play.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="buffer_2d.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="buffer_3d.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="z_buffer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="material.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="base_color.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="normal.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="roughness.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ambient_occlusion.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="shadow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="screen.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="sky.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="field.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="view_volume.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="transformation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix.cu">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="vector.cu">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="equation.cu">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="triangle_ratio.cu">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
     <ClCompile Include="animation.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="base_color.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="buffer_2d.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="buffer_3d.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="equation.cu">
+      <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
     <ClCompile Include="fbx.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="field.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="graphic.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="hitbox.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="launcher.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="material.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cu">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="normal.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="play.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
     <ClCompile Include="png.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="roughness.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="screen.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="sky.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="triangle_ratio.cu">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="user_input.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="vector.cu">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="view_volume.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="window.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="window_api.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="z_buffer.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="playerbefore.h">
       <Filter>ヘッダー ファイル\player3d</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>ヘッダー ファイル\main</Filter>
     </ClInclude>
     <ClInclude Include="system.h">
       <Filter>ヘッダー ファイル\window</Filter>
@@ -233,107 +230,110 @@
     <ClInclude Include="graphicbefore.h">
       <Filter>ヘッダー ファイル\graphicbefore</Filter>
     </ClInclude>
-    <ClInclude Include="graphic.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="window.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="hitbox.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="window_api.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="user_input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="launcher.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="play.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="buffer_2d.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="buffer_3d.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="z_buffer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="base_color.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="normal.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="roughness.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
     <ClInclude Include="ambient_occlusion.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="shadow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="screen.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="sky.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="field.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="view_volume.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="transformation.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix.cuh">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="vector.cuh">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="equation.cuh">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="triangle_ratio.cuh">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
     <ClInclude Include="animation.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="base_color.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="buffer_2d.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="buffer_3d.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="equation.cuh">
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
     <ClInclude Include="fbx.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="graphic.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="hitbox.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="launcher.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.cuh">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="normal.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="play.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
     <ClInclude Include="png.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="roughness.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="screen.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="sky.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle_ratio.cuh">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="user_input.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="vector.cuh">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="view_volume.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="window.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="window_api.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -350,10 +350,10 @@
       <Filter>ソース ファイル\math</Filter>
     </CudaCompile>
     <CudaCompile Include="camera.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphic</Filter>
     </CudaCompile>
     <CudaCompile Include="camera.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\graphic</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
