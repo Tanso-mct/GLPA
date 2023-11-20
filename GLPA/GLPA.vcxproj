@@ -131,26 +131,61 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ambient_occlusion.cpp" />
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="base_color.cpp" />
     <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="field.cpp" />
+    <ClCompile Include="material.cpp" />
+    <ClCompile Include="normal.cpp" />
+    <ClCompile Include="roughness.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="screen.cpp" />
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="sky.cpp" />
+    <ClCompile Include="z_buffer.cpp" />
     <CudaCompile Include="camera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
     </CudaCompile>
+    <ClCompile Include="buffer_2d.cpp" />
+    <ClCompile Include="buffer_3d.cpp" />
     <ClCompile Include="graphic.cpp" />
+    <ClCompile Include="graphicbefore.cpp" />
+    <ClCompile Include="hitbox.cpp" />
+    <ClCompile Include="launcher.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="file.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="player.cpp" />
+    <ClCompile Include="objectbefore.cpp" />
+    <ClCompile Include="play.cpp" />
+    <ClCompile Include="playerbefore.cpp" />
     <ClCompile Include="system.cpp" />
-    <ClCompile Include="userinput.cpp" />
+    <ClCompile Include="user_input.cpp" />
+    <ClCompile Include="userinputbefore.cpp" />
     <ClCompile Include="view_volume.cpp" />
     <ClCompile Include="window.cpp" />
+    <ClCompile Include="window_api.cpp" />
+    <ClCompile Include="windowbefore.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ambient_occlusion.h" />
+    <ClInclude Include="base_color.h" />
+    <ClInclude Include="buffer_2d.h" />
+    <ClInclude Include="buffer_3d.h" />
     <ClInclude Include="cg.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="field.h" />
+    <ClInclude Include="material.h" />
+    <ClInclude Include="normal.h" />
+    <ClInclude Include="roughness.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="screen.h" />
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="shadow.h" />
+    <ClInclude Include="sky.h" />
+    <ClInclude Include="z_buffer.h" />
     <CudaCompile Include="cgmath.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
@@ -158,20 +193,27 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
     <ClInclude Include="graphic.h" />
+    <ClInclude Include="graphicbefore.h" />
     <CudaCompile Include="hitbox.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
     <CudaCompile Include="hitbox.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
+    <ClInclude Include="hitbox.h" />
+    <ClInclude Include="launcher.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="file.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="player.h" />
+    <ClInclude Include="objectbefore.h" />
+    <ClInclude Include="play.h" />
+    <ClInclude Include="playerbefore.h" />
     <ClInclude Include="system.h" />
-    <ClInclude Include="userinput.h" />
+    <ClInclude Include="user_input.h" />
+    <ClInclude Include="userinputbefore.h" />
     <ClInclude Include="view_volume.h" />
     <ClInclude Include="window.h" />
+    <ClInclude Include="window_api.h" />
+    <ClInclude Include="windowbefore.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="cgmath.cu">

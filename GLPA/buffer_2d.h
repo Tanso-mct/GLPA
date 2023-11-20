@@ -1,5 +1,5 @@
 #pragma once
-class Window
+class Buffer2d
 {
 };
 

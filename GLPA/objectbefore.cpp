@@ -1,4 +1,4 @@
-#include "object.h"
+#include "objectbefore.h"
 
 void OBJECT::inputData(std::string inputFileName)
 {

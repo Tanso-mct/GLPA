@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <tchar.h>
 
-#include "window.h"
+#include "windowbefore.h"
 
 
 #endif // MAIN_H_

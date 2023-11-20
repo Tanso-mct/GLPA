@@ -4,10 +4,10 @@
 #include <tchar.h>
 #include <windows.h>
 
-#include "graphic.h"
+#include "graphicbefore.h"
 #include "camera.h"
-#include "object.h"
-#include "player.h"
+#include "objectbefore.h"
+#include "playerbefore.h"
 
 // class UserInput
 // {

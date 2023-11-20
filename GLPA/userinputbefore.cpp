@@ -1,7 +1,7 @@
 
 #include "userinput.h"
 
-#include "window.h"
+#include "windowbefore.h"
 
 // WND LAU UserInput define
 
