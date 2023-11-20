@@ -72,9 +72,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="animation.cpp">
-      <Filter>ソース ファイル\3dcg</Filter>
-    </ClCompile>
     <ClCompile Include="buffer.cpp">
       <Filter>ソース ファイル\graphicbefore</Filter>
     </ClCompile>
@@ -98,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="playerbefore.cpp">
       <Filter>ソース ファイル\player3d</Filter>
-    </ClCompile>
-    <ClCompile Include="view_volume.cpp">
-      <Filter>ソース ファイル\3dcg</Filter>
     </ClCompile>
     <ClCompile Include="graphicbefore.cpp">
       <Filter>ソース ファイル\graphicbefore</Filter>
@@ -168,11 +162,47 @@
     <ClCompile Include="field.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="view_volume.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cu">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="vector.cu">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="equation.cu">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="triangle_ratio.cu">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="animation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="png.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="animation.h">
-      <Filter>ヘッダー ファイル\3dcg</Filter>
-    </ClInclude>
     <ClInclude Include="buffer.h">
       <Filter>ヘッダー ファイル\graphicbefore</Filter>
     </ClInclude>
@@ -196,9 +226,6 @@
     </ClInclude>
     <ClInclude Include="file.h">
       <Filter>ヘッダー ファイル\file</Filter>
-    </ClInclude>
-    <ClInclude Include="view_volume.h">
-      <Filter>ヘッダー ファイル\3dcg</Filter>
     </ClInclude>
     <ClInclude Include="cg.h">
       <Filter>ヘッダー ファイル\3dcg</Filter>
@@ -267,6 +294,45 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="field.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="view_volume.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.cuh">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="vector.cuh">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="equation.cuh">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle_ratio.cuh">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="animation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="png.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
