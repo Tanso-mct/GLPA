@@ -7,4 +7,3 @@ class Window
 };
 
 #endif WINDOW_H_
-
