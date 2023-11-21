@@ -201,6 +201,9 @@
     <ClCompile Include="z_buffer.cpp">
       <Filter>ソース ファイル\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="fps.cpp">
+      <Filter>ソース ファイル\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h">
@@ -333,6 +336,9 @@
       <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
     <ClInclude Include="window_api.h">
+      <Filter>ヘッダー ファイル\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="fps.h">
       <Filter>ヘッダー ファイル\graphic</Filter>
     </ClInclude>
   </ItemGroup>

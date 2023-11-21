@@ -8,15 +8,14 @@
 
 class WindowApi
 {
-    public :
-
+public :
     void registerClass(Window window);
 
     void createWindow(Window window);
 
     void getWindowMessage(Window window);
 
-    private :
+private :
     UserInput userInput;
 };
 
