@@ -64,11 +64,11 @@
     <Filter Include="ヘッダー ファイル\graphicbefore">
       <UniqueIdentifier>{40c04978-633a-4b8d-8004-66b3359dd538}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\graphic">
-      <UniqueIdentifier>{cf1c65ed-3998-4766-95eb-d86618658b65}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\graphic">
+    <Filter Include="ソース ファイル\glpa">
       <UniqueIdentifier>{ecad95fc-7cf9-4668-8758-5a32206b4ac1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\glpa">
+      <UniqueIdentifier>{cf1c65ed-3998-4766-95eb-d86618658b65}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -97,112 +97,133 @@
       <Filter>ソース ファイル\graphicbefore</Filter>
     </ClCompile>
     <ClCompile Include="ambient_occlusion.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="animation.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="base_color.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="buffer_2d.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="buffer_3d.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="equation.cu">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="fbx.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="field.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="graphic.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="hitbox.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="launcher.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="light.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="material.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="matrix.cu">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="mesh.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="normal.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="play.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="png.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="roughness.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="scene.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="screen.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="shader.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="shadow.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="sky.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="transformation.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="triangle_ratio.cu">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="user_input.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="vector.cu">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="view_volume.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="window.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="window_api.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="z_buffer.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="fps.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="glpa.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3d.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2d.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="image.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="scroll.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="movie.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="mp4.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,112 +255,133 @@
       <Filter>ヘッダー ファイル\graphicbefore</Filter>
     </ClInclude>
     <ClInclude Include="z_buffer.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="ambient_occlusion.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="animation.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="base_color.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="buffer_2d.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="buffer_3d.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="equation.cuh">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="fbx.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="field.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="graphic.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="hitbox.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="launcher.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="material.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="matrix.cuh">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="mesh.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="normal.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="play.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="png.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="roughness.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="screen.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="shadow.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="sky.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="transformation.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="triangle_ratio.cuh">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="user_input.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="vector.cuh">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="view_volume.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="window.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="window_api.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="fps.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="glpa.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3d.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="scene2d.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="image.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="scroll.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="movie.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="mp4.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -356,10 +398,10 @@
       <Filter>ソース ファイル\math</Filter>
     </CudaCompile>
     <CudaCompile Include="camera.cpp">
-      <Filter>ソース ファイル\graphic</Filter>
+      <Filter>ソース ファイル\glpa</Filter>
     </CudaCompile>
     <CudaCompile Include="camera.h">
-      <Filter>ヘッダー ファイル\graphic</Filter>
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
