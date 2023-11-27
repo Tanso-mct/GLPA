@@ -5,7 +5,6 @@
 #include <string>
 
 #include "fps.h"
-#include "launcher.h"
 
 class Window
 {
@@ -27,7 +26,6 @@ private :
     HDC hWndDC;
     PAINTSTRUCT hPs;
 
-    Launcher launcherWnd;
 };
 
 #endif WINDOW_H_

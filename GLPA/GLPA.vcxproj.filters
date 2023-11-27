@@ -120,9 +120,6 @@
     <ClCompile Include="field.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="graphic.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="hitbox.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -145,9 +142,6 @@
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="object.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="png.cpp">
@@ -225,6 +219,9 @@
     <ClCompile Include="sound.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>ソース ファイル\glpa</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h">
@@ -281,9 +278,6 @@
     <ClInclude Include="field.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
-    <ClInclude Include="graphic.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
     <ClInclude Include="hitbox.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
@@ -306,9 +300,6 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="png.h">
@@ -381,6 +372,9 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
   </ItemGroup>

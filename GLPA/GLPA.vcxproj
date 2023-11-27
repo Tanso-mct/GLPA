@@ -136,6 +136,7 @@
     <ClCompile Include="base_color.cpp" />
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="character.cpp" />
     <ClCompile Include="equation.cu" />
     <ClCompile Include="fbx.cpp" />
     <ClCompile Include="field.cpp" />
@@ -150,7 +151,6 @@
     <ClCompile Include="mp4.cpp" />
     <ClCompile Include="normal.cpp" />
     <ClCompile Include="object.cpp" />
-    <ClCompile Include="player.cpp" />
     <ClCompile Include="png.cpp" />
     <ClCompile Include="roughness.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -172,7 +172,6 @@
     </CudaCompile>
     <ClCompile Include="buffer_2d.cpp" />
     <ClCompile Include="buffer_3d.cpp" />
-    <ClCompile Include="graphic.cpp" />
     <ClCompile Include="graphicbefore.cpp" />
     <ClCompile Include="hitbox.cpp" />
     <ClCompile Include="main.cpp" />
@@ -196,6 +195,7 @@
     <ClInclude Include="cg.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="character.h" />
     <ClInclude Include="equation.cuh" />
     <ClInclude Include="fbx.h" />
     <ClInclude Include="field.h" />
@@ -210,7 +210,6 @@
     <ClInclude Include="mp4.h" />
     <ClInclude Include="normal.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="png.h" />
     <ClInclude Include="roughness.h" />
     <ClInclude Include="scene.h" />
@@ -232,7 +231,6 @@
     <CudaCompile Include="camera.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
-    <ClInclude Include="graphic.h" />
     <ClInclude Include="graphicbefore.h" />
     <CudaCompile Include="hitbox.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
