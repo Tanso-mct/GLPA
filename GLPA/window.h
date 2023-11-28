@@ -11,6 +11,7 @@ class Window
 public :
     double getFps();
     void changeSize();
+    static LRESULT CALLBACK procedure(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 
 private :
     bool existence = false;

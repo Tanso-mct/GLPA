@@ -1,6 +1,8 @@
 #ifndef GLPA_H_
 #define GLPA_H_
 
+#include "window_api.h"
+
 class Glpa
 {
 public :
@@ -12,11 +14,17 @@ public :
 
     void deleteWindow();
 
+    void graphicLoop();
+
     void createScene();
 
     void loadScene();
 
-    void setSceneUserInput();
+    void setSceneUserInputFunc();
+
+    void setSceneActionFunc();
+
+    void setSceneFrameFunc();
 
     void selectUseScene();
 

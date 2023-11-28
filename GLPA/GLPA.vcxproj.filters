@@ -379,14 +379,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="hitbox.cu">
-      <Filter>ソース ファイル\player3d</Filter>
-    </CudaCompile>
     <CudaCompile Include="cgmath.cuh">
       <Filter>ヘッダー ファイル\math</Filter>
-    </CudaCompile>
-    <CudaCompile Include="hitbox.cuh">
-      <Filter>ヘッダー ファイル\player3d</Filter>
     </CudaCompile>
     <CudaCompile Include="cgmath.cu">
       <Filter>ソース ファイル\math</Filter>
