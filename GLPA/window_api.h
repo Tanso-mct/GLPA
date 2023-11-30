@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 #include <string>
+#include <unordered_map>
+#include <tchar.h>
 
 #include "window.h"
 #include "user_input.h"
@@ -10,24 +12,29 @@
 class WindowApi
 {
 public :
-    void storeWinMainArgument
-    (
-        _In_ HINSTANCE arg_hInstance, _In_opt_ HINSTANCE arg_hPrevInstance, 
-        _In_ LPSTR arg_lpCmdLine, _In_ int _nCmdShow
-    );
+    /// @brief Convert a variable of type String to a variable of type lpcwstr.
+    /// @param str Variables of type string to be converted.
+    /// @return Variables of type lpcwstr that have been converted.
+    LPCWSTR convertStringToLPCWSTR(std::string str);
 
-    void registerClass(Window window);
+    /// @brief Register a class using the window api for a specific window.
+    /// @param window_name The registration name of the window in which the class registration is to be made.
+    /// @param window Map variable to hold all windows.
+    void registerClass(std::string window_name, std::unordered_map<std::string, Window> window);
 
-    void createWindow(Window window);
+    /// @brief The window is created using the window api function.
+    /// @param window_name The registered name of the window to be created.
+    /// @param window Map variable to hold all windows.
+    void createWindow(std::string window_name, std::unordered_map<std::string, Window> window);
 
-    void getWindowMessage(Window window);
+    void getWindowMessage(std::string window_name, std::unordered_map<std::string, Window> window);
 
-private :
     _In_ HINSTANCE hInstance;
     _In_opt_ HINSTANCE hPrevInstance;
     _In_ LPSTR lpCmdLine;
     _In_ int nCmdShow;
-    
+
+private :
     UserInput userInput;
 };
 

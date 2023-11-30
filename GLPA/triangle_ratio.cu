@@ -1,1 +1,1 @@
-#include "triangle_ratio.h"
+#include "triangle_ratio.cuh"

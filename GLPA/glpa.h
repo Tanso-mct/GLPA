@@ -17,7 +17,10 @@ public :
         _In_ LPSTR arglpCmdLine, _In_ int argnCmdShow
     )
     {
-        windowApi.storeWinMainArgument(arghInstance, arghPrevInstance, arglpCmdLine, argnCmdShow);
+        windowApi.hInstance = arghInstance;
+        windowApi.hPrevInstance = arghPrevInstance;
+        windowApi.lpCmdLine = arglpCmdLine;
+        windowApi.nCmdShow = argnCmdShow;
     }
 
     void createWindow
@@ -28,10 +31,15 @@ public :
         double window_height,
         double window_dpi,
         double window_max_fps,
-        bool window_full_screen
+        bool window_full_screen,
+        UINT window_style,
+        LPWSTR load_icon, 
+        LPWSTR load_cursor,
+        int background_color,
+        LPWSTR small_icon
     );
 
-    void showWindow();
+    void showWindow(std::string window_name);
     
     void updateWindowInfo();
 

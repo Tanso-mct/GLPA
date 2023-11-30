@@ -4,7 +4,7 @@
 #include <windows.h>
 // #include <tchar.h>
 
-#include "window_api.h"
+#include "glpa.h"
 
 // #include "windowbefore.h"
 

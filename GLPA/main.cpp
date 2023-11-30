@@ -9,74 +9,96 @@ int WINAPI WinMain(
     _In_ int nCmdShow                  // Contains the value of SW_MESSAGENAME.
 )                      
 {
-    // Launcher Class Registration
-    WNDCLASSEX windowClassEx_LAU = WndMain.registerClass
+    Glpa glpa(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+
+    glpa.createWindow
     (
+        "Launcher",
+        "window_launcher",
+        1200,
+        800,
+        1,
+        60,
+        false,
         CS_HREDRAW | CS_VREDRAW,
-        WndLAU.wndProc,
-        0,
-        0,
-        hInstance,
         IDI_APPLICATION,
         IDC_ARROW,
         WHITE_BRUSH,
-        NULL,
-        L"window_LAU",
         IDI_APPLICATION
     );
 
-    if (!WndMain.checkClass(&windowClassEx_LAU))
-    {
-        return 1;
-    }
+    glpa.showWindow("Launcher");
 
-    // Play Class Registration
-    WNDCLASSEX windowClassEx_PLAY = WndMain.registerClass
-    (
-        CS_HREDRAW | CS_VREDRAW,
-        WndPLAY.wndProc,
-        0,
-        0,
-        hInstance,
-        IDI_APPLICATION,
-        IDC_ARROW,
-        WHITE_BRUSH,
-        NULL,
-        L"window_PLAY",
-        IDI_APPLICATION
-    );
 
-    if (!WndMain.checkClass(&windowClassEx_PLAY))
-    {
-        return 1;
-    }
 
-    // Creation of WndLAU window
-    WndLAU.hWnd = CreateWindow(             // HWND window handle
-        L"window_LAU",                      // LPCSTR Registered class name address
-        L"LAUNCHER",                        // LPCSTR Window text address
-        WS_OVERLAPPEDWINDOW,                // DWORD Window style, which can be specified with the parameter WS_MESSAGENAME
-        CW_USEDEFAULT, CW_USEDEFAULT,       // int Window horizontal coordinate position, Window vertical coordinate position
-        WndLAU.windowSize.width, WndLAU.windowSize.height,  // int Window Width, Window Height
-        HWND_DESKTOP,                       // HWND Parent Window Handle
-        NULL,                               // HMENU Menu handle or child window ID
-        hInstance,                          // HINSTANCE Application instance handle
-        NULL                                // void FAR* Address of window creation data
-    );
+    // // Launcher Class Registration
+    // WNDCLASSEX windowClassEx_LAU = WndMain.registerClass
+    // (
+    //     CS_HREDRAW | CS_VREDRAW,
+    //     WndLAU.wndProc,
+    //     0,
+    //     0,
+    //     hInstance,
+    //     IDI_APPLICATION,
+    //     IDC_ARROW,
+    //     WHITE_BRUSH,
+    //     NULL,
+    //     L"window_LAU",
+    //     IDI_APPLICATION
+    // );
 
-    if (!WndMain.checkWindow(WndLAU.hWnd))
-    {
-        return 1;
-    }
+    // if (!WndMain.checkClass(&windowClassEx_LAU))
+    // {
+    //     return 1;
+    // }
 
-    // Storing WinMain Function Arguments
-    WndMain.hInstance = hInstance;
-    WndMain.nCmdShow = nCmdShow;
+    // // Play Class Registration
+    // WNDCLASSEX windowClassEx_PLAY = WndMain.registerClass
+    // (
+    //     CS_HREDRAW | CS_VREDRAW,
+    //     WndPLAY.wndProc,
+    //     0,
+    //     0,
+    //     hInstance,
+    //     IDI_APPLICATION,
+    //     IDC_ARROW,
+    //     WHITE_BRUSH,
+    //     NULL,
+    //     L"window_PLAY",
+    //     IDI_APPLICATION
+    // );
 
-    ShowWindow(
-        WndLAU.hWnd,
-        nCmdShow
-    );
+    // if (!WndMain.checkClass(&windowClassEx_PLAY))
+    // {
+    //     return 1;
+    // }
+
+    // // Creation of WndLAU window
+    // WndLAU.hWnd = CreateWindow(             // HWND window handle
+    //     L"window_LAU",                      // LPCSTR Registered class name address
+    //     L"LAUNCHER",                        // LPCSTR Window text address
+    //     WS_OVERLAPPEDWINDOW,                // DWORD Window style, which can be specified with the parameter WS_MESSAGENAME
+    //     CW_USEDEFAULT, CW_USEDEFAULT,       // int Window horizontal coordinate position, Window vertical coordinate position
+    //     WndLAU.windowSize.width, WndLAU.windowSize.height,  // int Window Width, Window Height
+    //     HWND_DESKTOP,                       // HWND Parent Window Handle
+    //     NULL,                               // HMENU Menu handle or child window ID
+    //     hInstance,                          // HINSTANCE Application instance handle
+    //     NULL                                // void FAR* Address of window creation data
+    // );
+
+    // if (!WndMain.checkWindow(WndLAU.hWnd))
+    // {
+    //     return 1;
+    // }
+
+    // // Storing WinMain Function Arguments
+    // WndMain.hInstance = hInstance;
+    // WndMain.nCmdShow = nCmdShow;
+
+    // ShowWindow(
+    //     WndLAU.hWnd,
+    //     nCmdShow
+    // );
 
     MSG msg;        //メッセージ構造体
 
@@ -90,38 +112,38 @@ int WINAPI WinMain(
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} 
-        else if (WndPLAY.state.focus)
-        {
-            WndPLAY.fpsSystem.fpsLimiter();
+        // else if (WndPLAY.state.focus)
+        // {
+        //     WndPLAY.fpsSystem.fpsLimiter();
 
-            PatBlt(
-                WndPLAY.buffer.hBufDC, 
-                0, 
-                0, 
-                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                WHITENESS
-            );
-            scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
+        //     PatBlt(
+        //         WndPLAY.buffer.hBufDC, 
+        //         0, 
+        //         0, 
+        //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+        //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+        //         WHITENESS
+        //     );
+        //     scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
 
-            InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
-        }
-        else if (WndLAU.state.focus)
-        {
-            WndLAU.fpsSystem.fpsLimiter();
+        //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
+        // }
+        // else if (WndLAU.state.focus)
+        // {
+        //     WndLAU.fpsSystem.fpsLimiter();
 
-            PatBlt(
-                WndLAU.buffer.hBufDC, 
-                0, 
-                0, 
-                WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-                WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                WHITENESS
-            );
-            scrLAUDwgContModif(WndLAU.buffer.hBufDC);
+        //     PatBlt(
+        //         WndLAU.buffer.hBufDC, 
+        //         0, 
+        //         0, 
+        //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+        //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+        //         WHITENESS
+        //     );
+        //     scrLAUDwgContModif(WndLAU.buffer.hBufDC);
 
-            InvalidateRect(WndLAU.hWnd, NULL, FALSE);
-        }
+        //     InvalidateRect(WndLAU.hWnd, NULL, FALSE);
+        // }
         
     }
 

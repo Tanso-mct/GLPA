@@ -1,1 +1,1 @@
-#include "equation.h"
+#include "equation.cuh"

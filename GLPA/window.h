@@ -17,7 +17,12 @@ public :
         double argHeight, 
         double argDpi,
         double argMaxFps,
-        bool argFullScreenToggle
+        bool argFullScreenToggle,
+        UINT argWndStyle,
+        LPWSTR argLoadIcon, 
+        LPWSTR argLoadCursor,
+        int argBackgroundColor,
+        LPWSTR argSmallIcon
     )
     {
         name = argName;
@@ -28,18 +33,24 @@ public :
         fps.max = argMaxFps;
         fullScreenToggle = argFullScreenToggle;
 
+        style = argWndStyle;
+        loadIcon = argLoadIcon;
+        loadCursor = argLoadCursor;
+        backgroundColor = argBackgroundColor;
+        smallIcon = argSmallIcon;
+
+
         lpPixel = (LPDWORD)HeapAlloc(
         GetProcessHeap(),
         HEAP_ZERO_MEMORY,
         width *height * 4);
     }
 
-    double getFps();
-    void changeSize();
-    void copyArgBuffer();
+    // double getFps();
+    // void changeSize();
+    // void copyArgBuffer();
     static LRESULT CALLBACK procedure(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 
-private :
     bool existence = false;
     bool foucus = false;
 
@@ -50,11 +61,18 @@ private :
     double height;
     double dpi;
 
-    Fps fps;
-
+    UINT style;
+    LPWSTR loadIcon;
+    LPWSTR loadCursor;
+    int backgroundColor;
+    LPWSTR smallIcon;
     bool fullScreenToggle;
 
     HWND hWnd;
+
+private :
+    Fps fps;
+
     HDC hWndDC;
     PAINTSTRUCT hPs;
 
