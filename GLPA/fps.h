@@ -8,6 +8,7 @@
 class Fps
 {
 public :
+    double max;
     void initialize();
     void limit();
     double get();
@@ -15,7 +16,6 @@ public :
 private :
     bool initialized = false;
 
-    double max;
     double last;
 
     clock_t lastLoop;

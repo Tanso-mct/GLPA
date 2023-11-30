@@ -2,7 +2,7 @@
 #define MAIN_H_
 
 #include <windows.h>
-#include <tchar.h>
+// #include <tchar.h>
 
 #include "window_api.h"
 
