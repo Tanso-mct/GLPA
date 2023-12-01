@@ -13,8 +13,8 @@ int WINAPI WinMain(
 
     glpa.createWindow
     (
-        "Launcher",
-        "window_launcher",
+        L"Launcher",
+        L"window_launcher",
         1200,
         800,
         1,
@@ -27,7 +27,7 @@ int WINAPI WinMain(
         IDI_APPLICATION
     );
 
-    glpa.showWindow("Launcher");
+    glpa.showWindow(L"Launcher");
 
 
 
@@ -102,7 +102,7 @@ int WINAPI WinMain(
 
     MSG msg;        //メッセージ構造体
 
-    while (true) {
+        while (true) {
 		// Returns 1 (true) if a message is retrieved and 0 (false) if not.
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if (msg.message == WM_QUIT) {

@@ -2,8 +2,8 @@
 
 void Glpa::createWindow
 (
-    std::string wndName,
-    std::string wndApiClassName,
+    LPCWSTR wndName,
+    LPCWSTR wndApiClassName,
     double wndWidth,
     double wndHeight,
     double wndDpi,
@@ -27,7 +27,8 @@ void Glpa::createWindow
     windowApi.createWindow(wndName, window);
 }
 
-void Glpa::showWindow(std::string wndName)
+void Glpa::showWindow(LPCWSTR wndName)
 {
     ShowWindow(window[wndName].hWnd, windowApi.nCmdShow);
+    UpdateWindow(window[wndName].hWnd);
 }

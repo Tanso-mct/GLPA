@@ -1,12 +1,6 @@
 #include "window_api.h"
 
-LPCWSTR WindowApi::convertStringToLPCWSTR(std::string str)
-{
-    std::wstring wstr(str.begin(), str.end());
-    return wstr.c_str();
-}
-
-void WindowApi::registerClass(std::string wndName, std::unordered_map<std::string, Window> window)
+void WindowApi::registerClass(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> window)
 {
     WNDCLASSEX wndClass;
     wndClass.cbSize = sizeof(wndClass);
@@ -35,7 +29,7 @@ void WindowApi::registerClass(std::string wndName, std::unordered_map<std::strin
     );                                                 
     wndClass.hbrBackground = (HBRUSH)GetStockObject(window[wndName].backgroundColor);
     wndClass.lpszMenuName = NULL;
-    wndClass.lpszClassName = convertStringToLPCWSTR(window[wndName].nameApiClass);
+    wndClass.lpszClassName = window[wndName].nameApiClass;
     wndClass.hIconSm =
     LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(window[wndName].smallIcon));
 
@@ -44,18 +38,18 @@ void WindowApi::registerClass(std::string wndName, std::unordered_map<std::strin
         MessageBox(
             NULL,
             _T("RegisterClassEx fail"),
-            convertStringToLPCWSTR(wndName),
+            wndName,
             MB_ICONEXCLAMATION
         );
     }
 }
 
-void WindowApi::createWindow(std::string wndName, std::unordered_map<std::string, Window> window)
+void WindowApi::createWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> window)
 {
     window[wndName].hWnd = CreateWindow
     (
-        convertStringToLPCWSTR(window[wndName].nameApiClass),
-        convertStringToLPCWSTR(window[wndName].name),
+        window[wndName].nameApiClass,
+        window[wndName].name,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT,
         window[wndName].width, window[wndName].height,
@@ -70,7 +64,7 @@ void WindowApi::createWindow(std::string wndName, std::unordered_map<std::string
         MessageBox(
             NULL,
             _T("window make fail"),
-            convertStringToLPCWSTR(wndName),
+            wndName,
             MB_ICONEXCLAMATION
         );
     }

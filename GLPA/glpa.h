@@ -25,8 +25,8 @@ public :
 
     void createWindow
     (
-        std::string window_name,
-        std::string window_api_class_name,
+        LPCWSTR window_name,
+        LPCWSTR window_api_class_name,
         double window_width,
         double window_height,
         double window_dpi,
@@ -39,7 +39,7 @@ public :
         LPWSTR small_icon
     );
 
-    void showWindow(std::string window_name);
+    void showWindow(LPCWSTR window_name);
     
     void updateWindowInfo();
 
@@ -69,7 +69,7 @@ public :
 
 private :
     WindowApi windowApi;
-    std::unordered_map<std::string, Window> window;
+    std::unordered_map<LPCWSTR, Window> window;
 
 };
 

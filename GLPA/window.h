@@ -6,8 +6,8 @@
 
 #include "fps.h"
 
-#define DEF_WINDOW_NAME "Default"
-#define DEF_WINDOW_CLASS_NAME "Default"
+#define DEF_WINDOW_NAME L"Default"
+#define DEF_WINDOW_CLASS_NAME L"Default"
 #define DEF_WINDOW_WIDTH 1200
 #define DEF_WINDOW_HEIGHT 800
 #define DEF_WINDOW_DPI  1.0
@@ -23,8 +23,8 @@ class Window
 public :
     Window
     (
-        std::string argName = DEF_WINDOW_NAME, 
-        std::string argNameApiClass = DEF_WINDOW_CLASS_NAME, 
+        LPCWSTR argName = DEF_WINDOW_NAME, 
+        LPCWSTR argNameApiClass = DEF_WINDOW_CLASS_NAME, 
         double argWidth = DEF_WINDOW_WIDTH, 
         double argHeight = DEF_WINDOW_HEIGHT, 
         double argDpi = DEF_WINDOW_DPI,
@@ -68,8 +68,8 @@ public :
     bool existence = false;
     bool foucus = false;
 
-    std::string name;
-    std::string nameApiClass;
+    LPCWSTR name;
+    LPCWSTR nameApiClass;
 
     double width;
     double height;

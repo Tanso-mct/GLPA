@@ -1,9 +1,15 @@
 #include "window.h"
 
-LRESULT __stdcall Window::procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Window::procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
         switch (msg)
         {
+        case WM_CREATE :
+                return 0;
+
+        case WM_PAINT :
+                return 0;
+
         case WM_CLOSE :
                 DestroyWindow(hWnd);
 
