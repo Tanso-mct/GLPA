@@ -2,8 +2,8 @@
 
 LRESULT __stdcall Window::procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    switch (msg)
-    {
+        switch (msg)
+        {
         case WM_CLOSE :
                 DestroyWindow(hWnd);
 
@@ -11,9 +11,9 @@ LRESULT __stdcall Window::procedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
                 PostQuitMessage(0);
 
                 return 0;
-            
+
         default :
                 return DefWindowProc(hWnd, msg, wParam, lParam);
-    }
-    return 0;
+        }
+        return 0;
 }
