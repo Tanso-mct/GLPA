@@ -1,6 +1,6 @@
 #include "window_api.h"
 
-void WindowApi::registerClass(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> window)
+void WindowApi::showWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> window)
 {
     WNDCLASSEX wndClass;
     wndClass.cbSize = sizeof(wndClass);
@@ -42,10 +42,7 @@ void WindowApi::registerClass(LPCWSTR wndName, std::unordered_map<LPCWSTR, Windo
             MB_ICONEXCLAMATION
         );
     }
-}
 
-void WindowApi::createWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> window)
-{
     window[wndName].hWnd = CreateWindow
     (
         window[wndName].nameApiClass,
@@ -53,7 +50,7 @@ void WindowApi::createWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT,
         window[wndName].width, window[wndName].height,
-        HWND_DESKTOP,
+        NULL,
         NULL,
         hInstance,
         NULL
@@ -69,4 +66,5 @@ void WindowApi::createWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window
         );
     }
 
+    ShowWindow(window[wndName].hWnd, nCmdShow);
 }

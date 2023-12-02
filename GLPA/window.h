@@ -52,13 +52,79 @@ public :
         hBufDC(nullptr),
         hBufBmp(nullptr),
         lpPixel(nullptr)
-{
+    {
         fps.max = argMaxFps;
         lpPixel = (LPDWORD)HeapAlloc(
         GetProcessHeap(),
         HEAP_ZERO_MEMORY,
         width *height * 4);
-}
+
+        // WNDCLASSEX wndClass;
+        // wndClass.cbSize = sizeof(wndClass);
+        // wndClass.style = window[wndName].style;
+        // wndClass.lpfnWndProc = window[wndName].procedure;
+        // wndClass.cbClsExtra = NULL;
+        // wndClass.cbWndExtra = NULL;
+        // wndClass.hInstance = hInstance;
+        // wndClass.hIcon = (HICON)LoadImage
+        // (
+        //     NULL, 
+        //     MAKEINTRESOURCE(window[wndName].loadIcon),
+        //     IMAGE_ICON,
+        //     0,
+        //     0,
+        //     LR_DEFAULTSIZE | LR_SHARED
+        // );
+        // wndClass.hCursor = (HCURSOR)LoadImage
+        // (
+        //     NULL, 
+        //     MAKEINTRESOURCE(window[wndName].loadCursor),
+        //     IMAGE_CURSOR,
+        //     0,
+        //     0,
+        //     LR_DEFAULTSIZE | LR_SHARED
+        // );                                                 
+        // wndClass.hbrBackground = (HBRUSH)GetStockObject(window[wndName].backgroundColor);
+        // wndClass.lpszMenuName = NULL;
+        // wndClass.lpszClassName = window[wndName].nameApiClass;
+        // wndClass.hIconSm =
+        // LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(window[wndName].smallIcon));
+
+        // if (!RegisterClassEx(&wndClass))
+        // {
+        //     MessageBox(
+        //         NULL,
+        //         _T("RegisterClassEx fail"),
+        //         wndName,
+        //         MB_ICONEXCLAMATION
+        //     );
+        // }
+    }
+    
+    // MyWindow(HINSTANCE hInstance, LPCWSTR title, int width, int height)
+    //     : hInstance(hInstance), title(title), width(width), height(height) {
+    //     // ウィンドウクラスの登録
+    //     WNDCLASS wc = { 0 };
+    //     wc.lpfnWndProc = WindowProc;
+    //     wc.hInstance = hInstance;
+    //     wc.lpszClassName = L"MyWindowClass";
+
+    //     if (!RegisterClass(&wc)) {
+    //         // 登録に失敗した場合のエラーハンドリング
+    //         throw std::runtime_error("Failed to register window class");
+    //     }
+
+    //     // ウィンドウの作成
+    //     hwnd = CreateWindow(
+    //         L"MyWindowClass", title, WS_OVERLAPPEDWINDOW,
+    //         CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+    //         NULL, NULL, hInstance, this);
+
+    //     if (!hwnd) {
+    //         // ウィンドウの作成に失敗した場合のエラーハンドリング
+    //         throw std::runtime_error("Failed to create window");
+    //     }
+    // }
 
     // double getFps();
     // void changeSize();

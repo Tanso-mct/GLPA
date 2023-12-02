@@ -16,7 +16,7 @@ int WINAPI WinMain(
         L"Launcher",
         L"window_launcher",
         1200,
-        800,
+        1200,
         1,
         60,
         false,
@@ -27,7 +27,7 @@ int WINAPI WinMain(
         IDI_APPLICATION
     );
 
-    glpa.showWindow(L"Launcher");
+    // glpa.showWindow(L"Launcher");
 
 
 
@@ -102,16 +102,16 @@ int WINAPI WinMain(
 
     MSG msg;        //メッセージ構造体
 
-        while (true) {
-		// Returns 1 (true) if a message is retrieved and 0 (false) if not.
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			if (msg.message == WM_QUIT) {
-				// Exit from the loop when the exit message comes.
-				break;
-			}
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		} 
+    while (true) {
+    // Returns 1 (true) if a message is retrieved and 0 (false) if not.
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        if (msg.message == WM_QUIT) {
+            // Exit from the loop when the exit message comes.
+            break;
+        }
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    } 
         // else if (WndPLAY.state.focus)
         // {
         //     WndPLAY.fpsSystem.fpsLimiter();
