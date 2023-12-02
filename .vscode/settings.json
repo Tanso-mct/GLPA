@@ -89,6 +89,7 @@
     "dotnet.defaultSolution": "disable",
     "cSpell.words": [
         "CALCFACE",
+        "GLPA",
         "HINSTANCE",
         "HMENU",
         "HREDRAW",
@@ -111,7 +112,8 @@
         "USEDEFAULT",
         "VREDRAW",
         "wcex",
-        "WNDCLASSEX"
+        "WNDCLASSEX",
+        "WNDPROC"
     ],
     "commentTranslate.multiLineMerge": true,
     "commentTranslate.targetLanguage": "en",

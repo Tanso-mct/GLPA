@@ -9,14 +9,14 @@ int WINAPI WinMain(
     _In_ int nCmdShow                  // Contains the value of SW_MESSAGENAME.
 )                      
 {
-    Glpa glpa(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    glpa.initialize(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
     glpa.createWindow
     (
-        L"Launcher",
+        WINDOW_LAUNCHER,
         L"window_launcher",
-        1200,
-        1200,
+        1000,
+        650,
         1,
         60,
         false,
@@ -27,7 +27,7 @@ int WINAPI WinMain(
         IDI_APPLICATION
     );
 
-    // glpa.showWindow(L"Launcher");
+    glpa.showWindow(WINDOW_LAUNCHER);
 
 
 

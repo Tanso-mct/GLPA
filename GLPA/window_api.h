@@ -5,13 +5,18 @@
 #include <string>
 #include <unordered_map>
 #include <tchar.h>
+#include <functional>
 
 #include "window.h"
 #include "user_input.h"
 
+using WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
+
 class WindowApi
 {
 public :
+    void setWindowProcPt(WINDOW_PROC_TYPE* argPtWindowProc);
+
     /// @brief Register a class using the window api for a specific window.
     /// @param window_name The registration name of the window in which the class registration is to be made.
     /// @param window Map variable to hold all windows.
@@ -23,6 +28,8 @@ public :
     _In_opt_ HINSTANCE hPrevInstance;
     _In_ LPSTR lpCmdLine;
     _In_ int nCmdShow;
+    WINDOW_PROC_TYPE* ptWindowProc;
+
 
 private :
     UserInput userInput;

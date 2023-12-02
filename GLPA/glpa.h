@@ -11,20 +11,17 @@
 class Glpa
 {
 public :
-    Glpa
-    (
+    void initialize(
         _In_ HINSTANCE arghInstance, _In_opt_ HINSTANCE arghPrevInstance, 
         _In_ LPSTR arglpCmdLine, _In_ int argnCmdShow
-    )
-    {
+    ){
         windowApi.hInstance = arghInstance;
         windowApi.hPrevInstance = arghPrevInstance;
         windowApi.lpCmdLine = arglpCmdLine;
         windowApi.nCmdShow = argnCmdShow;
     }
 
-    void createWindow
-    (
+    void createWindow(
         LPCWSTR window_name,
         LPCWSTR window_api_class_name,
         double window_width,
@@ -45,7 +42,7 @@ public :
 
     void deleteWindow();
 
-    void graphicLoop();
+    void runGraphicLoop();
 
     void createScene();
 
@@ -67,10 +64,15 @@ public :
 
     void inputCharacterInfo();
 
-private :
-    WindowApi windowApi;
     std::unordered_map<LPCWSTR, Window> window;
 
+private :
+    WindowApi windowApi;
+
 };
+
+extern Glpa glpa;
+
+LRESULT CALLBACK windowProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 
 #endif  GLPA_H_
