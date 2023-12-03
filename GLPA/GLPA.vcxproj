@@ -134,9 +134,6 @@
     <ClCompile Include="ambient_occlusion.cpp" />
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="base_color.cpp" />
-    <ClCompile Include="buffer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="button.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="equation.cu" />
@@ -214,9 +211,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="animation.h" />
-    <ClInclude Include="buffer.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="character.h" />
     <ClInclude Include="equation.cuh" />
     <ClInclude Include="fbx.h" />

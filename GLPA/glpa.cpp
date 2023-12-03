@@ -1,5 +1,13 @@
 #include "glpa.h"
 
+void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR arglpCmdLine, int argnCmdShow)
+{
+    windowsApi.hInstance = arghInstance;
+    windowsApi.hPrevInstance = arghPrevInstance;
+    windowsApi.lpCmdLine = arglpCmdLine;
+    windowsApi.nCmdShow = argnCmdShow;
+}
+
 void Glpa::createWindow(
     LPCWSTR wndName,
     LPCWSTR wndApiClassName,
@@ -14,7 +22,7 @@ void Glpa::createWindow(
     int backgroundColor,
     LPWSTR smallIcon
 ){
-    windowApi.setWindowProcPt(windowProc);
+    windowsApi.ptWindowProc = windowProc;
 
     Window newWnd
     (
@@ -23,11 +31,17 @@ void Glpa::createWindow(
     );
 
     window.emplace(wndName, newWnd);
-    windowApi.showWindow(wndName, window);
+    windowsApi.createWindow(wndName, &window);
 }
 
-void Glpa::showWindow(LPCWSTR wndName){
-    windowApi.showWindow(wndName, window);
+void Glpa::showWindow(LPCWSTR wndName)
+{
+    windowsApi.showWindow(wndName, &window);
+}
+
+void Glpa::updateWindowInfo(LPCWSTR wndName)
+{
+    SetWindowPos(window[wndName].hWnd, NULL, 0, 0, 500, 500, SWP_NOMOVE | SWP_NOZORDER);
 }
 
 Glpa glpa;

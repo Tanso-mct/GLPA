@@ -10,26 +10,21 @@
 #include "window.h"
 #include "user_input.h"
 
-using WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
-
 class WindowApi
 {
 public :
-    void setWindowProcPt(WINDOW_PROC_TYPE* argPtWindowProc);
-
     /// @brief Register a class using the window api for a specific window.
     /// @param window_name The registration name of the window in which the class registration is to be made.
     /// @param window Map variable to hold all windows.
-    void showWindow(LPCWSTR window_name, std::unordered_map<LPCWSTR, Window> window);
+    void createWindow(LPCWSTR window_name, std::unordered_map<LPCWSTR, Window>* window);
 
-    void getWindowMessage(LPCWSTR window_name, std::unordered_map<LPCWSTR, Window> window);
+    void showWindow(LPCWSTR window_name, std::unordered_map<LPCWSTR, Window>* window);
 
     _In_ HINSTANCE hInstance;
     _In_opt_ HINSTANCE hPrevInstance;
     _In_ LPSTR lpCmdLine;
     _In_ int nCmdShow;
     WINDOW_PROC_TYPE* ptWindowProc;
-
 
 private :
     UserInput userInput;

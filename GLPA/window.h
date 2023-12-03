@@ -19,6 +19,8 @@
 #define DEF_WINDOW_BACKGROUND_COLOR WHITE_BRUSH
 #define DEF_WINDOW_SMALL_ICON IDI_APPLICATION
 
+using WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
+
 class Window
 {
 public :
@@ -35,8 +37,8 @@ public :
         LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
         int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
         LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON
-    ) : existence(false),
-        foucus(false),
+    ) : show(false),
+        focus(false),
         name(argName), 
         nameApiClass(argNameApiClass), 
         width(argWidth), 
@@ -65,8 +67,9 @@ public :
     // void changeSize();
     // void copyArgBuffer();
 
-    bool existence = false;
-    bool foucus = false;
+    bool show = false;
+    bool focus = false;
+    bool fullScreenToggle;
 
     LPCWSTR name;
     LPCWSTR nameApiClass;
@@ -80,10 +83,11 @@ public :
     LPWSTR loadCursor;
     int backgroundColor;
     LPWSTR smallIcon;
-    bool fullScreenToggle;
 
     HWND hWnd;
     HWND createdHWND = nullptr;
+
+    WNDCLASSEX wndClass;
 
 private :
     Fps fps;

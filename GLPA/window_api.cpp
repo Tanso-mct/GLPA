@@ -1,45 +1,39 @@
 #include "window_api.h"
 
-void WindowApi::setWindowProcPt(WINDOW_PROC_TYPE* argPtWindowProc)
+void WindowApi::createWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window>* window)
 {
-    ptWindowProc = argPtWindowProc;
-}
+    (*window)[wndName].wndClass.cbSize = sizeof((*window)[wndName].wndClass);
+    (*window)[wndName].wndClass.style = (*window)[wndName].style;
+    (*window)[wndName].wndClass.lpfnWndProc = *ptWindowProc;
+    (*window)[wndName].wndClass.cbClsExtra = NULL;
+    (*window)[wndName].wndClass.cbWndExtra = NULL;
+    (*window)[wndName].wndClass.hInstance = hInstance;
 
-void WindowApi::showWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> window)
-{
-    WNDCLASSEX wndClass;
-    wndClass.cbSize = sizeof(wndClass);
-    wndClass.style = window[wndName].style;
-    wndClass.lpfnWndProc = *ptWindowProc;
-    wndClass.cbClsExtra = NULL;
-    wndClass.cbWndExtra = NULL;
-    wndClass.hInstance = hInstance;
-
-    wndClass.hIcon = (HICON)LoadImage(
+    (*window)[wndName].wndClass.hIcon = (HICON)LoadImage(
         NULL, 
-        MAKEINTRESOURCE(window[wndName].loadIcon),
+        MAKEINTRESOURCE((*window)[wndName].loadIcon),
         IMAGE_ICON,
         0,
         0,
         LR_DEFAULTSIZE | LR_SHARED
     );
 
-    wndClass.hCursor = (HCURSOR)LoadImage(
+    (*window)[wndName].wndClass.hCursor = (HCURSOR)LoadImage(
         NULL, 
-        MAKEINTRESOURCE(window[wndName].loadCursor),
+        MAKEINTRESOURCE((*window)[wndName].loadCursor),
         IMAGE_CURSOR,
         0,
         0,
         LR_DEFAULTSIZE | LR_SHARED
     );     
                                                 
-    wndClass.hbrBackground = (HBRUSH)GetStockObject(window[wndName].backgroundColor);
-    wndClass.lpszMenuName = NULL;
-    wndClass.lpszClassName = window[wndName].nameApiClass;
-    wndClass.hIconSm =
-    LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(window[wndName].smallIcon));
+    (*window)[wndName].wndClass.hbrBackground = (HBRUSH)GetStockObject((*window)[wndName].backgroundColor);
+    (*window)[wndName].wndClass.lpszMenuName = NULL;
+    (*window)[wndName].wndClass.lpszClassName = (*window)[wndName].nameApiClass;
+    (*window)[wndName].wndClass.hIconSm =
+    LoadIcon((*window)[wndName].wndClass.hInstance, MAKEINTRESOURCE((*window)[wndName].smallIcon));
 
-    if (!RegisterClassEx(&wndClass)){
+    if (!RegisterClassEx(&(*window)[wndName].wndClass)){
         MessageBox(
             NULL,
             _T("RegisterClassEx fail"),
@@ -48,19 +42,19 @@ void WindowApi::showWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> 
         );
     }
 
-    window[wndName].hWnd = CreateWindow(
-        window[wndName].nameApiClass,
-        window[wndName].name,
+    (*window)[wndName].hWnd = CreateWindow(
+        (*window)[wndName].nameApiClass,
+        (*window)[wndName].name,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT,
-        window[wndName].width, window[wndName].height,
+        (*window)[wndName].width, (*window)[wndName].height,
         NULL,
         NULL,
         hInstance,
         NULL
     );
 
-    if (!window[wndName].hWnd){
+    if (!(*window)[wndName].hWnd){
         MessageBox(
             NULL,
             _T("window make fail"),
@@ -68,11 +62,10 @@ void WindowApi::showWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> 
             MB_ICONEXCLAMATION
         );
     }
-
-    ShowWindow(window[wndName].hWnd, nCmdShow);
 }
 
-void WindowApi::getWindowMessage(LPCWSTR window_name, std::unordered_map<LPCWSTR, Window> window)
+void WindowApi::showWindow(LPCWSTR wndName, std::unordered_map<LPCWSTR, Window> *window)
 {
-    
+    ShowWindow((*window)[wndName].hWnd, SW_SHOWDEFAULT);
 }
+

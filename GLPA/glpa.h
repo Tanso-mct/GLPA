@@ -14,12 +14,7 @@ public :
     void initialize(
         _In_ HINSTANCE arghInstance, _In_opt_ HINSTANCE arghPrevInstance, 
         _In_ LPSTR arglpCmdLine, _In_ int argnCmdShow
-    ){
-        windowApi.hInstance = arghInstance;
-        windowApi.hPrevInstance = arghPrevInstance;
-        windowApi.lpCmdLine = arglpCmdLine;
-        windowApi.nCmdShow = argnCmdShow;
-    }
+    );
 
     void createWindow(
         LPCWSTR window_name,
@@ -37,8 +32,8 @@ public :
     );
 
     void showWindow(LPCWSTR window_name);
-    
-    void updateWindowInfo();
+
+    void updateWindowInfo(LPCWSTR window_name);
 
     void deleteWindow();
 
@@ -67,7 +62,7 @@ public :
     std::unordered_map<LPCWSTR, Window> window;
 
 private :
-    WindowApi windowApi;
+    WindowApi windowsApi;
 
 };
 

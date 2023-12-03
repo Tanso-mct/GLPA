@@ -1,5 +1,5 @@
 #include "window.h"
 
 void Window::create(){
-        OutputDebugStringW(_T("Create\n"));
+    OutputDebugStringW(_T("Create\n"));
 }

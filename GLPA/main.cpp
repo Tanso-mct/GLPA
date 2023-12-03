@@ -29,6 +29,7 @@ int WINAPI WinMain(
 
     glpa.showWindow(WINDOW_LAUNCHER);
 
+    // glpa.updateWindowInfo(WINDOW_LAUNCHER);
 
 
     // // Launcher Class Registration
