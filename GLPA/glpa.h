@@ -21,9 +21,9 @@ public :
     void createWindow(
         LPCWSTR window_name,
         LPCWSTR window_api_class_name,
-        double window_width,
-        double window_height,
-        double window_dpi,
+        int window_width,
+        int window_height,
+        int window_dpi,
         double window_max_fps,
         UINT window_style,
         LPWSTR load_icon, 
@@ -58,6 +58,7 @@ public :
 
     void inputCharacterInfo();
 
+    MSG msg;
     std::unordered_map<LPCWSTR, Window> window;
 
 private :

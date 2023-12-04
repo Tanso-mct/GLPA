@@ -6,5 +6,6 @@
 #include "glpa.h"
 
 #define WINDOW_LAUNCHER L"Launcher"
+#define WINDOWCLASS_LAUNCHER L"window_launcher"
 
 #endif // MAIN_H_

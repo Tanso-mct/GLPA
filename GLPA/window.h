@@ -33,18 +33,16 @@ public :
     Window(
         LPCWSTR argName = DEF_WINDOW_NAME, 
         LPCWSTR argNameApiClass = DEF_WINDOW_CLASS_NAME, 
-        double argWidth = DEF_WINDOW_WIDTH, 
-        double argHeight = DEF_WINDOW_HEIGHT, 
-        double argDpi = DEF_WINDOW_DPI,
+        int argWidth = DEF_WINDOW_WIDTH, 
+        int argHeight = DEF_WINDOW_HEIGHT, 
+        int argDpi = DEF_WINDOW_DPI,
         double argMaxFps = DEF_MAX_FPS,
         UINT argWndStyle = DEF_WINDOW_STYLE,
         LPWSTR argLoadIcon = DEF_WINDOW_LOAD_ICON, 
         LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
         int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
         LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON
-    ) : status(WINDOW_STATUS_DEF),
-        focus(false),
-        name(argName), 
+    ) : name(argName), 
         nameApiClass(argNameApiClass), 
         width(argWidth), 
         height(argHeight), 
@@ -54,9 +52,6 @@ public :
         loadCursor(argLoadCursor),
         backgroundColor(argBackgroundColor), 
         smallIcon(argSmallIcon),
-        hWndDC(nullptr),
-        hBufDC(nullptr),
-        hBufBmp(nullptr),
         lpPixel(nullptr) {
         fps.max = argMaxFps;
         lpPixel = (LPDWORD)HeapAlloc(
@@ -65,8 +60,22 @@ public :
         width *height * 4);
     }
 
+    // ~Window(){
+    //     if (lpPixel != nullptr) {
+    //         HeapFree(GetProcessHeap(), 0, lpPixel);
+    //         lpPixel = nullptr; // ヌルポインタに設定して二重解放を防ぐ
+    //     }
+    // }
+
+    void getFps();
+    void updateMaxFps();
+    void updateSize();
+    // void copyArgBuffer();
+
     void create(HINSTANCE arg_hinstance, WINDOW_PROC_TYPE* pt_window_proc);
     void updateStatus(int arg_status);
+    bool isVisiable();
+    void graphicLoop();
 
     bool killFoucusMsg(HWND arg_hwnd);
     bool setFoucusMsg(HWND arg_hwnd);
@@ -76,22 +85,18 @@ public :
     bool paintMsg(HWND arg_hwnd);
     bool userMsg(HWND arg_hwnd);
 
-    // double getFps();
-    void updateMaxFps();
-    void updateSize();
-    // void copyArgBuffer();
-
 private :
-    int status = 0;
+    int status = WINDOW_STATUS_DEF;
     bool focus = false;
     bool created = false;
+    bool visiable = true;
 
     LPCWSTR name;
     LPCWSTR nameApiClass;
 
-    double width;
-    double height;
-    double dpi;
+    int width;
+    int height;
+    int dpi;
 
     UINT style;
     LPWSTR loadIcon;
@@ -105,11 +110,11 @@ private :
 
     Fps fps;
 
-    HDC hWndDC;
+    HDC hWndDC = nullptr;
     PAINTSTRUCT hPs;
 
-    HDC hBufDC;
-    HBITMAP hBufBmp;
+    HDC hBufDC = nullptr;
+    HBITMAP hBufBmp = nullptr;
     BITMAPINFO hBufBmpInfo;
     LPDWORD lpPixel;
 

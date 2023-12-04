@@ -1,5 +1,9 @@
 #include "window.h"
 
+void Window::getFps(){
+
+}
+
 void Window::create(HINSTANCE arghInstance, WINDOW_PROC_TYPE* ptWindowProc){
     wndClass.cbSize = sizeof(wndClass);
     wndClass.style = style;
@@ -76,18 +80,61 @@ void Window::updateStatus(int argStatus){
     }
 }
 
+bool Window::isVisiable(){
+    if (visiable){
+        return true;
+    }
+
+    return false;
+}
+
+void Window::graphicLoop(){
+    getFps();
+
+    for(UINT y = 0; y <= height; y++)
+    {
+        for(UINT x = 0; x <= 200; x++)
+        {
+            if (x < 200 && y < height)
+            {
+                lpPixel[x+y*width * dpi] = 0x00FF0000;
+            }  
+        }
+    }
+
+    InvalidateRect(hWnd, NULL, FALSE);
+}
+
+
 bool Window::killFoucusMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         focus = false;
-        return true;
-    }
     
+        // Obtains coordinate information for the target window.
+        RECT rect;
+        if (GetWindowRect(hWnd, &rect)) {
+            // Determine if the target window is hidden by other windows.
+            HWND overlappingWindow = GetWindow(hWnd, GW_HWNDPREV);
+            while (overlappingWindow != nullptr) {
+                RECT overlapRect;
+                if (GetWindowRect(overlappingWindow, &overlapRect)) {
+                    // Check for overlapping windows.
+                    if (IntersectRect(nullptr, &rect, &overlapRect)) {
+                        visiable = false;
+                        return true;
+                    }
+                }
+            }
+        }
+    }
     return false;
 }
 
 bool Window::setFoucusMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         focus = true;
+        visiable = true;
+        OutputDebugStringW(_T("GLPA : FOCUS\n"));
         return true;
     }
     
@@ -159,6 +206,7 @@ bool Window::destroyMsg(HWND argHWnd){
 bool Window::paintMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         hWndDC = BeginPaint(hWnd, &hPs);
+
         StretchDIBits(
             hWndDC,
             0,

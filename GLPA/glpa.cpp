@@ -12,9 +12,9 @@ void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR 
 void Glpa::createWindow(
     LPCWSTR wndName,
     LPCWSTR wndApiClassName,
-    double wndWidth,
-    double wndHeight,
-    double wndDpi,
+    int wndWidth,
+    int wndHeight,
+    int wndDpi,
     double wndMaxFps,
     UINT wndStyle,
     LPWSTR loadIcon, 
@@ -52,6 +52,61 @@ void Glpa::updateWindow(LPCWSTR wndName, int param){
         break;
     }
 
+}
+
+void Glpa::runGraphicLoop(){
+    while (true) {
+    // Returns 1 (true) if a message is retrieved and 0 (false) if not.
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        if (msg.message == WM_QUIT) {
+            // Exit from the loop when the exit message comes.
+            break;
+        }
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    } 
+
+    for (auto& x: window) {
+        if(x.second.isVisiable()){
+            // OutputDebugStringW(_T("GLPA : UPDATE\n"));
+            x.second.graphicLoop();
+            break;
+        }
+    }
+        // else if (WndPLAY.state.focus)
+        // {
+        //     WndPLAY.fpsSystem.fpsLimiter();
+
+        //     PatBlt(
+        //         WndPLAY.buffer.hBufDC, 
+        //         0, 
+        //         0, 
+        //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+        //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+        //         WHITENESS
+        //     );
+            // scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
+
+        //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
+        // }
+        // else if (WndLAU.state.focus)
+        // {
+        //     WndLAU.fpsSystem.fpsLimiter();
+
+        //     PatBlt(
+        //         WndLAU.buffer.hBufDC, 
+        //         0, 
+        //         0, 
+        //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+        //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+        //         WHITENESS
+        //     );
+        //     scrLAUDwgContModif(WndLAU.buffer.hBufDC);
+
+        //     InvalidateRect(WndLAU.hWnd, NULL, FALSE);
+        // }
+        
+    }
 }
 
 Glpa glpa;
