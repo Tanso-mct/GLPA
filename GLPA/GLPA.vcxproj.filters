@@ -117,9 +117,6 @@
     <ClCompile Include="window.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="window_api.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="z_buffer.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -246,9 +243,6 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="window.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="window_api.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="fps.h">

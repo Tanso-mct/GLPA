@@ -178,7 +178,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="window.cpp" />
-    <ClCompile Include="window_api.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ambient_occlusion.h" />
@@ -227,7 +226,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="window.h" />
-    <ClInclude Include="window_api.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\bmp\temp.bmp" />

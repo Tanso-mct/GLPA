@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "window_api.h"
+#include "window.h"
 
 class Glpa
 {
@@ -23,7 +23,6 @@ public :
         double window_height,
         double window_dpi,
         double window_max_fps,
-        bool window_full_screen,
         UINT window_style,
         LPWSTR load_icon, 
         LPWSTR load_cursor,
@@ -62,7 +61,11 @@ public :
     std::unordered_map<LPCWSTR, Window> window;
 
 private :
-    WindowApi windowsApi;
+    _In_ HINSTANCE hInstance;
+    _In_opt_ HINSTANCE hPrevInstance;
+    _In_ LPSTR lpCmdLine;
+    _In_ int nCmdShow;
+    WINDOW_PROC_TYPE* ptWindowProc;
 
 };
 

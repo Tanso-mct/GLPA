@@ -19,7 +19,6 @@ int WINAPI WinMain(
         650,
         1,
         60,
-        false,
         CS_HREDRAW | CS_VREDRAW,
         IDI_APPLICATION,
         IDC_ARROW,
@@ -28,6 +27,8 @@ int WINAPI WinMain(
     );
 
     glpa.showWindow(WINDOW_LAUNCHER);
+
+    glpa.updateWindowInfo(WINDOW_LAUNCHER);
 
     // glpa.updateWindowInfo(WINDOW_LAUNCHER);
 

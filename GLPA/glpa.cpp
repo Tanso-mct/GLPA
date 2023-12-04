@@ -2,10 +2,11 @@
 
 void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR arglpCmdLine, int argnCmdShow)
 {
-    windowsApi.hInstance = arghInstance;
-    windowsApi.hPrevInstance = arghPrevInstance;
-    windowsApi.lpCmdLine = arglpCmdLine;
-    windowsApi.nCmdShow = argnCmdShow;
+    hInstance = arghInstance;
+    hPrevInstance = arghPrevInstance;
+    lpCmdLine = arglpCmdLine;
+    nCmdShow = argnCmdShow;
+    ptWindowProc = windowProc;
 }
 
 void Glpa::createWindow(
@@ -15,33 +16,31 @@ void Glpa::createWindow(
     double wndHeight,
     double wndDpi,
     double wndMaxFps,
-    bool wndFullScreen,
     UINT wndStyle,
     LPWSTR loadIcon, 
     LPWSTR loadCursor,
     int backgroundColor,
     LPWSTR smallIcon
 ){
-    windowsApi.ptWindowProc = windowProc;
 
     Window newWnd
     (
-        wndName, wndApiClassName, wndWidth, wndHeight, wndDpi, wndMaxFps, wndFullScreen,
+        wndName, wndApiClassName, wndWidth, wndHeight, wndDpi, wndMaxFps,
         wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon
     );
 
     window.emplace(wndName, newWnd);
-    windowsApi.createWindow(wndName, &window);
+    window[wndName].create(hInstance, ptWindowProc);
 }
 
 void Glpa::showWindow(LPCWSTR wndName)
 {
-    windowsApi.showWindow(wndName, &window);
+    window[wndName].show();
 }
 
 void Glpa::updateWindowInfo(LPCWSTR wndName)
 {
-    SetWindowPos(window[wndName].hWnd, NULL, 0, 0, 500, 500, SWP_NOMOVE | SWP_NOZORDER);
+    window[wndName].changeSize();
 }
 
 Glpa glpa;
@@ -53,11 +52,8 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
                 return 0;
 
         case WM_CREATE :
-                for (auto& x: glpa.window) {
-                    if (x.second.createdHWND == nullptr)
-                    {
-                        x.second.createdHWND = hWnd;
-                        x.second.create();
+                for (auto& x: glpa.window){
+                    if (x.second.createMsg()){
                         break;
                     }
                 }

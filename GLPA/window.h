@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <tchar.h>
 #include <string>
+#include <unordered_map>
 
 #include "fps.h"
 
@@ -31,20 +32,18 @@ public :
         double argHeight = DEF_WINDOW_HEIGHT, 
         double argDpi = DEF_WINDOW_DPI,
         double argMaxFps = DEF_MAX_FPS,
-        bool argFullScreenToggle = DEF_WINDOW_FULLSCREEN_TOGGLE,
         UINT argWndStyle = DEF_WINDOW_STYLE,
         LPWSTR argLoadIcon = DEF_WINDOW_LOAD_ICON, 
         LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
         int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
         LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON
-    ) : show(false),
+    ) : status(0),
         focus(false),
         name(argName), 
         nameApiClass(argNameApiClass), 
         width(argWidth), 
         height(argHeight), 
         dpi(argDpi), 
-        fullScreenToggle(argFullScreenToggle), 
         style(argWndStyle), 
         loadIcon(argLoadIcon), 
         loadCursor(argLoadCursor),
@@ -61,13 +60,23 @@ public :
         width *height * 4);
     }
 
-    void create();
+    void create(HINSTANCE arg_h_instance, WINDOW_PROC_TYPE* pt_window_proc);
+    void show();
+    void hide();
+
+    bool killFoucusMsg();
+    bool setFoucusMsg();
+    bool createMsg();
+    bool closeMsg();
+    bool destroyMsg();
+    bool paintMsg();
+    bool userMsg();
 
     // double getFps();
-    // void changeSize();
+    void changeSize();
     // void copyArgBuffer();
 
-    bool show = false;
+    int status = 0;
     bool focus = false;
     bool fullScreenToggle;
 
