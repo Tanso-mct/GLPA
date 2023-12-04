@@ -8,6 +8,8 @@
 
 #include "window.h"
 
+#define ERROR_ARUGUMENT_INCOLLECT "GLPA ERROR : Argument is incorrect."
+
 class Glpa
 {
 public :
@@ -30,9 +32,7 @@ public :
         LPWSTR small_icon
     );
 
-    void showWindow(LPCWSTR window_name);
-
-    void updateWindowInfo(LPCWSTR window_name);
+    void updateWindow(LPCWSTR window_name, int param);
 
     void deleteWindow();
 

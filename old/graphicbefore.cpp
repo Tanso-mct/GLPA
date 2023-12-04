@@ -57,12 +57,12 @@ void scrLAUDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/)
 
 void scrPLAYDwgContModif(HDC hBuffer_DC/*, TEXTURE *texture*/)
 {
-    // texture->displayImage_rectangle(
-    //     WND_LAU.lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
-    //     0, 0,
-    //     0, 0,
-    //     FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
-    // );
+    texture->displayImage_rectangle(
+        WND_LAU.lpPixel, texture->file1.bmp_pixel, WINDOW_WIDTH, WINDOW_HEIGHT, DISPLAY_RESOLUTION, 
+        0, 0,
+        0, 0,
+        FILE_MAXPIXEL_X, FILE_MAXPIXEL_Y
+    );
 
     HFONT hFont1 = CreateFont(30 * DISPLAY_RESOLUTION, 0, 
 		0, 0, 0, 

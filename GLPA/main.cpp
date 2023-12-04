@@ -26,9 +26,8 @@ int WINAPI WinMain(
         IDI_APPLICATION
     );
 
-    glpa.showWindow(WINDOW_LAUNCHER);
+    glpa.updateWindow(WINDOW_LAUNCHER, WINDOW_STATUS_DEF);
 
-    glpa.updateWindowInfo(WINDOW_LAUNCHER);
 
     // glpa.updateWindowInfo(WINDOW_LAUNCHER);
 
@@ -126,7 +125,7 @@ int WINAPI WinMain(
         //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
         //         WHITENESS
         //     );
-        //     scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
+            // scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
 
         //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
         // }

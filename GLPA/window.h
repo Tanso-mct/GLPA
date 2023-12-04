@@ -22,6 +22,11 @@
 
 using WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
 
+#define WINDOW_STATUS_DEF 0
+#define WINDOW_STATUS_HIDE 1
+#define WINDOW_STATUS_BORDERLESS_SCREEN 2
+#define WINDOW_STATUS_FULL_SCREEN 3
+
 class Window
 {
 public :
@@ -37,7 +42,7 @@ public :
         LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
         int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
         LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON
-    ) : status(0),
+    ) : status(WINDOW_STATUS_DEF),
         focus(false),
         name(argName), 
         nameApiClass(argNameApiClass), 
@@ -60,25 +65,26 @@ public :
         width *height * 4);
     }
 
-    void create(HINSTANCE arg_h_instance, WINDOW_PROC_TYPE* pt_window_proc);
-    void show();
-    void hide();
+    void create(HINSTANCE arg_hinstance, WINDOW_PROC_TYPE* pt_window_proc);
+    void updateStatus(int arg_status);
 
-    bool killFoucusMsg();
-    bool setFoucusMsg();
-    bool createMsg();
-    bool closeMsg();
-    bool destroyMsg();
-    bool paintMsg();
-    bool userMsg();
+    bool killFoucusMsg(HWND arg_hwnd);
+    bool setFoucusMsg(HWND arg_hwnd);
+    bool createMsg(HWND arg_hwnd);
+    bool closeMsg(HWND arg_hwnd);
+    bool destroyMsg(HWND arg_hwnd);
+    bool paintMsg(HWND arg_hwnd);
+    bool userMsg(HWND arg_hwnd);
 
     // double getFps();
-    void changeSize();
+    void updateMaxFps();
+    void updateSize();
     // void copyArgBuffer();
 
+private :
     int status = 0;
     bool focus = false;
-    bool fullScreenToggle;
+    bool created = false;
 
     LPCWSTR name;
     LPCWSTR nameApiClass;
@@ -94,11 +100,9 @@ public :
     LPWSTR smallIcon;
 
     HWND hWnd;
-    HWND createdHWND = nullptr;
 
     WNDCLASSEX wndClass;
 
-private :
     Fps fps;
 
     HDC hWndDC;

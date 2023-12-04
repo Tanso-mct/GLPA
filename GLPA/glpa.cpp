@@ -33,52 +33,100 @@ void Glpa::createWindow(
     window[wndName].create(hInstance, ptWindowProc);
 }
 
-void Glpa::showWindow(LPCWSTR wndName)
-{
-    window[wndName].show();
-}
+void Glpa::updateWindow(LPCWSTR wndName, int param){
+    switch (param)
+    {
+    case WINDOW_STATUS_DEF :
+        window[wndName].updateStatus(WINDOW_STATUS_DEF);
+        break;
 
-void Glpa::updateWindowInfo(LPCWSTR wndName)
-{
-    window[wndName].changeSize();
+    case WINDOW_STATUS_HIDE :
+        window[wndName].updateStatus(WINDOW_STATUS_HIDE);
+        break;
+
+
+    
+    default:
+        OutputDebugStringW(_T(ERROR_ARUGUMENT_INCOLLECT));
+        OutputDebugStringW(_T("Glpa::updateWindow(LPCWSTR wndName, int param) -> int param"));
+        break;
+    }
+
 }
 
 Glpa glpa;
 
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
-        switch (msg)
-        {
+        switch (msg){
         case WM_KILLFOCUS:
+                for (auto& x: glpa.window) {
+                    if(x.second.killFoucusMsg(hWnd)){
+                        break;
+                    }
+                }
+                return 0;
+
+        case WM_SETFOCUS:
+                for (auto& x: glpa.window) {
+                    if(x.second.setFoucusMsg(hWnd)){
+                        break;
+                    }
+                }
                 return 0;
 
         case WM_CREATE :
                 for (auto& x: glpa.window){
-                    if (x.second.createMsg()){
+                    if (x.second.createMsg(hWnd)){
                         break;
                     }
                 }
                 return 0;
 
         case WM_PAINT :
+                for (auto& x: glpa.window) {
+                    if(x.second.paintMsg(hWnd)){
+                        break;
+                    }
+                }
+        
                 return 0;
 
         case WM_CLOSE :
                 for (auto& x: glpa.window) {
-                    if(hWnd == x.second.createdHWND){
-                        OutputDebugStringW(_T("Created\n"));
-                    }
-                    else{
-                        OutputDebugStringW(_T("Failed\n"));
+                    if(x.second.closeMsg(hWnd)){
+                        break;
                     }
                 }
-
-                DestroyWindow(hWnd);
                 return 0;
                 
 
         case WM_DESTROY :
-                PostQuitMessage(0);
+                for (auto& x: glpa.window) {
+                    if(x.second.destroyMsg(hWnd)){
+                        break;
+                    }
+                }
                 return 0;
+
+        case WM_KEYDOWN :
+        case WM_KEYUP :
+        case WM_LBUTTONDOWN :
+        case WM_LBUTTONUP :
+        case WM_LBUTTONDBLCLK :
+        case WM_RBUTTONDOWN :
+        case WM_RBUTTONUP :
+        case WM_RBUTTONDBLCLK :
+        case WM_MBUTTONDOWN :
+        case WM_MBUTTONDBLCLK :
+        case WM_MBUTTONUP :
+        case WM_MOUSEWHEEL :
+                for (auto& x: glpa.window) {
+                    if(x.second.userMsg(hWnd)){
+                        break;
+                    }
+                }
+                return 0;
+
 
 
         default :
