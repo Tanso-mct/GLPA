@@ -29,7 +29,8 @@ public :
         LPWSTR load_icon, 
         LPWSTR load_cursor,
         int background_color,
-        LPWSTR small_icon
+        LPWSTR small_icon,
+        bool minimize_auto
     );
 
     void updateWindow(LPCWSTR window_name, int param);

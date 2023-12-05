@@ -20,13 +20,14 @@ void Glpa::createWindow(
     LPWSTR loadIcon, 
     LPWSTR loadCursor,
     int backgroundColor,
-    LPWSTR smallIcon
+    LPWSTR smallIcon,
+    bool minimizeAuto
 ){
 
     Window newWnd
     (
         wndName, wndApiClassName, wndWidth, wndHeight, wndDpi, wndMaxFps,
-        wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon
+        wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto
     );
 
     window.emplace(wndName, newWnd);
@@ -44,8 +45,10 @@ void Glpa::updateWindow(LPCWSTR wndName, int param){
         window[wndName].updateStatus(WINDOW_STATUS_HIDE);
         break;
 
+    case WINDOW_STATUS_MINIMIZE :
+        window[wndName].updateStatus(WINDOW_STATUS_MINIMIZE);
+        break;
 
-    
     default:
         OutputDebugStringW(_T(ERROR_ARUGUMENT_INCOLLECT));
         OutputDebugStringW(_T("Glpa::updateWindow(LPCWSTR wndName, int param) -> int param"));
@@ -56,56 +59,57 @@ void Glpa::updateWindow(LPCWSTR wndName, int param){
 
 void Glpa::runGraphicLoop(){
     while (true) {
-    // Returns 1 (true) if a message is retrieved and 0 (false) if not.
-    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        if (msg.message == WM_QUIT) {
-            // Exit from the loop when the exit message comes.
-            break;
+        // Returns 1 (true) if a message is retrieved and 0 (false) if not.
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT) {
+                OutputDebugStringW(_T("GLPA : EXIT\n"));
+
+                // Exit from the loop when the exit message comes.
+                break;
+            }
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        } 
+
+        for (auto& x: window) {
+            if(x.second.isVisiable()){
+                x.second.graphicLoop();
+                break;
+            }
         }
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    } 
+            // else if (WndPLAY.state.focus)
+            // {
+            //     WndPLAY.fpsSystem.fpsLimiter();
 
-    for (auto& x: window) {
-        if(x.second.isVisiable()){
-            // OutputDebugStringW(_T("GLPA : UPDATE\n"));
-            x.second.graphicLoop();
-            break;
-        }
-    }
-        // else if (WndPLAY.state.focus)
-        // {
-        //     WndPLAY.fpsSystem.fpsLimiter();
+            //     PatBlt(
+            //         WndPLAY.buffer.hBufDC, 
+            //         0, 
+            //         0, 
+            //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+            //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+            //         WHITENESS
+            //     );
+                // scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
 
-        //     PatBlt(
-        //         WndPLAY.buffer.hBufDC, 
-        //         0, 
-        //         0, 
-        //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-        //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-        //         WHITENESS
-        //     );
-            // scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
+            //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
+            // }
+            // else if (WndLAU.state.focus)
+            // {
+            //     WndLAU.fpsSystem.fpsLimiter();
 
-        //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
-        // }
-        // else if (WndLAU.state.focus)
-        // {
-        //     WndLAU.fpsSystem.fpsLimiter();
+            //     PatBlt(
+            //         WndLAU.buffer.hBufDC, 
+            //         0, 
+            //         0, 
+            //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
+            //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
+            //         WHITENESS
+            //     );
+            //     scrLAUDwgContModif(WndLAU.buffer.hBufDC);
 
-        //     PatBlt(
-        //         WndLAU.buffer.hBufDC, 
-        //         0, 
-        //         0, 
-        //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-        //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-        //         WHITENESS
-        //     );
-        //     scrLAUDwgContModif(WndLAU.buffer.hBufDC);
-
-        //     InvalidateRect(WndLAU.hWnd, NULL, FALSE);
-        // }
-        
+            //     InvalidateRect(WndLAU.hWnd, NULL, FALSE);
+            // }
+            
     }
 }
 
@@ -113,6 +117,17 @@ Glpa glpa;
 
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         switch (msg){
+        case WM_SYSCOMMAND:
+            if (wParam == SC_MINIMIZE) {
+                for (auto& x: glpa.window) {
+                    if(x.second.minimizeMsg(hWnd)){
+                        return 0;
+                    }
+                }
+            }
+
+            return DefWindowProc(hWnd, msg, wParam, lParam);
+
         case WM_KILLFOCUS:
                 for (auto& x: glpa.window) {
                     if(x.second.killFoucusMsg(hWnd)){
@@ -120,7 +135,7 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
                     }
                 }
                 return 0;
-
+ 
         case WM_SETFOCUS:
                 for (auto& x: glpa.window) {
                     if(x.second.setFoucusMsg(hWnd)){

@@ -5,6 +5,7 @@
 #include <tchar.h>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "fps.h"
 
@@ -26,6 +27,7 @@ using WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
 #define WINDOW_STATUS_HIDE 1
 #define WINDOW_STATUS_BORDERLESS_SCREEN 2
 #define WINDOW_STATUS_FULL_SCREEN 3
+#define WINDOW_STATUS_MINIMIZE 4
 
 class Window
 {
@@ -41,7 +43,8 @@ public :
         LPWSTR argLoadIcon = DEF_WINDOW_LOAD_ICON, 
         LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
         int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
-        LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON
+        LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON,
+        bool argMinimizeAuto = false
     ) : name(argName), 
         nameApiClass(argNameApiClass), 
         width(argWidth), 
@@ -52,6 +55,7 @@ public :
         loadCursor(argLoadCursor),
         backgroundColor(argBackgroundColor), 
         smallIcon(argSmallIcon),
+        minimizeAuto(argMinimizeAuto),
         lpPixel(nullptr) {
         fps.max = argMaxFps;
         lpPixel = (LPDWORD)HeapAlloc(
@@ -77,6 +81,7 @@ public :
     bool isVisiable();
     void graphicLoop();
 
+    bool minimizeMsg(HWND arg_hwnd);
     bool killFoucusMsg(HWND arg_hwnd);
     bool setFoucusMsg(HWND arg_hwnd);
     bool createMsg(HWND arg_hwnd);
@@ -87,9 +92,10 @@ public :
 
 private :
     int status = WINDOW_STATUS_DEF;
-    bool focus = false;
+    bool focus = true;
     bool created = false;
     bool visiable = true;
+    bool minimizeAuto;
 
     LPCWSTR name;
     LPCWSTR nameApiClass;

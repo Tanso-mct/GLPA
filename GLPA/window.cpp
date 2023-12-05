@@ -72,11 +72,25 @@ void Window::updateSize(){
 }
 
 void Window::updateStatus(int argStatus){
-    if(argStatus == WINDOW_STATUS_DEF){
+    switch (argStatus)
+    {
+    case WINDOW_STATUS_DEF :
+        visiable = true;
         ShowWindow(hWnd, SW_SHOWDEFAULT);
-    }
-    else if (argStatus == WINDOW_STATUS_HIDE){
+        break;
+
+    case WINDOW_STATUS_HIDE :
+        visiable = false;
         ShowWindow(hWnd, SW_HIDE);
+        break;
+
+    case WINDOW_STATUS_MINIMIZE :
+        visiable = false;
+        ShowWindow(hWnd, SW_MINIMIZE);
+        break;
+    
+    default:
+        break;
     }
 }
 
@@ -89,43 +103,44 @@ bool Window::isVisiable(){
 }
 
 void Window::graphicLoop(){
-    getFps();
-
-    for(UINT y = 0; y <= height; y++)
+    if (visiable)
     {
-        for(UINT x = 0; x <= 200; x++)
-        {
-            if (x < 200 && y < height)
-            {
-                lpPixel[x+y*width * dpi] = 0x00FF0000;
-            }  
-        }
-    }
+        getFps();
 
-    InvalidateRect(hWnd, NULL, FALSE);
+        for(UINT y = 0; y <= height; y++)
+        {
+            for(UINT x = 0; x <= 200; x++)
+            {
+                if (x < 200 && y < height)
+                {
+                    lpPixel[x+y*width * dpi] = 0x00FF0000;
+                }  
+            }
+        }
+
+        InvalidateRect(hWnd, NULL, FALSE);
+    }
+}
+
+bool Window::minimizeMsg(HWND argHWnd){
+    if (argHWnd == hWnd){
+        visiable = false;
+        ShowWindow(hWnd, SW_MINIMIZE);
+        return true;
+    }
+    return false;
 }
 
 
 bool Window::killFoucusMsg(HWND argHWnd){
     if(argHWnd == hWnd){
-        focus = false;
-    
-        // Obtains coordinate information for the target window.
-        RECT rect;
-        if (GetWindowRect(hWnd, &rect)) {
-            // Determine if the target window is hidden by other windows.
-            HWND overlappingWindow = GetWindow(hWnd, GW_HWNDPREV);
-            while (overlappingWindow != nullptr) {
-                RECT overlapRect;
-                if (GetWindowRect(overlappingWindow, &overlapRect)) {
-                    // Check for overlapping windows.
-                    if (IntersectRect(nullptr, &rect, &overlapRect)) {
-                        visiable = false;
-                        return true;
-                    }
-                }
-            }
+        if(minimizeAuto){
+            visiable = false;
+            ShowWindow(hWnd, SW_MINIMIZE);
         }
+        
+        focus = false;
+        return true;
     }
     return false;
 }
@@ -134,7 +149,6 @@ bool Window::setFoucusMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         focus = true;
         visiable = true;
-        OutputDebugStringW(_T("GLPA : FOCUS\n"));
         return true;
     }
     
@@ -145,8 +159,6 @@ bool Window::setFoucusMsg(HWND argHWnd){
 bool Window::createMsg(HWND argHWnd){
     if (!created)
     {
-        OutputDebugStringW(_T("GLPA : CREATED\n"));
-
         hWndDC = GetDC(hWnd);
 
         //bmp buffer dc
@@ -175,36 +187,30 @@ bool Window::createMsg(HWND argHWnd){
         return true;
     }
 
-    OutputDebugStringW(_T("GLPA : NOT CREATED\n"));
     return false;
 }
 
 bool Window::closeMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         DestroyWindow(hWnd);
-
-        OutputDebugStringW(_T("GLPA : CLOSED\n"));
         return true;
     }
     
-    OutputDebugStringW(_T("GLPA : NOT CLOSED\n"));
     return false;
 }
 
 bool Window::destroyMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         PostQuitMessage(0);
-
-        OutputDebugStringW(_T("GLPA : DESTROYED\n"));
         return true;
     }
     
-    OutputDebugStringW(_T("GLPA : NOT DESTROYED\n"));
     return false;
 }
 
 bool Window::paintMsg(HWND argHWnd){
-    if(argHWnd == hWnd){
+    if(argHWnd == hWnd && visiable){
+        OutputDebugStringW(_T("GLPA : PAINT\n"));
         hWndDC = BeginPaint(hWnd, &hPs);
 
         StretchDIBits(
@@ -223,7 +229,7 @@ bool Window::paintMsg(HWND argHWnd){
             SRCCOPY
         );
         EndPaint(hWnd, &hPs);
-        
+
         return true;
     }
     

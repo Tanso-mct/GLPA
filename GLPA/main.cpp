@@ -23,7 +23,8 @@ int WINAPI WinMain(
         IDI_APPLICATION,
         IDC_ARROW,
         WHITE_BRUSH,
-        IDI_APPLICATION
+        IDI_APPLICATION,
+        true
     );
 
     glpa.updateWindow(WINDOW_LAUNCHER, WINDOW_STATUS_DEF);
