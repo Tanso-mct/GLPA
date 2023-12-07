@@ -29,6 +29,8 @@ int WINAPI WinMain(
 
     glpa.updateWindow(WINDOW_LAUNCHER, WINDOW_STATUS_DEF);
 
+    glpa.setSingleWindow(true);
+
     glpa.runGraphicLoop();
 
     // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is
