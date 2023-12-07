@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "FreeImage.h"
 
 #include "window.h"
 #include "scene.h"
