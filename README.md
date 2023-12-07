@@ -21,8 +21,7 @@ This library is a personal work, but here are some things to keep in mind to mak
 ### 2. Naming Rules
 | Naming Rule Name         | Use                |
 |---------------|-------------------|
-| P
-ascalCase    | Class name              |
+| PascalCase    | Class name              |
 | camelCase     | Function name, Variable name           |
 | snake_case    | File name, Header file argument name |
 | SNAKE_CASE    | Macro name, Structure name         |

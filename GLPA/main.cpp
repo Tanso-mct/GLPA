@@ -32,6 +32,8 @@ int WINAPI WinMain(
 
     glpa.setSingleWindow(true);
 
+    glpa.scene.create("temp", GRAPHIC_2D);
+
     glpa.runGraphicLoop();
 
     // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is

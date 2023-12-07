@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #include "window.h"
+#include "scene.h"
 
 #define ERROR_ARUGUMENT_INCOLLECT "GLPA ERROR : Argument is incorrect."
 
@@ -40,7 +41,7 @@ public :
 
     bool dataSingleWindow();
 
-    void deleteWindow();
+    void deleteWindow(); 
 
     void runGraphicLoop();
 
@@ -58,15 +59,12 @@ public :
 
     void selectUseCamera();
 
-    void inputCameraInfo();
-
-    void inputObjectInfo();
-
-    void inputCharacterInfo();
+    void editScrData();
 
     MSG msg;
 
     std::unordered_map<LPCWSTR, Window> window;
+    Scene scene;
 
 private :
     _In_ HINSTANCE hInstance;

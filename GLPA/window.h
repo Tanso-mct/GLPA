@@ -1,3 +1,10 @@
+/**
+ * @file window.h
+ * @brief Describes window-related processing. Set up a scene and draw it.
+ * @author Tanso-mct
+ * @date 2023-12-7
+ */
+
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
@@ -14,7 +21,6 @@
 #define DEF_WINDOW_WIDTH 1200
 #define DEF_WINDOW_HEIGHT 800
 #define DEF_WINDOW_DPI  1.0
-#define DEF_WINDOW_FULLSCREEN_TOGGLE false
 #define DEF_WINDOW_STYLE CS_HREDRAW | CS_VREDRAW
 #define DEF_WINDOW_LOAD_ICON IDI_APPLICATION
 #define DEF_WINDOW_LOAD_CURSOR IDC_ARROW

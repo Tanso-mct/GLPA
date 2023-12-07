@@ -91,39 +91,6 @@ void Glpa::runGraphicLoop(){
                 break;
             }
         }
-            // else if (WndPLAY.state.focus)
-            // {
-            //     WndPLAY.fpsSystem.fpsLimiter();
-
-            //     PatBlt(
-            //         WndPLAY.buffer.hBufDC, 
-            //         0, 
-            //         0, 
-            //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-            //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-            //         WHITENESS
-            //     );
-                // scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
-
-            //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
-            // }
-            // else if (WndLAU.state.focus)
-            // {
-            //     WndLAU.fpsSystem.fpsLimiter();
-
-            //     PatBlt(
-            //         WndLAU.buffer.hBufDC, 
-            //         0, 
-            //         0, 
-            //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-            //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-            //         WHITENESS
-            //     );
-            //     scrLAUDwgContModif(WndLAU.buffer.hBufDC);
-
-            //     InvalidateRect(WndLAU.hWnd, NULL, FALSE);
-            // }
-            
     }
 }
 
@@ -164,7 +131,6 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
                         break;
                     }
                 }
-                return 0;
 
         case WM_CREATE :
                 for (auto& x: glpa.window){

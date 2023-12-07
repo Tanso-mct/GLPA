@@ -86,7 +86,7 @@
         "xtree": "cpp",
         "*.rh": "cpp"
     },
-    "commentTranslate.hover.enabled": false,
+    "commentTranslate.hover.enabled": true,
     "dotnet.defaultSolution": "disable",
     "cSpell.words": [
         "CALCFACE",
