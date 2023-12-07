@@ -9,6 +9,10 @@ void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR 
     ptWindowProc = windowProc;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0e1fe3e4faa64cf89cc31252bf9ee1fd2c2a07f0
 void Glpa::createWindow(
     LPCWSTR wndName,
     LPCWSTR wndApiClassName,
