@@ -21,14 +21,13 @@ void Glpa::createWindow(
     LPWSTR loadCursor,
     int backgroundColor,
     LPWSTR smallIcon,
-    bool minimizeAuto,
-    bool singleExistence
+    bool minimizeAuto
 ){
 
     Window newWnd
     (
         wndName, wndApiClassName, wndWidth, wndHeight, wndDpi, wndMaxFps,
-        wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto, singleExistence
+        wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto
     );
 
     window.emplace(wndName, newWnd);
@@ -58,19 +57,6 @@ void Glpa::updateWindow(LPCWSTR wndName, int param){
 
 }
 
-void Glpa::setSingleWindow(bool single){
-    if (single){
-        singleWindow = true;
-    }
-    else{
-        singleWindow = false;
-    }
-}
-
-bool Glpa::dataSingleWindow(){
-    return singleWindow;
-}
-
 void Glpa::runGraphicLoop(){
     while (true) {
         // Returns 1 (true) if a message is retrieved and 0 (false) if not.
@@ -86,7 +72,7 @@ void Glpa::runGraphicLoop(){
         } 
 
         for (auto& x: window) {
-            if(x.second.isVisible()){
+            if(x.second.isVisiable()){
                 x.second.graphicLoop();
                 break;
             }
@@ -142,25 +128,17 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
-        case WM_KILLFOCUS :
+        case WM_KILLFOCUS:
                 for (auto& x: glpa.window) {
-                    if(x.second.killFocusMsg(hWnd, glpa.dataSingleWindow())){
+                    if(x.second.killFoucusMsg(hWnd)){
                         break;
                     }
                 }
                 return 0;
-
-        case WM_SETFOCUS :
+ 
+        case WM_SETFOCUS:
                 for (auto& x: glpa.window) {
-                    if(x.second.setFocusMsg(hWnd)){
-                        break;
-                    }
-                }
-                return 0;
-
-        case WM_GETMINMAXINFO :
-                for (auto& x: glpa.window) {
-                    if(x.second.sizeMsg(hWnd, lParam)){
+                    if(x.second.setFoucusMsg(hWnd)){
                         break;
                     }
                 }

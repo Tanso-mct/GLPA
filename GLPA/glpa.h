@@ -30,15 +30,10 @@ public :
         LPWSTR load_cursor,
         int background_color,
         LPWSTR small_icon,
-        bool minimize_auto,
-        bool single_existence
+        bool minimize_auto
     );
 
     void updateWindow(LPCWSTR window_name, int param);
-
-    void setSingleWindow(bool single);
-
-    bool dataSingleWindow();
 
     void deleteWindow();
 
@@ -65,7 +60,6 @@ public :
     void inputCharacterInfo();
 
     MSG msg;
-
     std::unordered_map<LPCWSTR, Window> window;
 
 private :
@@ -74,8 +68,6 @@ private :
     _In_ LPSTR lpCmdLine;
     _In_ int nCmdShow;
     WINDOW_PROC_TYPE* ptWindowProc;
-
-    bool singleWindow = false;
 
 };
 

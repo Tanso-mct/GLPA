@@ -24,13 +24,10 @@ int WINAPI WinMain(
         IDC_ARROW,
         WHITE_BRUSH,
         IDI_APPLICATION,
-        false,
         true
     );
 
     glpa.updateWindow(WINDOW_LAUNCHER, WINDOW_STATUS_DEF);
-
-    glpa.setSingleWindow(true);
 
     glpa.runGraphicLoop();
 

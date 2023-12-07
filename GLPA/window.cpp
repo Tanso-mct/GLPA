@@ -75,17 +75,17 @@ void Window::updateStatus(int argStatus){
     switch (argStatus)
     {
     case WINDOW_STATUS_DEF :
-        visible = true;
+        visiable = true;
         ShowWindow(hWnd, SW_SHOWDEFAULT);
         break;
 
     case WINDOW_STATUS_HIDE :
-        visible = false;
+        visiable = false;
         ShowWindow(hWnd, SW_HIDE);
         break;
 
     case WINDOW_STATUS_MINIMIZE :
-        visible = false;
+        visiable = false;
         ShowWindow(hWnd, SW_MINIMIZE);
         break;
     
@@ -94,8 +94,8 @@ void Window::updateStatus(int argStatus){
     }
 }
 
-bool Window::isVisible(){
-    if (visible){
+bool Window::isVisiable(){
+    if (visiable){
         return true;
     }
 
@@ -103,17 +103,17 @@ bool Window::isVisible(){
 }
 
 void Window::graphicLoop(){
-    if (visible)
+    if (visiable)
     {
         getFps();
 
         for(UINT y = 0; y <= height; y++)
         {
-            for(UINT x = 0; x <= width; x++)
+            for(UINT x = 0; x <= 200; x++)
             {
-                if (x < width && y < height)
+                if (x < 200 && y < height)
                 {
-                    lpPixel[x+y*width * dpi] = ((DWORD)255 << 24) | ((DWORD)255 << 16) | ((DWORD)0 << 8) | 0;;
+                    lpPixel[x+y*width * dpi] = 0x00FF0000;
                 }  
             }
         }
@@ -124,7 +124,7 @@ void Window::graphicLoop(){
 
 bool Window::minimizeMsg(HWND argHWnd){
     if (argHWnd == hWnd){
-        visible = false;
+        visiable = false;
         ShowWindow(hWnd, SW_MINIMIZE);
         return true;
     }
@@ -132,19 +132,11 @@ bool Window::minimizeMsg(HWND argHWnd){
 }
 
 
-bool Window::killFocusMsg(HWND argHWnd, bool singleWnd){
+bool Window::killFoucusMsg(HWND argHWnd){
     if(argHWnd == hWnd){
-        if (singleWnd){
-            if(!singleExistence){
-                visible = false;
-                ShowWindow(hWnd, SW_MINIMIZE);
-            }
-        }
-        else{
-            if(minimizeAuto){
-                visible = false;
-                ShowWindow(hWnd, SW_MINIMIZE);
-            }
+        if(minimizeAuto){
+            visiable = false;
+            ShowWindow(hWnd, SW_MINIMIZE);
         }
         
         focus = false;
@@ -153,23 +145,10 @@ bool Window::killFocusMsg(HWND argHWnd, bool singleWnd){
     return false;
 }
 
-bool Window::setFocusMsg(HWND argHWnd){
+bool Window::setFoucusMsg(HWND argHWnd){
     if(argHWnd == hWnd){
         focus = true;
-        visible = true;
-        return true;
-    }
-    
-    return false;
-}
-
-bool Window::sizeMsg(HWND argHWnd, LPARAM lParam){
-    if(argHWnd == hWnd){
-        MINMAXINFO* pMinMaxInfo = (MINMAXINFO*)lParam;
-        pMinMaxInfo->ptMinTrackSize.x = width;
-        pMinMaxInfo->ptMinTrackSize.y = height;
-        pMinMaxInfo->ptMaxTrackSize.x = width;
-        pMinMaxInfo->ptMaxTrackSize.y = height;
+        visiable = true;
         return true;
     }
     
@@ -230,15 +209,16 @@ bool Window::destroyMsg(HWND argHWnd){
 }
 
 bool Window::paintMsg(HWND argHWnd){
-    if(argHWnd == hWnd && visible){
+    if(argHWnd == hWnd && visiable){
+        OutputDebugStringW(_T("GLPA : PAINT\n"));
         hWndDC = BeginPaint(hWnd, &hPs);
 
         StretchDIBits(
             hWndDC,
             0,
             0,
-            width,
-            height,
+            GetSystemMetrics(SM_CXSCREEN),
+            GetSystemMetrics(SM_CYSCREEN), 
             0,
             0,
             width * dpi,

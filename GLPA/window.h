@@ -44,8 +44,7 @@ public :
         LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
         int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
         LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON,
-        bool argMinimizeAuto = false,
-        bool argSingleExistence = false
+        bool argMinimizeAuto = false
     ) : name(argName), 
         nameApiClass(argNameApiClass), 
         width(argWidth), 
@@ -57,7 +56,6 @@ public :
         backgroundColor(argBackgroundColor), 
         smallIcon(argSmallIcon),
         minimizeAuto(argMinimizeAuto),
-        singleExistence(argSingleExistence),
         lpPixel(nullptr) {
         fps.max = argMaxFps;
         lpPixel = (LPDWORD)HeapAlloc(
@@ -66,6 +64,13 @@ public :
         width *height * 4);
     }
 
+    // ~Window(){
+    //     if (lpPixel != nullptr) {
+    //         HeapFree(GetProcessHeap(), 0, lpPixel);
+    //         lpPixel = nullptr; // ヌルポインタに設定して二重解放を防ぐ
+    //     }
+    // }
+
     void getFps();
     void updateMaxFps();
     void updateSize();
@@ -73,13 +78,12 @@ public :
 
     void create(HINSTANCE arg_hinstance, WINDOW_PROC_TYPE* pt_window_proc);
     void updateStatus(int arg_status);
-    bool isVisible();
+    bool isVisiable();
     void graphicLoop();
 
     bool minimizeMsg(HWND arg_hwnd);
-    bool killFocusMsg(HWND arg_hwnd, bool single_window);
-    bool setFocusMsg(HWND arg_hwnd);
-    bool sizeMsg(HWND arg_hwnd, LPARAM l_param);
+    bool killFoucusMsg(HWND arg_hwnd);
+    bool setFoucusMsg(HWND arg_hwnd);
     bool createMsg(HWND arg_hwnd);
     bool closeMsg(HWND arg_hwnd);
     bool destroyMsg(HWND arg_hwnd);
@@ -90,9 +94,8 @@ private :
     int status = WINDOW_STATUS_DEF;
     bool focus = true;
     bool created = false;
-    bool visible = true;
+    bool visiable = true;
     bool minimizeAuto;
-    bool singleExistence;
 
     LPCWSTR name;
     LPCWSTR nameApiClass;
