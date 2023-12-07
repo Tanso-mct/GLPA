@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "FreeImage.h"
 
 #include "window.h"
 #include "scene.h"
@@ -19,8 +18,6 @@ public :
         _In_ HINSTANCE arghInstance, _In_opt_ HINSTANCE arghPrevInstance, 
         _In_ LPSTR arglpCmdLine, _In_ int argnCmdShow
     );
-
-    LPDWORD load(const char *filename, int width, int height);
 
     void createWindow(
         LPCWSTR window_name,
