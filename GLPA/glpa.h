@@ -8,6 +8,8 @@
 
 #include "window.h"
 
+// #include "image.h"
+
 #define ERROR_ARUGUMENT_INCOLLECT "GLPA ERROR : Argument is incorrect."
 
 class Glpa

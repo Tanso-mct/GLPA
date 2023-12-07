@@ -1,5 +1,8 @@
 #include "glpa.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR arglpCmdLine, int argnCmdShow)
 {
     hInstance = arghInstance;
@@ -7,6 +10,19 @@ void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR 
     lpCmdLine = arglpCmdLine;
     nCmdShow = argnCmdShow;
     ptWindowProc = windowProc;
+
+    unsigned char* pixels;
+    int width;
+    int height;
+    int bpp;
+
+    // ファイルを読み込み、画像データを取り出す
+    //   最後の引数でピクセルあたりのバイト数を強制できる
+    pixels = stbi_load("image1.png", &width, &height, &bpp, 1);
+
+
+    // メモリ上の画像データを破棄
+    stbi_image_free(pixels);
 }
 
 void Glpa::createWindow(

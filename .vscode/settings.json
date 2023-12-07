@@ -84,7 +84,8 @@
         "map": "cpp",
         "set": "cpp",
         "xtree": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "complex": "cpp"
     },
     "commentTranslate.hover.enabled": false,
     "dotnet.defaultSolution": "disable",

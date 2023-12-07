@@ -212,6 +212,7 @@
     <ClInclude Include="shadow.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="transformation.h" />
     <ClInclude Include="triangle_ratio.cuh" />
     <ClInclude Include="vector.cuh" />
