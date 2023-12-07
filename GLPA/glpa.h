@@ -16,8 +16,8 @@ public :
     void initialize(
         _In_ HINSTANCE arghInstance, _In_opt_ HINSTANCE arghPrevInstance, 
         _In_ LPSTR arglpCmdLine, _In_ int argnCmdShow
-    );
-
+    ); 
+    
 
     void createWindow(
         LPCWSTR window_name,
