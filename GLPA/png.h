@@ -1,10 +1,15 @@
 #ifndef PNG_H_
 #define PNG_H_
 
+#include <Windows.h>
+
 #include <FreeImage.h>
 
 // PNG‰æ‘œ‚ğ“Ç‚İ‚ñ‚ÅLPDWORD‚É•ÏŠ·‚·‚éŠÖ”
-LPDWORD LoadPNGImage(const char* filename, int& width, int& height) {
+class Png
+{
+public :
+    LPDWORD LoadPNGImage(const char* filename, int& width, int& height) {
     FreeImage_Initialise();
 
     // ‰æ‘œ‚ğ“Ç‚İ‚Ş
@@ -33,10 +38,6 @@ LPDWORD LoadPNGImage(const char* filename, int& width, int& height) {
 
     return pixelData;
 }
-class Png
-{
-public :
-
 
 private :
 };
