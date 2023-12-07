@@ -21,13 +21,14 @@ void Glpa::createWindow(
     LPWSTR loadCursor,
     int backgroundColor,
     LPWSTR smallIcon,
-    bool minimizeAuto
+    bool minimizeAuto,
+    bool singleExistence
 ){
 
     Window newWnd
     (
         wndName, wndApiClassName, wndWidth, wndHeight, wndDpi, wndMaxFps,
-        wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto
+        wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto, singleExistence
     );
 
     window.emplace(wndName, newWnd);
@@ -57,6 +58,19 @@ void Glpa::updateWindow(LPCWSTR wndName, int param){
 
 }
 
+void Glpa::setSingleWindow(bool single){
+    if (single){
+        singleWindow = true;
+    }
+    else{
+        singleWindow = false;
+    }
+}
+
+bool Glpa::dataSingleWindow(){
+    return singleWindow;
+}
+
 void Glpa::runGraphicLoop(){
     while (true) {
         // Returns 1 (true) if a message is retrieved and 0 (false) if not.
@@ -72,7 +86,7 @@ void Glpa::runGraphicLoop(){
         } 
 
         for (auto& x: window) {
-            if(x.second.isVisiable()){
+            if(x.second.isVisible()){
                 x.second.graphicLoop();
                 break;
             }
@@ -128,17 +142,25 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
-        case WM_KILLFOCUS:
+        case WM_KILLFOCUS :
                 for (auto& x: glpa.window) {
-                    if(x.second.killFoucusMsg(hWnd)){
+                    if(x.second.killFocusMsg(hWnd, glpa.dataSingleWindow())){
                         break;
                     }
                 }
                 return 0;
- 
-        case WM_SETFOCUS:
+
+        case WM_SETFOCUS :
                 for (auto& x: glpa.window) {
-                    if(x.second.setFoucusMsg(hWnd)){
+                    if(x.second.setFocusMsg(hWnd)){
+                        break;
+                    }
+                }
+                return 0;
+
+        case WM_GETMINMAXINFO :
+                for (auto& x: glpa.window) {
+                    if(x.second.sizeMsg(hWnd, lParam)){
                         break;
                     }
                 }

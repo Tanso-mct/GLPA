@@ -24,6 +24,7 @@ int WINAPI WinMain(
         IDC_ARROW,
         WHITE_BRUSH,
         IDI_APPLICATION,
+        false,
         true
     );
 
