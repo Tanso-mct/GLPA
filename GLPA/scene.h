@@ -12,8 +12,10 @@ class Scene
 public :
     void create();
     void load();
-    void 
+    void release();
+    void reload();
     void remove();
+    void update();
 
 private :
     std::unordered_map<std::string, int> names;

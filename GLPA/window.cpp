@@ -1,8 +1,5 @@
 #include "window.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 void Window::getFps(){
 
 }
@@ -121,26 +118,30 @@ void Window::graphicLoop(){
         //     }
         // }
 
-        // 1. 画像の読み込み
-        const char* filename = "image1.png";
-        int imageWidth = 0;
-        int imageHeight = 0;
-        int channels = 0;
+        // // 1. 画像の読み込み
+        // std::string filename = "image1.png";
+        // int imageWidth = 0;
+        // int imageHeight = 0;
+        // int channels = 0;
 
-        stbi_uc* pixels = stbi_load(filename, &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
+        // stbi_uc* pixels = stbi_load(filename.c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
 
-        if (!pixels) {
-            // 読み込みエラーが発生した場合の処理
-            OutputDebugStringW(_T("GLPA : ERROR"));
-        }
+        // if (!pixels) {
+        //     // 読み込みエラーが発生した場合の処理
+        //     OutputDebugStringW(_T("GLPA : ERROR"));
+        // }
 
-        // 2. ピクセルデータをLPDWORD型変数に変換
-        size_t pixelCount = imageWidth * imageHeight;
+        // // 2. ピクセルデータをLPDWORD型変数に変換
+        // size_t pixelCount = imageWidth * imageHeight;
 
-        UINT pixelIndex = 0;
-        UINT imageDrawX = 200;
-        UINT imageDrawY = 300;
-        UINT imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
+        // UINT pixelIndex = 0;
+        // UINT imageDrawX = 200;
+        // UINT imageDrawY = 300;
+        // UINT imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
+
+        Png temp;
+
+        temp.load("image1.png");
 
         for(UINT y = 0; y <= imageHeight; y++)
         {
@@ -157,8 +158,8 @@ void Window::graphicLoop(){
             }
         }
 
-        // ピクセルデータの使用が終わったら解放
-        stbi_image_free(pixels);
+        // // ピクセルデータの使用が終わったら解放
+        // stbi_image_free(pixels);
 
         InvalidateRect(hWnd, NULL, FALSE);
     }

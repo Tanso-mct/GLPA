@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "png.h"
+
 #include "fps.h"
 
 #define DEF_WINDOW_NAME L"Default"

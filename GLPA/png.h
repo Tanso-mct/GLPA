@@ -4,15 +4,17 @@
 #include <Windows.h>
 #include <string>
 
+#include <tchar.h>
+
 
 class Png
 {
 public :
+    bool load(std::string file_path);
 
-
-private :
-    int width;
-    int height;
+    int width = 0;
+    int height = 0;
+    int channels = 0;
 
     std::string name;
     std::string path;
