@@ -1,5 +1,8 @@
 #include "window.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 void Window::getFps(){
 
 }
@@ -107,16 +110,55 @@ void Window::graphicLoop(){
     {
         getFps();
 
-        for(UINT y = 0; y <= height; y++)
+        // for(UINT y = 0; y <= height; y++)
+        // {
+        //     for(UINT x = 0; x <= width; x++)
+        //     {
+        //         if (x < width && y < height)
+        //         {
+        //             lpPixel[x+y*width * dpi] = ((DWORD)255 << 24) | ((DWORD)255 << 16) | ((DWORD)0 << 8) | 0;;
+        //         }  
+        //     }
+        // }
+
+        // 1. 画像の読み込み
+        const char* filename = "image1.png";
+        int imageWidth = 0;
+        int imageHeight = 0;
+        int channels = 0;
+
+        stbi_uc* pixels = stbi_load(filename, &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
+
+        if (!pixels) {
+            // 読み込みエラーが発生した場合の処理
+            OutputDebugStringW(_T("GLPA : ERROR"));
+        }
+
+        // 2. ピクセルデータをLPDWORD型変数に変換
+        size_t pixelCount = imageWidth * imageHeight;
+
+        UINT pixelIndex = 0;
+        UINT imageDrawX = 200;
+        UINT imageDrawY = 300;
+        UINT imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
+
+        for(UINT y = 0; y <= imageHeight; y++)
         {
-            for(UINT x = 0; x <= width; x++)
+            for(UINT x = 0; x <= imageWidth; x++)
             {
-                if (x < width && y < height)
+                if (x < imageWidth && y < imageHeight)
                 {
-                    lpPixel[x+y*width * dpi] = ((DWORD)255 << 24) | ((DWORD)255 << 16) | ((DWORD)0 << 8) | 0;;
+                    lpPixel[imageDrawPoint + (x+y*width * dpi)] = (pixels[pixelIndex * 4 + 3] << 24) | 
+                                                (pixels[pixelIndex * 4] << 16) | 
+                                                (pixels[pixelIndex * 4 + 1] << 8) | 
+                                                pixels[pixelIndex * 4 + 2];
+                    pixelIndex += 1;
                 }  
             }
         }
+
+        // ピクセルデータの使用が終わったら解放
+        stbi_image_free(pixels);
 
         InvalidateRect(hWnd, NULL, FALSE);
     }
