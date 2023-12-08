@@ -107,60 +107,24 @@ void Window::graphicLoop(){
     {
         getFps();
 
-        // for(UINT y = 0; y <= height; y++)
-        // {
-        //     for(UINT x = 0; x <= width; x++)
-        //     {
-        //         if (x < width && y < height)
-        //         {
-        //             lpPixel[x+y*width * dpi] = ((DWORD)255 << 24) | ((DWORD)255 << 16) | ((DWORD)0 << 8) | 0;;
-        //         }  
-        //     }
-        // }
-
-        // // 1. 画像の読み込み
-        // std::string filename = "image1.png";
-        // int imageWidth = 0;
-        // int imageHeight = 0;
-        // int channels = 0;
-
-        // stbi_uc* pixels = stbi_load(filename.c_str(), &imageWidth, &imageHeight, &channels, STBI_rgb_alpha);
-
-        // if (!pixels) {
-        //     // 読み込みエラーが発生した場合の処理
-        //     OutputDebugStringW(_T("GLPA : ERROR"));
-        // }
-
-        // // 2. ピクセルデータをLPDWORD型変数に変換
-        // size_t pixelCount = imageWidth * imageHeight;
-
-        // UINT pixelIndex = 0;
-        // UINT imageDrawX = 200;
-        // UINT imageDrawY = 300;
-        // UINT imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
+        std::size_t imageDrawX = 200;
+        std::size_t imageDrawY = 300;
+        std::size_t imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
 
         Png temp;
+        temp.load("resource/scene/Launcher_load/image1.png");
 
-        temp.load("image1.png");
-
-        for(UINT y = 0; y <= imageHeight; y++)
+        for(std::size_t y = 0; y <= temp.height; y++)
         {
-            for(UINT x = 0; x <= imageWidth; x++)
+            for(std::size_t x = 0; x <= temp.width; x++)
             {
-                if (x < imageWidth && y < imageHeight)
+                if (x < temp.width && y < temp.height)
                 {
-                    lpPixel[imageDrawPoint + (x+y*width * dpi)] = (pixels[pixelIndex * 4 + 3] << 24) | 
-                                                (pixels[pixelIndex * 4] << 16) | 
-                                                (pixels[pixelIndex * 4 + 1] << 8) | 
-                                                pixels[pixelIndex * 4 + 2];
-                    pixelIndex += 1;
+                    lpPixel[imageDrawPoint + (x+y*width * dpi)] = temp.data[x+y*temp.width];
                 }  
             }
         }
-
-        // // ピクセルデータの使用が終わったら解放
-        // stbi_image_free(pixels);
-
+        
         InvalidateRect(hWnd, NULL, FALSE);
     }
 }

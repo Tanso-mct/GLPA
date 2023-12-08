@@ -8,8 +8,7 @@
 
 #include "window.h"
 #include "scene.h"
-
-#define ERROR_ARUGUMENT_INCOLLECT "GLPA ERROR : Argument is incorrect."
+#include "error.h"
 
 class Glpa
 {

@@ -28,6 +28,9 @@
     <Filter Include="ヘッダー ファイル\glpa">
       <UniqueIdentifier>{cf1c65ed-3998-4766-95eb-d86618658b65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\scene">
+      <UniqueIdentifier>{0b01cc7d-f482-44d1-8cb6-fbad2b2d3a54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ambient_occlusion.cpp">
@@ -279,6 +282,9 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="image.h">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="error.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
   </ItemGroup>

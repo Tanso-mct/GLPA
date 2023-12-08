@@ -3,14 +3,16 @@
 
 #include <Windows.h>
 #include <string>
-
 #include <tchar.h>
+
+#include "error.h"
 
 
 class Png
 {
 public :
     bool load(std::string file_path);
+    void release();
 
     int width = 0;
     int height = 0;

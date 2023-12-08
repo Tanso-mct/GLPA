@@ -51,8 +51,7 @@ void Glpa::updateWindow(LPCWSTR wndName, int param){
         break;
 
     default:
-        OutputDebugStringW(_T(ERROR_ARUGUMENT_INCOLLECT));
-        OutputDebugStringW(_T("Glpa::updateWindow(LPCWSTR wndName, int param) -> int param"));
+        throw std::runtime_error(ERROR_GLPA_UPDATE_WINDOW);
         break;
     }
 

@@ -107,6 +107,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>Default</LanguageStandard>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,6 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -188,6 +190,7 @@
     <ClInclude Include="animation.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="equation.cuh" />
+    <ClInclude Include="error.h" />
     <ClInclude Include="fbx.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="fps.h" />

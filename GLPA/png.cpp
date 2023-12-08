@@ -4,18 +4,24 @@
 #include "stb_image.h"
 
 bool Png::load(std::string filePath){
-    int lastSolidus = filePath.rfind("/");
-    name = filePath.substr(lastSolidus, filePath.length());
+    std::size_t lastSolidus = filePath.rfind("/");
 
-    stbi_uc* pixels = stbi_load(name.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-
-    if (!pixels) {
-        // 読み込みエラーが発生した場合の処理
-        OutputDebugStringW(_T("GLPA : ERROR"));
+    if (lastSolidus != std::string::npos){
+        name = filePath.substr(lastSolidus+1, filePath.find(".") - (lastSolidus+1));
+    }
+    else
+    {
+        name = filePath;
     }
 
-    // 2. ピクセルデータをLPDWORD型変数に変換
-    size_t pixelCount = width * height;
+    stbi_uc* pixels = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+
+    if (!pixels) {
+        throw std::runtime_error(ERROR_PNG_LOAD);
+        return false;
+    }
+
+    data = new DWORD[width * height];
 
     int pixelIndex = 0;
 
@@ -36,5 +42,9 @@ bool Png::load(std::string filePath){
 
     // ピクセルデータの使用が終わったら解放
     stbi_image_free(pixels);
-    return false;
+    return true;
+}
+
+void Png::release(){
+    delete(data);
 }
