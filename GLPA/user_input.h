@@ -3,7 +3,10 @@
 
 class UserInput
 {
-    
+public :
+
+private :
+
 };
 
 #endif USERINPUT_H_

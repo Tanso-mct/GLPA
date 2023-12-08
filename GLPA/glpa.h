@@ -7,8 +7,7 @@
 #include <unordered_map>
 
 #include "window.h"
-
-// #include "image.h"
+#include "scene.h"
 
 #define ERROR_ARUGUMENT_INCOLLECT "GLPA ERROR : Argument is incorrect."
 
