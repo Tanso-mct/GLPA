@@ -7,6 +7,9 @@
 #include "scene2d.h"
 #include "scene3d.h"
 
+#define GLPA_SCENE_2D 0
+#define GLPA_SCENE_3D 1
+
 class Scene
 {
 public :

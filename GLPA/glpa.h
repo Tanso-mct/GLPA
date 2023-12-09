@@ -73,7 +73,7 @@ private :
     _In_opt_ HINSTANCE hPrevInstance;
     _In_ LPSTR lpCmdLine;
     _In_ int nCmdShow;
-    WINDOW_PROC_TYPE* ptWindowProc;
+    GLPA_WINDOW_PROC_TYPE* ptWindowProc;
 
     bool singleWindow = false;
 

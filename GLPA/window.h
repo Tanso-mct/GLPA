@@ -11,41 +11,41 @@
 
 #include "fps.h"
 
-#define DEF_WINDOW_NAME L"Default"
-#define DEF_WINDOW_CLASS_NAME L"Default"
-#define DEF_WINDOW_WIDTH 1200
-#define DEF_WINDOW_HEIGHT 800
-#define DEF_WINDOW_DPI  1.0
-#define DEF_WINDOW_FULLSCREEN_TOGGLE false
-#define DEF_WINDOW_STYLE CS_HREDRAW | CS_VREDRAW
-#define DEF_WINDOW_LOAD_ICON IDI_APPLICATION
-#define DEF_WINDOW_LOAD_CURSOR IDC_ARROW
-#define DEF_WINDOW_BACKGROUND_COLOR WHITE_BRUSH
-#define DEF_WINDOW_SMALL_ICON IDI_APPLICATION
+#define GLPA_DEF_WINDOW_NAME L"Default"
+#define GLPA_DEF_WINDOW_CLASS_NAME L"Default"
+#define GLPA_DEF_WINDOW_WIDTH 1200
+#define GLPA_DEF_WINDOW_HEIGHT 800
+#define GLPA_DEF_WINDOW_DPI  1.0
+#define GLPA_DEF_WINDOW_FULL_SCREEN_TOGGLE false
+#define GLPA_DEF_WINDOW_STYLE CS_HREDRAW | CS_VREDRAW
+#define GLPA_DEF_WINDOW_LOAD_ICON IDI_APPLICATION
+#define GLPA_DEF_WINDOW_LOAD_CURSOR IDC_ARROW
+#define GLPA_DEF_WINDOW_BACKGROUND_COLOR WHITE_BRUSH
+#define GLPA_DEF_WINDOW_SMALL_ICON IDI_APPLICATION
 
-using WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
+using GLPA_WINDOW_PROC_TYPE = LRESULT CALLBACK(HWND, UINT, WPARAM, LPARAM);
 
-#define WINDOW_STATUS_DEF 0
-#define WINDOW_STATUS_HIDE 1
-#define WINDOW_STATUS_BORDERLESS_SCREEN 2
-#define WINDOW_STATUS_FULL_SCREEN 3
-#define WINDOW_STATUS_MINIMIZE 4
+#define GLPA_WINDOW_STATUS_DEF 0
+#define GLPA_WINDOW_STATUS_HIDE 1
+#define GLPA_WINDOW_STATUS_BORDERLESS_SCREEN 2
+#define GLPA_WINDOW_STATUS_FULL_SCREEN 3
+#define GLPA_WINDOW_STATUS_MINIMIZE 4
 
 class Window
 {
 public :
     Window(
-        LPCWSTR argName = DEF_WINDOW_NAME, 
-        LPCWSTR argNameApiClass = DEF_WINDOW_CLASS_NAME, 
-        int argWidth = DEF_WINDOW_WIDTH, 
-        int argHeight = DEF_WINDOW_HEIGHT, 
-        int argDpi = DEF_WINDOW_DPI,
-        double argMaxFps = DEF_MAX_FPS,
-        UINT argWndStyle = DEF_WINDOW_STYLE,
-        LPWSTR argLoadIcon = DEF_WINDOW_LOAD_ICON, 
-        LPWSTR argLoadCursor = DEF_WINDOW_LOAD_CURSOR,
-        int argBackgroundColor = DEF_WINDOW_BACKGROUND_COLOR,
-        LPWSTR argSmallIcon = DEF_WINDOW_SMALL_ICON,
+        LPCWSTR argName = GLPA_DEF_WINDOW_NAME, 
+        LPCWSTR argNameApiClass = GLPA_DEF_WINDOW_CLASS_NAME, 
+        int argWidth = GLPA_DEF_WINDOW_WIDTH, 
+        int argHeight = GLPA_DEF_WINDOW_HEIGHT, 
+        int argDpi = GLPA_DEF_WINDOW_DPI,
+        double argMaxFps = GLPA_DEF_MAX_FPS,
+        UINT argWndStyle = GLPA_DEF_WINDOW_STYLE,
+        LPWSTR argLoadIcon = GLPA_DEF_WINDOW_LOAD_ICON, 
+        LPWSTR argLoadCursor = GLPA_DEF_WINDOW_LOAD_CURSOR,
+        int argBackgroundColor = GLPA_DEF_WINDOW_BACKGROUND_COLOR,
+        LPWSTR argSmallIcon = GLPA_DEF_WINDOW_SMALL_ICON,
         bool argMinimizeAuto = false,
         bool argSingleExistence = false
     ) : name(argName), 
@@ -73,7 +73,7 @@ public :
     void updateSize();
     // void copyArgBuffer();
 
-    void create(HINSTANCE arg_hinstance, WINDOW_PROC_TYPE* pt_window_proc);
+    void create(HINSTANCE arg_hinstance, GLPA_WINDOW_PROC_TYPE* pt_window_proc);
     void updateStatus(int arg_status);
     bool isVisible();
     void graphicLoop();
@@ -89,7 +89,7 @@ public :
     bool userMsg(HWND arg_hwnd);
 
 private :
-    int status = WINDOW_STATUS_DEF;
+    int status = GLPA_WINDOW_STATUS_DEF;
     bool focus = true;
     bool created = false;
     bool visible = true;

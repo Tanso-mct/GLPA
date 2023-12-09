@@ -28,7 +28,7 @@ int WINAPI WinMain(
         true
     );
 
-    glpa.updateWindow(WINDOW_LAUNCHER, 100);
+    glpa.updateWindow(WINDOW_LAUNCHER, GLPA_WINDOW_STATUS_DEF);
 
     glpa.setSingleWindow(true);
 

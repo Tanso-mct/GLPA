@@ -5,7 +5,7 @@
 #include <thread>
 #include <time.h>
 
-#define DEF_MAX_FPS 60
+#define GLPA_DEF_MAX_FPS 60
 
 class Fps
 {

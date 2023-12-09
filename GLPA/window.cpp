@@ -4,7 +4,7 @@ void Window::getFps(){
 
 }
 
-void Window::create(HINSTANCE arghInstance, WINDOW_PROC_TYPE* ptWindowProc){
+void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc){
     wndClass.cbSize = sizeof(wndClass);
     wndClass.style = style;
     wndClass.lpfnWndProc = *ptWindowProc;
@@ -74,17 +74,17 @@ void Window::updateSize(){
 void Window::updateStatus(int argStatus){
     switch (argStatus)
     {
-    case WINDOW_STATUS_DEF :
+    case GLPA_WINDOW_STATUS_DEF :
         visible = true;
         ShowWindow(hWnd, SW_SHOWDEFAULT);
         break;
 
-    case WINDOW_STATUS_HIDE :
+    case GLPA_WINDOW_STATUS_HIDE :
         visible = false;
         ShowWindow(hWnd, SW_HIDE);
         break;
 
-    case WINDOW_STATUS_MINIMIZE :
+    case GLPA_WINDOW_STATUS_MINIMIZE :
         visible = false;
         ShowWindow(hWnd, SW_MINIMIZE);
         break;

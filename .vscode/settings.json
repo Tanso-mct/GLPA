@@ -89,7 +89,7 @@
         "condition_variable": "cpp",
         "variant": "cpp"
     },
-    "commentTranslate.hover.enabled": true,
+    "commentTranslate.hover.enabled": false,
     "dotnet.defaultSolution": "disable",
     "cSpell.words": [
         "CALCFACE",

@@ -38,16 +38,16 @@ void Glpa::createWindow(
 void Glpa::updateWindow(LPCWSTR wndName, int param){
     switch (param)
     {
-    case WINDOW_STATUS_DEF :
-        window[wndName].updateStatus(WINDOW_STATUS_DEF);
+    case GLPA_WINDOW_STATUS_DEF :
+        window[wndName].updateStatus(GLPA_WINDOW_STATUS_DEF);
         break;
 
-    case WINDOW_STATUS_HIDE :
-        window[wndName].updateStatus(WINDOW_STATUS_HIDE);
+    case GLPA_WINDOW_STATUS_HIDE :
+        window[wndName].updateStatus(GLPA_WINDOW_STATUS_HIDE);
         break;
 
-    case WINDOW_STATUS_MINIMIZE :
-        window[wndName].updateStatus(WINDOW_STATUS_MINIMIZE);
+    case GLPA_WINDOW_STATUS_MINIMIZE :
+        window[wndName].updateStatus(GLPA_WINDOW_STATUS_MINIMIZE);
         break;
 
     default:
