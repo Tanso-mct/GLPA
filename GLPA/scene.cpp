@@ -17,11 +17,28 @@ void Scene::create( std::string scName, int selectType){
 }
 
 void Scene::load(std::string scName, LPCWSTR folderPath, std::vector<std::wstring> fileNames){
-    for (auto file : fileNames){
-        std::size_t lastPeriod = file.rfind(L".");
+    if (names[scName] == GLPA_SCENE_2D){
+        for (auto file : fileNames){
+            std::size_t lastPeriod = file.rfind(L".");
 
-        std::wstring extension = file.substr(lastPeriod+1, file.size()-1);
+            std::wstring extension = file.substr(lastPeriod+1, file.size()-1);
 
-        
+            if (extension == L"png"){
+
+            }
+            
+        }
+    }
+    else if (names[scName] == GLPA_SCENE_3D){
+        for (auto file : fileNames){
+            std::size_t lastPeriod = file.rfind(L".");
+
+            std::wstring extension = file.substr(lastPeriod+1, file.size()-1);
+
+            if (extension == L"obj"){
+
+            }
+            
+        }
     }
 }
