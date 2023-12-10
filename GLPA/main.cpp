@@ -29,8 +29,10 @@ int WINAPI WinMain(
     );
 
     glpa.updateWindow(WINDOW_LAUNCHER, GLPA_WINDOW_STATUS_DEF);
-
     glpa.setSingleWindow(true);
+
+    glpa.createScene("main_load", GLPA_SCENE_2D);
+    
 
     glpa.runGraphicLoop();
 

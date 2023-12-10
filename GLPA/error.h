@@ -25,7 +25,7 @@ the English is not perfect and mistranslations may exist. Please be careful.
 /*
 引数の「LPCWSTR wndName」の値がスイッチ文の条件と一致しませんでした。
 何の処理も行いませんでした。引数の値をスイッチ文の条件のいずれかにしてください。
-条件は「window.h」ファイルの28行目の「GLPA_WINDOW_STATUS」で始まるものらです。
+条件は「window.h」ファイルの「GLPA_WINDOW_STATUS」で始まるものらです。
 
 The value of the argument "LPCWSTR wndName" did not match the condition of the switch statement.
 No processing was performed. The value of the argument should be one of the conditions of the switch statement. 
@@ -42,5 +42,16 @@ Set the correct file path to the Load function argument.
 */
 #define ERROR_PNG_LOAD NULL
 
+/*
+シーンの作成を行えませんでした。シーンの描画方法の選択が違うと思われます。
+「scene.h」ファイルの「GLPA_SCENE」で始まるものらです。
 
-#endif ERROR_Hでで
+Could not create the scene. It seems that you have chosen a different method of drawing the scene.
+They are those starting with "GLPA_SCENE" in the "scene.h" file.
+*/
+#define ERROR_SCENE_CREATE NULL
+
+
+#define ERROR_GLPA_LOAD_SCENE NULL
+
+#endif ERROR_H_

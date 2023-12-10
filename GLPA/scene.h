@@ -3,9 +3,12 @@
 
 #include <string>
 #include <unordered_map>
+#include <Windows.h>
 
 #include "scene2d.h"
 #include "scene3d.h"
+
+#include "error.h"
 
 #define GLPA_SCENE_2D 0
 #define GLPA_SCENE_3D 1
@@ -13,8 +16,8 @@
 class Scene
 {
 public :
-    void create();
-    void load();
+    void create(std::string scene_name, int select_type);
+    void load(std::string scene_name, LPCWSTR folder_path, std::vector<std::wstring> fileNames);
     void release();
     void reload();
     void remove();

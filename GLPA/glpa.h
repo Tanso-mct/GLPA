@@ -44,9 +44,9 @@ public :
 
     void runGraphicLoop();
 
-    void createScene();
+    void createScene(std::string scene_name, int select_type);
 
-    void loadScene();
+    void loadScene(std::string scene_name, LPCWSTR scene_folder_path);
 
     void setSceneUserInputFunc();
 
@@ -67,6 +67,7 @@ public :
     MSG msg;
 
     std::unordered_map<LPCWSTR, Window> window;
+    Scene scene;
 
 private :
     _In_ HINSTANCE hInstance;

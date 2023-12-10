@@ -25,13 +25,13 @@ void Glpa::createWindow(
     bool singleExistence
 ){
 
-    Window newWnd
+    Window tempWnd
     (
         wndName, wndApiClassName, wndWidth, wndHeight, wndDpi, wndMaxFps,
         wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto, singleExistence
     );
 
-    window.emplace(wndName, newWnd);
+    window.emplace(wndName, tempWnd);
     window[wndName].create(hInstance, ptWindowProc);
 }
 
@@ -90,40 +90,30 @@ void Glpa::runGraphicLoop(){
                 break;
             }
         }
-            // else if (WndPLAY.state.focus)
-            // {
-            //     WndPLAY.fpsSystem.fpsLimiter();
-
-            //     PatBlt(
-            //         WndPLAY.buffer.hBufDC, 
-            //         0, 
-            //         0, 
-            //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-            //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-            //         WHITENESS
-            //     );
-                // scrPLAYDwgContModif(WndPLAY.buffer.hBufDC);
-
-            //     InvalidateRect(WndPLAY.hWnd, NULL, FALSE);
-            // }
-            // else if (WndLAU.state.focus)
-            // {
-            //     WndLAU.fpsSystem.fpsLimiter();
-
-            //     PatBlt(
-            //         WndLAU.buffer.hBufDC, 
-            //         0, 
-            //         0, 
-            //         WINDOW_WIDTH * DISPLAY_RESOLUTION, 
-            //         WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-            //         WHITENESS
-            //     );
-            //     scrLAUDwgContModif(WndLAU.buffer.hBufDC);
-
-            //     InvalidateRect(WndLAU.hWnd, NULL, FALSE);
-            // }
-            
     }
+}
+
+void Glpa::createScene(std::string scName, int selectType){
+    scene.create(scName, selectType);
+}
+
+void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFile(scFolderPath, &findFileData);
+
+    if (hFind == INVALID_HANDLE_VALUE) {
+        throw std::runtime_error(ERROR_GLPA_LOAD_SCENE);
+    }
+
+    std::vector<std::wstring> fileNames;
+
+    do {
+        if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            fileNames.push_back(findFileData.cFileName);
+        }
+    } while (FindNextFile(hFind, &findFileData) != 0);
+
+    FindClose(hFind);
 }
 
 Glpa glpa;
