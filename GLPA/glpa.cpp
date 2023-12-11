@@ -101,17 +101,35 @@ void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
     WIN32_FIND_DATA findFileData;
     HANDLE hFind = FindFirstFile(scFolderPath, &findFileData);
 
+    std::wstring wstrScFolderPath = scFolderPath;
+
+    std::size_t lastSolid = wstrScFolderPath.rfind(L"/");
+    std::wstring wstrCuttedFolderPath = wstrScFolderPath.substr(0, lastSolid);
+
     if (hFind == INVALID_HANDLE_VALUE) {
         throw std::runtime_error(ERROR_GLPA_LOAD_SCENE);
     }
 
+    std::vector<std::wstring> folderNames;
     std::vector<std::wstring> fileNames;
 
+    std::unordered_map<std::wstring, std::vector<std::wstring>> allData;
+
     do {
-        if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            fileNames.push_back(findFileData.cFileName);
+        if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            folderNames.push_back(findFileData.cFileName);
+            allData.emplace(findFileData.cFileName, fileNames);
         }
     } while (FindNextFile(hFind, &findFileData) != 0);
+
+    for (auto it : folderNames){
+        hFind = FindFirstFile(wstrCuttedFolderPath + folderNames, &findFileData);
+        do {
+            if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                fileNames.push_back(findFileData.cFileName);
+            }
+        } while (FindNextFile(hFind, &findFileData) != 0);
+    }
 
     FindClose(hFind);
 

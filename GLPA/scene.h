@@ -16,6 +16,8 @@
 #define GLPA_SCENE_2D 0
 #define GLPA_SCENE_3D 1
 
+#define GLPA_SCENE_FOLDER_NAME "scene/"
+
 class Scene
 {
 public :
