@@ -104,7 +104,7 @@ void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
     std::wstring wstrScFolderPath = scFolderPath;
 
     std::size_t lastSolid = wstrScFolderPath.rfind(L"/");
-    std::wstring wstrCuttedFolderPath = wstrScFolderPath.substr(0, lastSolid);
+    std::wstring wstrCutFolderPath = wstrScFolderPath.substr(0, lastSolid);
 
     if (hFind == INVALID_HANDLE_VALUE) {
         throw std::runtime_error(ERROR_GLPA_LOAD_SCENE);
@@ -116,24 +116,28 @@ void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
     std::unordered_map<std::wstring, std::vector<std::wstring>> allData;
 
     do {
-        if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-            folderNames.push_back(findFileData.cFileName);
-            allData.emplace(findFileData.cFileName, fileNames);
+        if ((findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) &&
+            wcscmp(findFileData.cFileName, L".") != 0 &&
+            wcscmp(findFileData.cFileName, L"..") != 0
+        ){
+                folderNames.push_back(findFileData.cFileName);
+                allData.emplace(findFileData.cFileName, fileNames);
         }
     } while (FindNextFile(hFind, &findFileData) != 0);
 
+    std::wstring allFolderPass;
     for (auto it : folderNames){
-        hFind = FindFirstFile(wstrCuttedFolderPath + folderNames, &findFileData);
+        hFind = FindFirstFile((wstrCutFolderPath + L"/" + it + L"/*").c_str(), &findFileData);
         do {
             if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                fileNames.push_back(findFileData.cFileName);
+                allData[it].push_back(findFileData.cFileName);
             }
         } while (FindNextFile(hFind, &findFileData) != 0);
     }
 
     FindClose(hFind);
 
-    scene.load(scName, scFolderPath, fileNames);
+    scene.load(scName, wstrCutFolderPath, allData);
 }
 
 Glpa glpa;

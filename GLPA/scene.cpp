@@ -16,46 +16,47 @@ void Scene::create( std::string scName, int selectType){
     }
 }
 
-void Scene::load(std::string scName, LPCWSTR folderPath, std::vector<std::wstring> fileNames){
+void Scene::load(
+    std::string scName, 
+    std::wstring folderPath, 
+    std::unordered_map<std::wstring, std::vector<std::wstring>> allData
+){
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string narrowFolderPath = converter.to_bytes(folderPath);
     std::string narrowName;
     std::size_t lastPeriod;
     std::string extension;
 
-    std::size_t lastSolid = narrowFolderPath.rfind("/");
-    std::string narrowCuttedFolderPath = narrowFolderPath.substr(0, lastSolid);
-
-    std::string sceneFolderName = GLPA_SCENE_FOLDER_NAME;
-    std::size_t sceneFolderNamePos = narrowFolderPath.rfind(sceneFolderName);
-    std::string groupName = narrowFolderPath.substr(
-        sceneFolderNamePos+sceneFolderName.size(), lastSolid - (sceneFolderNamePos+sceneFolderName.size())
-    );
-
     if (names[scName] == GLPA_SCENE_2D){
-        for (auto name : fileNames){
-            narrowName = converter.to_bytes(name);
+        for (auto group : allData){
+            for (auto pngName : group.second){
+                narrowName = converter.to_bytes(pngName);
 
-            lastPeriod = narrowName.rfind(".");
-            extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
+                lastPeriod = narrowName.rfind(".");
+                extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
 
-            if (extension == "png"){
-                data2d[scName].loadPng(narrowCuttedFolderPath, groupName, narrowName);
+                if (extension == "png"){
+                    data2d[scName].loadPng(
+                        narrowFolderPath + "/" + converter.to_bytes(group.first), 
+                        converter.to_bytes(group.first), 
+                        narrowName
+                    );
+                }
             }
-            
         }
     }
     else if (names[scName] == GLPA_SCENE_3D){
-        for (auto name : fileNames){
-            narrowName = converter.to_bytes(name);
+        for (auto group : allData){
+            for (auto pngName : group.second){
+                narrowName = converter.to_bytes(pngName);
 
-            lastPeriod = narrowName.rfind(".");
-            extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
+                lastPeriod = narrowName.rfind(".");
+                extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
 
-            if (extension == "obj"){
-
+                if (extension == "obj"){
+                    
+                }
             }
-            
         }
     }
 }

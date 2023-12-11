@@ -22,7 +22,11 @@ class Scene
 {
 public :
     void create(std::string scene_name, int select_type);
-    void load(std::string scene_name, LPCWSTR folder_path, std::vector<std::wstring> fileNames);
+    void load(
+        std::string scene_name, 
+        std::wstring folder_path, 
+        std::unordered_map<std::wstring, std::vector<std::wstring>> all_data
+    );
     void release();
     void reload();
     void remove();
