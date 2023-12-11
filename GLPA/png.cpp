@@ -40,7 +40,6 @@ bool Png::load(std::string filePath){
         }
     }
 
-    // ピクセルデータの使用が終わったら解放
     stbi_image_free(pixels);
     return true;
 }

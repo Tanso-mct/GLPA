@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <Windows.h>
 
+#include <locale>
+#include <codecvt>
+
 #include "scene2d.h"
 #include "scene3d.h"
 

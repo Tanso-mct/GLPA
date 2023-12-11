@@ -17,23 +17,35 @@ void Scene::create( std::string scName, int selectType){
 }
 
 void Scene::load(std::string scName, LPCWSTR folderPath, std::vector<std::wstring> fileNames){
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    std::string narrowFolderPath;
+    std::string narrowName;
+    std::size_t lastPeriod;
+    std::string extension;
+    std::size_t lastSolid;
+    std::string groupName;
     if (names[scName] == GLPA_SCENE_2D){
-        for (auto file : fileNames){
-            std::size_t lastPeriod = file.rfind(L".");
+        for (auto name : fileNames){
+            narrowFolderPath = converter.to_bytes(folderPath);
+            narrowName = converter.to_bytes(name);
 
-            std::wstring extension = file.substr(lastPeriod+1, file.size()-1);
+            lastPeriod = narrowName.rfind(".");
+            extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
 
-            if (extension == L"png"){
+            lastSolid = narrowFolderPath.rfind("/");
+            groupName = narrowFolderPath.substr(lastSolid+1, narrowName.size()-1);
 
+            if (extension == "png"){
+                data2d[scName].loadPng(narrowFolderPath, groupName, narrowName);
             }
             
         }
     }
     else if (names[scName] == GLPA_SCENE_3D){
-        for (auto file : fileNames){
-            std::size_t lastPeriod = file.rfind(L".");
+        for (auto name : fileNames){
+            std::size_t lastPeriod = name.rfind(L".");
 
-            std::wstring extension = file.substr(lastPeriod+1, file.size()-1);
+            std::wstring extension = name.substr(lastPeriod+1, name.size()-1);
 
             if (extension == L"obj"){
 

@@ -114,6 +114,8 @@ void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
     } while (FindNextFile(hFind, &findFileData) != 0);
 
     FindClose(hFind);
+
+    scene.load(scName, scFolderPath, fileNames);
 }
 
 Glpa glpa;
