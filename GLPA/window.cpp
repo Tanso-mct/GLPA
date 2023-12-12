@@ -107,23 +107,23 @@ void Window::graphicLoop(){
     {
         getFps();
 
-        std::size_t imageDrawX = 200;
-        std::size_t imageDrawY = 300;
-        std::size_t imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
+        // std::size_t imageDrawX = 200;
+        // std::size_t imageDrawY = 300;
+        // std::size_t imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
 
-        Png temp;
-        temp.load("resource/scene/Launcher_load/image1.png");
+        // Png temp;
+        // temp.load("resource/scene/Launcher_load/image1.png");
 
-        for(std::size_t y = 0; y <= temp.height; y++)
-        {
-            for(std::size_t x = 0; x <= temp.width; x++)
-            {
-                if (x < temp.width && y < temp.height)
-                {
-                    lpPixel[imageDrawPoint + (x+y*width * dpi)] = temp.data[x+y*temp.width];
-                }  
-            }
-        }
+        // for(std::size_t y = 0; y <= temp.height; y++)
+        // {
+        //     for(std::size_t x = 0; x <= temp.width; x++)
+        //     {
+        //         if (x < temp.width && y < temp.height)
+        //         {
+        //             lpPixel[imageDrawPoint + (x+y*width * dpi)] = temp.data[x+y*temp.width];
+        //         }  
+        //     }
+        // }
         
         InvalidateRect(hWnd, NULL, FALSE);
     }

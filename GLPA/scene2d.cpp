@@ -8,7 +8,7 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
     std::size_t strSecondSpace = fileName.rfind(" ");
 
     std::string coordinateX, coordinateY;
-    if (strFirstSpace != std::string::npos || strSecondSpace != std::string::npos){
+    if (strFirstSpace == std::string::npos || strSecondSpace == std::string::npos){
         throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
     }
 
@@ -17,16 +17,18 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
     tempImage.pos.x = std::stod(coordinateX);
     tempImage.pos.y = std::stod(coordinateY);
 
+    std::string cutFileName = fileName.substr(0, strFirstSpace);
+
     tempImage.png.load(filePath);
 
     if(group.find(groupName) != group.end()){
-        group[groupName].push_back(fileName);
+        group[groupName].push_back(cutFileName);
     }
     else{
         std::vector<std::string> tempVec;
         group.emplace(groupName, tempVec);
-        group[groupName].push_back(fileName);
+        group[groupName].push_back(cutFileName);
     }
 
-    pngAttribute.emplace(fileName, tempImage);
+    pngAttribute.emplace(cutFileName, tempImage);
 }
