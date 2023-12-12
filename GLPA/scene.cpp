@@ -1,5 +1,10 @@
 #include "scene.h"
 
+void Scene::setFolderPass(std::wstring scNameFolderPass){
+    std::size_t lastSolid =  scNameFolderPass.rfind(L"/");
+    folderPass = scNameFolderPass.substr(0, lastSolid);
+}
+
 void Scene::create( std::string scName, int selectType){
     if (selectType == GLPA_SCENE_2D){
         Scene2d tempScene2d;

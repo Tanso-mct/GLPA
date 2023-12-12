@@ -9,7 +9,7 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
 
     std::string coordinateX, coordinateY;
     if (strFirstSpace != std::string::npos || strSecondSpace != std::string::npos){
-        throw std::runtime_error()
+        throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
     }
 
     coordinateX = fileName.substr(strFirstSpace, strSecondSpace - strFirstSpace);

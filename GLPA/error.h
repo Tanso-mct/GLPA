@@ -51,7 +51,27 @@ They are those starting with "GLPA_SCENE" in the "scene.h" file.
 */
 #define ERROR_SCENE_CREATE NULL
 
+/*
+シーンフォルダー内にある、シーンごとのデータを格納するフォルダーへのパスが正しくないと思われます。
+シーンデータをまとめるフォルダーを作成し、その中にシーンごとのデータを格納するフォルダーを作成してください。
+また、シーンデータをまとめるフォルダーの中に、画像データや音声データなどフォルダーではない物は配置せず、画像データなどはシーンごとのフォルダーの中に配置してください。
 
+The path to the folder in the scene folder that contains the data for each scene is probably incorrect.
+Create a folder to organize scene data, and within that folder, create a folder to store data for each scene.
+In addition, do not place non-folder items such as image data or sound data in folders that organize scene data, 
+but place image data and other data in folders for each scene.
+*/
 #define ERROR_GLPA_LOAD_SCENE NULL
+
+/*
+2Dシーンデータの画像の名前にその画像を配置する2次元座標が含まれていないと思われます。
+画像ファイルの名前は「画像名 X座標 Y座標」のようにしてください。空欄は半角スペースで入力してください。
+
+It is likely that the name of the image in the 2d scene data does not include the 2d coordinates 
+in which the image is placed.
+The name of the image file should be something like "Image Name X-coordinates Y-coordinates". 
+Blank spaces should be entered using single-byte spaces.
+*/
+#define ERROR_SCENE2D_LOADPNG NULL
 
 #endif ERROR_H_
