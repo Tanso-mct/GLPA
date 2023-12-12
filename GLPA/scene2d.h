@@ -9,6 +9,11 @@
 #include "image.h"
 #include "error.h"
 
+#define GLPA_SCENE2D_FILENAME_X "_@x"
+#define GLPA_SCENE2D_FILENAME_X_SIZE 3
+#define GLPA_SCENE2D_FILENAME_Y "_@y"
+#define GLPA_SCENE2D_FILENAME_Y_SIZE 3
+
 class Scene2d
 {
 public :

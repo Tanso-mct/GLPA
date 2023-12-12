@@ -4,20 +4,27 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
     Image tempImage;
     std::string filePath = folderPath + "/" + fileName;
 
-    std::size_t strFirstSpace = fileName.find(" ");
-    std::size_t strSecondSpace = fileName.rfind(" ");
+    std::size_t strForwardPosX = fileName.find(GLPA_SCENE2D_FILENAME_X);
+    std::size_t strBehindPosX = fileName.find(GLPA_SCENE2D_FILENAME_X) + GLPA_SCENE2D_FILENAME_X_SIZE;
+    std::size_t strForwardPosY = fileName.rfind(GLPA_SCENE2D_FILENAME_Y);
+    std::size_t strBehindPosY = fileName.rfind(GLPA_SCENE2D_FILENAME_Y) + GLPA_SCENE2D_FILENAME_Y_SIZE;
 
     std::string coordinateX, coordinateY;
-    if (strFirstSpace == std::string::npos || strSecondSpace == std::string::npos){
+    if (
+        strForwardPosX == std::string::npos ||
+        strBehindPosX == std::string::npos ||
+        strForwardPosY == std::string::npos ||
+        strBehindPosY == std::string::npos
+    ){
         throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
     }
 
-    coordinateX = fileName.substr(strFirstSpace, strSecondSpace - strFirstSpace);
-    coordinateY = fileName.substr(strSecondSpace, fileName.size() - strSecondSpace);
+    coordinateX = fileName.substr(strBehindPosX, strForwardPosY - strBehindPosX);
+    coordinateY = fileName.substr(strBehindPosY, fileName.size() - strBehindPosY);
     tempImage.pos.x = std::stod(coordinateX);
     tempImage.pos.y = std::stod(coordinateY);
 
-    std::string cutFileName = fileName.substr(0, strFirstSpace);
+    std::string cutFileName = fileName.substr(0, strForwardPosX);
 
     tempImage.png.load(filePath);
 

@@ -65,12 +65,13 @@ but place image data and other data in folders for each scene.
 
 /*
 2Dシーンデータの画像の名前にその画像を配置する2次元座標が含まれていないと思われます。
-画像ファイルの名前は「画像名 X座標 Y座標」のようにしてください。空欄は半角スペースで入力してください。
+画像ファイルの名前は「"画像名"_@x"X座標"_@y"Y座標"」のようにしてください。
+PhotoShopの場合、GLPA説明書にあるようにスクリプトを使用してシーンデータを出力することもできます。
 
 It is likely that the name of the image in the 2d scene data does not include the 2d coordinates 
 in which the image is placed.
-The name of the image file should be something like "Image Name X-coordinates Y-coordinates". 
-Blank spaces should be entered using single-byte spaces.
+The name of the image file should be something like ""image name" @x "x-coordinates" @y "y-coordinates"".
+In Photo shop, you can also use scripts to output scene data as described in the glpa manual.
 */
 #define ERROR_SCENE2D_LOADPNG NULL
 
