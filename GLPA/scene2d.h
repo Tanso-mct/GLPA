@@ -7,6 +7,7 @@
 
 #include "user_input.h"
 #include "image.h"
+#include "error.h"
 
 class Scene2d
 {

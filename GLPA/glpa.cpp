@@ -99,16 +99,17 @@ void Glpa::createScene(std::string scName, int selectType){
 
 void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
     WIN32_FIND_DATA findFileData;
-    HANDLE hFind = FindFirstFile(scFolderPath, &findFileData);
-
     std::wstring wstrScFolderPath = scFolderPath;
+    wstrScFolderPath += L"/*";
 
-    std::size_t lastSolid = wstrScFolderPath.rfind(L"/");
-    std::wstring wstrCutFolderPath = wstrScFolderPath.substr(0, lastSolid);
+    HANDLE hFind = FindFirstFile(scFolderPath, &findFileData);
 
     if (hFind == INVALID_HANDLE_VALUE) {
         throw std::runtime_error(ERROR_GLPA_LOAD_SCENE);
     }
+
+    std::size_t lastSolid = wstrScFolderPath.rfind(L"/");
+    std::wstring wstrCutFolderPath = wstrScFolderPath.substr(0, lastSolid);
 
     std::vector<std::wstring> folderNames;
     std::vector<std::wstring> fileNames;

@@ -12,9 +12,8 @@ public :
 
     bool visible = true;
     Png png;
-
-private :
     Vec2d pos;
+
 };
 
 

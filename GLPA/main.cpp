@@ -32,7 +32,7 @@ int WINAPI WinMain(
     glpa.setSingleWindow(true);
 
     glpa.createScene("main_load", GLPA_SCENE_2D);
-    glpa.loadScene("main_load", L"resource/scene/Launcher_load/*");
+    glpa.loadScene("main_load", L"resource/scene/Launcher_load");
     
 
     glpa.runGraphicLoop();
