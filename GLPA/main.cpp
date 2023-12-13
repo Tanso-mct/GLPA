@@ -15,14 +15,14 @@ int WINAPI WinMain(
     (
         WINDOW_LAUNCHER,
         WINDOWCLASS_LAUNCHER,
-        1000,
-        650,
+        1920,
+        1080,
         1,
         60,
         CS_HREDRAW | CS_VREDRAW,
         IDI_APPLICATION,
         IDC_ARROW,
-        WHITE_BRUSH,
+        BLACK_BRUSH,
         IDI_APPLICATION,
         false,
         true

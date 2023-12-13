@@ -2,6 +2,7 @@
 #define BUFFER2D_CUH_
 
 #include <Windows.h>
+#include <algorithm> 
 
 class Buffer2d
 {
@@ -14,6 +15,7 @@ public :
     DWORD alphaBlend(DWORD new_color, DWORD back_color);
     
 private :
+    bool started = false;
     double red;
     double green;
     double blue;

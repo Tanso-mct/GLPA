@@ -68,8 +68,8 @@ void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi)
 
                         wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
                         = buffer.alphaBlend(
-                            (DWORD)it.second.png.data[x+y*it.second.png.width], 
-                            (DWORD)wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                            (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+                            (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
                         );
                     }
                 }

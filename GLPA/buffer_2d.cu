@@ -4,12 +4,11 @@ void Buffer2d::GetCalcColorComponents(DWORD rgbaValue) {
     red = (rgbaValue & 0xFF000000) >> 24;
     green = (rgbaValue & 0x00FF0000) >> 16;
     blue = (rgbaValue & 0x0000FF00) >> 8;
-    alpha = rgbaValue & 0x000000FF; 
+    alpha = rgbaValue & 0x000000FF;
 
-    red = red / 255;
-    green = green / 255;
-    blue = blue / 255;
-    alpha = alpha / 255;
+    // if (alpha == 0){
+    //     alpha = 255;
+    // }
 }
 
 
@@ -19,10 +18,9 @@ void Buffer2d::GetBackColorComponents(DWORD rgbaValue){
     backBlue = (rgbaValue & 0x0000FF00) >> 8;
     backAlpha = rgbaValue & 0x000000FF;
 
-    backRed = backRed / 255;
-    backGreen = backGreen / 255;
-    backBlue = backBlue / 255;
-    backAlpha = backAlpha / 255;
+    // if (backAlpha == 0){
+    //     backAlpha = 255;
+    // }
 }
 
 
@@ -39,9 +37,9 @@ DWORD Buffer2d::alphaBlend(DWORD newColor, DWORD backColor){
     GetBackColorComponents(backColor);
 
     // final color = background color + (overlap color - background color) * (alpha / 255)
-    resultRed = (backRed * (1 - alpha) + red * alpha) * 255;
-    resultGreen = (backGreen * (1 - alpha) + green * alpha) * 255;
-    resultBlue = (backBlue * (1 - alpha) + blue * alpha) * 255;
+    resultRed = red + (red - backRed) * std::round((alpha / 255));
+    resultGreen = green + (green - backGreen) * std::round((alpha / 255));
+    resultBlue = blue + (blue - backBlue) * std::round((alpha / 255));
 
     DWORD rtRgbaValue;
     SetRGBAValue(&rtRgbaValue);
