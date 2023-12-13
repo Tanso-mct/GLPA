@@ -65,12 +65,30 @@ void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi)
                     ){
                         // wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)] 
                         // = it.second.png.data[x+y*it.second.png.width];
+                        
+                        BYTE red, green, blue, alpha;
+                        red = (it.second.png.data[x+y*it.second.png.width] >> 16) & 0xFF;
+                        green = (it.second.png.data[x+y*it.second.png.width] >> 8) & 0xFF;
+                        blue = it.second.png.data[x+y*it.second.png.width] & 0xFF;
+                        alpha = (it.second.png.data[x+y*it.second.png.width] >> 24) & 0xFF;
 
-                        wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-                        = buffer.alphaBlend(
-                            (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-                            (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
-                        );
+                        if (alpha != 0x00){
+                            wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)] 
+                            = it.second.png.data[x+y*it.second.png.width];
+
+
+                            // wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                            // = buffer.alphaBlend(
+                            //     (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+                            //     (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
+                            // );
+                        }
+
+                        // wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                        // = buffer.alphaBlend(
+                        //     (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+                        //     (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
+                        // );
                     }
                 }
             }

@@ -7,12 +7,12 @@
 class Buffer2d
 {
 public :  
-    void GetCalcColorComponents(DWORD rgba_value);
-    void GetBackColorComponents(DWORD rgba_value);
+    // void GetCalcColorComponents(DWORD rgba_value);
+    // void GetBackColorComponents(DWORD rgba_value);
 
-    void SetRGBAValue(DWORD* rgba_value);
+    // void SetRGBAValue(DWORD* rgba_value);
 
-    DWORD alphaBlend(DWORD new_color, DWORD back_color);
+    // DWORD alphaBlend(DWORD new_color, DWORD back_color);
     
 private :
     bool started = false;

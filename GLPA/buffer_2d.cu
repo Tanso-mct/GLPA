@@ -1,48 +1,38 @@
 #include "buffer_2d.cuh"
 
-void Buffer2d::GetCalcColorComponents(DWORD rgbaValue) {
-    red = (rgbaValue & 0xFF000000) >> 24;
-    green = (rgbaValue & 0x00FF0000) >> 16;
-    blue = (rgbaValue & 0x0000FF00) >> 8;
-    alpha = rgbaValue & 0x000000FF;
+// // RGBAデータを格納する構造体
+// struct Pixel {
+//     unsigned char r, g, b, a; // Red, Green, Blue, Alpha
+// };
 
-    // if (alpha == 0){
-    //     alpha = 255;
-    // }
-}
+// // アルファブレンディング関数
+// void AlphaBlend(const Pixel& srcPixel, const Pixel& destPixel, Pixel& resultPixel) {
+//     float alpha = static_cast<float>(srcPixel.a) / 255.0f;
+//     float invAlpha = 1.0f - alpha;
 
+//     resultPixel.r = static_cast<unsigned char>(alpha * srcPixel.r + invAlpha * destPixel.r);
+//     resultPixel.g = static_cast<unsigned char>(alpha * srcPixel.g + invAlpha * destPixel.g);
+//     resultPixel.b = static_cast<unsigned char>(alpha * srcPixel.b + invAlpha * destPixel.b);
+//     resultPixel.a = static_cast<unsigned char>(srcPixel.a + invAlpha * destPixel.a);
+// }
 
-void Buffer2d::GetBackColorComponents(DWORD rgbaValue){
-    backRed = (rgbaValue & 0xFF000000) >> 24;
-    backGreen = (rgbaValue & 0x00FF0000) >> 16;
-    backBlue = (rgbaValue & 0x0000FF00) >> 8;
-    backAlpha = rgbaValue & 0x000000FF;
+// // 上に重ねる画像と下にある画像のピクセルを取得
+// Pixel srcPixel, destPixel, resultPixel;
 
-    // if (backAlpha == 0){
-    //     backAlpha = 255;
-    // }
-}
+// srcPixel.r = (srcImageData[index] >> 16) & 0xFF;
+// srcPixel.g = (srcImageData[index] >> 8) & 0xFF;
+// srcPixel.b = srcImageData[index] & 0xFF;
+// srcPixel.a = (srcImageData[index] >> 24) & 0xFF;
 
+// destPixel.r = (destImageData[index] >> 16) & 0xFF;
+// destPixel.g = (destImageData[index] >> 8) & 0xFF;
+// destPixel.b = destImageData[index] & 0xFF;
+// destPixel.a = (destImageData[index] >> 24) & 0xFF;
 
-void Buffer2d::SetRGBAValue(DWORD* rgbaValue){
+// // アルファブレンディングを適用
+// AlphaBlend(srcPixel, destPixel, resultPixel);
 
-    *rgbaValue |= (DWORD)resultRed << 24;
-    *rgbaValue |= (DWORD)resultGreen << 16;
-    *rgbaValue |= (DWORD)resultBlue << 8;
-    *rgbaValue |= (DWORD)alpha;
-}
+// // 最終的なRGBA値をLPDWORDに格納
+// LPDWORD finalPixel = &srcImageData[index]; // 上に重ねる画像のデータを更新する場合は変更が必要
 
-DWORD Buffer2d::alphaBlend(DWORD newColor, DWORD backColor){
-    GetCalcColorComponents(newColor);
-    GetBackColorComponents(backColor);
-
-    // final color = background color + (overlap color - background color) * (alpha / 255)
-    resultRed = red + (red - backRed) * std::round((alpha / 255));
-    resultGreen = green + (green - backGreen) * std::round((alpha / 255));
-    resultBlue = blue + (blue - backBlue) * std::round((alpha / 255));
-
-    DWORD rtRgbaValue;
-    SetRGBAValue(&rtRgbaValue);
-
-    return rtRgbaValue;
-}
+// *finalPixel = (resultPixel.a << 24) | (resultPixel.r << 16) | (resultPixel.g << 8) | resultPixel.b;
