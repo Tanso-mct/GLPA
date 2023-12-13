@@ -14,6 +14,8 @@
 #define GLPA_SCENE2D_FILENAME_Y "_@y"
 #define GLPA_SCENE2D_FILENAME_Y_SIZE 3
 
+#include "buffer_2d.cuh"
+
 class Scene2d
 {
 public :
@@ -33,6 +35,8 @@ private :
     UserInput userInput;
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
+
+    Buffer2d buffer;
 
 };
 
