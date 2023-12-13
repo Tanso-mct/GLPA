@@ -32,13 +32,12 @@ public :
     void remove();
     void update();
 
-    
-
-private :
-    std::wstring folderPass;
     std::unordered_map<std::string, int> names;
     std::unordered_map<std::string, Scene2d> data2d;
     std::unordered_map<std::string, Scene3d> data3d;
+
+private :
+    std::wstring folderPass;
 
 };
 

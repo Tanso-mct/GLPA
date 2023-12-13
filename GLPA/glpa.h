@@ -56,15 +56,17 @@ public :
 
     void setSceneFrameFunc();
 
-    void selectUseScene();
+    void selectUseScene(LPCWSTR target_window_name, std::string scene_name);
 
     void selectUseCamera();
 
-    void inputCameraInfo();
+    void editImageInfo();
 
-    void inputObjectInfo();
+    void editCameraInfo();
 
-    void inputCharacterInfo();
+    void editObjectInfo();
+
+    void editCharacterInfo();
 
     MSG msg;
 

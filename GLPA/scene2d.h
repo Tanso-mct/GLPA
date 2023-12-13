@@ -20,6 +20,15 @@ public :
     void loadPng(std::string folder_path, std::string group_name, std::string file_name);
     void release();
 
+    void showGroup();
+
+    void update(
+        LPDWORD window_buffer,
+        int window_width,
+        int window_height,
+        int window_dpi
+    );
+
 private :
     UserInput userInput;
     std::unordered_map<std::string, std::vector<std::string>> group;

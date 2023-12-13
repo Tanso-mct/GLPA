@@ -42,9 +42,6 @@
     <ClCompile Include="base_color.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="buffer_2d.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="buffer_3d.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -126,9 +123,6 @@
     <ClCompile Include="fps.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="button.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="glpa.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -142,9 +136,6 @@
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="scene3d.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="scroll.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
@@ -168,9 +159,6 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="base_color.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="buffer_2d.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="buffer_3d.h">
@@ -251,9 +239,6 @@
     <ClInclude Include="fps.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
-    <ClInclude Include="button.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
     <ClInclude Include="glpa.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
@@ -267,9 +252,6 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="scene3d.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="scroll.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
@@ -294,6 +276,12 @@
     </CudaCompile>
     <CudaCompile Include="camera.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="buffer_2d.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="buffer_2d.cu">
+      <Filter>ソース ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

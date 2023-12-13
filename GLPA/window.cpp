@@ -107,6 +107,10 @@ void Window::graphicLoop(){
     {
         getFps();
 
+        if (ptScene->names[useScene] == GLPA_SCENE_2D){
+            ptScene->data2d[useScene].update(lpPixel, width, height, dpi);
+        }
+
         // std::size_t imageDrawX = 200;
         // std::size_t imageDrawY = 300;
         // std::size_t imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
@@ -198,6 +202,7 @@ bool Window::createMsg(HWND argHWnd){
         hBufBmpInfo.bmiHeader.biCompression = BI_RGB;
         
         hBufDC = CreateCompatibleDC(hWndDC);
+        
         hBufBmp = CreateDIBSection
         (
             NULL, 
@@ -274,4 +279,9 @@ bool Window::userMsg(HWND argHWnd){
     }
     
     return false;
+}
+
+void Window::setScene(Scene *argPtScene, std::string scName){
+    ptScene = argPtScene;
+    useScene = scName;
 }

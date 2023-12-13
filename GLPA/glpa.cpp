@@ -148,6 +148,12 @@ void Glpa::releaseScene(std::string scName){
 }
 
 
+
+void Glpa::selectUseScene(LPCWSTR targetWndName, std::string scName){
+    window[targetWndName].setScene(&scene, scName);
+}
+
+
 Glpa glpa;
 
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){

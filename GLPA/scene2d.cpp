@@ -48,3 +48,26 @@ void Scene2d::release(){
 
     pngAttribute.clear();
 }
+
+
+void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
+    int drawPoint;
+    for(auto it : pngAttribute){
+        if (it.second.visible){
+            drawPoint = it.second.pos.x + it.second.pos.y*wndWidth * wndDpi;
+            for(int y = 0; y < it.second.png.height; y++)
+            {
+                for(int x = 0; x < it.second.png.width; x++)
+                {
+                    if(
+                        (it.second.pos.x + x) >= 0 && (it.second.pos.y + y) >= 0 &&
+                        (it.second.pos.x + x) < wndWidth && (it.second.pos.y + y) < wndHeight
+                    ){
+                        wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)] 
+                        = it.second.png.data[x+y*it.second.png.width];
+                    }
+                }
+            }
+        }
+    }
+}

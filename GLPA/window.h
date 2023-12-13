@@ -8,8 +8,8 @@
 #include <vector>
 
 #include "png.h"
-
 #include "fps.h"
+#include "scene.h"
 
 #define GLPA_DEF_WINDOW_NAME L"Default"
 #define GLPA_DEF_WINDOW_CLASS_NAME L"Default"
@@ -88,6 +88,8 @@ public :
     bool paintMsg(HWND arg_hwnd);
     bool userMsg(HWND arg_hwnd);
 
+    void setScene(Scene* arg_pt_scene, std::string scene_name);
+
 private :
     int status = GLPA_WINDOW_STATUS_DEF;
     bool focus = true;
@@ -122,6 +124,9 @@ private :
     HBITMAP hBufBmp = nullptr;
     BITMAPINFO hBufBmpInfo;
     LPDWORD lpPixel;
+
+    Scene* ptScene;
+    std::string useScene;
 
 
 };

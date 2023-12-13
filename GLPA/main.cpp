@@ -34,7 +34,8 @@ int WINAPI WinMain(
     glpa.createScene(SCENE_MAIN_LOAD, GLPA_SCENE_2D);
     glpa.loadScene(SCENE_MAIN_LOAD, SCENE_FOLDER_PASS_MAIN_LOAD);
     
-
+    glpa.selectUseScene(WINDOW_LAUNCHER, SCENE_MAIN_LOAD);
+    
     glpa.runGraphicLoop();
 
     glpa.releaseScene(SCENE_MAIN_LOAD);

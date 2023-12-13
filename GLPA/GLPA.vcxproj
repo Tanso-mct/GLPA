@@ -169,7 +169,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
     </CudaCompile>
-    <ClCompile Include="buffer_2d.cpp" />
+    <CudaCompile Include="buffer_2d.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="buffer_3d.cpp" />
     <ClCompile Include="hitbox.cpp" />
     <ClCompile Include="main.cpp" />
@@ -182,7 +185,9 @@
   <ItemGroup>
     <ClInclude Include="ambient_occlusion.h" />
     <ClInclude Include="base_color.h" />
-    <ClInclude Include="buffer_2d.h" />
+    <CudaCompile Include="buffer_2d.cuh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </CudaCompile>
     <ClInclude Include="buffer_3d.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="character.h" />

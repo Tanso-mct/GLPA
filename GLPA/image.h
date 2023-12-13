@@ -7,8 +7,11 @@
 class Image
 {
 public :
+    void show();
     void move();
-    bool judegeMouseOn();
+    void scale();
+    void rotate();
+    bool judgeMouseOn();
 
     bool visible = true;
     Png png;
