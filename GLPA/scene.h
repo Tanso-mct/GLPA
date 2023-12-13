@@ -27,7 +27,7 @@ public :
         std::wstring folder_path, 
         std::unordered_map<std::wstring, std::vector<std::wstring>> all_data
     );
-    void release();
+    void release(std::string scene_name);
     void reload();
     void remove();
     void update();

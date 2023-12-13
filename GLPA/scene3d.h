@@ -6,6 +6,7 @@
 class Scene3d
 {
 public :
+    void release();
 
 private :
     UserInput userInput;

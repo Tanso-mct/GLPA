@@ -39,3 +39,12 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
 
     pngAttribute.emplace(cutFileName, tempImage);
 }
+
+
+void Scene2d::release(){
+    for(auto it : pngAttribute){
+        it.second.png.release();
+    }
+
+    pngAttribute.clear();
+}

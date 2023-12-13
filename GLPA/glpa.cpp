@@ -142,6 +142,12 @@ void Glpa::loadScene(std::string scName, LPCWSTR scFolderPath){
     scene.load(scName, wstrCutFolderPath, allData);
 }
 
+
+void Glpa::releaseScene(std::string scName){
+    scene.release(scName);
+}
+
+
 Glpa glpa;
 
 LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){

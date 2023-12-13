@@ -48,6 +48,8 @@ public :
 
     void loadScene(std::string scene_name, LPCWSTR scene_folder_path);
 
+    void releaseScene(std::string scene_name);
+
     void setSceneUserInputFunc();
 
     void setSceneActionFunc();
@@ -67,7 +69,6 @@ public :
     MSG msg;
 
     std::unordered_map<LPCWSTR, Window> window;
-    Scene scene;
 
 private :
     _In_ HINSTANCE hInstance;
@@ -77,6 +78,8 @@ private :
     GLPA_WINDOW_PROC_TYPE* ptWindowProc;
 
     bool singleWindow = false;
+
+    Scene scene;
 
 };
 

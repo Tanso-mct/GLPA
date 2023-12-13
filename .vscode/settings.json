@@ -90,9 +90,10 @@
         "variant": "cpp",
         "memory_resource": "cpp",
         "codecvt": "cpp",
-        "__threading_support": "cpp"
+        "__threading_support": "cpp",
+        "__mutex_base": "cpp"
     },
-    "commentTranslate.hover.enabled": true,
+    "commentTranslate.hover.enabled": false,
     "dotnet.defaultSolution": "disable",
     "cSpell.words": [
         "CALCFACE",
