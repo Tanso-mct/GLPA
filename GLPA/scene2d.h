@@ -14,6 +14,8 @@
 #define GLPA_SCENE2D_FILENAME_X_SIZE 3
 #define GLPA_SCENE2D_FILENAME_Y "_@y"
 #define GLPA_SCENE2D_FILENAME_Y_SIZE 3
+#define GLPA_SCENE2D_FILENAME_L "_@l"
+#define GLPA_SCENE2D_FILENAME_L_SIZE 3
 
 
 class Scene2d
@@ -31,10 +33,14 @@ public :
         int window_dpi
     );
 
+    std::unordered_map<std::string, int> groupOrder;
+    std::unordered_map<int, std::unordered_map<int, std::string>> layerOrder;
+
 private :
     UserInput userInput;
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
+
 
     Color color;
 

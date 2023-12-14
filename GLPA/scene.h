@@ -16,6 +16,10 @@
 #define GLPA_SCENE_2D 0
 #define GLPA_SCENE_3D 1
 
+#define GLPA_SCENE_GROUP_NAME_L L"_@l"
+#define GLPA_SCENE_GROUP_NAME_L_SIZE 3
+
+
 class Scene
 {
 public :

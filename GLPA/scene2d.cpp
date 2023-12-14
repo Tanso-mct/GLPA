@@ -9,22 +9,43 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
     std::size_t strForwardPosY = fileName.rfind(GLPA_SCENE2D_FILENAME_Y);
     std::size_t strBehindPosY = fileName.rfind(GLPA_SCENE2D_FILENAME_Y) + GLPA_SCENE2D_FILENAME_Y_SIZE;
 
+    std::size_t strForwardLayer = fileName.find(GLPA_SCENE2D_FILENAME_L);
+    std::size_t strBehindLayer = fileName.find(GLPA_SCENE2D_FILENAME_L) + GLPA_SCENE2D_FILENAME_L_SIZE;
+
     std::string coordinateX, coordinateY;
     if (
         strForwardPosX == std::string::npos ||
         strBehindPosX == std::string::npos ||
         strForwardPosY == std::string::npos ||
-        strBehindPosY == std::string::npos
+        strBehindPosY == std::string::npos ||
+        strForwardLayer == std::string::npos ||
+        strBehindLayer == std::string::npos
     ){
         throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
     }
 
     coordinateX = fileName.substr(strBehindPosX, strForwardPosY - strBehindPosX);
-    coordinateY = fileName.substr(strBehindPosY, fileName.size() - strBehindPosY);
+    coordinateY = fileName.substr(strBehindPosY, strForwardPosY);
     tempImage.pos.x = std::stod(coordinateX);
     tempImage.pos.y = std::stod(coordinateY);
 
     std::string cutFileName = fileName.substr(0, strForwardPosX);
+
+    if(layerOrder.find(groupOrder[groupName]) != layerOrder.end()){
+        group[groupName].push_back(cutFileName);
+        layerOrder[groupOrder[groupName]].emplace(
+            std::stod(fileName.substr(strBehindLayer, fileName.size() - strBehindLayer)),
+            cutFileName
+        );
+    }
+    else{
+        std::unordered_map<int, std::string> temp;
+        temp.emplace(
+            std::stod(fileName.substr(strBehindLayer, fileName.size() - strBehindLayer)),
+            cutFileName
+        );
+        layerOrder.emplace(groupOrder[groupName], temp);
+    }
 
     tempImage.png.load(filePath);
 

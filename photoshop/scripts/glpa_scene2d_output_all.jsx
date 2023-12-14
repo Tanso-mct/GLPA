@@ -1,6 +1,8 @@
 // ダイアログで出力先のフォルダを選択
 var outputPath = Folder.selectDialog("出力先フォルダを選択");
 
+var tempNum = app.activeDocument.layers.length;
+
 // ユーザーがキャンセルボタンを押した場合は処理を中断
 if (!outputPath) {
     alert("キャンセルされました。処理を中止します。");
@@ -36,9 +38,11 @@ if (!outputPath) {
         var layerName = layer.name.replace(/[\\\/\:\*\?\"\<\>\|]/g, "_"); // 予期しない文字を置換
 
         // 画像を出力
-        var outputFile = new File(outputPath + "/" + layerName + "_@x" + leftBefore + "_@y" + topBefore + ".png");
+        var outputFile = new File(outputPath + "/" + layerName + "_@x" + leftBefore + "_@y" + topBefore + "_@l" + tempNum +".png");
         var pngSaveOptions = new PNGSaveOptions();
         app.activeDocument.saveAs(outputFile, pngSaveOptions, true);
+
+        tempNum -= 1;
 
         // 元の状態に戻す
         app.activeDocument.activeHistoryState = app.activeDocument.historyStates[app.activeDocument.historyStates.length - 2];

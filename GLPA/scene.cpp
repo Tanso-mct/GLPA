@@ -32,8 +32,34 @@ void Scene::load(
     std::size_t lastPeriod;
     std::string extension;
 
+    std::unordered_map<int, std::string> tempMap;
+
     if (names[scName] == GLPA_SCENE_2D){
         for (auto group : allData){
+            if (
+                group.first.find(GLPA_SCENE_GROUP_NAME_L) == std::wstring::npos
+            ){
+                throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
+            }
+
+            // data2d[scName].layerOrder.emplace(
+            //     std::stod(
+            //         converter.to_bytes(group.first.substr(group.first.find(GLPA_SCENE_GROUP_NAME_L) + GLPA_SCENE_GROUP_NAME_L_SIZE, 
+            //         group.first.size()))
+            //     ), tempMap
+            // );
+
+            data2d[scName].groupOrder.emplace(
+                converter.to_bytes(group.first.substr(
+                    0, 
+                    group.first.find(GLPA_SCENE_GROUP_NAME_L)
+                )),
+                std::stod(
+                    converter.to_bytes(group.first.substr(group.first.find(GLPA_SCENE_GROUP_NAME_L) + GLPA_SCENE_GROUP_NAME_L_SIZE, 
+                    group.first.size()))
+                )
+            );
+            
             for (auto pngName : group.second){
                 narrowName = converter.to_bytes(pngName);
 
@@ -43,7 +69,10 @@ void Scene::load(
                 if (extension == "png"){
                     data2d[scName].loadPng(
                         narrowFolderPath + "/" + converter.to_bytes(group.first), 
-                        converter.to_bytes(group.first), 
+                        converter.to_bytes(group.first.substr(
+                            0, 
+                            group.first.find(GLPA_SCENE_GROUP_NAME_L)
+                        )),
                         narrowName
                     );
                 }

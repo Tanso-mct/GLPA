@@ -4,6 +4,7 @@
 #include "stb_image.h"
 
 bool Png::load(std::string filePath){
+    path = filePath;
     std::size_t lastSolidus = filePath.rfind("/");
 
     if (lastSolidus != std::string::npos){
