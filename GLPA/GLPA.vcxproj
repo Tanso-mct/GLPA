@@ -137,6 +137,7 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="base_color.cpp" />
     <ClCompile Include="character.cpp" />
+    <ClCompile Include="color.cpp" />
     <ClCompile Include="equation.cu" />
     <ClCompile Include="fbx.cpp" />
     <ClCompile Include="field.cpp" />
@@ -169,10 +170,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
     </CudaCompile>
-    <CudaCompile Include="buffer_2d.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CudaCompile>
     <ClCompile Include="buffer_3d.cpp" />
     <ClCompile Include="hitbox.cpp" />
     <ClCompile Include="main.cpp" />
@@ -185,12 +182,10 @@
   <ItemGroup>
     <ClInclude Include="ambient_occlusion.h" />
     <ClInclude Include="base_color.h" />
-    <CudaCompile Include="buffer_2d.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </CudaCompile>
     <ClInclude Include="buffer_3d.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="character.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="equation.cuh" />
     <ClInclude Include="error.h" />
     <ClInclude Include="fbx.h" />

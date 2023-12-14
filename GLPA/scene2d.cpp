@@ -51,10 +51,19 @@ void Scene2d::release(){
 
 
 void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
+    for(int y = 0; y < wndHeight; y++)
+    {
+        for(int x = 0; x < wndWidth; x++)
+        {
+            wndBuffer[(x+y*wndWidth * wndDpi)] = 0x00000000;
+        }
+    }
+
     int drawPoint;
     for(auto it : pngAttribute){
         if (it.second.visible){
             drawPoint = it.second.pos.x + it.second.pos.y*wndWidth * wndDpi;
+            BYTE alpha, backAlpha;
             for(int y = 0; y < it.second.png.height; y++)
             {
                 for(int x = 0; x < it.second.png.width; x++)
@@ -63,32 +72,25 @@ void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi)
                         (it.second.pos.x + x) >= 0 && (it.second.pos.y + y) >= 0 &&
                         (it.second.pos.x + x) < wndWidth && (it.second.pos.y + y) < wndHeight
                     ){
-                        // wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)] 
-                        // = it.second.png.data[x+y*it.second.png.width];
-                        
-                        BYTE red, green, blue, alpha;
-                        red = (it.second.png.data[x+y*it.second.png.width] >> 16) & 0xFF;
-                        green = (it.second.png.data[x+y*it.second.png.width] >> 8) & 0xFF;
-                        blue = it.second.png.data[x+y*it.second.png.width] & 0xFF;
                         alpha = (it.second.png.data[x+y*it.second.png.width] >> 24) & 0xFF;
+                        backAlpha = wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)];
 
                         if (alpha != 0x00){
-                            wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)] 
-                            = it.second.png.data[x+y*it.second.png.width];
-
-
-                            // wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-                            // = buffer.alphaBlend(
-                            //     (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-                            //     (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
-                            // );
+                            if (backAlpha == 0x00){
+                                wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                                = color.alphaBlend(
+                                    (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+                                    0xFF000000
+                                );
+                            }
+                            else{
+                                wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                                = color.alphaBlend(
+                                    (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+                                    (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
+                                );
+                            }   
                         }
-
-                        // wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-                        // = buffer.alphaBlend(
-                        //     (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-                        //     (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
-                        // );
                     }
                 }
             }

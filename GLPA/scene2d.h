@@ -8,13 +8,13 @@
 #include "user_input.h"
 #include "image.h"
 #include "error.h"
+#include "color.h"
 
 #define GLPA_SCENE2D_FILENAME_X "_@x"
 #define GLPA_SCENE2D_FILENAME_X_SIZE 3
 #define GLPA_SCENE2D_FILENAME_Y "_@y"
 #define GLPA_SCENE2D_FILENAME_Y_SIZE 3
 
-#include "buffer_2d.cuh"
 
 class Scene2d
 {
@@ -36,7 +36,7 @@ private :
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
 
-    Buffer2d buffer;
+    Color color;
 
 };
 

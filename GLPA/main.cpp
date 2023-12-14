@@ -22,7 +22,7 @@ int WINAPI WinMain(
         CS_HREDRAW | CS_VREDRAW,
         IDI_APPLICATION,
         IDC_ARROW,
-        BLACK_BRUSH,
+        WHITE_BRUSH,
         IDI_APPLICATION,
         false,
         true
