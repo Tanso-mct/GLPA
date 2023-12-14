@@ -41,6 +41,7 @@ public :
     std::unordered_map<int, std::unordered_map<int, std::string>> layerOrder;
 
 private :
+    bool edited = true;
     UserInput userInput;
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
