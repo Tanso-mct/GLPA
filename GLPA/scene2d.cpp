@@ -83,7 +83,7 @@ void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi)
     BYTE alpha, backAlpha;
     Image it;
     for (int i = 1; i <= layerOrder.size(); i++){
-        for (int j = 1; j < layerOrder[i].size(); j++){
+        for (int j = 1; j <= layerOrder[i].size(); j++){
             it = pngAttribute[layerOrder[i][j]];
             if (it.visible){
                 drawPoint = it.pos.x + it.pos.y*wndWidth * wndDpi;
