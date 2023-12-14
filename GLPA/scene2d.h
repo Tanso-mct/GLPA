@@ -22,9 +22,13 @@ class Scene2d
 {
 public :
     void loadPng(std::string folder_path, std::string group_name, std::string file_name);
+    void reload();
     void release();
 
+    void showImage();
     void showGroup();
+
+    void edit();
 
     void update(
         LPDWORD window_buffer,

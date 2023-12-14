@@ -10,6 +10,7 @@
 #include "png.h"
 #include "fps.h"
 #include "scene.h"
+#include "error.h"
 
 #define GLPA_DEF_WINDOW_NAME L"Default"
 #define GLPA_DEF_WINDOW_CLASS_NAME L"Default"
@@ -71,9 +72,9 @@ public :
     void getFps();
     void updateMaxFps();
     void updateSize();
-    // void copyArgBuffer();
 
     void create(HINSTANCE arg_hinstance, GLPA_WINDOW_PROC_TYPE* pt_window_proc);
+
     void updateStatus(int arg_status);
     bool isVisible();
     void graphicLoop();

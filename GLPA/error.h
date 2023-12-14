@@ -54,7 +54,8 @@ They are those starting with "GLPA_SCENE" in the "scene.h" file.
 /*
 シーンフォルダー内にある、シーンごとのデータを格納するフォルダーへのパスが正しくないと思われます。
 シーンデータをまとめるフォルダーを作成し、その中にシーンごとのデータを格納するフォルダーを作成してください。
-また、シーンデータをまとめるフォルダーの中に、画像データや音声データなどフォルダーではない物は配置せず、画像データなどはシーンごとのフォルダーの中に配置してください。
+また、シーンデータをまとめるフォルダーの中に、画像データや音声データなどフォルダーではない物は配置せず、
+画像データなどはシーンごとのフォルダーの中に配置してください。
 
 The path to the folder in the scene folder that contains the data for each scene is probably incorrect.
 Create a folder to organize scene data, and within that folder, create a folder to store data for each scene.
@@ -75,5 +76,25 @@ The name of the image file should be ""Image Name" @x "x-coordinates" @y "y-coor
 In Photo shop, you can also use scripts to output scene data as described in the glpa manual.
 */
 #define ERROR_SCENE2D_LOADPNG NULL
+
+/*
+Windowクラスの作成に失敗しました。
+GLPA::createWindow関数の引数が間違っている可能性があります。もしくは実行環境にも問題がある可能性があります。
+
+Failed to create Window class.
+The argument of the Glpa::createWindow function may be incorrect. 
+Or there may be a problem with the execution environment as well.
+*/
+#define ERROR_WINDOW_REGISTER_CLASS NULL
+
+/*
+ウィンドウの作成に失敗しました。
+GLPA::createWindow関数の引数が間違っている可能性があります。もしくは実行環境にも問題がある可能性があります。
+
+Failed to create Window.
+The argument of the Glpa::createWindow function may be incorrect. 
+Or there may be a problem with the execution environment as well.
+*/
+#define ERROR_WINDOW_CREATE NULL
 
 #endif ERROR_H_

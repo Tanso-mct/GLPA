@@ -37,12 +37,7 @@ void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc)
     LoadIcon(wndClass.hInstance, MAKEINTRESOURCE(smallIcon));
 
     if (!RegisterClassEx(&wndClass)){
-        MessageBox(
-            NULL,
-            _T("RegisterClassEx fail"),
-            name,
-            MB_ICONEXCLAMATION
-        );
+        throw std::runtime_error(ERROR_WINDOW_REGISTER_CLASS);
     }
 
     hWnd = CreateWindow(
@@ -58,12 +53,7 @@ void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc)
     );
 
     if (!hWnd){
-        MessageBox(
-            NULL,
-            _T("window make fail"),
-            name,
-            MB_ICONEXCLAMATION
-        );
+        throw std::runtime_error(ERROR_WINDOW_CREATE);
     }
 }
 
@@ -108,27 +98,10 @@ void Window::graphicLoop(){
         getFps();
 
         if (ptScene->names[useScene] == GLPA_SCENE_2D){
+            ptScene->data2d[useScene].edit();
             ptScene->data2d[useScene].update(lpPixel, width, height, dpi);
         }
 
-        // std::size_t imageDrawX = 200;
-        // std::size_t imageDrawY = 300;
-        // std::size_t imageDrawPoint = imageDrawX+ imageDrawY*width * dpi;
-
-        // Png temp;
-        // temp.load("resource/scene/Launcher_load/image1.png");
-
-        // for(std::size_t y = 0; y <= temp.height; y++)
-        // {
-        //     for(std::size_t x = 0; x <= temp.width; x++)
-        //     {
-        //         if (x < temp.width && y < temp.height)
-        //         {
-        //             lpPixel[imageDrawPoint + (x+y*width * dpi)] = temp.data[x+y*temp.width];
-        //         }  
-        //     }
-        // }
-        
         InvalidateRect(hWnd, NULL, FALSE);
     }
 }

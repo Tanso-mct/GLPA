@@ -70,6 +70,11 @@ void Scene2d::release(){
 }
 
 
+void Scene2d::edit(){
+    
+}
+
+
 void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
     for(int y = 0; y < wndHeight; y++)
     {
@@ -120,40 +125,4 @@ void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi)
             }
         }
     }
-
-    // for(auto it : pngAttribute){
-    //     if (it.second.visible){
-    //         drawPoint = it.second.pos.x + it.second.pos.y*wndWidth * wndDpi;
-    //         for(int y = 0; y < it.second.png.height; y++)
-    //         {
-    //             for(int x = 0; x < it.second.png.width; x++)
-    //             {
-    //                 if(
-    //                     (it.second.pos.x + x) >= 0 && (it.second.pos.y + y) >= 0 &&
-    //                     (it.second.pos.x + x) < wndWidth && (it.second.pos.y + y) < wndHeight
-    //                 ){
-    //                     alpha = (it.second.png.data[x+y*it.second.png.width] >> 24) & 0xFF;
-    //                     backAlpha = wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)];
-
-    //                     if (alpha != 0x00){
-    //                         if (backAlpha == 0x00){
-    //                             wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-    //                             = color.alphaBlend(
-    //                                 (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-    //                                 0xFF000000
-    //                             );
-    //                         }
-    //                         else{
-    //                             wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-    //                             = color.alphaBlend(
-    //                                 (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-    //                                 (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
-    //                             );
-    //                         }   
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 }
