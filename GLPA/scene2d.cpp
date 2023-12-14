@@ -80,40 +80,80 @@ void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi)
     }
 
     int drawPoint;
-    for(auto it : pngAttribute){
-        if (it.second.visible){
-            drawPoint = it.second.pos.x + it.second.pos.y*wndWidth * wndDpi;
-            BYTE alpha, backAlpha;
-            for(int y = 0; y < it.second.png.height; y++)
-            {
-                for(int x = 0; x < it.second.png.width; x++)
+    BYTE alpha, backAlpha;
+    Image it;
+    for (int i = 1; i <= layerOrder.size(); i++){
+        for (int j = 1; j < layerOrder[i].size(); j++){
+            it = pngAttribute[layerOrder[i][j]];
+            if (it.visible){
+                drawPoint = it.pos.x + it.pos.y*wndWidth * wndDpi;
+                for(int y = 0; y < it.png.height; y++)
                 {
-                    if(
-                        (it.second.pos.x + x) >= 0 && (it.second.pos.y + y) >= 0 &&
-                        (it.second.pos.x + x) < wndWidth && (it.second.pos.y + y) < wndHeight
-                    ){
-                        alpha = (it.second.png.data[x+y*it.second.png.width] >> 24) & 0xFF;
-                        backAlpha = wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)];
+                    for(int x = 0; x < it.png.width; x++)
+                    {
+                        if(
+                            (it.pos.x + x) >= 0 && (it.pos.y + y) >= 0 &&
+                            (it.pos.x + x) < wndWidth && (it.pos.y + y) < wndHeight
+                        ){
+                            alpha = (it.png.data[x+y*it.png.width] >> 24) & 0xFF;
+                            backAlpha = wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)];
 
-                        if (alpha != 0x00){
-                            if (backAlpha == 0x00){
-                                wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-                                = color.alphaBlend(
-                                    (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-                                    0xFF000000
-                                );
+                            if (alpha != 0x00){
+                                if (backAlpha == 0x00){
+                                    wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                                    = color.alphaBlend(
+                                        (DWORD)(it.png.data[x+y*it.png.width]), 
+                                        0xFF000000
+                                    );
+                                }
+                                else{
+                                    wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                                    = color.alphaBlend(
+                                        (DWORD)(it.png.data[x+y*it.png.width]), 
+                                        (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
+                                    );
+                                }   
                             }
-                            else{
-                                wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
-                                = color.alphaBlend(
-                                    (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
-                                    (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
-                                );
-                            }   
                         }
                     }
                 }
             }
         }
     }
+
+    // for(auto it : pngAttribute){
+    //     if (it.second.visible){
+    //         drawPoint = it.second.pos.x + it.second.pos.y*wndWidth * wndDpi;
+    //         for(int y = 0; y < it.second.png.height; y++)
+    //         {
+    //             for(int x = 0; x < it.second.png.width; x++)
+    //             {
+    //                 if(
+    //                     (it.second.pos.x + x) >= 0 && (it.second.pos.y + y) >= 0 &&
+    //                     (it.second.pos.x + x) < wndWidth && (it.second.pos.y + y) < wndHeight
+    //                 ){
+    //                     alpha = (it.second.png.data[x+y*it.second.png.width] >> 24) & 0xFF;
+    //                     backAlpha = wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)];
+
+    //                     if (alpha != 0x00){
+    //                         if (backAlpha == 0x00){
+    //                             wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+    //                             = color.alphaBlend(
+    //                                 (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+    //                                 0xFF000000
+    //                             );
+    //                         }
+    //                         else{
+    //                             wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+    //                             = color.alphaBlend(
+    //                                 (DWORD)(it.second.png.data[x+y*it.second.png.width]), 
+    //                                 (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
+    //                             );
+    //                         }   
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
