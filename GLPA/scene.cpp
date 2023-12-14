@@ -42,13 +42,6 @@ void Scene::load(
                 throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
             }
 
-            // data2d[scName].layerOrder.emplace(
-            //     std::stod(
-            //         converter.to_bytes(group.first.substr(group.first.find(GLPA_SCENE_GROUP_NAME_L) + GLPA_SCENE_GROUP_NAME_L_SIZE, 
-            //         group.first.size()))
-            //     ), tempMap
-            // );
-
             data2d[scName].groupOrder.emplace(
                 converter.to_bytes(group.first.substr(
                     0, 

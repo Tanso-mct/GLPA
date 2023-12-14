@@ -32,7 +32,6 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
     std::string cutFileName = fileName.substr(0, strForwardPosX);
 
     if(layerOrder.find(groupOrder[groupName]) != layerOrder.end()){
-        group[groupName].push_back(cutFileName);
         layerOrder[groupOrder[groupName]].emplace(
             std::stod(fileName.substr(strBehindLayer, fileName.size() - strBehindLayer)),
             cutFileName
