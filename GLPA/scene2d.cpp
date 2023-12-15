@@ -75,7 +75,7 @@ void Scene2d::edit(){
 }
 
 
-void Scene2d::update(HDC hBufferDC, LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
+void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
     if (edited = true){
         for(int y = 0; y < wndHeight; y++)
         {
@@ -127,6 +127,11 @@ void Scene2d::update(HDC hBufferDC, LPDWORD wndBuffer, int wndWidth, int wndHeig
             }
         }
     }
+
+    text.createFont(hBufDC, 100, L"HG行書体", {0, 255, 0}, TRUE);
+    text.addText(L"Temp", L"Text テキスト");
+    text.drawText(hBufDC, {10, 10}, L"Temp");
+    text.releaseFont();
 
     edited = false;
 }

@@ -6,9 +6,13 @@
 #define GLPA_NEW_COLOR 0
 #define GLPA_BACK_COLOR 1
 
+typedef struct tagRGB{
+    BYTE r, g, b;
+} Rgb;
+
 typedef struct tagRGBA{
     BYTE r, g, b, a;
-} RGBA;
+} Rgba;
 
 
 class Color
@@ -20,9 +24,9 @@ public :
     DWORD alphaBlend(DWORD new_buffer, DWORD back_buffer);
     
 private :
-    RGBA newColor;
-    RGBA backColor;
-    RGBA resultColor;
+    Rgba newColor;
+    Rgba backColor;
+    Rgba resultColor;
     DWORD resultBuffer;
 };
 

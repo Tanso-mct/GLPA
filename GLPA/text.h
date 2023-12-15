@@ -7,12 +7,15 @@
 #include <string>
 #include <tchar.h>
 
+#include "color.h"
+
 #include "vector.cuh"
 
 class Text
 {
 public :
-    void createFont(int size, std::wstring name, BOOL bold);
+    void createFont(HDC h_buffer_dc, int size, std::wstring name, Rgb color, BOOL bold);
+    void releaseFont();
     void addText(std::wstring textName, std::wstring text);
     void addTextGroup(std::vector<std::wstring> text_group);
     void drawText(HDC h_buffer_dc, Vec2d text_position, std::wstring text_name);

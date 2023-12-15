@@ -48,7 +48,6 @@ private :
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
 
-
     Color color;
     Text text;
 
