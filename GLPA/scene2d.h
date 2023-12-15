@@ -9,6 +9,7 @@
 #include "image.h"
 #include "error.h"
 #include "color.h"
+#include "text.h"
 
 #define GLPA_SCENE2D_FILENAME_X "_@x"
 #define GLPA_SCENE2D_FILENAME_X_SIZE 3
@@ -31,6 +32,7 @@ public :
     void edit();
 
     void update(
+        HDC h_buffer_dc,
         LPDWORD window_buffer,
         int window_width,
         int window_height,
@@ -48,6 +50,7 @@ private :
 
 
     Color color;
+    Text text;
 
 };
 

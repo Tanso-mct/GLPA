@@ -75,7 +75,7 @@ void Scene2d::edit(){
 }
 
 
-void Scene2d::update(LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
+void Scene2d::update(HDC hBufferDC, LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
     if (edited = true){
         for(int y = 0; y < wndHeight; y++)
         {
