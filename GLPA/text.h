@@ -11,6 +11,15 @@
 
 #include "vector.cuh"
 
+typedef struct tagTEXT_INFO{
+    int size;
+    std::wstring fontName;
+    Rgb color;
+    BOOL bold;
+    std::wstring textName;
+    std::wstring text;
+} TextInfo;
+
 class Text
 {
 public :

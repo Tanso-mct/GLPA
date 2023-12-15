@@ -2,15 +2,15 @@
 
 void Text::createFont(HDC hBufDC, int size, std::wstring name, Rgb color, BOOL bold){
     font = CreateFont(
-		size, 0,				//高さ, 幅
-		0, 0,					//角度1, 角度2
-		bold ? FW_BOLD : FW_DONTCARE,	//太さ
-		FALSE, FALSE, FALSE,	//斜体, 下線, 打消し線
-		SHIFTJIS_CHARSET,		//文字セット
-		OUT_DEFAULT_PRECIS,		//精度
-		CLIP_DEFAULT_PRECIS,	//精度
-		DEFAULT_QUALITY,		//品質
-		DEFAULT_PITCH | FF_DONTCARE, //ピッチとファミリ
+		size, 0,
+		0, 0,
+		bold ? FW_BOLD : FW_DONTCARE,
+		FALSE, FALSE, FALSE,
+		SHIFTJIS_CHARSET,
+		OUT_DEFAULT_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_DONTCARE,
 		name.c_str()
     );
 
