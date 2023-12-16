@@ -130,7 +130,7 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
 
     text.createFont(hBufDC, 100, L"HG行書体", {0, 255, 0}, TRUE);
     text.addText(L"Temp", L"Text テキスト");
-    text.drawText(hBufDC, {10, 10}, L"Temp");
+    text.drawText(hBufDC, {10, 590}, L"Temp");
     text.releaseFont();
 
     edited = false;
