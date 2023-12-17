@@ -43,7 +43,7 @@ void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc)
     hWnd = CreateWindow(
         nameApiClass,
         name,
-        WS_OVERLAPPEDWINDOW,
+        WS_SYSMENU,
         CW_USEDEFAULT, CW_USEDEFAULT,
         width, height,
         NULL,

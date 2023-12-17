@@ -13,8 +13,8 @@ int WINAPI WinMain(
 
     glpa.createWindow
     (
-        WINDOW_LAUNCHER,
-        WINDOWCLASS_LAUNCHER,
+        WINDOW_CONSOLE,
+        WINDOWCLASS_CONSOLE,
         1000,
         650,
         1,
@@ -28,17 +28,17 @@ int WINAPI WinMain(
         true
     );
 
-    glpa.updateWindow(WINDOW_LAUNCHER, GLPA_WINDOW_STATUS_DEF);
+    glpa.updateWindow(WINDOW_CONSOLE, GLPA_WINDOW_STATUS_DEF);
     glpa.setSingleWindow(true);
 
-    glpa.createScene(SCENE_MAIN_LOAD, GLPA_SCENE_2D);
-    glpa.loadScene(SCENE_MAIN_LOAD, SCENE_FOLDER_PASS_MAIN_LOAD);
+    glpa.createScene(SCENE_GLPA_CONSOLE, GLPA_SCENE_2D);
+    glpa.loadScene(SCENE_GLPA_CONSOLE, SCENE_FOLDER_PASS_GLPA_CONSOLE);
     
-    glpa.selectUseScene(WINDOW_LAUNCHER, SCENE_MAIN_LOAD);
+    glpa.selectUseScene(WINDOW_CONSOLE, SCENE_GLPA_CONSOLE);
     
     glpa.runGraphicLoop();
 
-    glpa.releaseScene(SCENE_MAIN_LOAD);
+    glpa.releaseScene(SCENE_GLPA_CONSOLE);
 
     // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is
     // Returns the exit code that has If the function exits before entering the message loop, return 0

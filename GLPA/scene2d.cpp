@@ -128,10 +128,19 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
         }
     }
 
-    text.createFont(hBufDC, 100, L"HG行書体", {0, 255, 0}, TRUE);
-    text.addText(L"Temp", L"Text テキスト");
-    text.drawText(hBufDC, {10, 590}, L"Temp");
-    text.releaseFont();
+    text.addGroup(
+        L"Temp",
+        24,
+        L"SYSTEM_FIXED_FONT",
+        {204, 204, 204},
+        FALSE,
+        {10, 10},
+        {100, 100}
+    );
+
+    text.addText(L"Temp", L"/glpa sample command　あいうえお");
+    text.drawText(hBufDC, L"Temp");
+    text.releaseGroup(L"Temp");
 
     edited = false;
 }

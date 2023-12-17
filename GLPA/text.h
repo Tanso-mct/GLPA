@@ -11,29 +11,37 @@
 
 #include "vector.cuh"
 
-typedef struct tagTEXT_INFO{
-    int size;
-    std::wstring fontName;
+typedef struct tagTEXT_GROUP{
+    HFONT font;
+    int textSize;
+    Vec2d posTopLeft;
+    Vec2d posBottomRight;
     Rgb color;
-    BOOL bold;
-    std::wstring textName;
-    std::wstring text;
-} TextInfo;
+    std::vector<std::wstring> text;
+} TextGroup;
 
 class Text
 {
 public :
-    void createFont(HDC h_buffer_dc, int size, std::wstring name, Rgb color, BOOL bold);
-    void releaseFont();
-    void addText(std::wstring textName, std::wstring text);
-    void addTextGroup(std::vector<std::wstring> text_group);
-    void drawText(HDC h_buffer_dc, Vec2d text_position, std::wstring text_name);
-    void drawTextGroup();
+    void addGroup(
+        std::wstring group_name,
+        int arg_size, 
+        std::wstring arg_font_name,
+        Rgb arg_rgb,
+        BOOL arg_bold,
+        Vec2d arg_pos_top_left,
+        Vec2d arg_pot_bottom_right
+    );
+
+    void addText(std::wstring group_name, std::wstring text);
+
+    void releaseGroup(std::wstring group_name);
+
+    void drawText(HDC h_buffer_dc, std::wstring group_name);
 
 private :
-    HFONT font;
-    std::unordered_map<std::wstring, std::wstring> textData;
-    std::unordered_map<std::wstring, std::vector<std::wstring>> groupTextData;
+    std::unordered_map<std::wstring, HFONT> font;
+    std::unordered_map<std::wstring, TextGroup> data;
 
 };
 

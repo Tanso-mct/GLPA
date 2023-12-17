@@ -5,10 +5,13 @@
 
 #include "glpa.h"
 
-#define WINDOW_LAUNCHER L"Launcher"
-#define WINDOWCLASS_LAUNCHER L"window_launcher"
+#define WINDOW_CONSOLE L"Console"
+#define WINDOWCLASS_CONSOLE L"window_console"
 
-#define SCENE_MAIN_LOAD "main_load"
+#define SCENE_GLPA_LOAD "glpa_load"
 #define SCENE_FOLDER_PASS_MAIN_LOAD L"resource/scene/Launcher_load"
+
+#define SCENE_GLPA_CONSOLE "glpa_console"
+#define SCENE_FOLDER_PASS_GLPA_CONSOLE L"resource/scene/glpa_console"
 
 #endif // MAIN_H_
