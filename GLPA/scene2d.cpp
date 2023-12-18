@@ -131,15 +131,17 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
     text.addGroup(
         L"Temp",
         24,
-        L"SYSTEM_FIXED_FONT",
+        GLPA_SYSTEM_FIXED_FONT,
         {204, 204, 204},
         FALSE,
-        {10, 10},
-        {100, 100}
+        {10, 550},
+        {1000, 650}
     );
 
-    text.addText(L"Temp", L"/glpa sample commandÅ@Ç†Ç¢Ç§Ç¶Ç®");
-    text.drawText(hBufDC, L"Temp");
+    text.addText(L"Temp", L"/glpa Ç†temp");
+    text.addText(L"Temp", L"/glpa Ç†temp2");
+    text.addText(L"Temp", L"/glpa Ç†temp3");
+    text.drawText(hBufDC, L"Temp", 0);
     text.releaseGroup(L"Temp");
 
     edited = false;
