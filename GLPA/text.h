@@ -37,12 +37,12 @@ public :
         Rgb arg_rgb,
         BOOL arg_bold,
         Vec2d arg_pos_top_left,
-        Vec2d arg_pot_bottom_right
+        Vec2d arg_pos_bottom_right
     );
 
     void addText(std::wstring group_name, std::wstring text);
 
-    void edit();
+    void edit(std::wstring target_group_name, int edit_mode);
 
     void releaseGroup(std::wstring group_name);
 
