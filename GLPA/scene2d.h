@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "user_input.h"
 #include "image.h"
 #include "error.h"
 #include "color.h"
@@ -44,7 +43,6 @@ public :
 
 private :
     bool edited = true;
-    UserInput userInput;
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
 

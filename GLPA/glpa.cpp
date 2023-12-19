@@ -239,6 +239,7 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         case WM_MBUTTONDBLCLK :
         case WM_MBUTTONUP :
         case WM_MOUSEWHEEL :
+                glpa.userInput.input(hWnd, msg, wParam, lParam);
                 for (auto& x: glpa.window) {
                     if(x.second.userMsg(hWnd)){
                         break;

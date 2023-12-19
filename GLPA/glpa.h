@@ -9,6 +9,7 @@
 #include "window.h"
 #include "scene.h"
 #include "error.h"
+#include "user_input.h"
 
 class Glpa
 {
@@ -71,6 +72,7 @@ public :
     MSG msg;
 
     std::unordered_map<LPCWSTR, Window> window;
+    UserInput userInput;
 
 private :
     _In_ HINSTANCE hInstance;
