@@ -8,8 +8,8 @@
 #include <tchar.h>
 
 #include "color.h"
-
 #include "vector.cuh"
+#include "error.h"
 
 #define GLPA_TEXT_ASPECT 2.1
 #define GLPA_TEXT_LINE_RATIO 1.2
@@ -22,10 +22,13 @@ typedef struct tagTEXT_GROUP{
     Vec2d posTopLeft;
     Vec2d posBottomRight;
     Rgb color;
+    bool visible;
     std::vector<std::wstring> text;
 } TextGroup;
 
 #define GLPA_TEXT_EDIT_GROUP_LAST 0
+
+#define GLPA_NULL_WTEXT L"NULL"
 
 class Text
 {
@@ -37,12 +40,17 @@ public :
         Rgb arg_rgb,
         BOOL arg_bold,
         Vec2d arg_pos_top_left,
-        Vec2d arg_pos_bottom_right
+        Vec2d arg_pos_bottom_right,
+        bool arg_visible
     );
 
     void addText(std::wstring group_name, std::wstring text);
 
-    void edit(std::wstring target_group_name, int edit_mode);
+    std::wstring getGroupOnMouse(LPARAM l_param, int dpi);
+
+    std::wstring getGroupLastLineWstr(std::wstring target_group_name);
+
+    void edit(std::wstring target_group_name, int edit_type, std::wstring edit_text);
 
     void releaseGroup(std::wstring group_name);
 

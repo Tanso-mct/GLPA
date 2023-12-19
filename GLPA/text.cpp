@@ -7,7 +7,8 @@ void Text::addGroup(
     Rgb argRgb, 
     BOOL argBold, 
     Vec2d argPosTopLeft,
-    Vec2d argPosBottomRight
+    Vec2d argPosBottomRight,
+    bool argVisible
 ){
     TextGroup tempTextGroup;
     tempTextGroup.font = CreateFont(
@@ -28,6 +29,7 @@ void Text::addGroup(
     tempTextGroup.color = argRgb;
     tempTextGroup.posTopLeft = argPosTopLeft;
     tempTextGroup.posBottomRight = argPosBottomRight;
+    tempTextGroup.visible = argVisible;
 
     data.emplace(groupName, tempTextGroup);
 }
@@ -35,6 +37,41 @@ void Text::addGroup(
 
 void Text::addText(std::wstring groupName, std::wstring argText){
     data[groupName].text.push_back(argText);
+}
+
+
+std::wstring Text::getGroupOnMouse(LPARAM lParam, int dpi){
+    for (auto it : data){
+        if (
+            LOWORD(lParam) * dpi >= it.second.posTopLeft.x &&
+            LOWORD(lParam) * dpi <= it.second.posBottomRight.x &&
+
+            HIWORD(lParam) * dpi >= it.second.posTopLeft.y &&
+            HIWORD(lParam) * dpi <= it.second.posBottomRight.y
+        ){
+            return it.first;
+        }
+    }
+
+    return GLPA_NULL_WTEXT;
+}
+
+
+std::wstring Text::getGroupLastLineWstr(std::wstring targetGroupName){
+    return data[targetGroupName].text[
+        data[targetGroupName].text.size() - 1
+    ];
+}
+
+void Text::edit(std::wstring targetGroupName, int editType, std::wstring editText){
+    if (editType == GLPA_TEXT_EDIT_GROUP_LAST){
+        data[targetGroupName].text[
+            data[targetGroupName].text.size() - 1
+        ] = editText;
+    }
+    else{
+        throw std::runtime_error(ERROR_TEXT_EDIT);
+    }
 }
 
 
@@ -65,43 +102,45 @@ bool Text::drawLine(HDC hBufDC, std::wstring groupName, int startLine, int nowLi
 
 
 void Text::drawText(HDC hBufDC, std::wstring groupName, int startLine){
-    SetBkMode(hBufDC, TRANSPARENT);
-    SetTextColor(hBufDC, RGB(data[groupName].color.r, data[groupName].color.g, data[groupName].color.b));
+    if(data[groupName].visible){
+        SetBkMode(hBufDC, TRANSPARENT);
+        SetTextColor(hBufDC, RGB(data[groupName].color.r, data[groupName].color.g, data[groupName].color.b));
 
-    SelectObject(hBufDC, data[groupName].font);
+        SelectObject(hBufDC, data[groupName].font);
 
-    double width = data[groupName].posBottomRight.x - data[groupName].posTopLeft.x;
+        double width = data[groupName].posBottomRight.x - data[groupName].posTopLeft.x;
 
-    int wordsPerWidth = std::round(width / (data[groupName].textSize / GLPA_TEXT_ASPECT));
+        int wordsPerWidth = std::round(width / (data[groupName].textSize / GLPA_TEXT_ASPECT));
 
-    int lines = 0;
-    int drawLines = 0;
+        int lines = 0;
+        int drawLines = 0;
 
-    int cutIndex = 0;
+        int cutIndex = 0;
 
-    for (auto it : data[groupName].text){
-        if (it.size() <= wordsPerWidth){
-            if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it)){
-                    break;
-                }
-            lines += 1;
-        }
-        else{
-            while (true)
-            {
-                if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it.substr(cutIndex, wordsPerWidth))){
-                    break;
+        for (auto it : data[groupName].text){
+            if (it.size() <= wordsPerWidth){
+                if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it)){
+                        break;
+                    }
+                lines += 1;
+            }
+            else{
+                while (true)
+                {
+                    if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it.substr(cutIndex, wordsPerWidth))){
+                        break;
+                    }
+                    
+                    lines += 1;
+                    cutIndex += wordsPerWidth;
+
+                    if (cutIndex >= it.size()){
+                        cutIndex = 0;
+                        break;
+                    }
                 }
                 
-                lines += 1;
-                cutIndex += wordsPerWidth;
-
-                if (cutIndex >= it.size()){
-                    cutIndex = 0;
-                    break;
-                }
             }
-            
         }
     }
 }

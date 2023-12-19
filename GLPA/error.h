@@ -97,4 +97,15 @@ Or there may be a problem with the execution environment as well.
 */
 #define ERROR_WINDOW_CREATE NULL
 
+/*
+編集タイプが存在しません。
+引数での指定に誤りがある可能性がありません。「GLPA_TEXT_EDIT」で始まるマクロのいずれから選択してください。
+
+Edit type does not exist.
+There is no possibility of an incorrect specification in the argument. 
+Choose from any of the macros beginning with "glpa text edit".
+*/
+#define ERROR_TEXT_EDIT NULL
+
+
 #endif ERROR_H_
