@@ -116,4 +116,22 @@ Select one of the macros beginning with "GLPA_USERINPUT_MESSAGE_" and specify it
 */
 #define ERROR_USER_INPUT_ADD NULL
 
+/*
+これまで作成されたシーン2Dデータの中に引数で指定したシーンの名前を持つシーンが存在しません。
+適切に引数にシーンの名前を入力してください。
+
+There is no scene with the name of the scene specified in the argument in the scene2d data created so far.
+Enter the name of the scene in the appropriate argument.
+*/
+#define ERROR_GLPA_GET_PT_SCENE2D NULL
+
+/*
+これまで作成されたシーン3Dデータの中に引数で指定したシーンの名前を持つシーンが存在しません。
+適切に引数にシーンの名前を入力してください。
+
+There is no scene with the name of the scene specified in the argument in the scene3d data created so far.
+Enter the name of the scene in the appropriate argument.
+*/
+#define ERROR_GLPA_GET_PT_SCENE3D NULL
+
 #endif ERROR_H_

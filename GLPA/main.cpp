@@ -35,6 +35,8 @@ int WINAPI WinMain(
     glpa.loadScene(SCENE_GLPA_CONSOLE, SCENE_FOLDER_PASS_GLPA_CONSOLE);
     
     glpa.selectUseScene(WINDOW_CONSOLE, SCENE_GLPA_CONSOLE);
+
+
     
     glpa.runGraphicLoop();
 

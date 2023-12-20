@@ -17,8 +17,6 @@
 #define GLPA_SCENE2D_FILENAME_L "_@l"
 #define GLPA_SCENE2D_FILENAME_L_SIZE 3
 
-
-
 class Scene2d
 {
 public :
@@ -42,13 +40,14 @@ public :
     std::unordered_map<std::string, int> groupOrder;
     std::unordered_map<int, std::unordered_map<int, std::string>> layerOrder;
 
+    Text text;
+
 private :
     bool edited = true;
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
 
     Color color;
-    Text text;
 
 };
 

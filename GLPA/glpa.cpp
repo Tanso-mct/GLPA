@@ -6,7 +6,7 @@ void Glpa::initialize(HINSTANCE arghInstance, HINSTANCE arghPrevInstance, LPSTR 
     hPrevInstance = arghPrevInstance;
     lpCmdLine = arglpCmdLine;
     nCmdShow = argnCmdShow;
-    ptWindowProc = windowProc;
+    ptWindowProc = WindowProc;
 }
 
 void Glpa::createWindow(
@@ -149,15 +149,46 @@ void Glpa::releaseScene(std::string scName){
 }
 
 
+Scene2d* Glpa::getPtScene2d(std::string scName){
+    if(scene.data2d.find(scName) == scene.data2d.end()){
+        return &scene.data2d[scName];
+    }
+
+    throw std::runtime_error(ERROR_GLPA_GET_PT_SCENE2D);
+
+    return nullptr;
+}
+
+Scene3d *Glpa::getPtScene3d(std::string scName){
+    if(scene.data3d.find(scName) == scene.data3d.end()){
+        return &scene.data3d[scName];
+    }
+
+    throw std::runtime_error(ERROR_GLPA_GET_PT_SCENE3D);
+    
+    return nullptr;
+}
+
+
+void Glpa::setUserInputFunc(
+    std::string scName, 
+    std::wstring funcName, 
+    void (*add_func)(std::string scName, WPARAM wParam, LPARAM lParam),
+    int msgType
+){
+    userInput.add(funcName, add_func, scSetWnd[scName], msgType);
+}
+
 
 void Glpa::selectUseScene(LPCWSTR targetWndName, std::string scName){
     window[targetWndName].setScene(&scene, scName);
+    scSetWnd[scName] = window[targetWndName].hWnd;
 }
 
 
 Glpa glpa;
 
-LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
+LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         switch (msg){
         case WM_SYSCOMMAND:
             if (wParam == SC_MINIMIZE) {

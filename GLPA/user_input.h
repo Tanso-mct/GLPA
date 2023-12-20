@@ -25,7 +25,7 @@ class UserInput
 {
 public :
     void add(
-        std::string func_name, 
+        std::wstring func_name, 
         void(*pt_add_func)(
             std::string scene_name, 
             WPARAM w_param, 
@@ -61,21 +61,21 @@ public :
     void mouseMbtnWheel(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
 
 private :
-    std::unordered_map<std::string, void(*)(std::string scene_name, WPARAM w_param, LPARAM l_param)> myFunc;
+    std::unordered_map<std::wstring, void(*)(std::string scene_name, WPARAM w_param, LPARAM l_param)> myFunc;
     bool typing = false;
 
-    std::unordered_map<HWND, std::vector<std::string>> keyDownFunc;
-    std::unordered_map<HWND, std::vector<std::string>> keyUpFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseMoveFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseLbtnDownFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseLbtnUpFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseLbtnDblclickFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseRbtnDownFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseRbtnUpFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseRbtnDblClickFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseMbtnDownFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseMbtnUpFunc;
-    std::unordered_map<HWND, std::vector<std::string>> mouseMbtnWheelFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> keyDownFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> keyUpFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseMoveFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseLbtnDownFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseLbtnUpFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseLbtnDblclickFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseRbtnDownFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseRbtnUpFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseRbtnDblClickFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseMbtnDownFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseMbtnUpFunc;
+    std::unordered_map<HWND, std::vector<std::wstring>> mouseMbtnWheelFunc;
 
 };
 

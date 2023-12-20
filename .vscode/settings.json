@@ -92,7 +92,8 @@
         "codecvt": "cpp",
         "__threading_support": "cpp",
         "__mutex_base": "cpp",
-        "__availability": "cpp"
+        "__availability": "cpp",
+        "__config": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "dotnet.defaultSolution": "disable",

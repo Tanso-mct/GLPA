@@ -51,7 +51,19 @@ public :
 
     void releaseScene(std::string scene_name);
 
-    void setSceneUserInputFunc();
+    Scene2d* getPtScene2d(std::string scene_name);
+    Scene3d* getPtScene3d(std::string scene_name);
+
+    void setUserInputFunc(
+        std::string scene_name, 
+        std::wstring func_name, 
+        void(*add_func)(std::string scene_name, WPARAM w_param, LPARAM l_param),
+        int message_type
+    );
+
+    void editUserInputFunc();
+
+    void removeUserInputFunc();
 
     void setSceneActionFunc();
 
@@ -74,6 +86,8 @@ public :
     std::unordered_map<LPCWSTR, Window> window;
     std::unordered_map<HWND, LPCWSTR> wndNames;
 
+    std::unordered_map<std::string, HWND> scSetWnd;
+
     UserInput userInput;
 
 private :
@@ -91,6 +105,6 @@ private :
 
 extern Glpa glpa;
 
-LRESULT CALLBACK windowProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
+LRESULT CALLBACK WindowProc(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 
 #endif  GLPA_H_

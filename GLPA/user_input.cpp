@@ -1,7 +1,7 @@
 #include "user_input.h"
 
 void UserInput::add(
-    std::string funcName, 
+    std::wstring funcName, 
     void (*ptAddFunc)(
         std::string scName, 
         WPARAM wParam, 
@@ -14,6 +14,7 @@ void UserInput::add(
     {
     case GLPA_USERINPUT_MESSAGE_KEYDOWN :
         myFunc.emplace(funcName, ptAddFunc);
+        myFunc[funcName] = ptAddFunc;
         keyDownFunc[getMsgWndHwnd].push_back(funcName);
         break;
     
