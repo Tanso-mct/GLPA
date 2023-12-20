@@ -31,8 +31,9 @@ void Glpa::createWindow(
         wndStyle, loadIcon, loadCursor, backgroundColor, smallIcon, minimizeAuto, singleExistence
     );
 
-    window.emplace(wndName, tempWnd);
+    window[wndName] = tempWnd;
     window[wndName].create(hInstance, ptWindowProc);
+    wndNames[window[wndName].hWnd] = wndName;
 }
 
 void Glpa::updateWindow(LPCWSTR wndName, int param){
@@ -228,6 +229,9 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
                 return 0;
 
         case WM_KEYDOWN :
+                glpa.userInput.keyDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, wParam, lParam);
+                return 0;
+
         case WM_KEYUP :
         case WM_LBUTTONDOWN :
         case WM_LBUTTONUP :
@@ -239,7 +243,7 @@ LRESULT CALLBACK windowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
         case WM_MBUTTONDBLCLK :
         case WM_MBUTTONUP :
         case WM_MOUSEWHEEL :
-                glpa.userInput.input(hWnd, msg, wParam, lParam);
+        case WM_MOUSEMOVE :
                 for (auto& x: glpa.window) {
                     if(x.second.userMsg(hWnd)){
                         break;

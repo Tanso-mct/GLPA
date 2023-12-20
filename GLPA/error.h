@@ -107,5 +107,13 @@ Choose from any of the macros beginning with "glpa text edit".
 */
 #define ERROR_TEXT_EDIT NULL
 
+/*
+メッセージを処理する関数を追加するために必要なメッセージタイプの指定が誤っている可能性があります。
+「GLPA_USERINPUT_MESSAGE_」で始まるいずれかのマクロを選択し、引数に指定してください。
+
+You may have incorrectly specified the message type needed to add a function to process the message.
+Select one of the macros beginning with "GLPA_USERINPUT_MESSAGE_" and specify it as an argument.
+*/
+#define ERROR_USER_INPUT_ADD NULL
 
 #endif ERROR_H_

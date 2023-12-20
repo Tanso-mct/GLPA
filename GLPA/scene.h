@@ -32,6 +32,7 @@ public :
         std::unordered_map<std::wstring, std::vector<std::wstring>> all_data
     );
     void release(std::string scene_name);
+    
     void reload();
     void remove();
     void update();

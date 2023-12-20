@@ -72,6 +72,8 @@ public :
     MSG msg;
 
     std::unordered_map<LPCWSTR, Window> window;
+    std::unordered_map<HWND, LPCWSTR> wndNames;
+
     UserInput userInput;
 
 private :

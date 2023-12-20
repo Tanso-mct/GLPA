@@ -91,6 +91,9 @@ public :
 
     void setScene(Scene* arg_pt_scene, std::string scene_name);
 
+    HWND hWnd;
+    std::string useScene;
+
 private :
     int status = GLPA_WINDOW_STATUS_DEF;
     bool focus = true;
@@ -112,8 +115,6 @@ private :
     int backgroundColor;
     LPWSTR smallIcon;
 
-    HWND hWnd;
-
     WNDCLASSEX wndClass;
 
     Fps fps;
@@ -127,8 +128,6 @@ private :
     LPDWORD lpPixel;
 
     Scene* ptScene;
-    std::string useScene;
-
 
 };
 
