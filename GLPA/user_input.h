@@ -22,7 +22,7 @@
 #define GLPA_USERINPUT_MESSAGE_MOUSEMBTNUP 10
 #define GLPA_USERINPUT_MESSAGE_MOUSEMBTNDBWHEEL 11
 
-#define GLPA_USER_FUNC std::function<void(std::string, WPARAM, LPARAM)>
+#define GLPA_USER_FUNC std::function<void(std::string, UINT, WPARAM, LPARAM)>
 
 class UserInput
 {
@@ -37,34 +37,32 @@ public :
     void edit();
     void remove(std::wstring func_name);
 
-    void typingStart();
-    void typingEnd();
-
     //Key message
-    void keyDown(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void keyUp(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
+    void keyDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void keyUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     
     //Mouse Move message
-    void mouseMove(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
+    void mouseMove(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     
     //Mouse Left button message
-    void mouseLbtnDown(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void mouseLbtnUp(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void mouseLbtnDblclick(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
+    void mouseLbtnDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void mouseLbtnUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void mouseLbtnDblclick(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
     //Mouse Right button message
-    void mouseRbtnDown(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void mouseRbtnUp(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void mouseRbtnDblClick(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
+    void mouseRbtnDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void mouseRbtnUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void mouseRbtnDblClick(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
     //Mouse Middle button message
-    void mouseMbtnDown(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void mouseMbtnUp(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
-    void mouseMbtnWheel(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
+    void mouseMbtnDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void mouseMbtnUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    void mouseMbtnWheel(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+
+    bool typing = false;
 
 private :
     std::unordered_map<std::wstring, GLPA_USER_FUNC> myFunc;
-    bool typing = false;
 
     std::unordered_map<HWND, std::vector<std::wstring>> keyDownFunc;
     std::unordered_map<HWND, std::vector<std::wstring>> keyUpFunc;

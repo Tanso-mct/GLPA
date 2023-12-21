@@ -3,8 +3,9 @@
 
 #include <string>
 #include <Windows.h>
+#include <tchar.h>
 
-#include "scene2d.h"
+#include "glpa.h"
 
 #define WINDOW_CONSOLE L"Console"
 #define WINDOWCLASS_CONSOLE L"window_console"
@@ -15,11 +16,14 @@
 class Console
 {
 public :
-    void setScenePt(Scene2d* arg_pt_scene_2d);
+    Console(Glpa *argPtGlpa);
 
-    void tempTyping(std::string scene_name, WPARAM w_param, LPARAM l_param);
+    void setScenePt(Scene2d *arg_pt_scene_2d);
+
+    void tempTyping(std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
 private :
+    Glpa* ptGlpa;
     Scene2d* ptScene2d;
 };
 

@@ -260,7 +260,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
                 return 0;
 
         case WM_KEYDOWN :
-                glpa.userInput.keyDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, wParam, lParam);
+                glpa.userInput.keyDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
                 return 0;
 
         case WM_KEYUP :

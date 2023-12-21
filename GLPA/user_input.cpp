@@ -20,17 +20,9 @@ void UserInput::add(
     }
 }
 
-void UserInput::typingStart(){
-    typing = true;
-}
-
-void UserInput::typingEnd(){
-    typing = false;
-}
-
-void UserInput::keyDown(HWND hWnd, std::string scName, WPARAM wParam, LPARAM lParam)
+void UserInput::keyDown(HWND hWnd, std::string scName, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     for (auto funcName : keyDownFunc[hWnd]){
-        myFunc[funcName](scName, wParam, lParam);
+        myFunc[funcName](scName, msg, wParam, lParam);
     }
 }

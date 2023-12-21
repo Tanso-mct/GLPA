@@ -102,44 +102,46 @@ bool Text::drawLine(HDC hBufDC, std::wstring groupName, int startLine, int nowLi
 
 
 void Text::drawText(HDC hBufDC, std::wstring groupName, int startLine){
-    if(data[groupName].visible){
-        SetBkMode(hBufDC, TRANSPARENT);
-        SetTextColor(hBufDC, RGB(data[groupName].color.r, data[groupName].color.g, data[groupName].color.b));
+    for (auto roopData : data){
+        if(roopData.second.visible){
+            SetBkMode(hBufDC, TRANSPARENT);
+            SetTextColor(hBufDC, RGB(roopData.second.color.r, roopData.second.color.g, roopData.second.color.b));
 
-        SelectObject(hBufDC, data[groupName].font);
+            SelectObject(hBufDC, roopData.second.font);
 
-        double width = data[groupName].posBottomRight.x - data[groupName].posTopLeft.x;
+            double width = roopData.second.posBottomRight.x - roopData.second.posTopLeft.x;
 
-        int wordsPerWidth = std::round(width / (data[groupName].textSize / GLPA_TEXT_ASPECT));
+            int wordsPerWidth = std::round(width / (roopData.second.textSize / GLPA_TEXT_ASPECT));
 
-        int lines = 0;
-        int drawLines = 0;
+            int lines = 0;
+            int drawLines = 0;
 
-        int cutIndex = 0;
+            int cutIndex = 0;
 
-        for (auto it : data[groupName].text){
-            if (it.size() <= wordsPerWidth){
-                if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it)){
-                        break;
-                    }
-                lines += 1;
-            }
-            else{
-                while (true)
-                {
-                    if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it.substr(cutIndex, wordsPerWidth))){
-                        break;
+            for (auto it : roopData.second.text){
+                if (it.size() <= wordsPerWidth){
+                    if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it)){
+                            break;
+                        }
+                    lines += 1;
+                }
+                else{
+                    while (true)
+                    {
+                        if(drawLine(hBufDC, groupName, startLine, lines, &drawLines, it.substr(cutIndex, wordsPerWidth))){
+                            break;
+                        }
+                        
+                        lines += 1;
+                        cutIndex += wordsPerWidth;
+
+                        if (cutIndex >= it.size()){
+                            cutIndex = 0;
+                            break;
+                        }
                     }
                     
-                    lines += 1;
-                    cutIndex += wordsPerWidth;
-
-                    if (cutIndex >= it.size()){
-                        cutIndex = 0;
-                        break;
-                    }
                 }
-                
             }
         }
     }

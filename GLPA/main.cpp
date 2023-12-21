@@ -36,15 +36,15 @@ int WINAPI WinMain(
     
     glpa.selectUseScene(WINDOW_CONSOLE, SCENE_GLPA_CONSOLE);
 
-    Console temp;
-
+    // Not Glpa
+    Console temp(&glpa);
     temp.setScenePt(glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
 
     glpa.setUserInputFunc(
         SCENE_GLPA_CONSOLE,
         L"tempTyping",
-        [&temp](std::string scene_name, WPARAM wParam, LPARAM lParam) {
-            temp.tempTyping(scene_name, wParam, lParam);
+        [&temp](std::string scene_name, UINT msg, WPARAM wParam, LPARAM lParam) {
+            temp.tempTyping(scene_name, msg, wParam, lParam);
         },
         GLPA_USERINPUT_MESSAGE_KEYDOWN
     );
