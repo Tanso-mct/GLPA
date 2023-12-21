@@ -36,8 +36,19 @@ int WINAPI WinMain(
     
     glpa.selectUseScene(WINDOW_CONSOLE, SCENE_GLPA_CONSOLE);
 
+    Console temp;
 
+    temp.setScenePt(glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
+
+    userFunc tempFunc = &Console::tempTyping;
     
+    glpa.setUserInputFunc(
+        SCENE_GLPA_CONSOLE,
+        L"tempTyping",
+        tempFunc,
+        GLPA_USERINPUT_MESSAGE_KEYDOWN
+    );
+
     glpa.runGraphicLoop();
 
     glpa.releaseScene(SCENE_GLPA_CONSOLE);

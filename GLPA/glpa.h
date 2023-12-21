@@ -57,7 +57,7 @@ public :
     void setUserInputFunc(
         std::string scene_name, 
         std::wstring func_name, 
-        void(*add_func)(std::string scene_name, WPARAM w_param, LPARAM l_param),
+        userFunc,
         int message_type
     );
 

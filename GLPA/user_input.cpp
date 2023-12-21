@@ -2,11 +2,7 @@
 
 void UserInput::add(
     std::wstring funcName, 
-    void (*ptAddFunc)(
-        std::string scName, 
-        WPARAM wParam, 
-        LPARAM lParam
-    ), 
+    userFunc ptAddFunc,
     HWND getMsgWndHwnd, 
     int msgType
 ){
@@ -24,8 +20,16 @@ void UserInput::add(
     }
 }
 
+void UserInput::typingStart(){
+    typing = true;
+}
 
-void UserInput::keyDown(HWND hWnd, std::string scName, WPARAM wParam, LPARAM lParam){
+void UserInput::typingEnd(){
+    typing = false;
+}
+
+void UserInput::keyDown(HWND hWnd, std::string scName, WPARAM wParam, LPARAM lParam)
+{
     for (auto funcName : keyDownFunc[hWnd]){
         myFunc[funcName](scName, wParam, lParam);
     }

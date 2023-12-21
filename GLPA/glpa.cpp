@@ -173,10 +173,10 @@ Scene3d *Glpa::getPtScene3d(std::string scName){
 void Glpa::setUserInputFunc(
     std::string scName, 
     std::wstring funcName, 
-    void (*add_func)(std::string scName, WPARAM wParam, LPARAM lParam),
+    userFunc addFunc,
     int msgType
 ){
-    userInput.add(funcName, add_func, scSetWnd[scName], msgType);
+    userInput.add(funcName, addFunc, scSetWnd[scName], msgType);
 }
 
 

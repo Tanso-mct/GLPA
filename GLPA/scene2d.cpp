@@ -143,8 +143,6 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
     text.addText(L"Temp", L"/glpa temp2");
     text.addText(L"Temp", L"/glpa temp3");
 
-    std::wstring tempStr = text.getGroupLastLineWstr(L"Temp");
-    text.edit(L"Temp", GLPA_TEXT_EDIT_GROUP_LAST, tempStr + L" EDITED");
     text.drawText(hBufDC, L"Temp", 0);
     text.releaseGroup(L"Temp");
 

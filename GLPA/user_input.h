@@ -21,22 +21,25 @@
 #define GLPA_USERINPUT_MESSAGE_MOUSEMBTNUP 10
 #define GLPA_USERINPUT_MESSAGE_MOUSEMBTNDBWHEEL 11
 
+#include "console.h"
+
+typedef void(Console::*userFunc)(std::string, WPARAM, LPARAM);
+
 class UserInput
 {
 public :
     void add(
         std::wstring func_name, 
-        void(*pt_add_func)(
-            std::string scene_name, 
-            WPARAM w_param, 
-            LPARAM l_param
-        ) , 
+        userFunc add_func , 
         HWND get_message_window_handle, 
         int message_type
     );
     
     void edit();
     void remove(std::wstring func_name);
+
+    void typingStart();
+    void typingEnd();
 
     //Key message
     void keyDown(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
@@ -61,7 +64,7 @@ public :
     void mouseMbtnWheel(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
 
 private :
-    std::unordered_map<std::wstring, void(*)(std::string scene_name, WPARAM w_param, LPARAM l_param)> myFunc;
+    std::unordered_map<std::wstring, userFunc> myFunc;
     bool typing = false;
 
     std::unordered_map<HWND, std::vector<std::wstring>> keyDownFunc;
