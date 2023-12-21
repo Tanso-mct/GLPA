@@ -57,7 +57,7 @@ public :
     void setUserInputFunc(
         std::string scene_name, 
         std::wstring func_name, 
-        userFunc,
+        GLPA_USER_FUNC,
         int message_type
     );
 

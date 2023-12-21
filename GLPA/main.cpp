@@ -40,12 +40,12 @@ int WINAPI WinMain(
 
     temp.setScenePt(glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
 
-    userFunc tempFunc = &Console::tempTyping;
-    
     glpa.setUserInputFunc(
         SCENE_GLPA_CONSOLE,
         L"tempTyping",
-        tempFunc,
+        [&temp](std::string scene_name, WPARAM wParam, LPARAM lParam) {
+            temp.tempTyping(scene_name, wParam, lParam);
+        },
         GLPA_USERINPUT_MESSAGE_KEYDOWN
     );
 

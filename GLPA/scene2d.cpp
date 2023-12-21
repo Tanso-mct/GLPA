@@ -76,7 +76,7 @@ void Scene2d::edit(){
 
 
 void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
-    if (edited = true){
+    if (edited){
         for(int y = 0; y < wndHeight; y++)
         {
             for(int x = 0; x < wndWidth; x++)
@@ -126,25 +126,25 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
                 }
             }
         }
+
+        text.addGroup(
+            L"Temp",
+            24,
+            GLPA_SYSTEM_FIXED_FONT,
+            {204, 204, 204},
+            FALSE,
+            {10, 10},
+            {1000, 650},
+            true
+        );
+
+        text.addText(L"Temp", L"/glpa temp");
+        text.addText(L"Temp", L"/glpa temp2");
+        text.addText(L"Temp", L"/glpa temp3");
+
+        text.drawText(hBufDC, L"Temp", 0);
+        // text.releaseGroup(L"Temp");
+
+        edited = false;
     }
-
-    text.addGroup(
-        L"Temp",
-        24,
-        GLPA_SYSTEM_FIXED_FONT,
-        {204, 204, 204},
-        FALSE,
-        {10, 10},
-        {1000, 650},
-        true
-    );
-
-    text.addText(L"Temp", L"/glpa temp");
-    text.addText(L"Temp", L"/glpa temp2");
-    text.addText(L"Temp", L"/glpa temp3");
-
-    text.drawText(hBufDC, L"Temp", 0);
-    text.releaseGroup(L"Temp");
-
-    edited = false;
 }

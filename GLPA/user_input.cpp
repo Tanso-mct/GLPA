@@ -2,7 +2,7 @@
 
 void UserInput::add(
     std::wstring funcName, 
-    userFunc ptAddFunc,
+    GLPA_USER_FUNC ptAddFunc,
     HWND getMsgWndHwnd, 
     int msgType
 ){

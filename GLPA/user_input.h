@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <functional>
 
 #include "error.h"
 
@@ -21,16 +22,14 @@
 #define GLPA_USERINPUT_MESSAGE_MOUSEMBTNUP 10
 #define GLPA_USERINPUT_MESSAGE_MOUSEMBTNDBWHEEL 11
 
-#include "console.h"
-
-typedef void(Console::*userFunc)(std::string, WPARAM, LPARAM);
+#define GLPA_USER_FUNC std::function<void(std::string, WPARAM, LPARAM)>
 
 class UserInput
 {
 public :
     void add(
         std::wstring func_name, 
-        userFunc add_func , 
+        GLPA_USER_FUNC add_func , 
         HWND get_message_window_handle, 
         int message_type
     );
@@ -64,7 +63,7 @@ public :
     void mouseMbtnWheel(HWND h_wnd, std::string scene_name, WPARAM w_param, LPARAM l_param);
 
 private :
-    std::unordered_map<std::wstring, userFunc> myFunc;
+    std::unordered_map<std::wstring, GLPA_USER_FUNC> myFunc;
     bool typing = false;
 
     std::unordered_map<HWND, std::vector<std::wstring>> keyDownFunc;

@@ -150,7 +150,7 @@ void Glpa::releaseScene(std::string scName){
 
 
 Scene2d* Glpa::getPtScene2d(std::string scName){
-    if(scene.data2d.find(scName) == scene.data2d.end()){
+    if(scene.data2d.find(scName) != scene.data2d.end()){
         return &scene.data2d[scName];
     }
 
@@ -173,7 +173,7 @@ Scene3d *Glpa::getPtScene3d(std::string scName){
 void Glpa::setUserInputFunc(
     std::string scName, 
     std::wstring funcName, 
-    userFunc addFunc,
+    GLPA_USER_FUNC addFunc,
     int msgType
 ){
     userInput.add(funcName, addFunc, scSetWnd[scName], msgType);
