@@ -24,6 +24,7 @@ typedef struct tagTEXT_GROUP{
     Rgb color;
     bool visible;
     std::vector<std::wstring> text;
+    int startLine = 0;
 } TextGroup;
 
 #define GLPA_TEXT_EDIT_GROUP_LAST 0
@@ -56,7 +57,13 @@ public :
 
     bool drawLine(HDC h_buffer_dc, std::wstring group_name, int start_line, int now_line, int* draw_lines, std::wstring line_text);
 
-    void drawText(HDC h_buffer_dc, std::wstring group_name, int start_line);
+    void drawText(HDC h_buffer_dc, std::wstring group_name);
+
+    void setStartLine(std::wstring group_name, int start_line);
+
+    void drawAll(HDC h_buffer_dc);
+
+    void releaseAllGroup();
 private :
     std::unordered_map<std::wstring, HFONT> font;
     std::unordered_map<std::wstring, TextGroup> data;

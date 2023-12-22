@@ -69,8 +69,11 @@ void Scene::load(
                         narrowName
                     );
                 }
+                //TODO: Allow text to be read from a file.
             }
         }
+
+        data2d[scName].loadText();
     }
     else if (names[scName] == GLPA_SCENE_3D){
         for (auto group : allData){

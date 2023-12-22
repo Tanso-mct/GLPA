@@ -18,6 +18,7 @@ void Console::tempTyping(std::string scName, UINT msg, WPARAM wParam, LPARAM lPa
     if (scName == SCENE_GLPA_CONSOLE && !ptGlpa->userInput.typing){
         switch (wParam){
         case VK_RETURN:
+            ptScene2d->text.setStartLine(L"Temp", 2);
             tempStr = ptScene2d->text.getGroupLastLineWstr(L"Temp");
             ptScene2d->text.edit(L"Temp", GLPA_TEXT_EDIT_GROUP_LAST, tempStr + L" EDITED");
             ptScene2d->edited = true;

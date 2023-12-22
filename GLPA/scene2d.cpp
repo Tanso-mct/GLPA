@@ -61,10 +61,30 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
 }
 
 
+void Scene2d::loadText(){
+    text.addGroup(
+        L"Temp",
+        24,
+        GLPA_SYSTEM_FIXED_FONT,
+        {204, 204, 204},
+        FALSE,
+        {10, 10},
+        {1000, 650},
+        true
+    );
+
+    text.addText(L"Temp", L"/glpa temp");
+    text.addText(L"Temp", L"/glpa temp2");
+    text.addText(L"Temp", L"/glpa temp3");
+}
+
+
 void Scene2d::release(){
     for(auto it : pngAttribute){
         it.second.png.release();
     }
+
+    text.releaseAllGroup();
 
     pngAttribute.clear();
 }
@@ -127,24 +147,10 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
             }
         }
 
-        text.addGroup(
-            L"Temp",
-            24,
-            GLPA_SYSTEM_FIXED_FONT,
-            {204, 204, 204},
-            FALSE,
-            {10, 10},
-            {1000, 650},
-            true
-        );
+        
 
-        text.addText(L"Temp", L"/glpa temp");
-        text.addText(L"Temp", L"/glpa temp2");
-        text.addText(L"Temp", L"/glpa temp3");
-
-        text.drawText(hBufDC, L"Temp", 0);
-        // text.releaseGroup(L"Temp");
-
+        text.drawAll(hBufDC);
+        
         edited = false;
     }
 }

@@ -21,6 +21,7 @@ class Scene2d
 {
 public :
     void loadPng(std::string folder_path, std::string group_name, std::string file_name);
+    void loadText();
     void reload();
     void release();
 
