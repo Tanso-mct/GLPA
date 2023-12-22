@@ -7,6 +7,9 @@
 #include <unordered_map>
 #include <functional>
 
+#include "scene.h"
+#include "text.h"
+
 #include "error.h"
 
 #define GLPA_USERINPUT_MESSAGE_KEYDOWN 0
@@ -35,26 +38,33 @@ public :
     );
     
     void edit(std::wstring func_name, GLPA_USER_FUNC edited_func);
+
+    void eraseFunc(std::wstring func_name, std::unordered_map<HWND, std::vector<std::wstring>>* arg_msg_func);
     void release(std::wstring func_name);
 
-    //Key message
+    // Input
+    std::wstring convertWParamToWstr();
+
+    // Key message
     void keyDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void keyUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+
+    void keyTypingScene2d(Scene2d* pt_scene_2d, WPARAM w_param);
     
-    //Mouse Move message
+    // Mouse Move message
     void mouseMove(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     
-    //Mouse Left button message
+    // Mouse Left button message
     void mouseLbtnDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void mouseLbtnUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void mouseLbtnDblclick(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
-    //Mouse Right button message
+    // Mouse Right button message
     void mouseRbtnDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void mouseRbtnUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void mouseRbtnDblClick(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
-    //Mouse Middle button message
+    // Mouse Middle button message
     void mouseMbtnDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void mouseMbtnUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void mouseMbtnWheel(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);

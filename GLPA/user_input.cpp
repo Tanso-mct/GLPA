@@ -27,28 +27,32 @@ void UserInput::edit(std::wstring funcName, GLPA_USER_FUNC editedFunc){
 }
 
 
-void UserInput::release(std::wstring funcName){
-    myFunc.erase(funcName);
-
+void UserInput::eraseFunc(std::wstring funcName, std::unordered_map<HWND, std::vector<std::wstring>>* ptMsgFunc){
     std::unordered_map<HWND, std::vector<int>> eraseIndex;
+    for (auto& loopMsgFunc : *ptMsgFunc){
+        for (int vecIndex = 0; vecIndex < loopMsgFunc.second.size(); vecIndex++){
+            if (loopMsgFunc.second[vecIndex] == funcName){
+                eraseIndex[loopMsgFunc.first].push_back(vecIndex);
+            }
+        }
+    }
+
+    for (auto it : eraseIndex){
+        for (auto index : it.second){
+            (*ptMsgFunc)[it.first].erase((*ptMsgFunc)[it.first].begin() + index);
+        }
+    }
+}
+
+
+void UserInput::release(std::wstring funcName)
+{
+    myFunc.erase(funcName);
     for (auto loopMsg : msgFunc[funcName]){
         switch (loopMsg)
         {
         case GLPA_USERINPUT_MESSAGE_KEYDOWN:
-            for (auto& loopKeyDownFunc : keyDownFunc){
-                for (int vecIndex = 0; vecIndex < loopKeyDownFunc.second.size(); vecIndex++){
-                    if (loopKeyDownFunc.second[vecIndex] == funcName){
-                        eraseIndex[loopKeyDownFunc.first].push_back(vecIndex);
-                    }
-                }
-            }
-
-            for (auto it : eraseIndex){
-                for (auto index : it.second){
-                    keyDownFunc[it.first].erase(keyDownFunc[it.first].begin() + index);
-                }
-            }
-
+            eraseFunc(funcName, &keyDownFunc);
             
             break;
         
@@ -63,5 +67,28 @@ void UserInput::keyDown(HWND hWnd, std::string scName, UINT msg, WPARAM wParam, 
 {
     for (auto funcName : keyDownFunc[hWnd]){
         myFunc[funcName](scName, msg, wParam, lParam);
+    }
+}
+
+
+void UserInput::keyTypingScene2d(Scene2d* ptScene2d, WPARAM wParam){
+    std::wstring tempStr;
+    switch (wParam){
+    case VK_RETURN:
+        ptScene2d->edited = true;
+        typing = false;
+        break;
+
+    case VK_OEM_2:
+        tempStr = ptScene2d->text.getGroupLastLineWstr(L"Temp");
+        ptScene2d->text.edit(L"Temp", GLPA_TEXT_EDIT_GROUP_LAST, tempStr + L"/");
+        ptScene2d->edited = true;
+        break;
+    
+    default:
+        tempStr = ptScene2d->text.getGroupLastLineWstr(L"Temp");
+        ptScene2d->text.edit(L"Temp", GLPA_TEXT_EDIT_GROUP_LAST, tempStr + inputChar);
+        ptScene2d->edited = true;
+        break;
     }
 }
