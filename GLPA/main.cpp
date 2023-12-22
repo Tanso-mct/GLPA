@@ -51,6 +51,8 @@ int WINAPI WinMain(
 
     glpa.runGraphicLoop();
 
+    glpa.releaseUserInputFunc(L"tempTyping");
+
     glpa.releaseScene(SCENE_GLPA_CONSOLE);
 
     // When the function receives a WM_QUIT message and exits, the wParam parameter of the message is

@@ -180,11 +180,22 @@ void Glpa::setUserInputFunc(
 }
 
 
-void Glpa::selectUseScene(LPCWSTR targetWndName, std::string scName){
+void Glpa::editUserInputFunc(std::wstring funcName, GLPA_USER_FUNC editedFunc)
+{
+    userInput.edit(funcName, editedFunc);
+}
+
+
+void Glpa::releaseUserInputFunc(std::wstring funcName){
+    userInput.release(funcName);
+}
+
+
+void Glpa::selectUseScene(LPCWSTR targetWndName, std::string scName)
+{
     window[targetWndName].setScene(&scene, scName);
     scSetWnd[scName] = window[targetWndName].hWnd;
 }
-
 
 Glpa glpa;
 

@@ -34,8 +34,8 @@ public :
         int message_type
     );
     
-    void edit();
-    void remove(std::wstring func_name);
+    void edit(std::wstring func_name, GLPA_USER_FUNC edited_func);
+    void release(std::wstring func_name);
 
     //Key message
     void keyDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
@@ -63,6 +63,7 @@ public :
 
 private :
     std::unordered_map<std::wstring, GLPA_USER_FUNC> myFunc;
+    std::unordered_map<std::wstring, std::vector<int>> msgFunc;
 
     std::unordered_map<HWND, std::vector<std::wstring>> keyDownFunc;
     std::unordered_map<HWND, std::vector<std::wstring>> keyUpFunc;

@@ -61,9 +61,9 @@ public :
         int message_type
     );
 
-    void editUserInputFunc();
+    void editUserInputFunc(std::wstring func_name, GLPA_USER_FUNC edited_func);
 
-    void removeUserInputFunc();
+    void releaseUserInputFunc(std::wstring func_name);
 
     void setSceneActionFunc();
 
