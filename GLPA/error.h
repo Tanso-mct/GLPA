@@ -134,4 +134,12 @@ Enter the name of the scene in the appropriate argument.
 */
 #define ERROR_GLPA_GET_PT_SCENE3D NULL
 
+/*
+関数の引数で指定している名前の関数が存在しません。適切に関数の引数に値を入力してください。
+
+The function with the name specified in the function argument does not exist. 
+Please enter a value for the function argument appropriately.
+*/
+#define ERROR_GLPA_SCENE_2D_FRAME_FUNC_NAME NULL
+
 #endif ERROR_H_

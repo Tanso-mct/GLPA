@@ -191,6 +191,11 @@ void Glpa::releaseUserInputFunc(std::wstring funcName){
 }
 
 
+void Glpa::setSceneFrameFunc(std::string scName, std::wstring funcName, GLPA_SCENE_FUNC_FUNCTIONAL addFunc){
+    scene.data2d[scName].addSceneFrameFunc(funcName, addFunc);
+}
+
+
 void Glpa::selectUseScene(LPCWSTR targetWndName, std::string scName)
 {
     window[targetWndName].setScene(&scene, scName);

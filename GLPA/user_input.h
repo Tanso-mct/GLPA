@@ -41,7 +41,7 @@
 #define GLPA_USER_FUNC_FUNCTIONAL std::function<void(std::string, UINT, WPARAM, LPARAM)>
 
 #define GLPA_USER_FUNC_PT(instance, method_name) \
-    [&instance](std::string scene_name, UINT msg, WPARAM wParam, LPARAM lParam) { \
+    [&instance](std::string scene_name, UINT msg, WPARAM wParam, LPARAM lParam){ \
         instance.method_name(scene_name, msg, wParam, lParam); \
     }
 

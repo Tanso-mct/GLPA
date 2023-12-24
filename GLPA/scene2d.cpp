@@ -90,8 +90,10 @@ void Scene2d::release(){
 }
 
 
-void Scene2d::edit(){
-    
+void Scene2d::edit(HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi){
+    for (auto it : sceneFrameFunc){
+        it.second(hBufDC, lpPixel, width, height, dpi);
+    }
 }
 
 
@@ -152,5 +154,31 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
         text.drawAll(hBufDC);
         
         edited = false;
+    }
+}
+
+
+void Scene2d::addSceneFrameFunc(std::wstring funcName, GLPA_SCENE_FUNC_FUNCTIONAL addFunc){
+    sceneFrameFunc[funcName] = addFunc;
+}
+
+
+void Scene2d::editSceneFrameFunc(std::wstring funcName, GLPA_SCENE_FUNC_FUNCTIONAL editedFunc){
+    if (sceneFrameFunc.find(funcName) != sceneFrameFunc.end()){
+        sceneFrameFunc[funcName] = editedFunc;
+    }
+    else{
+        throw std::runtime_error(ERROR_GLPA_SCENE_2D_FRAME_FUNC_NAME);
+    }
+    
+}
+
+
+void Scene2d::releaseSceneFrameFunc(std::wstring funcName){
+    if (sceneFrameFunc.find(funcName) != sceneFrameFunc.end()){
+        sceneFrameFunc.erase(funcName);
+    }
+    else{
+        throw std::runtime_error(ERROR_GLPA_SCENE_2D_FRAME_FUNC_NAME);
     }
 }

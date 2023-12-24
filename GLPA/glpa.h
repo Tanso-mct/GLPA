@@ -57,7 +57,7 @@ public :
     void setUserInputFunc(
         std::string scene_name, 
         std::wstring func_name, 
-        GLPA_USER_FUNC_FUNCTIONAL,
+        GLPA_USER_FUNC_FUNCTIONAL pt_add_func,
         int message_type
     );
 
@@ -67,7 +67,7 @@ public :
 
     void setSceneActionFunc();
 
-    void setSceneFrameFunc();
+    void setSceneFrameFunc(std::string scene_name, std::wstring func_name, GLPA_SCENE_FUNC_FUNCTIONAL add_func);
 
     void selectUseScene(LPCWSTR target_window_name, std::string scene_name);
 
