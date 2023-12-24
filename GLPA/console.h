@@ -20,7 +20,8 @@ public :
 
     void setScenePt(Scene2d *arg_pt_scene_2d);
 
-    void tempTyping(std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
+    GLPA_USER_FUNC(tempTypingDown);
+    GLPA_USER_FUNC(tempTypingUp);
 
 private :
     Glpa* ptGlpa;

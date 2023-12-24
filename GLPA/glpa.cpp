@@ -173,14 +173,14 @@ Scene3d *Glpa::getPtScene3d(std::string scName){
 void Glpa::setUserInputFunc(
     std::string scName, 
     std::wstring funcName, 
-    GLPA_USER_FUNC addFunc,
+    GLPA_USER_FUNC_FUNCTIONAL addFunc,
     int msgType
 ){
     userInput.add(funcName, addFunc, scSetWnd[scName], msgType);
 }
 
 
-void Glpa::editUserInputFunc(std::wstring funcName, GLPA_USER_FUNC editedFunc)
+void Glpa::editUserInputFunc(std::wstring funcName, GLPA_USER_FUNC_FUNCTIONAL editedFunc)
 {
     userInput.edit(funcName, editedFunc);
 }
@@ -212,90 +212,113 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
-        case WM_KILLFOCUS :
-                for (auto& x: glpa.window) {
-                    if(x.second.killFocusMsg(hWnd, glpa.dataSingleWindow())){
-                        break;
-                    }
+        case WM_KILLFOCUS:
+            for (auto& x: glpa.window) {
+                if(x.second.killFocusMsg(hWnd, glpa.dataSingleWindow())){
+                    break;
                 }
-                return 0;
+            }
+            return 0;
 
-        case WM_SETFOCUS :
-                for (auto& x: glpa.window) {
-                    if(x.second.setFocusMsg(hWnd)){
-                        break;
-                    }
+        case WM_SETFOCUS:
+            for (auto& x: glpa.window) {
+                if(x.second.setFocusMsg(hWnd)){
+                    break;
                 }
-                return 0;
+            }
+            return 0;
 
-        case WM_GETMINMAXINFO :
-                for (auto& x: glpa.window) {
-                    if(x.second.sizeMsg(hWnd, lParam)){
-                        break;
-                    }
+        case WM_GETMINMAXINFO:
+            for (auto& x: glpa.window) {
+                if(x.second.sizeMsg(hWnd, lParam)){
+                    break;
                 }
-                return 0;
+            }
+            return 0;
 
-        case WM_CREATE :
-                for (auto& x: glpa.window){
-                    if (x.second.createMsg(hWnd)){
-                        break;
-                    }
+        case WM_CREATE:
+            for (auto& x: glpa.window){
+                if (x.second.createMsg(hWnd)){
+                    break;
                 }
-                return 0;
+            }
+            return 0;
 
-        case WM_PAINT :
-                for (auto& x: glpa.window) {
-                    if(x.second.paintMsg(hWnd)){
-                        break;
-                    }
+        case WM_PAINT:
+            for (auto& x: glpa.window) {
+                if(x.second.paintMsg(hWnd)){
+                    break;
                 }
-        
-                return 0;
+            }
+    
+            return 0;
 
-        case WM_CLOSE :
-                for (auto& x: glpa.window) {
-                    if(x.second.closeMsg(hWnd)){
-                        break;
-                    }
+        case WM_CLOSE:
+            for (auto& x: glpa.window) {
+                if(x.second.closeMsg(hWnd)){
+                    break;
                 }
-                return 0;
+            }
+            return 0;
                 
 
-        case WM_DESTROY :
-                for (auto& x: glpa.window) {
-                    if(x.second.destroyMsg(hWnd)){
-                        break;
-                    }
+        case WM_DESTROY:
+            for (auto& x: glpa.window) {
+                if(x.second.destroyMsg(hWnd)){
+                    break;
                 }
-                return 0;
+            }
+            return 0;
 
-        case WM_KEYDOWN :
-                glpa.userInput.keyDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
-                return 0;
+        case WM_KEYDOWN:
+            glpa.userInput.keyDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
 
-        case WM_KEYUP :
-        case WM_LBUTTONDOWN :
-        case WM_LBUTTONUP :
-        case WM_LBUTTONDBLCLK :
-        case WM_RBUTTONDOWN :
-        case WM_RBUTTONUP :
-        case WM_RBUTTONDBLCLK :
-        case WM_MBUTTONDOWN :
-        case WM_MBUTTONDBLCLK :
-        case WM_MBUTTONUP :
-        case WM_MOUSEWHEEL :
-        case WM_MOUSEMOVE :
-                for (auto& x: glpa.window) {
-                    if(x.second.userMsg(hWnd)){
-                        break;
-                    }
-                }
-                return 0;
+        case WM_KEYUP:
+            glpa.userInput.keyUp(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
 
+        case WM_LBUTTONDOWN:
+            glpa.userInput.mouseLbtnDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
 
+        case WM_LBUTTONUP:
+            glpa.userInput.mouseLbtnUp(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
 
-        default :
+        case WM_LBUTTONDBLCLK:
+            glpa.userInput.mouseLbtnDblclick(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_RBUTTONDOWN:
+            glpa.userInput.mouseRbtnDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_RBUTTONUP:
+            glpa.userInput.mouseRbtnUp(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_RBUTTONDBLCLK:
+            glpa.userInput.mouseRbtnDblClick(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_MBUTTONDOWN:
+            glpa.userInput.mouseMbtnDown(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_MBUTTONUP:
+            glpa.userInput.mouseMbtnUp(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_MOUSEWHEEL:
+            glpa.userInput.mouseMbtnWheel(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+
+        case WM_MOUSEMOVE:
+            glpa.userInput.mouseMove(hWnd, glpa.window[glpa.wndNames[hWnd]].useScene, msg, wParam, lParam);
+            return 0;
+            
+        default:
                 return DefWindowProc(hWnd, msg, wParam, lParam);
         }
         return 0;

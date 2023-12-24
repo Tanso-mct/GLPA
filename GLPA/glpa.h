@@ -57,11 +57,11 @@ public :
     void setUserInputFunc(
         std::string scene_name, 
         std::wstring func_name, 
-        GLPA_USER_FUNC,
+        GLPA_USER_FUNC_FUNCTIONAL,
         int message_type
     );
 
-    void editUserInputFunc(std::wstring func_name, GLPA_USER_FUNC edited_func);
+    void editUserInputFunc(std::wstring func_name, GLPA_USER_FUNC_FUNCTIONAL edited_func);
 
     void releaseUserInputFunc(std::wstring func_name);
 

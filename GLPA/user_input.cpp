@@ -3,18 +3,24 @@
 
 void UserInput::add(
     std::wstring funcName, 
-    GLPA_USER_FUNC ptAddFunc,
+    GLPA_USER_FUNC_FUNCTIONAL ptAddFunc,
     HWND getMsgWndHwnd, 
     int msgType
 ){
-    switch (msgType)
-    {
-    case GLPA_USERINPUT_MESSAGE_KEYDOWN :
-        myFunc[funcName] = ptAddFunc;
-        msgFunc[funcName].push_back(GLPA_USERINPUT_MESSAGE_KEYDOWN);
-        keyDownFunc[getMsgWndHwnd].push_back(funcName);
-        break;
-    
+    switch (msgType){
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_KEYDOWN, keyDownFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_KEYUP, keyUpFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMOVE, mouseMoveFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSELBTNDOWN, mouseLbtnDownFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSELBTNUP, mouseLbtnUpFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSELBTNDBCLICK, mouseLbtnDblclickFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSERBTNDOWN, mouseRbtnDownFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSERBTNUP, mouseRbtnUpFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSERBTNDBCLICK, mouseRbtnDblClickFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMBTNDOWN, mouseMbtnDownFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMBTNUP, mouseMbtnUpFunc)
+    GLPA_USERINPUT_ADD_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMBTNDBWHEEL, mouseMbtnWheelFunc)
+
     default:
         throw std::runtime_error(ERROR_USER_INPUT_ADD);
         break;
@@ -22,7 +28,7 @@ void UserInput::add(
 }
 
 
-void UserInput::edit(std::wstring funcName, GLPA_USER_FUNC editedFunc){
+void UserInput::edit(std::wstring funcName, GLPA_USER_FUNC_FUNCTIONAL editedFunc){
     myFunc[funcName] = editedFunc;
 }
 
@@ -49,12 +55,19 @@ void UserInput::release(std::wstring funcName)
 {
     myFunc.erase(funcName);
     for (auto loopMsg : msgFunc[funcName]){
-        switch (loopMsg)
-        {
-        case GLPA_USERINPUT_MESSAGE_KEYDOWN:
-            eraseFunc(funcName, &keyDownFunc);
-            
-            break;
+        switch (loopMsg){
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_KEYDOWN, keyDownFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_KEYUP, keyUpFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMOVE, mouseMoveFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSELBTNDOWN, mouseLbtnDownFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSELBTNUP, mouseLbtnUpFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSELBTNDBCLICK, mouseLbtnDblclickFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSERBTNDOWN, mouseRbtnDownFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSERBTNUP, mouseRbtnUpFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSERBTNDBCLICK, mouseRbtnDblClickFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMBTNDOWN, mouseMbtnDownFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMBTNUP, mouseMbtnUpFunc)
+        GLPA_USERINPUT_RELEASE_CASE(GLPA_USERINPUT_MESSAGE_MOUSEMBTNDBWHEEL, mouseMbtnWheelFunc)
         
         default:
             break;
@@ -63,32 +76,103 @@ void UserInput::release(std::wstring funcName)
 }
 
 
-void UserInput::keyDown(HWND hWnd, std::string scName, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    for (auto funcName : keyDownFunc[hWnd]){
-        myFunc[funcName](scName, msg, wParam, lParam);
-    }
+std::wstring UserInput::convertWParamToLowWstr(WPARAM wParam){
+    wchar_t wParamChar = static_cast<wchar_t>(wParam);
+    std::wstring upperWstr = std::wstring(1, wParamChar);
+    LPWSTR lpwStr = const_cast<LPWSTR>(upperWstr.c_str());
+    std::wstring rtLowWstr = CharLower(lpwStr);
+    return rtLowWstr;
 }
 
 
-void UserInput::keyTypingScene2d(Scene2d* ptScene2d, WPARAM wParam){
-    std::wstring tempStr;
+GLPA_USERINPUT_MSG_FUNC_DEFINE(keyDown, keyDownFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(keyUp, keyUpFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMove, mouseMoveFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseLbtnDown, mouseLbtnDownFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseLbtnUp, mouseLbtnUpFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseLbtnDblclick, mouseLbtnDblclickFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseRbtnDown, mouseRbtnDownFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseRbtnUp, mouseRbtnUpFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseRbtnDblClick, mouseRbtnDblClickFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMbtnDown, mouseMbtnDownFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMbtnUp, mouseMbtnUpFunc)
+GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMbtnWheel, mouseMbtnWheelFunc)
+
+
+void UserInput::keyDownTypingScene2d(
+    Scene2d* ptScene2d, std::wstring textGroupName, WPARAM wParam, std::wstring wParamWstr
+){
+    std::wstring lastLineWstr;
     switch (wParam){
     case VK_RETURN:
         ptScene2d->edited = true;
         typing = false;
         break;
 
+    case VK_BACK:
+        lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+        ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
+        ptScene2d->edited = true;
+        break;
+
+    case VK_SHIFT:
+        shift = true;
+        break;
+
     case VK_OEM_2:
-        tempStr = ptScene2d->text.getGroupLastLineWstr(L"Temp");
-        ptScene2d->text.edit(L"Temp", GLPA_TEXT_EDIT_GROUP_LAST, tempStr + L"/");
+        lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+        ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L"/");
         ptScene2d->edited = true;
         break;
     
-    default:
-        tempStr = ptScene2d->text.getGroupLastLineWstr(L"Temp");
-        ptScene2d->text.edit(L"Temp", GLPA_TEXT_EDIT_GROUP_LAST, tempStr + inputChar);
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+        lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+
+        if (shift){
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + std::wstring(1, wParam));
+        }
+        else{
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + wParamWstr);
+        }
         ptScene2d->edited = true;
         break;
     }
+}
+
+
+void UserInput::keyUpTypingScene2d(
+    Scene2d* ptScene2d, std::wstring textGroupName, WPARAM wParam, std::wstring wParamWstr
+){
+    std::wstring tempStr;
+    switch (wParam){
+    case VK_SHIFT:
+        shift = false;
+        break;
+    }
+    
 }

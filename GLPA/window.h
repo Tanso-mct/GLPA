@@ -87,7 +87,6 @@ public :
     bool closeMsg(HWND arg_hwnd);
     bool destroyMsg(HWND arg_hwnd);
     bool paintMsg(HWND arg_hwnd);
-    bool userMsg(HWND arg_hwnd);
 
     void setScene(Scene* arg_pt_scene, std::string scene_name);
 

@@ -241,18 +241,6 @@ bool Window::paintMsg(HWND argHWnd){
     return false;
 }
 
-bool Window::userMsg(HWND argHWnd){
-    if(argHWnd == hWnd){
-        if (focus)
-        {
-
-        }
-        
-        return true;
-    }
-    
-    return false;
-}
 
 void Window::setScene(Scene *argPtScene, std::string scName){
     ptScene = argPtScene;

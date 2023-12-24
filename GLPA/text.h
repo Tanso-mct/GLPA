@@ -12,7 +12,7 @@
 #include "error.h"
 
 #define GLPA_TEXT_ASPECT 2.1
-#define GLPA_TEXT_LINE_RATIO 1.2
+#define GLPA_TEXT_LINE_RATIO 1.1
 
 #define GLPA_SYSTEM_FIXED_FONT L"SYSTEM_FIXED_FONT"
 
