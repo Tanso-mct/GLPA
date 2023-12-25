@@ -4,6 +4,8 @@
 #include <string>
 #include <Windows.h>
 #include <tchar.h>
+#include <sstream>
+#include <chrono>
 
 #include "glpa.h"
 
@@ -23,9 +25,20 @@ public :
     GLPA_USER_FUNC(tempTypingDown);
     GLPA_USER_FUNC(tempTypingUp);
 
+    GLPA_SCENE_FUNC(tempSceneLoop);
+
 private :
     Glpa* ptGlpa;
     Scene2d* ptScene2d;
+
+    double tempFrameCount = 0;
+    bool sceneStart = false;
+
+    bool turnOn = false;
+
+    std::chrono::steady_clock::time_point startTime;
+    std::chrono::steady_clock::time_point endTime;
+    std::chrono::milliseconds duration;
 };
 
 

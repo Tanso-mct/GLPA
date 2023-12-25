@@ -28,7 +28,7 @@
 #define GLPA_SCENE_FUNC(method_name) \
     void method_name(HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi)
 
-#define GLPA_USER_FUNC_DEFINE(class_name, method_name, h_buffer_dc_arg_name, lp_pixel_arg_name, width_arg_name, height_arg_name, dpi_arg_name) \
+#define GLPA_SCENE_FUNC_DEFINE(class_name, method_name, h_buffer_dc_arg_name, lp_pixel_arg_name, width_arg_name, height_arg_name, dpi_arg_name) \
     void class_name::method_name(HDC h_buffer_dc_arg_name, LPDWORD lp_pixel_arg_name, int width_arg_name, int height_arg_name, int dpi_arg_name)
 
 

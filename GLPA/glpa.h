@@ -36,19 +36,14 @@ public :
     );
 
     void updateWindow(LPCWSTR window_name, int param);
-
     void setSingleWindow(bool single);
-
     bool dataSingleWindow();
-
     void deleteWindow();
 
     void runGraphicLoop();
 
     void createScene(std::string scene_name, int select_type);
-
     void loadScene(std::string scene_name, LPCWSTR scene_folder_path);
-
     void releaseScene(std::string scene_name);
 
     Scene2d* getPtScene2d(std::string scene_name);
@@ -60,14 +55,14 @@ public :
         GLPA_USER_FUNC_FUNCTIONAL pt_add_func,
         int message_type
     );
-
     void editUserInputFunc(std::wstring func_name, GLPA_USER_FUNC_FUNCTIONAL edited_func);
-
     void releaseUserInputFunc(std::wstring func_name);
 
     void setSceneActionFunc();
 
     void setSceneFrameFunc(std::string scene_name, std::wstring func_name, GLPA_SCENE_FUNC_FUNCTIONAL add_func);
+    void editSceneFrameFunc(std::string scene_name, std::wstring func_name, GLPA_SCENE_FUNC_FUNCTIONAL edited_fuc);
+    void releaseSceneFrameFunc(std::string scene_name, std::wstring func_name);
 
     void selectUseScene(LPCWSTR target_window_name, std::string scene_name);
 

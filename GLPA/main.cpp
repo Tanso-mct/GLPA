@@ -34,10 +34,14 @@ int WINAPI WinMain(
         SCENE_GLPA_CONSOLE, L"tempTypingUp", GLPA_USER_FUNC_PT(temp, tempTypingUp), GLPA_USERINPUT_MESSAGE_KEYUP
     );
 
+    glpa.setSceneFrameFunc(SCENE_GLPA_CONSOLE, L"tempFrameFunc", GLPA_SCENE_FUNC_PT(temp, tempSceneLoop));
+
     glpa.runGraphicLoop();
 
     glpa.releaseUserInputFunc(L"tempTypingDown");
     glpa.releaseUserInputFunc(L"tempTypingUp");
+
+    glpa.releaseSceneFrameFunc(SCENE_GLPA_CONSOLE, L"tempFrameFunc");
 
     glpa.releaseScene(SCENE_GLPA_CONSOLE);
 

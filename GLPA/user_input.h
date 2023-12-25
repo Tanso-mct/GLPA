@@ -6,6 +6,8 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <sstream>
+#include <chrono>
 
 #include "scene.h"
 #include "text.h"
@@ -51,13 +53,15 @@
 #define GLPA_USER_FUNC_DEFINE(class_name, method_name, scene_name_arg_name, msg_arg_name, w_param_arg_name, l_param_arg_name) \
     void class_name::method_name(std::string scene_name_arg_name, UINT msg_arg_name, WPARAM w_param_arg_name, LPARAM l_param_arg_name)
 
-
 #define GLPA_USERINPUT_MSG_FUNC_DEFINE(method_name, msg_func_data) \
     void UserInput::method_name(HWND hWnd, std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){ \
         for (auto funcName : msg_func_data[hWnd]){ \
             myFunc[funcName](scName, msg, wParam, lParam); \
         } \
     }
+
+
+#define GLPA_TYPING_MARK L'|'
 
 class UserInput
 {
@@ -107,6 +111,7 @@ public :
     void mouseMbtnWheel(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
     bool typing = false;
+    bool typingMark = false;
     bool shift = false;
 
 private :

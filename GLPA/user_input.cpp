@@ -102,7 +102,9 @@ GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMbtnWheel, mouseMbtnWheelFunc)
 void UserInput::keyDownTypingScene2d(
     Scene2d* ptScene2d, std::wstring textGroupName, WPARAM wParam, std::wstring wParamWstr
 ){
-    std::wstring lastLineWstr;
+    std::wstring lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+    std::wstring editedLineWstr;
+
     switch (wParam){
     case VK_RETURN:
         ptScene2d->edited = true;
@@ -110,19 +112,72 @@ void UserInput::keyDownTypingScene2d(
         break;
 
     case VK_BACK:
-        lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
-        ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
-        ptScene2d->edited = true;
+        if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                typingMark = true;
+                lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
+            }
+
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
+            ptScene2d->edited = true;
+
+            editedLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+            if (typingMark){
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, editedLineWstr + GLPA_TYPING_MARK);
+                typingMark = false;
+            }
+        }
+
         break;
 
     case VK_SHIFT:
         shift = true;
         break;
 
+    case VK_SPACE:
+        if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                typingMark = true;
+                lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
+            }
+
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L" ");
+            ptScene2d->edited = true;
+
+            editedLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+            if (typingMark){
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, editedLineWstr + GLPA_TYPING_MARK);
+                typingMark = false;
+            }
+        }
+        else{
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L" ");
+            ptScene2d->edited = true;
+        }
+        
+        break;
+
     case VK_OEM_2:
-        lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
-        ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L"/");
-        ptScene2d->edited = true;
+        if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                typingMark = true;
+                lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
+            }
+
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L"/");
+            ptScene2d->edited = true;
+
+            editedLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+            if (typingMark){
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, editedLineWstr + GLPA_TYPING_MARK);
+                typingMark = false;
+            }
+        }
+        else{
+            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L"/");
+            ptScene2d->edited = true;
+        }
+        
         break;
     
     case 'A':
@@ -151,17 +206,39 @@ void UserInput::keyDownTypingScene2d(
     case 'X':
     case 'Y':
     case 'Z':
-        lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+        if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                typingMark = true;
+                lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
+            }
 
-        if (shift){
-            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + std::wstring(1, wParam));
+            if (shift){
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + std::wstring(1, wParam));
+            }
+            else{
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + wParamWstr);
+            }
+            ptScene2d->edited = true;
+
+            editedLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+            if (typingMark){
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, editedLineWstr + GLPA_TYPING_MARK);
+                typingMark = false;
+            }
         }
         else{
-            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + wParamWstr);
+            if (shift){
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + std::wstring(1, wParam));
+            }
+            else{
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + wParamWstr);
+            }
+            ptScene2d->edited = true;
         }
-        ptScene2d->edited = true;
+
         break;
     }
+
 }
 
 

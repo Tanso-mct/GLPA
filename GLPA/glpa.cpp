@@ -76,7 +76,6 @@ void Glpa::runGraphicLoop(){
         // Returns 1 (true) if a message is retrieved and 0 (false) if not.
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             if (msg.message == WM_QUIT) {
-                OutputDebugStringW(_T("GLPA : EXIT\n"));
 
                 // Exit from the loop when the exit message comes.
                 break;
@@ -195,6 +194,15 @@ void Glpa::setSceneFrameFunc(std::string scName, std::wstring funcName, GLPA_SCE
     scene.data2d[scName].addSceneFrameFunc(funcName, addFunc);
 }
 
+
+void Glpa::editSceneFrameFunc(std::string scName, std::wstring funcName, GLPA_SCENE_FUNC_FUNCTIONAL editedFunc){
+    scene.data2d[scName].editSceneFrameFunc(funcName, editedFunc);
+}
+
+
+void Glpa::releaseSceneFrameFunc(std::string scName, std::wstring funcName){
+    scene.data2d[scName].releaseSceneFrameFunc(funcName);
+}
 
 void Glpa::selectUseScene(LPCWSTR targetWndName, std::string scName)
 {
