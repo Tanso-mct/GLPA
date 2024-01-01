@@ -135,6 +135,7 @@ void UserInput::keyDownTypingScene2d(
         break;
 
     case VK_SPACE:
+        // TODO : Function or functions to manipulate strings in this case.
         if (lastLineWstr.size() != 0){
             if (lastLineWstr.back() == GLPA_TYPING_MARK){
                 typingMark = true;
