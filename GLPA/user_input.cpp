@@ -141,14 +141,15 @@ void UserInput::keyDownTypingScene2d(
                 lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
             }
 
-            ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L" ");
-            ptScene2d->edited = true;
-
-            editedLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
             if (typingMark){
-                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, editedLineWstr + GLPA_TYPING_MARK);
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L" " + GLPA_TYPING_MARK);
                 typingMark = false;
             }
+            else{
+                ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L" ");
+            }
+
+            ptScene2d->edited = true;
         }
         else{
             ptScene2d->text.edit(textGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + L" ");

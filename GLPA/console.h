@@ -15,6 +15,8 @@
 #define SCENE_GLPA_CONSOLE "glpa_console"
 #define SCENE_FOLDER_PASS_GLPA_CONSOLE L"resource/scene/glpa_console"
 
+#define EMPTY_WSTRING L""
+
 class Console
 {
 public :
@@ -31,8 +33,10 @@ private :
     Glpa* ptGlpa;
     Scene2d* ptScene2d;
 
+    std::wstring selectingTextGroup = L"Temp";
+    std::unordered_map<std::wstring, int> lastFrameTextSize;
+
     double tempFrameCount = 0;
-    bool sceneStart = false;
 
     bool turnOn = false;
 
