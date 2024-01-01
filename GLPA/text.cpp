@@ -122,8 +122,46 @@ void Text::typingDelete(std::wstring targetGroupName){
 }
 
 
-void Text::typingMarkAnime(std::wstring targetTextGroupName){
-    
+void Text::typingMarkAnime(bool* typing, bool* sceneEditOrNot, std::wstring targetTextGroupName){
+    std:: wstring lastLineWstr = getGroupLastLineWstr(targetTextGroupName);
+    int thisFrameTextSize = (getGroupLastLineWstr(targetTextGroupName)).size();
+
+    if (lastFrameTextSize.find(targetTextGroupName) == lastFrameTextSize.end()){
+        startTime = std::chrono::high_resolution_clock::now();
+    }
+    else if (lastFrameTextSize[targetTextGroupName] != thisFrameTextSize){
+        startTime = std::chrono::high_resolution_clock::now();
+    }
+
+    endTime = std::chrono::high_resolution_clock::now();
+
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+
+    if (*typing){
+        if (duration.count() >= 0 && duration.count() < 500){
+            if (!turnOn){
+                edit(targetTextGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + GLPA_TYPING_MARK);
+                *sceneEditOrNot = true;
+                
+                turnOn = true;
+            }
+        }
+        else if (duration.count() < 1000){
+            if (lastLineWstr.size() != 0){
+                if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                    edit(targetTextGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
+                    *sceneEditOrNot = true;
+
+                    turnOn = false;
+                }
+            }
+        }
+        else{
+            startTime = endTime;
+        }
+    }
+
+    lastFrameTextSize[targetTextGroupName] = (getGroupLastLineWstr(targetTextGroupName)).size();
 }
 
 

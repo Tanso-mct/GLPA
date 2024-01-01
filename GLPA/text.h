@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 #include <tchar.h>
+#include <sstream>
+#include <chrono>
 
 #include "color.h"
 #include "vector.cuh"
@@ -55,9 +57,10 @@ public :
 
     void edit(std::wstring target_group_name, int edit_type, std::wstring edit_text);
 
+    bool typing = false;
     void typingAdd(std::wstring target_group_name, std::wstring add_wstring);
     void typingDelete(std::wstring target_group_name);
-    void typingMarkAnime(std::wstring targetTextGroupName);
+    void typingMarkAnime(bool* typing, bool* scene_edit_or_not, std::wstring targetTextGroupName);
 
     void releaseGroup(std::wstring group_name);
 
@@ -73,6 +76,12 @@ public :
 private :
     std::unordered_map<std::wstring, HFONT> font;
     std::unordered_map<std::wstring, TextGroup> data;
+
+    std::unordered_map<std::wstring, int> lastFrameTextSize;
+    bool turnOn = false;
+    std::chrono::steady_clock::time_point startTime;
+    std::chrono::steady_clock::time_point endTime;
+    std::chrono::milliseconds duration;
 
 };
 
