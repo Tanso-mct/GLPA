@@ -31,6 +31,8 @@ typedef struct tagTEXT_GROUP{
 
 #define GLPA_NULL_WTEXT L"NULL"
 
+#define GLPA_TYPING_MARK L'|'
+
 class Text
 {
 public :
@@ -52,6 +54,10 @@ public :
     std::wstring getGroupLastLineWstr(std::wstring target_group_name);
 
     void edit(std::wstring target_group_name, int edit_type, std::wstring edit_text);
+
+    void typingAdd(std::wstring target_group_name, std::wstring add_wstring);
+    void typingDelete(std::wstring target_group_name);
+    void typingMarkAnime(std::wstring targetTextGroupName);
 
     void releaseGroup(std::wstring group_name);
 

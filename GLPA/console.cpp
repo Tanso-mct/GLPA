@@ -27,7 +27,7 @@ GLPA_USER_FUNC_DEFINE(Console, tempTypingDown, scName, msg, wParam, lParam){
         
     }
     else if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
-        ptGlpa->userInput.keyDownTypingScene2d(ptScene2d, L"Temp", wParam, inputLowWstr);
+        ptGlpa->userInput.typingDownScene2d(ptScene2d, L"Temp", wParam, inputLowWstr);
     }
 }
 
@@ -36,7 +36,7 @@ GLPA_USER_FUNC_DEFINE(Console, tempTypingUp, scName, msg, wParam, lParam){
     std::wstring inputLowWstr = ptGlpa->userInput.convertWParamToLowWstr(wParam);
 
     if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
-        ptGlpa->userInput.keyUpTypingScene2d(ptScene2d, L"Temp", wParam, inputLowWstr);
+        ptGlpa->userInput.typingUpScene2d(ptScene2d, L"Temp", wParam, inputLowWstr);
     }
 }
 

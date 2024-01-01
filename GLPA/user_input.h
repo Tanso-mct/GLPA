@@ -61,8 +61,6 @@
     }
 
 
-#define GLPA_TYPING_MARK L'|'
-
 class UserInput
 {
 public :
@@ -85,10 +83,11 @@ public :
     void keyDown(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
     void keyUp(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
-    void keyDownTypingScene2d(
+    
+    void typingDownScene2d(
         Scene2d* pt_scene_2d, std::wstring text_group_name, WPARAM w_param, std::wstring w_param_wstr
     );
-    void keyUpTypingScene2d(
+    void typingUpScene2d(
         Scene2d* pt_scene_2d, std::wstring text_group_name, WPARAM w_param, std::wstring w_param_wstr
     );
     
@@ -111,8 +110,8 @@ public :
     void mouseMbtnWheel(HWND h_wnd, std::string scene_name, UINT msg, WPARAM w_param, LPARAM l_param);
 
     bool typing = false;
-    bool typingMark = false;
     bool shift = false;
+    bool ctrl = false;
 
 private :
     std::unordered_map<std::wstring, GLPA_USER_FUNC_FUNCTIONAL> myFunc;

@@ -75,6 +75,58 @@ void Text::edit(std::wstring targetGroupName, int editType, std::wstring editTex
 }
 
 
+void Text::typingAdd(std::wstring targetGroupName, std::wstring addWstring){
+    bool typingMark = false;
+    std::wstring lastLineWstr = getGroupLastLineWstr(targetGroupName);
+    if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                typingMark = true;
+                lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
+            }
+
+            if (typingMark){
+                edit(targetGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + addWstring + GLPA_TYPING_MARK);
+                typingMark = false;
+            }
+            else{
+                edit(targetGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + addWstring);
+            }
+        }
+        else{
+            edit(targetGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + addWstring);
+        }
+        
+}
+
+
+void Text::typingDelete(std::wstring targetGroupName){
+    bool typingMark = false;
+    std::wstring lastLineWstr = getGroupLastLineWstr(targetGroupName);
+    if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                typingMark = true; 
+                lastLineWstr = lastLineWstr.substr(0, lastLineWstr.size() - 1);
+            }
+
+            if (typingMark){
+                edit(
+                    targetGroupName, 
+                    GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1) + GLPA_TYPING_MARK
+                );
+                typingMark = false;
+            }
+            else{
+                edit(targetGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
+            }
+        }
+}
+
+
+void Text::typingMarkAnime(std::wstring targetTextGroupName){
+    
+}
+
+
 bool Text::drawLine(HDC hBufDC, std::wstring groupName, int startLine, int nowLine, int* drawLines, std::wstring lineText){
     if (
         nowLine >= startLine &&
