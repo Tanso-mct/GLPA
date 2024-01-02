@@ -1,6 +1,15 @@
 #include "scene2d.h"
 
-void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string fileName){
+
+void Scene2d::storeUseWndParam(int width, int height, int dpi){
+    useWndWidth = width;
+    useWndHeight = height;
+    useWndDpi = dpi;
+}
+
+
+void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string fileName)
+{
     Image tempImage;
     std::string filePath = folderPath + "/" + fileName;
 
@@ -60,10 +69,9 @@ void Scene2d::loadPng(std::string folderPath, std::string groupName, std::string
     pngAttribute.emplace(cutFileName, tempImage);
 }
 
-
 void Scene2d::loadText(){
     text.addGroup(
-        L"Temp",
+        L"console_text",
         24,
         GLPA_SYSTEM_FIXED_FONT,
         {204, 204, 204},
@@ -73,9 +81,7 @@ void Scene2d::loadText(){
         true
     );
 
-    text.addText(L"Temp", L"/glpa temp");
-    text.addText(L"Temp", L"/glpa temp2");
-    text.addText(L"Temp", L"/glpa temp3");
+    text.addText(L"console_text", L"<console>");
 }
 
 

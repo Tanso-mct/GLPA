@@ -6,8 +6,12 @@
 #include <tchar.h>
 #include <sstream>
 #include <chrono>
+#include <functional>
+#include <unordered_map>
 
 #include "glpa.h"
+
+#include "command.h"
 
 #define WINDOW_CONSOLE L"Console"
 #define WINDOWCLASS_CONSOLE L"window_console"
@@ -15,34 +19,31 @@
 #define SCENE_GLPA_CONSOLE "glpa_console"
 #define SCENE_FOLDER_PASS_GLPA_CONSOLE L"resource/scene/glpa_console"
 
-#define EMPTY_WSTRING L""
-
 class Console
 {
 public :
-    Console(Glpa *argPtGlpa);
+    Console(Glpa *argPtGlpa, Scene2d* argPtScene2d);
 
-    void setScenePt(Scene2d *arg_pt_scene_2d);
+    std::wstring getCommandName(std::wstring input_text);
 
-    GLPA_USER_FUNC(tempTypingDown);
-    GLPA_USER_FUNC(tempTypingUp);
+    GLPA_USER_FUNC(mouseLbtnDown);
 
-    GLPA_SCENE_FUNC(tempSceneLoop);
+    GLPA_USER_FUNC(keyDown);
+    GLPA_USER_FUNC(keyUp);
+
+    GLPA_SCENE_FUNC(mainUpdate);
 
 private :
     Glpa* ptGlpa;
     Scene2d* ptScene2d;
 
-    std::wstring selectingTextGroup = L"Temp";
+    Command command;
+
+    std::wstring selectingTextGroup = GLPA_NULL_WTEXT;
+
+    int textStartLine = 0;
     std::unordered_map<std::wstring, int> lastFrameTextSize;
 
-    double tempFrameCount = 0;
-
-    bool turnOn = false;
-
-    std::chrono::steady_clock::time_point startTime;
-    std::chrono::steady_clock::time_point endTime;
-    std::chrono::milliseconds duration;
 };
 
 

@@ -40,7 +40,18 @@ void Text::addText(std::wstring groupName, std::wstring argText){
 }
 
 
+int Text::getGroupLineAmount(std::wstring groupName){
+    if(data.find(groupName) != data.end()){
+        return data[groupName].text.size();
+    }
+}
+
+
 std::wstring Text::getGroupOnMouse(LPARAM lParam, int dpi){
+    int debugX = LOWORD(lParam) * dpi;
+    int debugY = HIWORD(lParam) * dpi;
+
+
     for (auto it : data){
         if (
             LOWORD(lParam) * dpi >= it.second.posTopLeft.x &&
@@ -123,13 +134,28 @@ void Text::typingDelete(std::wstring targetGroupName){
 
 
 void Text::typingMarkAnime(bool* typing, bool* sceneEditOrNot, std::wstring targetTextGroupName){
+    if (!*typing){
+        turnOn = false;
+        return;
+    }
+
+    int thisFrameLineAmount = getGroupLineAmount(targetTextGroupName);
+
+    if (
+        lastFrameLineAmount.find(targetTextGroupName) == lastFrameLineAmount.end() ||
+        lastFrameLineAmount[targetTextGroupName] != thisFrameLineAmount
+    ){
+        startTime = std::chrono::high_resolution_clock::now();
+        turnOn = false;
+    }
+    
     std:: wstring lastLineWstr = getGroupLastLineWstr(targetTextGroupName);
     int thisFrameTextSize = (getGroupLastLineWstr(targetTextGroupName)).size();
 
-    if (lastFrameTextSize.find(targetTextGroupName) == lastFrameTextSize.end()){
-        startTime = std::chrono::high_resolution_clock::now();
-    }
-    else if (lastFrameTextSize[targetTextGroupName] != thisFrameTextSize){
+    if (
+        lastFrameTextSize.find(targetTextGroupName) == lastFrameTextSize.end() ||
+        lastFrameTextSize[targetTextGroupName] != thisFrameTextSize
+    ){
         startTime = std::chrono::high_resolution_clock::now();
     }
 
@@ -137,31 +163,30 @@ void Text::typingMarkAnime(bool* typing, bool* sceneEditOrNot, std::wstring targ
 
     duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
-    if (*typing){
-        if (duration.count() >= 0 && duration.count() < 500){
-            if (!turnOn){
-                edit(targetTextGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + GLPA_TYPING_MARK);
+    if (duration.count() >= 0 && duration.count() < 500){
+        if (!turnOn){
+            edit(targetTextGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + GLPA_TYPING_MARK);
+            *sceneEditOrNot = true;
+            
+            turnOn = true;
+        }
+    }
+    else if (duration.count() < 1000){
+        if (lastLineWstr.size() != 0){
+            if (lastLineWstr.back() == GLPA_TYPING_MARK){
+                edit(targetTextGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
                 *sceneEditOrNot = true;
-                
-                turnOn = true;
-            }
-        }
-        else if (duration.count() < 1000){
-            if (lastLineWstr.size() != 0){
-                if (lastLineWstr.back() == GLPA_TYPING_MARK){
-                    edit(targetTextGroupName, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
-                    *sceneEditOrNot = true;
 
-                    turnOn = false;
-                }
+                turnOn = false;
             }
         }
-        else{
-            startTime = endTime;
-        }
+    }
+    else{
+        startTime = endTime;
     }
 
     lastFrameTextSize[targetTextGroupName] = (getGroupLastLineWstr(targetTextGroupName)).size();
+    lastFrameLineAmount[targetTextGroupName] = getGroupLineAmount(targetTextGroupName);
 }
 
 

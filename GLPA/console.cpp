@@ -1,85 +1,69 @@
 #include "console.h"
 
-Console::Console(Glpa *argPtGlpa){
+Console::Console(Glpa *argPtGlpa, Scene2d* argPtScene2d){
     ptGlpa = argPtGlpa;
-}
-
-
-void Console::setScenePt(Scene2d *argPtScene2d){
     ptScene2d = argPtScene2d;
 }
 
+void Console::mouseLbtnDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
+    selectingTextGroup = ptScene2d->text.getGroupOnMouse(lParam, ptScene2d->useWndDpi);
 
-GLPA_USER_FUNC_DEFINE(Console, tempTypingDown, scName, msg, wParam, lParam){
-    std::wstring inputLowWstr = ptGlpa->userInput.convertWParamToLowWstr(wParam);
-
-    if (scName == SCENE_GLPA_CONSOLE && !ptGlpa->userInput.typing){
-        switch (wParam){
-        case VK_RETURN:
-            ptScene2d->text.setStartLine(L"Temp", 2);
-            ptScene2d->edited = true;
-            glpa.userInput.typing = true;
-            break;
-        
-        default:
-            break;
-        }
-        
-    }
-    else if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
-        ptGlpa->userInput.typingDownScene2d(ptScene2d, L"Temp", wParam, inputLowWstr);
+    if (selectingTextGroup != GLPA_NULL_WTEXT){
+        glpa.userInput.typing = true;
     }
 }
 
 
-GLPA_USER_FUNC_DEFINE(Console, tempTypingUp, scName, msg, wParam, lParam){
+void Console::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
+    if (selectingTextGroup == GLPA_NULL_WTEXT){
+        return;
+    }
+
     std::wstring inputLowWstr = ptGlpa->userInput.convertWParamToLowWstr(wParam);
 
     if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
-        ptGlpa->userInput.typingUpScene2d(ptScene2d, L"Temp", wParam, inputLowWstr);
+        ptGlpa->userInput.typingDownScene2d(ptScene2d, selectingTextGroup, wParam, inputLowWstr);
+    }
+
+    switch (wParam){
+    case VK_RETURN:
+        if (glpa.userInput.typing){
+            if (ptScene2d->text.getGroupLineAmount(selectingTextGroup) >= 22){
+                textStartLine += 1;
+                ptScene2d->text.setStartLine(selectingTextGroup, textStartLine);
+            }
+            ptGlpa->userInput.typingNewLineScene2d(ptScene2d, selectingTextGroup, L"<console>");
+
+            
+        }
+        else {
+            glpa.userInput.typing = true;
+        }
+        break;
+    
+    default:
+        break;
+    }
+
+}
+
+
+void Console::keyUp(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
+    if (selectingTextGroup == GLPA_NULL_WTEXT){
+        return;
+    }
+
+    std::wstring inputLowWstr = ptGlpa->userInput.convertWParamToLowWstr(wParam);
+
+    if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
+        ptGlpa->userInput.typingUpScene2d(ptScene2d, selectingTextGroup, wParam, inputLowWstr);
     }
 }
 
 
-GLPA_SCENE_FUNC_DEFINE(Console, tempSceneLoop, hBufDC, lpPixel, width, height, dpi){
-    std:: wstring lastLineWstr = ptScene2d->text.getGroupLastLineWstr(selectingTextGroup);
-    int thisFrameTextSize = (ptScene2d->text.getGroupLastLineWstr(selectingTextGroup)).size();
-
-    if (lastFrameTextSize.find(selectingTextGroup) == lastFrameTextSize.end()){
-        startTime = std::chrono::high_resolution_clock::now();
+void Console::mainUpdate(HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi){
+    if (selectingTextGroup != GLPA_NULL_WTEXT){
+        ptScene2d->text.typingMarkAnime(&(ptGlpa->userInput.typing), &(ptScene2d->edited), selectingTextGroup);
     }
-    else if (lastFrameTextSize[selectingTextGroup] != thisFrameTextSize){
-        startTime = std::chrono::high_resolution_clock::now();
-    }
-
-    endTime = std::chrono::high_resolution_clock::now();
-
-    duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-
-    if (ptGlpa->userInput.typing){
-        if (duration.count() >= 0 && duration.count() < 500){
-            if (!turnOn){
-                ptScene2d->text.edit(selectingTextGroup, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr + GLPA_TYPING_MARK);
-                ptScene2d->edited = true;
-                
-                turnOn = true;
-            }
-        }
-        else if (duration.count() < 1000){
-            if (lastLineWstr.size() != 0){
-                if (lastLineWstr.back() == GLPA_TYPING_MARK){
-                    ptScene2d->text.edit(selectingTextGroup, GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1));
-                    ptScene2d->edited = true;
-
-                    turnOn = false;
-                }
-            }
-        }
-        else{
-            startTime = endTime;
-        }
-    }
-
-    lastFrameTextSize[selectingTextGroup] = (ptScene2d->text.getGroupLastLineWstr(selectingTextGroup)).size();
     
 }

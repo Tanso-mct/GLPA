@@ -179,8 +179,7 @@ void Glpa::setUserInputFunc(
 }
 
 
-void Glpa::editUserInputFunc(std::wstring funcName, GLPA_USER_FUNC_FUNCTIONAL editedFunc)
-{
+void Glpa::editUserInputFunc(std::wstring funcName, GLPA_USER_FUNC_FUNCTIONAL editedFunc){
     userInput.edit(funcName, editedFunc);
 }
 

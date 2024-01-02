@@ -31,7 +31,7 @@ typedef struct tagTEXT_GROUP{
 
 #define GLPA_TEXT_EDIT_GROUP_LAST 0
 
-#define GLPA_NULL_WTEXT L"NULL"
+#define GLPA_NULL_WTEXT L""
 
 #define GLPA_TYPING_MARK L'|'
 
@@ -50,6 +50,8 @@ public :
     );
 
     void addText(std::wstring group_name, std::wstring text);
+
+    int getGroupLineAmount(std::wstring group_name);
 
     std::wstring getGroupOnMouse(LPARAM l_param, int dpi);
 
@@ -78,6 +80,7 @@ private :
     std::unordered_map<std::wstring, TextGroup> data;
 
     std::unordered_map<std::wstring, int> lastFrameTextSize;
+    std::unordered_map<std::wstring, int> lastFrameLineAmount;
     bool turnOn = false;
     std::chrono::steady_clock::time_point startTime;
     std::chrono::steady_clock::time_point endTime;

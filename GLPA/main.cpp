@@ -23,25 +23,28 @@ int WINAPI WinMain(
     glpa.selectUseScene(WINDOW_CONSOLE, SCENE_GLPA_CONSOLE);
 
     // Not Glpa
-    Console temp(&glpa);
-    temp.setScenePt(glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
+    Console console(&glpa, glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
 
     glpa.setUserInputFunc(
-        SCENE_GLPA_CONSOLE, L"tempTypingDown", GLPA_USER_FUNC_PT(temp, tempTypingDown), GLPA_USERINPUT_MESSAGE_KEYDOWN
+        SCENE_GLPA_CONSOLE, L"console_keyDown", 
+        GLPA_USER_FUNC_PT(console, keyDown), GLPA_USERINPUT_MESSAGE_KEYDOWN
     );
-
     glpa.setUserInputFunc(
-        SCENE_GLPA_CONSOLE, L"tempTypingUp", GLPA_USER_FUNC_PT(temp, tempTypingUp), GLPA_USERINPUT_MESSAGE_KEYUP
+        SCENE_GLPA_CONSOLE, L"console_keyUp", 
+        GLPA_USER_FUNC_PT(console, keyUp), GLPA_USERINPUT_MESSAGE_KEYUP
     );
-
-    glpa.setSceneFrameFunc(SCENE_GLPA_CONSOLE, L"tempFrameFunc", GLPA_SCENE_FUNC_PT(temp, tempSceneLoop));
+    glpa.setUserInputFunc(
+        SCENE_GLPA_CONSOLE, L"console_mouseLbtnDown", 
+        GLPA_USER_FUNC_PT(console, mouseLbtnDown), GLPA_USERINPUT_MESSAGE_MOUSELBTNDOWN
+    );
+    glpa.setSceneFrameFunc(SCENE_GLPA_CONSOLE, L"console_main_update", GLPA_SCENE_FUNC_PT(console, mainUpdate));
 
     glpa.runGraphicLoop();
 
-    glpa.releaseUserInputFunc(L"tempTypingDown");
-    glpa.releaseUserInputFunc(L"tempTypingUp");
-
-    glpa.releaseSceneFrameFunc(SCENE_GLPA_CONSOLE, L"tempFrameFunc");
+    glpa.releaseUserInputFunc(L"console_keyDown");
+    glpa.releaseUserInputFunc(L"console_keyUp");
+    glpa.releaseUserInputFunc(L"console_mouseLbtnDown");
+    glpa.releaseSceneFrameFunc(SCENE_GLPA_CONSOLE, L"console_main_update");
 
     glpa.releaseScene(SCENE_GLPA_CONSOLE);
 

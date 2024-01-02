@@ -26,15 +26,14 @@
     }
 
 #define GLPA_SCENE_FUNC(method_name) \
-    void method_name(HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi)
-
-#define GLPA_SCENE_FUNC_DEFINE(class_name, method_name, h_buffer_dc_arg_name, lp_pixel_arg_name, width_arg_name, height_arg_name, dpi_arg_name) \
-    void class_name::method_name(HDC h_buffer_dc_arg_name, LPDWORD lp_pixel_arg_name, int width_arg_name, int height_arg_name, int dpi_arg_name)
+    void method_name(HDC h_buffer_dc, LPDWORD lp_pixel, int width, int height, int dpi)
 
 
 class Scene2d
 {
 public :
+    void storeUseWndParam(int width, int height, int dpi);
+
     void loadPng(std::string folder_path, std::string group_name, std::string file_name);
     void loadText();
     void reload();
@@ -64,7 +63,12 @@ public :
     void editSceneFrameFunc(std::wstring func_name, GLPA_SCENE_FUNC_FUNCTIONAL edited_func);
     void releaseSceneFrameFunc(std::wstring func_name);
 
+    int useWndWidth = 0;
+    int useWndHeight = 0;
+    int useWndDpi = 0;
+
 private :
+
     std::unordered_map<std::string, std::vector<std::string>> group;
     std::unordered_map<std::string, Image> pngAttribute;
 

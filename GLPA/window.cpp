@@ -245,4 +245,12 @@ bool Window::paintMsg(HWND argHWnd){
 void Window::setScene(Scene *argPtScene, std::string scName){
     ptScene = argPtScene;
     useScene = scName;
+
+    if(ptScene->data3d.find(scName) != ptScene->data3d.end()){
+        
+    }
+    else if (ptScene->data2d.find(scName) != ptScene->data2d.end()){
+        ptScene->data2d[scName].storeUseWndParam(width, height, dpi);
+    }
+
 }

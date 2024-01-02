@@ -99,6 +99,40 @@ GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMbtnUp, mouseMbtnUpFunc)
 GLPA_USERINPUT_MSG_FUNC_DEFINE(mouseMbtnWheel, mouseMbtnWheelFunc)
 
 
+void UserInput::typingNewLineScene2d(Scene2d *ptScene2d, std::wstring textGroupName, std::wstring addLineText){
+    std::wstring lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+
+    if (lastLineWstr.size() != 0){
+        if (lastLineWstr.back() == GLPA_TYPING_MARK){
+            ptScene2d->text.edit(
+                textGroupName, 
+                GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1)
+            );
+        }
+    }
+
+    ptScene2d->text.addText(textGroupName, addLineText);
+    ptScene2d->edited = true;
+}
+
+
+void UserInput::typingFinishScene2d(Scene2d *ptScene2d, std::wstring textGroupName){
+    std::wstring lastLineWstr = ptScene2d->text.getGroupLastLineWstr(textGroupName);
+    typing = false;
+
+    if (lastLineWstr.size() != 0){
+        if (lastLineWstr.back() == GLPA_TYPING_MARK){
+            ptScene2d->text.edit(
+                textGroupName, 
+                GLPA_TEXT_EDIT_GROUP_LAST, lastLineWstr.substr(0, lastLineWstr.size() - 1)
+            );
+        }
+    }
+
+    ptScene2d->edited = true;
+}
+
+
 void UserInput::typingDownScene2d(
     Scene2d* ptScene2d, std::wstring textGroupName, WPARAM wParam, std::wstring wParamWstr
 ){
@@ -106,15 +140,10 @@ void UserInput::typingDownScene2d(
     std::wstring editedLineWstr;
 
     switch (wParam){
-    case VK_RETURN:
-        ptScene2d->edited = true;
-        typing = false;
-        break;
-
     case VK_BACK:
         ptScene2d->text.typingDelete(textGroupName);
-        ptScene2d->edited = true;
 
+        ptScene2d->edited = true;
         break;
 
     case VK_SHIFT:
@@ -123,14 +152,14 @@ void UserInput::typingDownScene2d(
 
     case VK_SPACE:
         ptScene2d->text.typingAdd(textGroupName, L" ");
+
         ptScene2d->edited = true;
-        
         break;
 
     case VK_OEM_2:
         ptScene2d->text.typingAdd(textGroupName, L"/");
+
         ptScene2d->edited = true;
-        
         break;
     
     case 'A':
@@ -161,14 +190,12 @@ void UserInput::typingDownScene2d(
     case 'Z':
         if (shift){
             ptScene2d->text.typingAdd(textGroupName, std::wstring(1, wParam));
-            ptScene2d->edited = true;
         }
         else{
             ptScene2d->text.typingAdd(textGroupName, wParamWstr);
-            ptScene2d->edited = true;
         }
         
-
+        ptScene2d->edited = true;
         break;
     }
 
