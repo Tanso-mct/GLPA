@@ -73,7 +73,7 @@ public :
     void updateMaxFps();
     void updateSize();
 
-    void create(HINSTANCE arg_hinstance, GLPA_WINDOW_PROC_TYPE* pt_window_proc);
+    void create(HINSTANCE arg_hinstance, GLPA_WINDOW_PROC_TYPE* pt_window_proc, DWORD window_style);
 
     void updateStatus(int arg_status);
     bool isVisible();

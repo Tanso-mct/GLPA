@@ -26,6 +26,7 @@ public :
 
     std::wstring getCommandName(std::wstring input_text);
 
+
     GLPA_USER_FUNC(mouseLbtnDown);
 
     GLPA_USER_FUNC(keyDown);

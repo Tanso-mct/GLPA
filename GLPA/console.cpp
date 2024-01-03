@@ -5,6 +5,14 @@ Console::Console(Glpa *argPtGlpa, Scene2d* argPtScene2d){
     ptScene2d = argPtScene2d;
 }
 
+
+std::wstring Console::getCommandName(std::wstring inputText){
+    int tag = inputText.find(COMMAND_TAG_C);
+    std::wstring rtCommandName = inputText.substr(tag + COMMAND_TAG_C_SIZE, inputText.size() - 1);
+    return rtCommandName;
+}
+
+
 void Console::mouseLbtnDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
     selectingTextGroup = ptScene2d->text.getGroupOnMouse(lParam, ptScene2d->useWndDpi);
 
@@ -28,6 +36,7 @@ void Console::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam
     switch (wParam){
     case VK_RETURN:
         if (glpa.userInput.typing){
+            command.execute(getCommandName(ptScene2d->text.getGroupLastLineWstr(selectingTextGroup)));
             if (ptScene2d->text.getGroupLineAmount(selectingTextGroup) >= 22){
                 textStartLine += 1;
                 ptScene2d->text.setStartLine(selectingTextGroup, textStartLine);

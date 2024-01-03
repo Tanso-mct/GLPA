@@ -32,7 +32,8 @@ public :
         int background_color,
         LPWSTR small_icon,
         bool minimize_auto,
-        bool single_existence
+        bool single_existence,
+        DWORD wndViewStyle
     );
 
     void updateWindow(LPCWSTR window_name, int param);

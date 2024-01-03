@@ -22,7 +22,8 @@ void Glpa::createWindow(
     int backgroundColor,
     LPWSTR smallIcon,
     bool minimizeAuto,
-    bool singleExistence
+    bool singleExistence,
+    DWORD wndViewStyle
 ){
 
     Window tempWnd
@@ -32,7 +33,7 @@ void Glpa::createWindow(
     );
 
     window[wndName] = tempWnd;
-    window[wndName].create(hInstance, ptWindowProc);
+    window[wndName].create(hInstance, ptWindowProc, wndViewStyle);
     wndNames[window[wndName].hWnd] = wndName;
 }
 

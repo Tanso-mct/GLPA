@@ -4,7 +4,7 @@ void Window::getFps(){
 
 }
 
-void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc){
+void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc, DWORD viewStyle){
     wndClass.cbSize = sizeof(wndClass);
     wndClass.style = style;
     wndClass.lpfnWndProc = *ptWindowProc;
@@ -40,10 +40,11 @@ void Window::create(HINSTANCE arghInstance, GLPA_WINDOW_PROC_TYPE* ptWindowProc)
         throw std::runtime_error(ERROR_WINDOW_REGISTER_CLASS);
     }
 
+
     hWnd = CreateWindow(
         nameApiClass,
         name,
-        WS_SYSMENU,
+        viewStyle,
         CW_USEDEFAULT, CW_USEDEFAULT,
         width, height,
         NULL,
