@@ -36,9 +36,7 @@ void Scene::load(
 
     if (names[scName] == GLPA_SCENE_2D){
         for (auto group : allData){
-            if (
-                group.first.find(GLPA_SCENE_GROUP_NAME_L) == std::wstring::npos
-            ){
+            if (group.first.find(GLPA_SCENE_GROUP_NAME_L) == std::wstring::npos){
                 throw std::runtime_error(ERROR_SCENE2D_LOADPNG);
             }
 

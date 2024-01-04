@@ -13,6 +13,8 @@
 
 #define COMMAND_CREATE_GAME_WINDOW L"create_game_window"
 #define COMMAND_LOAD_GAME_SCENE "load_game_scene"
+#define COMMAND_SET_GAME_FUNCS "set_game_funcs"
+#define COMMAND_START_GAME_SCENE "start_game_scene"
 
 class Command{
 public :
