@@ -1,5 +1,5 @@
 /**
- * @file glpa_macro.h
+ * @file glpa_.h
  * @brief
  * 日本語 : GLPAで使用している構造体やマクロをまとめたもの。このファイルはGLPAのいずれかのファイルもインクルードしない。
  * English : A collection of structures and macros used in glpa. This file does not include any of the glpa files.
@@ -53,7 +53,10 @@ typedef struct tagNUMCOMB3
  * English : Describes what is used to store information to be read from the mesh data.
 **********************************************************************************************************************/
 
-
+/**
+ * 日本語 : メッシュの頂点を格納する。それぞれのパラメーターでインデックス番号がそのまま頂点番号になる。
+ * English : Stores the vertices of the mesh. The index number in each parameter is the vertex number as it is.
+*/
 typedef struct tagVERTEX
 {
     std::vector<VECTOR3D> world; // world coordinate

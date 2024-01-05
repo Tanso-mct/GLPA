@@ -105,7 +105,7 @@ typedef struct tagSIZE2
     double height;
 } SIZE2;
 
-typedef struct tagRANGE_CUBE
+typedef struct tagRANGE_RECT
 {
     bool status = false;
     VECTOR3D origin;
@@ -239,7 +239,7 @@ public :
 
     MATRIX()
     {
-        // std::vector‚Ì”z—ñƒTƒCƒY‚ÌŽw’è
+        // std::vectorï¿½Ì”zï¿½ï¿½Tï¿½Cï¿½Yï¿½ÌŽwï¿½ï¿½
         sourceMatrices.resize(3);
         calcMatrices3x.resize(3);
         resultMatrices.resize(3);

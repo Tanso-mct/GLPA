@@ -293,7 +293,7 @@
     <ClInclude Include="command.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="glpa_macro.h">
+    <ClInclude Include="glpa_.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
   </ItemGroup>

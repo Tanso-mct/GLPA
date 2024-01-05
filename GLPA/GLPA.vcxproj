@@ -197,7 +197,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="fps.h" />
     <ClInclude Include="glpa.h" />
-    <ClInclude Include="glpa_macro.h" />
+    <ClInclude Include="glpa_.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="material.h" />
