@@ -89,6 +89,7 @@ void Scene::load(
     }
 }
 
+
 void Scene::release(std::string scName){
     if(names[scName] == GLPA_SCENE_2D){
         for(auto it2d : data2d){

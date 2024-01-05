@@ -70,7 +70,7 @@ void Console::keyUp(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
 }
 
 
-void Console::mainUpdate(HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi){
+void Console::mainUpdate(HDC hBufDC, LPDWORD lpPixel){
     if (selectingTextGroup != GLPA_NULL_WTEXT){
         ptScene2d->text.typingMarkAnime(&(ptGlpa->userInput.typing), &(ptScene2d->edited), selectingTextGroup);
     }

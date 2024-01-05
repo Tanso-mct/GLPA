@@ -293,6 +293,9 @@
     <ClInclude Include="command.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="glpa_macro.h">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="camera.cpp">

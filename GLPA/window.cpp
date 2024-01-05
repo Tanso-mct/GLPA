@@ -99,8 +99,8 @@ void Window::graphicLoop(){
         getFps();
 
         if (ptScene->names[useScene] == GLPA_SCENE_2D){
-            ptScene->data2d[useScene].edit(hBufDC, lpPixel, width, height, dpi);
-            ptScene->data2d[useScene].update(hBufDC, lpPixel, width, height, dpi);
+            ptScene->data2d[useScene].edit(hBufDC, lpPixel);
+            ptScene->data2d[useScene].update(hBufDC, lpPixel);
         }
 
         InvalidateRect(hWnd, NULL, FALSE);

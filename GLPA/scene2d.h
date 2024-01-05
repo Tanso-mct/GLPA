@@ -18,15 +18,15 @@
 #define GLPA_SCENE2D_FILENAME_L "_@l"
 #define GLPA_SCENE2D_FILENAME_L_SIZE 3
 
-#define GLPA_SCENE_FUNC_FUNCTIONAL std::function<void(HDC, LPDWORD, int, int, int)>
+#define GLPA_SCENE_FUNC_FUNCTIONAL std::function<void(HDC, LPDWORD)>
 
 #define GLPA_SCENE_FUNC_PT(instance, method_name) \
-    [&instance](HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi){ \
-        instance.method_name(hBufDC, lpPixel, width, height, dpi); \
+    [&instance](HDC hBufDC, LPDWORD lpPixel){ \
+        instance.method_name(hBufDC, lpPixel); \
     }
 
 #define GLPA_SCENE_FUNC(method_name) \
-    void method_name(HDC h_buffer_dc, LPDWORD lp_pixel, int width, int height, int dpi)
+    void method_name(HDC h_buffer_dc, LPDWORD lp_pixel)
 
 
 class Scene2d
@@ -42,15 +42,9 @@ public :
     void showImage();
     void showGroup();
 
-    void edit(HDC h_buffer_dc, LPDWORD lp_pixel, int width, int height, int dpi);
+    void edit(HDC h_buffer_dc, LPDWORD lp_pixel);
 
-    void update(
-        HDC h_buffer_dc,
-        LPDWORD window_buffer,
-        int window_width,
-        int window_height,
-        int window_dpi
-    );
+    void update(HDC h_buffer_dc, LPDWORD window_buffer);
 
     std::unordered_map<std::string, int> groupOrder;
     std::unordered_map<int, std::unordered_map<int, std::string>> layerOrder;

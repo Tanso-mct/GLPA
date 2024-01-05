@@ -34,7 +34,6 @@ public :
     
     void reload();
     void remove();
-    void update();
 
     std::unordered_map<std::string, int> names;
     std::unordered_map<std::string, Scene2d> data2d;

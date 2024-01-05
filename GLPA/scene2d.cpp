@@ -96,20 +96,20 @@ void Scene2d::release(){
 }
 
 
-void Scene2d::edit(HDC hBufDC, LPDWORD lpPixel, int width, int height, int dpi){
+void Scene2d::edit(HDC hBufDC, LPDWORD lpPixel){
     for (auto it : sceneFrameFunc){
-        it.second(hBufDC, lpPixel, width, height, dpi);
+        it.second(hBufDC, lpPixel);
     }
 }
 
 
-void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight, int wndDpi){
+void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer){
     if (edited){
-        for(int y = 0; y < wndHeight; y++)
+        for(int y = 0; y < useWndHeight; y++)
         {
-            for(int x = 0; x < wndWidth; x++)
+            for(int x = 0; x < useWndWidth; x++)
             {
-                wndBuffer[(x+y*wndWidth * wndDpi)] = 0x00000000;
+                wndBuffer[(x+y*useWndWidth * useWndDpi)] = 0x00000000;
             }
         }
 
@@ -120,31 +120,31 @@ void Scene2d::update(HDC hBufDC, LPDWORD wndBuffer, int wndWidth, int wndHeight,
             for (int j = 1; j <= layerOrder[i].size(); j++){
                 it = pngAttribute[layerOrder[i][j]];
                 if (it.visible){
-                    drawPoint = it.pos.x + it.pos.y*wndWidth * wndDpi;
+                    drawPoint = it.pos.x + it.pos.y*useWndWidth * useWndDpi;
                     for(int y = 0; y < it.png.height; y++)
                     {
                         for(int x = 0; x < it.png.width; x++)
                         {
                             if(
                                 (it.pos.x + x) >= 0 && (it.pos.y + y) >= 0 &&
-                                (it.pos.x + x) < wndWidth && (it.pos.y + y) < wndHeight
+                                (it.pos.x + x) < useWndWidth && (it.pos.y + y) < useWndHeight
                             ){
                                 alpha = (it.png.data[x+y*it.png.width] >> 24) & 0xFF;
-                                backAlpha = wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)];
+                                backAlpha = wndBuffer[drawPoint + (x+y*useWndWidth * useWndDpi)];
 
                                 if (alpha != 0x00){
                                     if (backAlpha == 0x00){
-                                        wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                                        wndBuffer[drawPoint + (x+y*useWndWidth * useWndDpi)]
                                         = color.alphaBlend(
                                             (DWORD)(it.png.data[x+y*it.png.width]), 
                                             0xFF000000
                                         );
                                     }
                                     else{
-                                        wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)]
+                                        wndBuffer[drawPoint + (x+y*useWndWidth * useWndDpi)]
                                         = color.alphaBlend(
                                             (DWORD)(it.png.data[x+y*it.png.width]), 
-                                            (DWORD)(wndBuffer[drawPoint + (x+y*wndWidth * wndDpi)])
+                                            (DWORD)(wndBuffer[drawPoint + (x+y*useWndWidth * useWndDpi)])
                                         );
                                     }   
                                 }
