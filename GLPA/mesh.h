@@ -2,9 +2,22 @@
 #define MESH_H_
 
 
-class Mesh
-{
-    
+#include <string>
+#include <iostream>
+#include <fstream>
+
+
+#include "cg.h"
+#include "error.h"
+
+class Mesh{
+public :
+    RangeRect range;
+    Vertex v;
+    Polygon poly;
+
+    void load(std::string file_name, std::string folder_pass);
+
 };
 
 

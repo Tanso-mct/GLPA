@@ -1,54 +1,68 @@
-/*
-GLPAエラー説明書
-
-Visual studioでの開発の場合、エラー箇所のマクロをCtrl + クリックでこのファイルへ移動します。
-各エラーの原因を記述しています。指示に従い修正を行ってください。
-
-また、開発者は日本人なためまず日本語で記述しそれをDeepLで翻訳しています。
-翻訳内容の確認は開発者本人が行いましたが、英語が完全ではないため誤訳が存在する可能性があります。注意してください。
-
-GLPA Error Instructions
-
-For development in Visual studio, Ctrl + click on the macro in the error location to move to this file. 
-The causes of each error are described. Please follow the instructions to correct the errors.
-
-The developer is Japanese, so the text is first written in Japanese, and then translated by DeepL.
-The translations have been checked by the developer himself, however, 
-the English is not perfect and mistranslations may exist. Please be careful.
+/**
+ * @file error.h
+ * @brief
+ * 日本語 : GLPAでエラーが起こった際に理由を確認するために使用する。
+ * English : Used to check the reason when an error occurs in Glpa.
+ * @author Tanso
+ * @date 2023-10
 */
+
+/**********************************************************************************************************************
+ * 日本語 : GLPAエラー説明書
+ * Visual studioでの開発の場合、エラー箇所のマクロをCtrl + クリックでこのファイルへ移動します。
+ * 各エラーの原因を記述しています。指示に従い修正を行ってください。
+ * 
+ * また、開発者は日本人なためまず日本語で記述しそれをDeepLで翻訳しています。
+ * 翻訳内容の確認は開発者本人が行いましたが、英語が完全ではないため誤訳が存在する可能性があります。注意してください。
+ * 
+ * 
+ * English : GLPA Error Instructions
+ * For development in Visual studio, Ctrl + click on the macro in the error location to move to this file. 
+ * The causes of each error are described. Please follow the instructions to correct the errors.
+ * 
+ * The developer is Japanese, so the text is first written in Japanese, and then translated by DeepL.
+ * The translations have been checked by the developer himself, however, 
+ * the English is not perfect and mistranslations may exist. Please be careful.
+**********************************************************************************************************************/
+
 
 #ifndef ERROR_H_
 #define ERROR_H_
 
 #include <stdexcept>
 
-/*
-引数の「LPCWSTR wndName」の値がスイッチ文の条件と一致しませんでした。
-何の処理も行いませんでした。引数の値をスイッチ文の条件のいずれかにしてください。
-条件は「window.h」ファイルの「GLPA_WINDOW_STATUS」で始まるものらです。
 
-The value of the argument "LPCWSTR wndName" did not match the condition of the switch statement.
-No processing was performed. The value of the argument should be one of the conditions of the switch statement. 
-Conditions are those beginning with "GLPA_WINDOW_STATUS" at line 28 of file "window.h". 
-*/
+/**********************************************************************************************************************
+ * 日本語 : 引数の「LPCWSTR wndName」の値がスイッチ文の条件と一致しませんでした。
+ * 何の処理も行いませんでした。引数の値をスイッチ文の条件のいずれかにしてください。
+ * 条件は「window.h」ファイルの「GLPA_WINDOW_STATUS」で始まるものらです。
+ * 
+ * English : The value of the argument "LPCWSTR wndName" did not match the condition of the switch statement.
+ * No processing was performed. The value of the argument should be one of the conditions of the switch statement. 
+ * Conditions are those beginning with "GLPA_WINDOW_STATUS" at line 28 of file "window.h".
+**********************************************************************************************************************/
 #define ERROR_GLPA_UPDATE_WINDOW NULL
 
-/*
-Pngファイルを読み込めませんでした。ファイルパスが違うと思われます。
-load関数の引数へ正しいファイルパスを設定してください。
 
-Png file could not be loaded. The file path seems to be different.
-Set the correct file path to the Load function argument.
-*/
+
+/**********************************************************************************************************************
+ * 日本語 : Pngファイルを読み込めませんでした。ファイルパスが違うと思われます。
+ * load関数の引数へ正しいファイルパスを設定してください。
+ * 
+ * English : Png file could not be loaded. The file path seems to be different.
+ * Set the correct file path to the Load function argument.
+**********************************************************************************************************************/
 #define ERROR_PNG_LOAD NULL
 
-/*
-シーンの作成を行えませんでした。シーンの描画方法の選択が違うと思われます。
-「scene.h」ファイルの「GLPA_SCENE」で始まるものらです。
 
-Could not create the scene. It seems that you have chosen a different method of drawing the scene.
-They are those starting with "GLPA_SCENE" in the "scene.h" file.
-*/
+
+/**********************************************************************************************************************
+ * 日本語 : シーンの作成を行えませんでした。シーンの描画方法の選択が違うと思われます。
+ * 「scene.h」ファイルの「GLPA_SCENE」で始まるものらです。
+ * 
+ * English : Could not create the scene. It seems that you have chosen a different method of drawing the scene.
+ * They are those starting with "GLPA_SCENE" in the "scene.h" file.
+**********************************************************************************************************************/
 #define ERROR_SCENE_CREATE NULL
 
 /*
@@ -151,5 +165,13 @@ Please enter a value for the function argument appropriately.
 */
 #define ERROR_GLPA_SCENE_3D_FRAME_FUNC_NAME NULL
 
+
+/**********************************************************************************************************************
+ * 日本語 : ファイルの読み込みに失敗しました。引数に適切にファイルの名前と、ファイルが存在するフォルダーのパスを指定してください。
+ * 
+ * English : Failed to load file. Please specify the name of the file and the path to the folder 
+ * where the file resides in the argument appropriately.
+**********************************************************************************************************************/
+#define ERROR_MESH_LOAD_FILE NULL
 
 #endif ERROR_H_

@@ -9,9 +9,10 @@
 #include "scene2d.h"
 #include "error.h"
 
+#include "object.h"
 
-class Scene3d
-{
+
+class Scene3d{
 public :
     void storeUseWndParam(int width, int height, int dpi);
 

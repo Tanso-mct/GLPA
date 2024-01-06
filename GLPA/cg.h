@@ -29,23 +29,23 @@ typedef struct tagVECTOR2D
 {
     double x;
     double y;
-} VECTOR2D;
+} Vec2d;
 
 typedef struct tagVECTOR3D
 {
     double x;
     double y;
     double z;
-} VECTOR3D;
+} Vec3d;
 
 
 
 typedef struct tagNUMCOMB3
 {
-    int num1; // number 1
-    int num2; // number 2
-    int num3; // number 3
-} NUMCOMB3;
+    int n1; // number 1
+    int n2; // number 2
+    int n3; // number 3
+} NumComb3;
 
 
 /**********************************************************************************************************************
@@ -59,17 +59,26 @@ typedef struct tagNUMCOMB3
 */
 typedef struct tagVERTEX
 {
-    std::vector<VECTOR3D> world; // world coordinate
-    std::vector<VECTOR2D> uv; // uv coordinate
-    std::vector<VECTOR3D> normal; // normal
-} VERTEX;
+    std::vector<Vec3d> world;
+    std::vector<Vec2d> uv;
+    std::vector<Vec3d> normal;
+} Vertex;
 
 typedef struct tagPOLYGON
 {
-    std::vector<NUMCOMB3> v; // vertex number
-    std::vector<NUMCOMB3> uv; // uv number
-    std::vector<NUMCOMB3> normal; // normal number
-} POLYGON;
+    std::vector<NumComb3> vId;
+    std::vector<NumComb3> uvId;
+    std::vector<NumComb3> normalId;
+} Polygon;
+
+
+typedef struct tagRANGE_RECT
+{
+    bool status = false;
+    Vec3d origin;
+    Vec3d opposite;
+    std::vector<Vec3d> wVertex;
+} RangeRect;
 
 
 #endif GLPA_MACRO_CG_H_

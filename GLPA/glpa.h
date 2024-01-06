@@ -11,8 +11,7 @@
 #include "error.h"
 #include "user_input.h"
 
-class Glpa
-{
+class Glpa{
 public :
     void initialize(
         _In_ HINSTANCE arghInstance, _In_opt_ HINSTANCE arghPrevInstance, 

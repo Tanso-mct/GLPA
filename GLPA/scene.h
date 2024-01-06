@@ -19,8 +19,7 @@
 #define GLPA_SCENE_GROUP_NAME_L L"_@l"
 #define GLPA_SCENE_GROUP_NAME_L_SIZE 3
 
-class Scene
-{
+class Scene{
 public :
     void setFolderPass(std::wstring scene_name_folder_pass);
     

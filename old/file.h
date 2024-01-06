@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <stdio.h>
+// #include <stdio.h>
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <vector>
