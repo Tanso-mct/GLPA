@@ -82,7 +82,11 @@ void Scene::load(
                 extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
 
                 if (extension == "obj"){
-                    
+                    data3d[scName].loadObj(
+                        narrowFolderPath + "/" + converter.to_bytes(group.first),
+                        group.first,
+                        narrowName
+                    );
                 }
             }
         }

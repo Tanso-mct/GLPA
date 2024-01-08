@@ -8,9 +8,26 @@ void Scene3d::storeUseWndParam(int width, int height, int dpi){
 }
 
 
+void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std::string fileName){
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+    std::string folderPass = scFolderPass + "/" + converter.to_bytes(objFolderName);
+    objects[objFolderName].loadMesh(fileName, folderPass);
+}
+
+
 void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
     for (auto it : sceneFrameFunc){
         it.second(hBufDC, lpPixel);
+    }
+}
+
+
+void Scene3d::releaseObj(std::wstring objFolderName, std::string fileName){
+    if (objects.find(objFolderName) != objects.end()){
+        objects.erase(objFolderName);
+    }
+    else{
+        std::runtime_error(ERROR_MESH_LOAD_RELEASE);
     }
 }
 

@@ -167,11 +167,45 @@ Please enter a value for the function argument appropriately.
 
 
 /**********************************************************************************************************************
- * 日本語 : ファイルの読み込みに失敗しました。引数に適切にファイルの名前と、ファイルが存在するフォルダーのパスを指定してください。
- * 
- * English : Failed to load file. Please specify the name of the file and the path to the folder 
- * where the file resides in the argument appropriately.
+ * 日本語 : mesh.h及びmesh.cppファイルに関するエラーメッセージ一覧。
+ * English : List of error messages related to mesh.h and mesh.cpp files.
 **********************************************************************************************************************/
+
+
+/********************************************************************************
+ * 日本語 : ファイルの読み込みに失敗しました。
+ * 引数に適切にファイルの名前と、ファイルが存在するフォルダーのパスを指定してください。
+ * 
+ * English : Failed to load file. Please specify the name of the file and 
+ * the path to the folder where the file resides in the argument appropriately.
+********************************************************************************/
 #define ERROR_MESH_LOAD_FILE NULL
+
+
+/********************************************************************************
+ * 日本語 : 引数で指定し、解放しようとしたものが存在しません。
+ * 適切に解放する対象のファイル名を引数に指定してください。
+ * 
+ * English : Specified by argument, the file you attempted to free does not exist.
+ * Specify the name of the file to be properly released in the argument.
+********************************************************************************/
+#define ERROR_MESH_LOAD_RELEASE NULL
+
+
+/**********************************************************************************************************************
+ * 日本語 : command.h及びcommand.cppファイルに関するエラーメッセージ一覧
+ * English : List of error messages related to the command.h and command.cpp files
+**********************************************************************************************************************/
+
+
+/********************************************************************************
+ * 日本語 : 引数で指定した名前の関数が存在しません。
+ * 適切に関数の名前を引数へ指定してください。
+ * 
+ * English : The function with the name specified in the argument does not exist.
+ * Specify an appropriate function name for the argument.
+********************************************************************************/
+#define ERROR_COMMAND_LIST NULL
+
 
 #endif ERROR_H_

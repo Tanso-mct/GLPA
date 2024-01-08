@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <locale>
+#include <codecvt>
 
 #include "scene2d.h"
 #include "error.h"
@@ -16,7 +18,7 @@ class Scene3d{
 public :
     void storeUseWndParam(int width, int height, int dpi);
 
-    void loadObj();
+    void loadObj(std::string scene_folder_path, std::wstring object_folder_name, std::string file_name);
     void loadMtl();
     void loadField();
     void loadSky();
@@ -27,7 +29,7 @@ public :
     void update();
     void reload();
 
-    void releaseObj();
+    void releaseObj(std::wstring object_folder_name, std::string file_name);
     void releaseMtl();
     void releaseField();
     void releaseSky();
@@ -45,6 +47,8 @@ public :
 
 private :
     std::unordered_map<std::wstring, GLPA_SCENE_FUNC_FUNCTIONAL> sceneFrameFunc;
+
+    std::unordered_map<std::wstring, Object> objects;
 
 
 };

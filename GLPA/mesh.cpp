@@ -38,7 +38,6 @@ void Mesh::load(std::string fileName, std::string folderPass){
     NumComb3 numComb3Normal;
 
 
-
     while (std::getline(file, line)) {
         punc1 = line.find(" ");
         tag = line.substr(0, punc1);
