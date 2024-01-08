@@ -144,6 +144,7 @@
     <ClCompile Include="fbx.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="fps.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="glpa.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="light.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="fbx.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="fps.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="glpa.h" />
     <ClInclude Include="cg.h" />
     <ClInclude Include="image.h" />
