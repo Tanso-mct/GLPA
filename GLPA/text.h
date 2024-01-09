@@ -10,7 +10,7 @@
 #include <chrono>
 
 #include "color.h"
-#include "vector.cuh"
+#include "cg.h"
 #include "error.h"
 
 #define GLPA_TEXT_ASPECT 2.1
@@ -63,6 +63,8 @@ public :
     void typingAdd(std::wstring target_group_name, std::wstring add_wstring);
     void typingDelete(std::wstring target_group_name);
     void typingMarkAnime(bool* typing, bool* scene_edit_or_not, std::wstring targetTextGroupName);
+
+    std::wstring typingMarkDelete(std::wstring target_text);
 
     void releaseGroup(std::wstring group_name);
 

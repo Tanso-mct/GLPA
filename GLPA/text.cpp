@@ -190,6 +190,17 @@ void Text::typingMarkAnime(bool* typing, bool* sceneEditOrNot, std::wstring targ
 }
 
 
+std::wstring Text::typingMarkDelete(std::wstring targetText){
+    if (targetText.size() != 0){
+        if (targetText.back() == GLPA_TYPING_MARK){
+            return targetText.substr(0, targetText.size() - 1);
+        }
+    }
+
+    return targetText;
+}
+
+
 bool Text::drawLine(HDC hBufDC, std::wstring groupName, int startLine, int nowLine, int* drawLines, std::wstring lineText){
     if (
         nowLine >= startLine &&

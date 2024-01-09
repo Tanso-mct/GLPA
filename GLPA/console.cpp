@@ -36,7 +36,13 @@ void Console::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam
     switch (wParam){
     case VK_RETURN:
         if (glpa.userInput.typing){
-            command.execute(getCommandName(ptScene2d->text.getGroupLastLineWstr(selectingTextGroup)));
+            command.execute(
+                getCommandName(
+                    ptScene2d->text.typingMarkDelete(
+                        ptScene2d->text.getGroupLastLineWstr(selectingTextGroup)
+                    )
+                )
+            );
             if (ptScene2d->text.getGroupLineAmount(selectingTextGroup) >= 22){
                 textStartLine += 1;
                 ptScene2d->text.setStartLine(selectingTextGroup, textStartLine);

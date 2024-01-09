@@ -34,11 +34,12 @@ public :
 
     GLPA_SCENE_FUNC(mainUpdate);
 
+    Command command;
+
+
 private :
     Glpa* ptGlpa;
     Scene2d* ptScene2d;
-
-    Command command;
 
     std::wstring selectingTextGroup = GLPA_NULL_WTEXT;
 

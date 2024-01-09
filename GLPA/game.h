@@ -5,17 +5,26 @@
 
 #include "command.h"
 
+
+#define WINDOW_GAME L"Game"
+#define WINDOW_CLASS_GAME L"window_game"
+#define SCENE_FOLDER_PASS_GAME L"resource/scene/game_1"
+
+
+
+#define SCENE_GAME_1 "scene_game_1"
+
 class Game{
 public :
-    Game(Glpa *arg_pt_glpa, Scene3d* arg_pt_scene3d);
-
     void createWnd();
     void createScene();
     void loadScene();
+    void selectScene();
+
+    void tempStart();
+    void tempRelease();
 
 private :
-    Glpa* ptGlpa;
-    Scene3d* ptScene3d;
 };
 
 #endif GAME_H_

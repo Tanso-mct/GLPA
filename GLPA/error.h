@@ -1,19 +1,19 @@
-/**
+﻿/**
  * @file error.h
  * @brief
- * ���{�� : GLPA�ŃG���[���N�������ۂɗ��R���m�F���邽�߂Ɏg�p����B
+ * 日本語 : GLPAでエラーが起こった際に理由を確認するために使用する。
  * English : Used to check the reason when an error occurs in Glpa.
  * @author Tanso
  * @date 2023-10
 */
 
 /**********************************************************************************************************************
- * ���{�� : GLPA�G���[������
- * Visual studio�ł̊J���̏ꍇ�A�G���[�ӏ��̃}�N����Ctrl + �N���b�N�ł��̃t�@�C���ֈړ����܂��B
- * �e�G���[�̌������L�q���Ă��܂��B�w���ɏ]���C�����s���Ă��������B
+ * 日本語 : GLPAエラー説明書
+ * Visual studioでの開発の場合、エラー箇所のマクロをCtrl + クリックでこのファイルへ移動します。
+ * 各エラーの原因を記述しています。指示に従い修正を行ってください。
  * 
- * �܂��A�J���҂͓��{�l�Ȃ��߂܂����{��ŋL�q�������DeepL�Ŗ|�󂵂Ă��܂��B
- * �|����e�̊m�F�͊J���Җ{�l���s���܂������A�p�ꂪ���S�ł͂Ȃ����ߌ�󂪑��݂���\��������܂��B���ӂ��Ă��������B
+ * また、開発者は日本人なためまず日本語で記述しそれをDeepLで翻訳しています。
+ * 翻訳内容の確認は開発者本人が行いましたが、英語が完全ではないため誤訳が存在する可能性があります。注意してください。
  * 
  * 
  * English : GLPA Error Instructions
@@ -33,9 +33,9 @@
 
 
 /**********************************************************************************************************************
- * ���{�� : �����́uLPCWSTR wndName�v�̒l���X�C�b�`���̏����ƈ�v���܂���ł����B
- * ���̏������s���܂���ł����B�����̒l���X�C�b�`���̏����̂����ꂩ�ɂ��Ă��������B
- * �����́uwindow.h�v�t�@�C���́uGLPA_WINDOW_STATUS�v�Ŏn�܂���̂�ł��B
+ * 日本語 : 引数の「LPCWSTR wndName」の値がスイッチ文の条件と一致しませんでした。
+ * 何の処理も行いませんでした。引数の値をスイッチ文の条件のいずれかにしてください。
+ * 条件は「window.h」ファイルの「GLPA_WINDOW_STATUS」で始まるものらです。
  * 
  * English : The value of the argument "LPCWSTR wndName" did not match the condition of the switch statement.
  * No processing was performed. The value of the argument should be one of the conditions of the switch statement. 
@@ -46,8 +46,8 @@
 
 
 /**********************************************************************************************************************
- * ���{�� : Png�t�@�C����ǂݍ��߂܂���ł����B�t�@�C���p�X���Ⴄ�Ǝv���܂��B
- * load�֐��̈����֐������t�@�C���p�X��ݒ肵�Ă��������B
+ * 日本語 : Pngファイルを読み込めませんでした。ファイルパスが違うと思われます。
+ * load関数の引数へ正しいファイルパスを設定してください。
  * 
  * English : Png file could not be loaded. The file path seems to be different.
  * Set the correct file path to the Load function argument.
@@ -57,8 +57,8 @@
 
 
 /**********************************************************************************************************************
- * ���{�� : �V�[���̍쐬���s���܂���ł����B�V�[���̕`����@�̑I�����Ⴄ�Ǝv���܂��B
- * �uscene.h�v�t�@�C���́uGLPA_SCENE�v�Ŏn�܂���̂�ł��B
+ * 日本語 : シーンの作成を行えませんでした。シーンの描画方法の選択が違うと思われます。
+ * 「scene.h」ファイルの「GLPA_SCENE」で始まるものらです。
  * 
  * English : Could not create the scene. It seems that you have chosen a different method of drawing the scene.
  * They are those starting with "GLPA_SCENE" in the "scene.h" file.
@@ -66,10 +66,10 @@
 #define ERROR_SCENE_CREATE NULL
 
 /*
-�V�[���t�H���_�[���ɂ���A�V�[�����Ƃ̃f�[�^���i�[����t�H���_�[�ւ̃p�X���������Ȃ��Ǝv���܂��B
-�V�[���f�[�^���܂Ƃ߂�t�H���_�[���쐬���A���̒��ɃV�[�����Ƃ̃f�[�^���i�[����t�H���_�[���쐬���Ă��������B
-�܂��A�V�[���f�[�^���܂Ƃ߂�t�H���_�[�̒��ɁA�摜�f�[�^�≹���f�[�^�Ȃǃt�H���_�[�ł͂Ȃ����͔z�u�����A
-�摜�f�[�^�Ȃǂ̓V�[�����Ƃ̃t�H���_�[�̒��ɔz�u���Ă��������B
+シーンフォルダー内にある、シーンごとのデータを格納するフォルダーへのパスが正しくないと思われます。
+シーンデータをまとめるフォルダーを作成し、その中にシーンごとのデータを格納するフォルダーを作成してください。
+また、シーンデータをまとめるフォルダーの中に、画像データや音声データなどフォルダーではない物は配置せず、
+画像データなどはシーンごとのフォルダーの中に配置してください。
 
 The path to the folder in the scene folder that contains the data for each scene is probably incorrect.
 Create a folder to organize scene data, and within that folder, create a folder to store data for each scene.
@@ -79,9 +79,9 @@ but place image data and other data in folders for each scene.
 #define ERROR_GLPA_LOAD_SCENE NULL
 
 /*
-2D�V�[���f�[�^�̉摜�̖��O�ɂ��̉摜��z�u����2�������W���܂܂�Ă��Ȃ��Ǝv���܂��B
-�摜�t�@�C���̖��O�́u"�摜��"_@x"X���W"_@y"Y���W_@l"���C���[�ԍ�(��ԏ�̃��C���[���P�Ƃ��ĉ��֏���)"�v�̂悤�ɂ��Ă��������B
-PhotoShop�̏ꍇ�AGLPA�������ɂ���悤�ɃX�N���v�g���g�p���ăV�[���f�[�^���o�͂��邱�Ƃ��ł��܂��B
+2Dシーンデータの画像の名前にその画像を配置する2次元座標が含まれていないと思われます。
+画像ファイルの名前は「"画像名"_@x"X座標"_@y"Y座標_@l"レイヤー番号(一番上のレイヤーを１として下へ昇順)"」のようにしてください。
+PhotoShopの場合、GLPA説明書にあるようにスクリプトを使用してシーンデータを出力することもできます。
 
 It is likely that the name of the image in the 2d scene data does not include the 2d coordinates 
 in which the image is placed.
@@ -92,8 +92,8 @@ In Photo shop, you can also use scripts to output scene data as described in the
 #define ERROR_SCENE2D_LOADPNG NULL
 
 /*
-Window�N���X�̍쐬�Ɏ��s���܂����B
-GLPA::createWindow�֐��̈������Ԉ���Ă���\��������܂��B�������͎��s���ɂ���肪����\��������܂��B
+Windowクラスの作成に失敗しました。
+GLPA::createWindow関数の引数が間違っている可能性があります。もしくは実行環境にも問題がある可能性があります。
 
 Failed to create Window class.
 The argument of the Glpa::createWindow function may be incorrect. 
@@ -102,8 +102,8 @@ Or there may be a problem with the execution environment as well.
 #define ERROR_WINDOW_REGISTER_CLASS NULL
 
 /*
-�E�B���h�E�̍쐬�Ɏ��s���܂����B
-GLPA::createWindow�֐��̈������Ԉ���Ă���\��������܂��B�������͎��s���ɂ���肪����\��������܂��B
+ウィンドウの作成に失敗しました。
+GLPA::createWindow関数の引数が間違っている可能性があります。もしくは実行環境にも問題がある可能性があります。
 
 Failed to create Window.
 The argument of the Glpa::createWindow function may be incorrect. 
@@ -112,8 +112,8 @@ Or there may be a problem with the execution environment as well.
 #define ERROR_WINDOW_CREATE NULL
 
 /*
-�ҏW�^�C�v�����݂��܂���B
-�����ł̎w��Ɍ�肪����\��������܂���B�uGLPA_TEXT_EDIT�v�Ŏn�܂�}�N���̂����ꂩ��I�����Ă��������B
+編集タイプが存在しません。
+引数での指定に誤りがある可能性がありません。「GLPA_TEXT_EDIT」で始まるマクロのいずれから選択してください。
 
 Edit type does not exist.
 There is no possibility of an incorrect specification in the argument. 
@@ -122,8 +122,8 @@ Choose from any of the macros beginning with "glpa text edit".
 #define ERROR_TEXT_EDIT NULL
 
 /*
-���b�Z�[�W����������֐���ǉ����邽�߂ɕK�v�ȃ��b�Z�[�W�^�C�v�̎w�肪����Ă���\��������܂��B
-�uGLPA_USERINPUT_MESSAGE_�v�Ŏn�܂邢���ꂩ�̃}�N����I�����A�����Ɏw�肵�Ă��������B
+メッセージを処理する関数を追加するために必要なメッセージタイプの指定が誤っている可能性があります。
+「GLPA_USERINPUT_MESSAGE_」で始まるいずれかのマクロを選択し、引数に指定してください。
 
 You may have incorrectly specified the message type needed to add a function to process the message.
 Select one of the macros beginning with "GLPA_USERINPUT_MESSAGE_" and specify it as an argument.
@@ -131,8 +131,8 @@ Select one of the macros beginning with "GLPA_USERINPUT_MESSAGE_" and specify it
 #define ERROR_USER_INPUT_ADD NULL
 
 /*
-����܂ō쐬���ꂽ�V�[��2D�f�[�^�̒��Ɉ����Ŏw�肵���V�[���̖��O�����V�[�������݂��܂���B
-�K�؂Ɉ����ɃV�[���̖��O����͂��Ă��������B
+これまで作成されたシーン2Dデータの中に引数で指定したシーンの名前を持つシーンが存在しません。
+適切に引数にシーンの名前を入力してください。
 
 There is no scene with the name of the scene specified in the argument in the scene2d data created so far.
 Enter the name of the scene in the appropriate argument.
@@ -140,8 +140,8 @@ Enter the name of the scene in the appropriate argument.
 #define ERROR_GLPA_GET_PT_SCENE2D NULL
 
 /*
-����܂ō쐬���ꂽ�V�[��3D�f�[�^�̒��Ɉ����Ŏw�肵���V�[���̖��O�����V�[�������݂��܂���B
-�K�؂Ɉ����ɃV�[���̖��O����͂��Ă��������B
+これまで作成されたシーン3Dデータの中に引数で指定したシーンの名前を持つシーンが存在しません。
+適切に引数にシーンの名前を入力してください。
 
 There is no scene with the name of the scene specified in the argument in the scene3d data created so far.
 Enter the name of the scene in the appropriate argument.
@@ -149,7 +149,7 @@ Enter the name of the scene in the appropriate argument.
 #define ERROR_GLPA_GET_PT_SCENE3D NULL
 
 /*
-�֐��̈����Ŏw�肵�Ă��閼�O�̊֐������݂��܂���B�K�؂Ɋ֐��̈����ɒl����͂��Ă��������B
+関数の引数で指定している名前の関数が存在しません。適切に関数の引数に値を入力してください。
 
 The function with the name specified in the function argument does not exist. 
 Please enter a value for the function argument appropriately.
@@ -158,7 +158,7 @@ Please enter a value for the function argument appropriately.
 
 
 /*
-�֐��̈����Ŏw�肵�Ă��閼�O�̊֐������݂��܂���B�K�؂Ɋ֐��̈����ɒl����͂��Ă��������B
+関数の引数で指定している名前の関数が存在しません。適切に関数の引数に値を入力してください。
 
 The function with the name specified in the function argument does not exist. 
 Please enter a value for the function argument appropriately.
@@ -167,14 +167,14 @@ Please enter a value for the function argument appropriately.
 
 
 /**********************************************************************************************************************
- * ���{�� : mesh.h�y��mesh.cpp�t�@�C���Ɋւ���G���[���b�Z�[�W�ꗗ�B
+ * 日本語 : mesh.h及びmesh.cppファイルに関するエラーメッセージ一覧。
  * English : List of error messages related to mesh.h and mesh.cpp files.
 **********************************************************************************************************************/
 
 
 /********************************************************************************
- * ���{�� : �t�@�C���̓ǂݍ��݂Ɏ��s���܂����B
- * �����ɓK�؂Ƀt�@�C���̖��O�ƁA�t�@�C�������݂���t�H���_�[�̃p�X���w�肵�Ă��������B
+ * 日本語 : ファイルの読み込みに失敗しました。
+ * 引数に適切にファイルの名前と、ファイルが存在するフォルダーのパスを指定してください。
  * 
  * English : Failed to load file. Please specify the name of the file and 
  * the path to the folder where the file resides in the argument appropriately.
@@ -183,8 +183,8 @@ Please enter a value for the function argument appropriately.
 
 
 /********************************************************************************
- * ���{�� : �����Ŏw�肵�A������悤�Ƃ������̂����݂��܂���B
- * �K�؂ɉ������Ώۂ̃t�@�C�����������Ɏw�肵�Ă��������B
+ * 日本語 : 引数で指定し、解放しようとしたものが存在しません。
+ * 適切に解放する対象のファイル名を引数に指定してください。
  * 
  * English : Specified by argument, the file you attempted to free does not exist.
  * Specify the name of the file to be properly released in the argument.
@@ -193,14 +193,14 @@ Please enter a value for the function argument appropriately.
 
 
 /**********************************************************************************************************************
- * ���{�� : command.h�y��command.cpp�t�@�C���Ɋւ���G���[���b�Z�[�W�ꗗ
+ * 日本語 : command.h及びcommand.cppファイルに関するエラーメッセージ一覧
  * English : List of error messages related to the command.h and command.cpp files
 **********************************************************************************************************************/
 
 
 /********************************************************************************
- * ���{�� : �����Ŏw�肵�����O�̊֐������݂��܂���B
- * �K�؂Ɋ֐��̖��O�������֎w�肵�Ă��������B
+ * 日本語 : 引数で指定した名前の関数が存在しません。
+ * 適切に関数の名前を引数へ指定してください。
  * 
  * English : The function with the name specified in the argument does not exist.
  * Specify an appropriate function name for the argument.

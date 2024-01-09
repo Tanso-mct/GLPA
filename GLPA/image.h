@@ -1,7 +1,7 @@
 #ifndef IMAGE_H_
 #define IMAGE_H_
 
-#include "vector.cuh"
+#include "cg.h"
 #include "png.h"
 
 class Image

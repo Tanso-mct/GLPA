@@ -7,8 +7,7 @@
 #include "glpa.h"
 
 #include "console.h"
-
-
+#include "game.h"
 
 
 #endif // MAIN_H_

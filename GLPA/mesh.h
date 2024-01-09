@@ -14,7 +14,7 @@ class Mesh{
 public :
     RangeRect range;
     Vertex v;
-    Polygon poly;
+    Polygons poly;
 
     void load(std::string file_name, std::string folder_pass);
 

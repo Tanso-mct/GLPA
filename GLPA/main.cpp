@@ -8,8 +8,7 @@ int WINAPI WinMain(
 {
     glpa.initialize(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
-    glpa.createWindow
-    (
+    glpa.createWindow(
         WINDOW_CONSOLE, WINDOWCLASS_CONSOLE, 1000, 650, 1, 60, CS_HREDRAW | CS_VREDRAW,
         IDI_APPLICATION, IDC_ARROW, WHITE_BRUSH, IDI_APPLICATION, false, true, WS_SYSMENU
     );
@@ -38,6 +37,12 @@ int WINAPI WinMain(
         GLPA_USER_FUNC_PT(console, mouseLbtnDown), GLPA_USERINPUT_MESSAGE_MOUSELBTNDOWN
     );
     glpa.setSceneFrameFunc(SCENE_GLPA_CONSOLE, L"console_main_update", GLPA_SCENE_FUNC_PT(console, mainUpdate));
+
+
+    Game game;
+
+    console.command.add(L"start", COMMAND_FUN_PT(game, tempStart));
+    console.command.add(L"release", COMMAND_FUN_PT(game, tempRelease));
 
     glpa.runGraphicLoop();
 

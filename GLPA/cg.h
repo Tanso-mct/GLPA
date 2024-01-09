@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file glpa_.h
  * @brief
  * 日本語 : GLPAで使用している構造体やマクロをまとめたもの。このファイルはGLPAのいずれかのファイルもインクルードしない。
@@ -8,8 +8,8 @@
 */
 
 
-#ifndef GLPA_MACRO_CG_H_
-#define GLPA_MACRO_CG_H_
+#ifndef CG_H_
+#define CG_H_
 
 #include <vector>
 
@@ -25,23 +25,19 @@
  * English : Describes those related to vectors.
 ********************************************************************************/
 
-typedef struct tagVECTOR2D
-{
+typedef struct tagVECTOR2D{
     double x;
     double y;
 } Vec2d;
 
-typedef struct tagVECTOR3D
-{
+typedef struct tagVECTOR3D{
     double x;
     double y;
     double z;
 } Vec3d;
 
 
-
-typedef struct tagNUMCOMB3
-{
+typedef struct tagNUMCOMB3{
     int n1; // number 1
     int n2; // number 2
     int n3; // number 3
@@ -57,23 +53,20 @@ typedef struct tagNUMCOMB3
  * 日本語 : メッシュの頂点を格納する。それぞれのパラメーターでインデックス番号がそのまま頂点番号になる。
  * English : Stores the vertices of the mesh. The index number in each parameter is the vertex number as it is.
 */
-typedef struct tagVERTEX
-{
+typedef struct tagVERTEX{
     std::vector<Vec3d> world;
     std::vector<Vec2d> uv;
     std::vector<Vec3d> normal;
 } Vertex;
 
-typedef struct tagPOLYGON
-{
+typedef struct tagPOLYGON{
     std::vector<NumComb3> vId;
     std::vector<NumComb3> uvId;
     std::vector<NumComb3> normalId;
-} Polygon;
+} Polygons;
 
 
-typedef struct tagRANGE_RECT
-{
+typedef struct tagRANGE_RECT{
     bool status = false;
     Vec3d origin;
     Vec3d opposite;
@@ -81,4 +74,4 @@ typedef struct tagRANGE_RECT
 } RangeRect;
 
 
-#endif GLPA_MACRO_CG_H_
+#endif CG_H_

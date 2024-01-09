@@ -83,7 +83,7 @@ void Scene::load(
 
                 if (extension == "obj"){
                     data3d[scName].loadObj(
-                        narrowFolderPath + "/" + converter.to_bytes(group.first),
+                        narrowFolderPath,
                         group.first,
                         narrowName
                     );
