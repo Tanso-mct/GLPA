@@ -83,9 +83,9 @@ public :
     bool killFocusMsg(HWND arg_hwnd, bool single_window);
     bool setFocusMsg(HWND arg_hwnd);
     bool sizeMsg(HWND arg_hwnd, LPARAM l_param);
-    bool createMsg(HWND arg_hwnd);
-    bool closeMsg(HWND arg_hwnd);
-    bool destroyMsg(HWND arg_hwnd);
+    bool createMsg(HWND arg_hwnd, int* exist_window_amount);
+    bool closeMsg(HWND arg_hwnd, int* exist_window_amount);
+    bool destroyMsg(HWND arg_hwnd, int exist_window_amount);
     bool paintMsg(HWND arg_hwnd);
 
     void setScene(Scene* arg_pt_scene, std::string scene_name);

@@ -76,6 +76,7 @@ public :
 
     std::unordered_map<LPCWSTR, Window> window;
     std::unordered_map<HWND, LPCWSTR> wndNames;
+    int existWndAmount = 0;
 
     std::unordered_map<std::string, HWND> scSetWnd;
 

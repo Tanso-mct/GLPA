@@ -251,7 +251,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
         case WM_CREATE:
             for (auto& x: glpa.window){
-                if (x.second.createMsg(hWnd)){
+                if (x.second.createMsg(hWnd, &glpa.existWndAmount)){
                     break;
                 }
             }
@@ -268,7 +268,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
         case WM_CLOSE:
             for (auto& x: glpa.window) {
-                if(x.second.closeMsg(hWnd)){
+                if(x.second.closeMsg(hWnd, &glpa.existWndAmount)){
                     break;
                 }
             }
@@ -277,7 +277,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
         case WM_DESTROY:
             for (auto& x: glpa.window) {
-                if(x.second.destroyMsg(hWnd)){
+                if(x.second.destroyMsg(hWnd, glpa.existWndAmount)){
                     break;
                 }
             }

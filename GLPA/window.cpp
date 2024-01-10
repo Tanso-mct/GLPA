@@ -162,9 +162,9 @@ bool Window::sizeMsg(HWND argHWnd, LPARAM lParam){
 }
 
 
-bool Window::createMsg(HWND argHWnd){
-    if (!created)
-    {
+bool Window::createMsg(HWND argHWnd, int* existWndAmount){
+    if (!created){
+        *existWndAmount += 1;
         hWndDC = GetDC(hWnd);
 
         //bmp buffer dc
@@ -197,8 +197,9 @@ bool Window::createMsg(HWND argHWnd){
     return false;
 }
 
-bool Window::closeMsg(HWND argHWnd){
+bool Window::closeMsg(HWND argHWnd, int* existWndAmount){
     if(argHWnd == hWnd){
+        *existWndAmount -= 1;
         DestroyWindow(hWnd);
         return true;
     }
@@ -206,8 +207,8 @@ bool Window::closeMsg(HWND argHWnd){
     return false;
 }
 
-bool Window::destroyMsg(HWND argHWnd){
-    if(argHWnd == hWnd){
+bool Window::destroyMsg(HWND argHWnd, int existWndAmount){
+    if(argHWnd == hWnd && existWndAmount == 0){
         PostQuitMessage(0);
         return true;
     }
