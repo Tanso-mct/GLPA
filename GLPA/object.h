@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "mesh.h"
+#include "error.h"
 
 class Object{
 public :

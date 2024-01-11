@@ -2,7 +2,10 @@
 
 
 void Mesh::load(std::string fileName, std::string folderPass){
-    std::string filePath = folderPass + "/" + fileName;
+    filePath = folderPass + "/" + fileName;
+
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	name = converter.from_bytes(fileName.substr(0, fileName.find(".")));
 
     std::ifstream file(filePath);
 

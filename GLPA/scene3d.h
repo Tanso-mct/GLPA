@@ -12,6 +12,7 @@
 #include "error.h"
 
 #include "object.h"
+#include "camera.h"
 
 
 class Scene3d{

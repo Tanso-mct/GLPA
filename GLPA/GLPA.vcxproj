@@ -237,25 +237,18 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resource\bmp\temp.bmp" />
+    <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resource\mtl\temp_cube.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\obj\temp_cube.obj">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\obj\temp_secondCube.obj">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\obj\temp_third_cube.obj">
-      <FileType>Document</FileType>
-    </None>
+    <Object Include="resource\scene\game_1\cube1\temp_cube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
+    <Object Include="resource\scene\game_1\cube2\temp_secondCube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
+    <Object Include="resource\scene\game_1\cube3\temp_third_cube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

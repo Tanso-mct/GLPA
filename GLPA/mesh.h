@@ -6,6 +6,9 @@
 #include <iostream>
 #include <fstream>
 
+#include <locale>
+#include <codecvt>
+
 
 #include "cg.h"
 #include "error.h"
@@ -15,6 +18,9 @@ public :
     RangeRect range;
     Vertex v;
     Polygons poly;
+
+    std::wstring name;
+    std::string filePath;
 
     void load(std::string file_name, std::string folder_pass);
 

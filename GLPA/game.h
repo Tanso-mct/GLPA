@@ -11,7 +11,6 @@
 #define SCENE_FOLDER_PASS_GAME L"resource/scene/game_1"
 
 
-
 #define SCENE_GAME_1 "scene_game_1"
 
 class Game{

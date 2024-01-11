@@ -208,4 +208,17 @@ Please enter a value for the function argument appropriately.
 #define ERROR_COMMAND_LIST NULL
 
 
+/**********************************************************************************************************************
+ * 日本語 : object.h及びobject.cppファイルに関するエラーメッセージ一覧
+ * English : List of error messages related to the object.h and object.cpp files
+**********************************************************************************************************************
+
+
+/********************************************************************************
+ * 日本語 : 同名のメッシュが存在しています。異なる名前にしてください。
+ * 
+ * English : A mesh with the same name exists. Please use a different name.
+********************************************************************************/
+#define ERROR_OBJECT_LOAD NULL
+
 #endif ERROR_H_

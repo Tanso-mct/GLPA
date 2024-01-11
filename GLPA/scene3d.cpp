@@ -11,6 +11,7 @@ void Scene3d::storeUseWndParam(int width, int height, int dpi){
 void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std::string fileName){
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string folderPass = scFolderPass + "/" + converter.to_bytes(objFolderName);
+    objects[objFolderName].name = objFolderName;
     objects[objFolderName].loadMesh(fileName, folderPass);
 }
 
