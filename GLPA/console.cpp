@@ -1,8 +1,7 @@
 #include "console.h"
 
-Console::Console(Glpa *argPtGlpa, Scene2d* argPtScene2d){
-    ptGlpa = argPtGlpa;
-    ptScene2d = argPtScene2d;
+Console::Console(Scene2d* argPtScene2d){
+    scene = argPtScene2d;
 }
 
 
@@ -14,7 +13,7 @@ std::wstring Console::getCommandName(std::wstring inputText){
 
 
 void Console::mouseLbtnDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
-    selectingTextGroup = ptScene2d->text.getGroupOnMouse(lParam, ptScene2d->useWndDpi);
+    selectingTextGroup = scene->text.getGroupOnMouse(lParam, scene->useWndDpi);
 
     if (selectingTextGroup != GLPA_NULL_WTEXT){
         glpa.userInput.typing = true;
@@ -27,10 +26,10 @@ void Console::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam
         return;
     }
 
-    std::wstring inputLowWstr = ptGlpa->userInput.convertWParamToLowWstr(wParam);
+    std::wstring inputLowWstr = glpa.userInput.convertWParamToLowWstr(wParam);
 
-    if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
-        ptGlpa->userInput.typingDownScene2d(ptScene2d, selectingTextGroup, wParam, inputLowWstr);
+    if (scName == SCENE_GLPA_CONSOLE && glpa.userInput.typing){
+        glpa.userInput.typingDownScene2d(scene, selectingTextGroup, wParam, inputLowWstr);
     }
 
     switch (wParam){
@@ -38,16 +37,16 @@ void Console::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam
         if (glpa.userInput.typing){
             command.execute(
                 getCommandName(
-                    ptScene2d->text.typingMarkDelete(
-                        ptScene2d->text.getGroupLastLineWstr(selectingTextGroup)
+                    scene->text.typingMarkDelete(
+                        scene->text.getGroupLastLineWstr(selectingTextGroup)
                     )
                 )
             );
-            if (ptScene2d->text.getGroupLineAmount(selectingTextGroup) >= 22){
+            if (scene->text.getGroupLineAmount(selectingTextGroup) >= 22){
                 textStartLine += 1;
-                ptScene2d->text.setStartLine(selectingTextGroup, textStartLine);
+                scene->text.setStartLine(selectingTextGroup, textStartLine);
             }
-            ptGlpa->userInput.typingNewLineScene2d(ptScene2d, selectingTextGroup, L"<console>");
+            glpa.userInput.typingNewLineScene2d(scene, selectingTextGroup, L"<console>");
 
             
         }
@@ -68,17 +67,17 @@ void Console::keyUp(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
         return;
     }
 
-    std::wstring inputLowWstr = ptGlpa->userInput.convertWParamToLowWstr(wParam);
+    std::wstring inputLowWstr = glpa.userInput.convertWParamToLowWstr(wParam);
 
-    if (scName == SCENE_GLPA_CONSOLE && ptGlpa->userInput.typing){
-        ptGlpa->userInput.typingUpScene2d(ptScene2d, selectingTextGroup, wParam, inputLowWstr);
+    if (scName == SCENE_GLPA_CONSOLE && glpa.userInput.typing){
+        glpa.userInput.typingUpScene2d(scene, selectingTextGroup, wParam, inputLowWstr);
     }
 }
 
 
 void Console::mainUpdate(HDC hBufDC, LPDWORD lpPixel){
     if (selectingTextGroup != GLPA_NULL_WTEXT){
-        ptScene2d->text.typingMarkAnime(&(ptGlpa->userInput.typing), &(ptScene2d->edited), selectingTextGroup);
+        scene->text.typingMarkAnime(&(glpa.userInput.typing), &(scene->edited), selectingTextGroup);
     }
     
 }

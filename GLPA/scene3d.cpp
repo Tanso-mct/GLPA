@@ -23,6 +23,11 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 }
 
 
+void Scene3d::update(){
+    
+}
+
+
 void Scene3d::releaseObj(std::wstring objFolderName, std::string fileName){
     if (objects.find(objFolderName) != objects.end()){
         objects.erase(objFolderName);

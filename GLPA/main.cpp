@@ -22,7 +22,7 @@ int WINAPI WinMain(
     glpa.selectUseScene(WINDOW_CONSOLE, SCENE_GLPA_CONSOLE);
 
     // Not Glpa
-    Console console(&glpa, glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
+    Console console(glpa.getPtScene2d(SCENE_GLPA_CONSOLE));
 
     glpa.setUserInputFunc(
         SCENE_GLPA_CONSOLE, L"console_keyDown", 

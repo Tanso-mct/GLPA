@@ -19,8 +19,7 @@
 #include "view_volume.h"
 
 /// @brief Has data related to the 3DCG camera.
-class Camera
-{
+class Camera{
 public :
     /// @brief Initialize variables that need to be initialized each time they are redrawn.
     void initialize();

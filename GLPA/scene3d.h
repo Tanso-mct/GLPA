@@ -26,6 +26,9 @@ public :
     void loadLight();
     void loadCam();
 
+    void selectUseCam();
+    void editCam();
+
     void edit(HDC hBufDC, LPDWORD lpPixel);
     void update();
     void reload();
@@ -48,8 +51,10 @@ public :
 
 private :
     std::unordered_map<std::wstring, GLPA_SCENE_FUNC_FUNCTIONAL> sceneFrameFunc;
+    std::wstring useCamName;
 
     std::unordered_map<std::wstring, Object> objects;
+    std::unordered_map<std::wstring, Camera> cameras;
 
 
 };

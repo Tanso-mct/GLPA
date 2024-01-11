@@ -19,10 +19,9 @@
 #define SCENE_GLPA_CONSOLE "glpa_console"
 #define SCENE_FOLDER_PASS_GLPA_CONSOLE L"resource/scene/glpa_console"
 
-class Console
-{
+class Console{
 public :
-    Console(Glpa *argPtGlpa, Scene2d* argPtScene2d);
+    Console(Scene2d* argPtScene2d);
 
     std::wstring getCommandName(std::wstring input_text);
 
@@ -38,8 +37,7 @@ public :
 
 
 private :
-    Glpa* ptGlpa;
-    Scene2d* ptScene2d;
+    Scene2d* scene;
 
     std::wstring selectingTextGroup = GLPA_NULL_WTEXT;
 

@@ -44,6 +44,10 @@ int Text::getGroupLineAmount(std::wstring groupName){
     if(data.find(groupName) != data.end()){
         return data[groupName].text.size();
     }
+    else{
+        std::runtime_error(ERROR_TEXT_NOT_FIND_GROUP);
+        return 0;
+    }
 }
 
 
