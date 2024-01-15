@@ -68,9 +68,6 @@ void Glpa::setSingleWindow(bool single){
     }
 }
 
-bool Glpa::dataSingleWindow(){
-    return singleWindow;
-}
 
 void Glpa::runGraphicLoop(){
     while (true) {
@@ -227,7 +224,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
         case WM_KILLFOCUS:
             for (auto& x: glpa.window) {
-                if(x.second.killFocusMsg(hWnd, glpa.dataSingleWindow())){
+                if(x.second.killFocusMsg(hWnd, glpa.singleWindow)){
                     break;
                 }
             }

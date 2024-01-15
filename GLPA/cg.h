@@ -59,13 +59,20 @@ typedef struct tagVERTEX{
     std::vector<Vec3d> normal;
 } Vertex;
 
+/**
+ * 日本語 : ポリゴンを構成する3頂点の頂点番号を格納する。
+ * English : Stores the vertex numbers of the three vertices that make up the polygon.
+*/
 typedef struct tagPOLYGON{
     std::vector<NumComb3> vId;
     std::vector<NumComb3> uvId;
     std::vector<NumComb3> normalId;
 } Polygons;
 
-
+/**
+ * 日本語 : メッシュやポリゴンの囲む直方体のデータを格納する。
+ * English : Stores the data of the rectangle that encloses the mesh and polygons.
+*/
 typedef struct tagRANGE_RECT{
     bool status = false;
     Vec3d origin;
