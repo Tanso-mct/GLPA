@@ -93,7 +93,10 @@
         "__threading_support": "cpp",
         "__mutex_base": "cpp",
         "__availability": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "version": "cpp",
+        "__assert": "cpp",
+        "__undef_macros": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "dotnet.defaultSolution": "disable",

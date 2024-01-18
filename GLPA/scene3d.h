@@ -1,3 +1,13 @@
+/**
+ * @file scene3d.h
+ * @brief
+ * 日本語 : 3次元を描画するためのシーンデータクラス。
+ * English : Scene data class for rendering 3D.
+ * @author Tanso
+ * @date 2023-11
+*/
+
+
 #ifndef SCENE3D_H_
 #define SCENE3D_H_
 
