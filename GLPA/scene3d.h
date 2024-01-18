@@ -1,7 +1,7 @@
 /**
  * @file scene3d.h
  * @brief
- * “ú–{Œê : 3ŸŒ³‚ğ•`‰æ‚·‚é‚½‚ß‚ÌƒV[ƒ“ƒf[ƒ^ƒNƒ‰ƒXB
+ * æ—¥æœ¬èª : 3æ¬¡å…ƒã‚’æç”»ã™ã‚‹ãŸã‚ã®ã‚·ãƒ¼ãƒ³ãƒ‡ãƒ¼ã‚¿ã‚¯ãƒ©ã‚¹ã€‚
  * English : Scene data class for rendering 3D.
  * @author Tanso
  * @date 2023-11
@@ -22,7 +22,7 @@
 #include "error.h"
 
 #include "object.h"
-#include "camera.h"
+// #include "camera.h"
 
 
 class Scene3d{
@@ -64,7 +64,7 @@ private :
     std::wstring useCamName;
 
     std::unordered_map<std::wstring, Object> objects;
-    std::unordered_map<std::wstring, Camera> cameras;
+    // std::unordered_map<std::wstring, Camera> cameras;
 
 
 };
