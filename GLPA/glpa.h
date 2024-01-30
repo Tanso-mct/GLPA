@@ -36,12 +36,6 @@ public :
     /// @param arghPrevInstance Handle to a previous instance of the application.
     /// @param arglpCmdLine The command line of the application, excluding the program name.
     /// @param argnCmdShow Controls how the window is displayed.
-
-    /// @brief Glpaを使用する際にWinMain関数の引数を格納するなどのGlpaクラスの初期化を行う。
-    /// @param arghInstance アプリケーションの現在のインスタンスへのハンドル。
-    /// @param arghPrevInstance アプリケーションの前のインスタンスへのハンドル。
-    /// @param arglpCmdLine プログラム名を除く、アプリケーションのコマンドライン。
-    /// @param argnCmdShow ウィンドウの表示方法を制御する。
     void initialize(
         _In_ HINSTANCE arghInstance, _In_opt_ HINSTANCE arghPrevInstance, 
         _In_ LPSTR arglpCmdLine, _In_ int argnCmdShow
@@ -63,22 +57,6 @@ public :
     /// @param minimize_auto Whether to automatically minimize this window when another window you have created is selected.
     /// @param single_existence Whether to minimize all other windows when this window is selected.
     /// @param wndViewStyle Window display style.
-
-    /// @brief 引数から新たなウィンドウを作成し、ウィンドウデータを保存している変数へ追加する。
-    /// @param window_name 作成するウィンドウの名前。
-    /// @param window_api_class_name ウィンドウAPIでのウィンドウクラスの名前。
-    /// @param window_width ウィンドウの幅。
-    /// @param window_height ウィンドウの高さ。
-    /// @param window_dpi ウィンドウの解像度。
-    /// @param window_max_fps ウィンドウで描画を行う際に最大FPS値。
-    /// @param window_style ウィンドウクラス登録時の表示スタイル。
-    /// @param load_icon ウィンドウクラス登録時のアイコン。
-    /// @param load_cursor ウィンドウクラス登録時のカーソル。
-    /// @param background_color ピクセルカラーではなくピクセルが描画される前のウィンドウの色。
-    /// @param small_icon ウィンドウクラス登録時のスモールアイコン。
-    /// @param minimize_auto 作成した別のウィンドウを選択すると自動的にこのウィンドウを最小化するかどうか。
-    /// @param single_existence このウィンドウを選択している場合、他すべてのウィンドウを最小化するかどうか。
-    /// @param wndViewStyle ウィンドウ表示スタイル。
     void createWindow(
         LPCWSTR window_name,
         LPCWSTR window_api_class_name,
