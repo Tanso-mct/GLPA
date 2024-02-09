@@ -50,6 +50,8 @@ int WINAPI WinMain(
     glpa.releaseUserInputFunc(L"console_keyUp");
     glpa.releaseUserInputFunc(L"console_mouseLbtnDown");
     glpa.releaseSceneFrameFunc(SCENE_GLPA_CONSOLE, L"console_main_update");
+    console.command.release(L"start");
+    console.command.release(L"release");
 
     glpa.releaseScene(SCENE_GLPA_CONSOLE);
 

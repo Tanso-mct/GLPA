@@ -94,13 +94,16 @@ bool Window::isVisible(){
 }
 
 void Window::graphicLoop(){
-    if (visible)
-    {
+    if (visible){
         getFps();
 
         if (ptScene->names[useScene] == GLPA_SCENE_2D){
             ptScene->data2d[useScene].edit(hBufDC, lpPixel);
             ptScene->data2d[useScene].update(hBufDC, lpPixel);
+        }
+        else if(ptScene->names[useScene] == GLPA_SCENE_3D){
+            ptScene->data3d[useScene].edit(hBufDC, lpPixel);
+            ptScene->data3d[useScene].update(hBufDC, lpPixel);
         }
 
         InvalidateRect(hWnd, NULL, FALSE);

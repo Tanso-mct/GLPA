@@ -16,14 +16,24 @@ void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std:
 }
 
 
-void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
+void Scene3d::selectUseCam(std::wstring camName){
+    if (cams.find(camName) != cams.end()){
+        useCamName = camName;
+    }
+    else{
+        throw std::runtime_error(ERROR_GLPA_SCENE_3D_NOT_EXIST_CAM);
+    }
+}
+
+
+void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel)
+{
     for (auto it : sceneFrameFunc){
         it.second(hBufDC, lpPixel);
     }
 }
 
-
-void Scene3d::update(){
+void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     
 }
 

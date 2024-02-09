@@ -22,7 +22,7 @@
 #include "error.h"
 
 #include "object.h"
-// #include "camera.h"
+#include "camera.h"
 
 
 class Scene3d{
@@ -36,11 +36,11 @@ public :
     void loadLight();
     void loadCam();
 
-    void selectUseCam();
+    void selectUseCam(std::wstring cam_name);
     void editCam();
 
-    void edit(HDC hBufDC, LPDWORD lpPixel);
-    void update();
+    void edit(HDC h_buffer_dc, LPDWORD lp_pixel);
+    void update(HDC h_buffer_dc, LPDWORD lp_pixel);
     void reload();
 
     void releaseObj(std::wstring object_folder_name, std::string file_name);
@@ -64,7 +64,7 @@ private :
     std::wstring useCamName;
 
     std::unordered_map<std::wstring, Object> objects;
-    // std::unordered_map<std::wstring, Camera> cameras;
+    std::unordered_map<std::wstring, Camera> cams;
 
 
 };
