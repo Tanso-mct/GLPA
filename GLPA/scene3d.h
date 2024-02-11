@@ -19,22 +19,25 @@
 #include <codecvt>
 
 #include "scene2d.h"
+
 #include "error.h"
+#include "cg.h"
 
 #include "object.h"
-#include "camera.h"
+#include "camera.cuh"
 
 
 class Scene3d{
 public :
     void storeUseWndParam(int width, int height, int dpi);
 
+    void loadCam(std::wstring cam_name);
     void loadObj(std::string scene_folder_path, std::wstring object_folder_name, std::string file_name);
     void loadMtl();
     void loadField();
     void loadSky();
     void loadLight();
-    void loadCam();
+    
 
     void selectUseCam(std::wstring cam_name);
     void editCam();
@@ -43,12 +46,12 @@ public :
     void update(HDC h_buffer_dc, LPDWORD lp_pixel);
     void reload();
 
+    void releaseCam();
     void releaseObj(std::wstring object_folder_name, std::string file_name);
     void releaseMtl();
     void releaseField();
     void releaseSky();
     void releaseLight();
-    void releaseCam();
     void release();
 
     void addSceneFrameFunc(std::wstring func_name, GLPA_SCENE_FUNC_FUNCTIONAL add_func);
@@ -65,6 +68,10 @@ private :
 
     std::unordered_map<std::wstring, Object> objects;
     std::unordered_map<std::wstring, Camera> cams;
+
+    std::vector<RasterizeSource> rasterizeSource;
+
+    std::
 
 
 };

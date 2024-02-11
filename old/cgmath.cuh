@@ -1,4 +1,4 @@
-#ifndef CGMATH_H_
+﻿#ifndef CGMATH_H_
 #define CGMATH_H_
 
 #include "cuda_runtime.h"

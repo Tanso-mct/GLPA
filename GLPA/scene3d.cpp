@@ -8,13 +8,23 @@ void Scene3d::storeUseWndParam(int width, int height, int dpi){
 }
 
 
-void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std::string fileName){
+void Scene3d::loadCam(std::wstring camName){
+    if (cams.find(camName) == cams.end()){
+        useCamName = camName;
+    }
+    else{
+        throw std::runtime_error(ERROR_GLPA_SCENE_3D_EXIST_CAM);
+    }
+}
+
+
+void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std::string fileName)
+{
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string folderPass = scFolderPass + "/" + converter.to_bytes(objFolderName);
     objects[objFolderName].name = objFolderName;
     objects[objFolderName].loadMesh(fileName, folderPass);
 }
-
 
 void Scene3d::selectUseCam(std::wstring camName){
     if (cams.find(camName) != cams.end()){
@@ -26,8 +36,7 @@ void Scene3d::selectUseCam(std::wstring camName){
 }
 
 
-void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel)
-{
+void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
     for (auto it : sceneFrameFunc){
         it.second(hBufDC, lpPixel);
     }

@@ -170,17 +170,20 @@
     <ClCompile Include="triangle_ratio.cu" />
     <ClCompile Include="vector.cu" />
     <ClCompile Include="z_buffer.cpp" />
-    <CudaCompile Include="camera.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <CudaCompile Include="camera.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CudaCompile>
     <ClCompile Include="buffer_3d.cpp" />
     <ClCompile Include="hitbox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="user_input.cpp" />
-    <ClCompile Include="view_volume.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <CudaCompile Include="view_volume.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -225,15 +228,17 @@
     <ClInclude Include="triangle_ratio.cuh" />
     <ClInclude Include="vector.cuh" />
     <ClInclude Include="z_buffer.h" />
-    <CudaCompile Include="camera.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <CudaCompile Include="camera.cuh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CudaCompile>
     <ClInclude Include="hitbox.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="user_input.h" />
-    <ClInclude Include="view_volume.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <CudaCompile Include="view_volume.cuh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </CudaCompile>
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>

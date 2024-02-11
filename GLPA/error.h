@@ -187,6 +187,17 @@
 #define ERROR_GLPA_SCENE_3D_NOT_EXIST_CAM NULL
 
 
+/********************************************************************************
+ * 日本語 : 関数の引数で指定している名前のカメラがシーンにすでに存在しています。
+ * カメラを新規作成する場合、既存にあるカメラとは異なる名前を指定してください。
+ * 
+ * English : A camera with the name specified in the function argument already exists in the scene.
+ * When creating a new camera, specify a different name from the existing camera.
+********************************************************************************/
+#define ERROR_GLPA_SCENE_3D_EXIST_CAM NULL
+
+
+
 /**********************************************************************************************************************
  * 日本語 : window.h及びwindow.cppファイルに関するエラーメッセージ一覧。
  * English : List of error messages related to window.h and window.cpp files.

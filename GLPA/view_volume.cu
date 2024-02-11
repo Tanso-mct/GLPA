@@ -1,4 +1,4 @@
-#include "view_volume.h"
+#include "view_volume.cuh"
 
 void ViewVolume::define
 (

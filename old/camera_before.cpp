@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file Camera.h
  * @brief Describes a process related to a camera that exists in 3D
  * @author Tanso

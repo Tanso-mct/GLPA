@@ -111,9 +111,6 @@
     <ClCompile Include="vector.cu">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="view_volume.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="window.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -245,9 +242,6 @@
     <ClInclude Include="vector.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
-    <ClInclude Include="view_volume.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
     <ClInclude Include="window.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
@@ -304,30 +298,27 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="camera.cpp">
+    <CudaCompile Include="camera.cu">
       <Filter>ソース ファイル\glpa</Filter>
     </CudaCompile>
-    <CudaCompile Include="camera.h">
+    <CudaCompile Include="camera.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="view_volume.cu">
+      <Filter>ソース ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="view_volume.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resource\bmp\temp.bmp">
-      <Filter>リソース ファイル\bmp</Filter>
+    <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png">
+      <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resource\mtl\temp_cube.mtl">
-      <Filter>リソース ファイル\mtl</Filter>
-    </None>
-    <None Include="resource\obj\temp_cube.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </None>
-    <None Include="resource\obj\temp_secondCube.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </None>
-    <None Include="resource\obj\temp_third_cube.obj">
-      <Filter>リソース ファイル\obj</Filter>
-    </None>
+    <Object Include="resource\scene\game_1\cube1\temp_cube.obj" />
+    <Object Include="resource\scene\game_1\cube2\temp_secondCube.obj" />
+    <Object Include="resource\scene\game_1\cube3\temp_third_cube.obj" />
   </ItemGroup>
 </Project>

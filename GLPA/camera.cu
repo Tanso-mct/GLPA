@@ -1,5 +1,5 @@
 #define DEBUG_CAMERA_
-#include "camera.h"
+#include "camera.cuh"
 
 void Camera::initialize()
 {
