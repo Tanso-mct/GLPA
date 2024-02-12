@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "cg.h"
 #include "mesh.h"
 #include "error.h"
 
@@ -11,6 +12,8 @@ class Object{
 public :
     std::wstring name;
     std::unordered_map<std::string, Mesh> mesh;
+
+    RangeRect range;
 
     void loadMesh(std::string file_name, std::string folder_pass);
 };

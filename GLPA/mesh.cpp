@@ -59,8 +59,7 @@ void Mesh::load(std::string fileName, std::string folderPass){
             // Save the third number
             num3d.z = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
 
-            if (range.status)
-            {
+            if (range.status){
                 // Processing with respect to origin point
                 if (num3d.x < range.origin.x)
                 {
@@ -187,139 +186,6 @@ void Mesh::load(std::string fileName, std::string folderPass){
     range.wVertex[5] = {range.opposite.x, range.opposite.y, range.opposite.z};
     range.wVertex[6] = {range.opposite.x, range.origin.y, range.opposite.z};
     range.wVertex[7] = {range.origin.x, range.origin.y, range.opposite.z};
-
-    #ifdef DEBUG_FILE_
-
-    char buffer[256];
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("v world\n");
-    for (int i = 0; i < v.world.size(); ++i)
-    {
-        sprintf_s(buffer, "%f", v.world[i].x);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA(" ");
-
-        sprintf_s(buffer, "%f", v.world[i].y);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA(" ");
-
-        sprintf_s(buffer, "%f", v.world[i].z);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("range origin\n");
-    sprintf_s(buffer, "%f", range.origin.x);
-    OutputDebugStringA(buffer);
-    OutputDebugStringA(" ");
-
-    sprintf_s(buffer, "%f", range.origin.y);
-    OutputDebugStringA(buffer);
-    OutputDebugStringA(" ");
-
-    sprintf_s(buffer, "%f", range.origin.z);
-    OutputDebugStringA(buffer);
-    OutputDebugStringA("\n");
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("range opposite\n");
-    sprintf_s(buffer, "%f", range.opposite.x);
-    OutputDebugStringA(buffer);
-    OutputDebugStringA(" ");
-
-    sprintf_s(buffer, "%f", range.opposite.y);
-    OutputDebugStringA(buffer);
-    OutputDebugStringA(" ");
-
-    sprintf_s(buffer, "%f", range.opposite.z);
-    OutputDebugStringA(buffer);
-    OutputDebugStringA("\n");
-    
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("v uv\n");
-    for (int i = 0; i < v.uv.size(); ++i)
-    {
-        sprintf_s(buffer, "%f", v.uv[i].x);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA(" ");
-
-        sprintf_s(buffer, "%f", v.uv[i].y);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("v normal\n");
-    for (int i = 0; i < v.normal.size(); ++i)
-    {
-        sprintf_s(buffer, "%f", v.normal[i].x);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA(" ");
-
-        sprintf_s(buffer, "%f", v.normal[i].y);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA(" ");
-
-        sprintf_s(buffer, "%f", v.normal[i].z);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("poly v\n");
-    for (int i = 0; i < poly.v.size(); ++i)
-    {
-        sprintf_s(buffer, "%d", poly.v[i].n1);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("/");
-
-        sprintf_s(buffer, "%d", poly.v[i].n2);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("/");
-
-        sprintf_s(buffer, "%d", poly.v[i].n3);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-
-    OutputDebugStringA("\n");
-    OutputDebugStringA("poly uv\n");
-    for (int i = 0; i < poly.uv.size(); ++i)
-    {
-        sprintf_s(buffer, "%d", poly.uv[i].n1);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("/");
-
-        sprintf_s(buffer, "%d", poly.uv[i].n2);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("/");
-
-        sprintf_s(buffer, "%d", poly.uv[i].n3);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-
-    OutputDebugStringA("poly normal\n");
-    OutputDebugStringA("\n");
-    for (int i = 0; i < poly.normal.size(); ++i)
-    {
-        sprintf_s(buffer, "%d", poly.normal[i].n1);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("/");
-
-        sprintf_s(buffer, "%d", poly.normal[i].n2);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("/");
-
-        sprintf_s(buffer, "%d", poly.normal[i].n3);
-        OutputDebugStringA(buffer);
-        OutputDebugStringA("\n");
-    }
-
-    #endif
     
 
     file.close();

@@ -169,3 +169,8 @@ void Camera::defineViewVolume(){
     reload = false;
 
 }
+
+
+void Camera::objRangeCoordTrans(){
+    
+}
