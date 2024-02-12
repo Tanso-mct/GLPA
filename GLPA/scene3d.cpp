@@ -11,6 +11,19 @@ void Scene3d::storeUseWndParam(int width, int height, int dpi){
 void Scene3d::loadCam(std::wstring camName){
     if (cams.find(camName) == cams.end()){
         useCamName = camName;
+
+
+        //TODO: Ensure that camera data is read from an external source.
+
+        cams[camName].load(
+            camName,
+            {0, 0, 0},
+            {0, 0, 0},
+            1,
+            10000,
+            80,
+            {16, 9}
+        );
     }
     else{
         throw std::runtime_error(ERROR_GLPA_SCENE_3D_EXIST_CAM);
@@ -43,7 +56,7 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 }
 
 void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
-    
+    cams[useCamName].defineViewVolume();
 }
 
 

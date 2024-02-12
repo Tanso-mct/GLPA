@@ -71,8 +71,6 @@ private :
 
     std::vector<RasterizeSource> rasterizeSource;
 
-    std::
-
 
 };
 

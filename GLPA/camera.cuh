@@ -21,13 +21,13 @@
 class Camera{
 public :
     void load(
-        std::wstring argName,
-        Vec3d argWPos,
-        Vec3d argRotAngle,
-        double argNearZ,
-        double argFarZ,
-        Vec2d argViewAngle,
-        Vec2d argAspectRatio
+        std::wstring arg_name,
+        Vec3d arg_w_pos,
+        Vec3d arg_rot_angle,
+        double arg_near_z,
+        double arg_far_z,
+        double arg_view_angle,
+        Vec2d arg_aspect_ratio
     );
 
     void defineViewVolume();
@@ -46,13 +46,15 @@ public :
 
 
 private : 
+    bool reload = false;
+
     std::wstring name = GLPA_WSTRING_DEF;
     Vec3d wPos = {0, 0, 0};
     Vec3d rotAngle = {0, 0, 0};
 
     double nearZ = 1;
     double farZ = 10000;
-    Vec2d viewAngle = {0, 80};
+    double viewAngle = 80;
     Vec2d aspectRatio = {16, 9};
 
     Vec2d nearScrSize;

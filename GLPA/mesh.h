@@ -16,7 +16,7 @@
 class Mesh{
 public :
     RangeRect range;
-    Vertex v;
+    Vertices v;
     Polygons poly;
 
     std::wstring name;

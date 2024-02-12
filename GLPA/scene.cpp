@@ -88,8 +88,12 @@ void Scene::load(
                         narrowName
                     );
                 }
+
+                
             }
         }
+
+        data3d[scName].loadCam(L"deveCam");
     }
 }
 

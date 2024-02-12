@@ -40,6 +40,17 @@ typedef struct tagVECTOR2D{
     double y;
 } Vec2d;
 
+typedef struct tagVECTOR2DXZ{
+    double x;
+    double z;
+} Vec2dXZ;
+
+typedef struct tagVECTOR2DYZ{
+    double y;
+    double z;
+} Vec2dYZ;
+
+
 typedef struct tagVECTOR3D{
     double x;
     double y;
@@ -53,6 +64,74 @@ typedef struct tagNUMCOMB3{
     int n3; // number 3
 } NumComb3;
 
+
+#define PI 3.14159265
+
+
+
+
+
+/********************************************************************************
+ * 日本語 : 図形を表すために使用するものらを記述。
+ * English : Describes the objects used to represent the figure.
+********************************************************************************/
+
+
+typedef struct tagShapeLine{
+    Vec3d startV;
+    Vec3d endV;
+    Vec3d vec;
+} shapeLine;
+
+
+typedef struct tagFaceNormal{
+    Vec3d v;
+    Vec3d normal;
+} FaceNormal;
+
+
+#define SURFACE_TOP 0
+#define SURFACE_FRONT 1
+#define SURFACE_RIGHT 2
+#define SURFACE_LEFT 3
+#define SURFACE_BACK 4
+#define SURFACE_BOTTOM 5
+
+#define RECT_FRONT_TOP_LEFT 0
+#define RECT_FRONT_TOP_RIGHT 1
+#define RECT_FRONT_BOTTOM_RIGHT 2
+#define RECT_FRONT_BOTTOM_LEFT 3
+#define RECT_BACK_TOP_LEFT 4
+#define RECT_BACK_TOP_RIGHT 5
+#define RECT_BACK_BOTTOM_RIGHT 6
+#define RECT_BACK_BOTTOM_LEFT 7
+
+#define RECT_L1_STARTV RECT_FRONT_TOP_LEFT
+#define RECT_L1_ENDV RECT_FRONT_TOP_RIGHT
+#define RECT_L2_STARTV RECT_FRONT_TOP_RIGHT
+#define RECT_L2_ENDV RECT_FRONT_BOTTOM_RIGHT
+#define RECT_L3_STARTV RECT_FRONT_BOTTOM_RIGHT
+#define RECT_L3_ENDV RECT_FRONT_BOTTOM_LEFT
+#define RECT_L4_STARTV RECT_FRONT_BOTTOM_LEFT
+#define RECT_L4_ENDV RECT_FRONT_TOP_LEFT
+
+#define RECT_L5_STARTV RECT_FRONT_TOP_LEFT
+#define RECT_L5_ENDV RECT_BACK_TOP_LEFT
+#define RECT_L6_STARTV RECT_FRONT_TOP_RIGHT
+#define RECT_L6_ENDV RECT_BACK_TOP_RIGHT
+#define RECT_L7_STARTV RECT_FRONT_BOTTOM_RIGHT
+#define RECT_L7_ENDV RECT_BACK_BOTTOM_RIGHT
+#define RECT_L8_STARTV RECT_FRONT_BOTTOM_LEFT
+#define RECT_L8_ENDV RECT_BACK_BOTTOM_LEFT
+
+#define RECT_L9_STARTV RECT_BACK_TOP_LEFT
+#define RECT_L9_ENDV RECT_BACK_TOP_RIGHT
+#define RECT_L10_STARTV RECT_BACK_TOP_RIGHT
+#define RECT_L10_ENDV RECT_BACK_BOTTOM_RIGHT
+#define RECT_L11_STARTV RECT_BACK_BOTTOM_RIGHT
+#define RECT_L11_ENDV RECT_BACK_BOTTOM_LEFT
+#define RECT_L12_STARTV RECT_BACK_BOTTOM_LEFT
+#define RECT_L12_ENDV RECT_BACK_TOP_LEFT
 
 
 /**********************************************************************************************************************
@@ -137,5 +216,6 @@ typedef struct tagRasterizeSource{
     MultiSidedShape scPixelVs;
     
 } RasterizeSource;
+
 
 #endif CG_H_

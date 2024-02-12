@@ -82,10 +82,9 @@ void Glpa::runGraphicLoop(){
             DispatchMessage(&msg);
         } 
 
-        for (auto& x: window) {
+        for (auto& x : window) {
             if(x.second.isVisible()){
                 x.second.graphicLoop();
-                break;
             }
         }
     }
