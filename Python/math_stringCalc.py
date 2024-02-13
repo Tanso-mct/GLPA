@@ -69,30 +69,30 @@ def mt4x4Product(leftMt, rightMt) :
 
 
 mtRotZ = {
-    1 : "cosRotZ",  2  : "-sinRotZ", 3  : "0", 4  : "0",
-    5 : "sinRotZ",  6  : "cosRotZ",  7  : "0", 8  : "0",
+    1 : "cos(RAD(rot.z))",  2  : "-sin(RAD(rot.z))", 3  : "0", 4  : "0",
+    5 : "sin(RAD(rot.z))",  6  : "cos(RAD(rot.z))",  7  : "0", 8  : "0",
     9 : "0",        10 : "0",        11 : "1", 12 : "0",
     13 : "0",       14 : "0",        15 : "0", 16 : "1"
 }
 
 mtRotY = {
-    1 : "cosRotY",   2  : "0", 3  : "sinRotY", 4  : "0",
+    1 : "cos(RAD(rot.y))",   2  : "0", 3  : "sin(RAD(rot.y))", 4  : "0",
     5 : "0",         6  : "1", 7  : "0",       8  : "0",
-    9 : "-sinRotY",  10 : "0", 11 : "cosRotY", 12 : "0",
+    9 : "-sin(RAD(rot.y))",  10 : "0", 11 : "cos(RAD(rot.y))", 12 : "0",
     13 : "0",        14 : "0", 15 : "0",       16 : "1"
 }
 
 mtRotX = {
     1 : "1",  2  : "0",       3  : "0",        4  : "0",
-    5 : "0",  6  : "cosRotX", 7  : "-sinRotX", 8  : "0",
-    9 : "0",  10 : "sinRotX", 11 : "cosRotX",  12 : "0",
+    5 : "0",  6  : "cos(RAD(rot.x))", 7  : "-sin(RAD(rot.x))", 8  : "0",
+    9 : "0",  10 : "sin(RAD(rot.x))", 11 : "cos(RAD(rot.x))",  12 : "0",
     13 : "0", 14 : "0",       15 : "0",        16 : "1"
 }
 
 mtTrans = {
-    1 : "1",  2  : "0", 3  : "0", 4  : "transX",
-    5 : "0",  6  : "1", 7  : "0", 8  : "transY",
-    9 : "0",  10 : "0", 11 : "1", 12 : "transZ",
+    1 : "1",  2  : "0", 3  : "0", 4  : "trans.x",
+    5 : "0",  6  : "1", 7  : "0", 8  : "trans.y",
+    9 : "0",  10 : "0", 11 : "1", 12 : "trans.z",
     13 : "0", 14 : "0", 15 : "0", 16 : "1"
 }
 
@@ -110,7 +110,38 @@ print(result)
 #  9: '-sinRotY',10: 'cosRotY * sinRotX', 11: 'cosRotY * cosRotX', 12: '0', 
 #  13: '0',      14: '0',                 15: '0',                 16: '1'}
 
-{1: 'cosRotZ * cosRotY', 2: 'cosRotZ * sinRotY * sinRotX * -sinRotZ * cosRotX', 3: 'cosRotZ * sinRotY * cosRotX * -sinRotZ * -sinRotX', 4: 'cosRotZ * cosRotY * transX * sinRotY * sinRotX * transY * cosRotX * transZ * -sinRotZ * cosRotX * transY * -sinRotX * transZ', 
- 5: 'sinRotZ * cosRotY', 6: 'sinRotZ * sinRotY * sinRotX * cosRotZ * cosRotX',  7: 'sinRotZ * sinRotY * cosRotX * cosRotZ * -sinRotX',  8: 'sinRotZ * cosRotY * transX * sinRotY * sinRotX * transY * cosRotX * transZ * cosRotZ * cosRotX * transY * -sinRotX * transZ', 
- 9: '-sinRotY',         10: 'cosRotY * sinRotX',                               11: 'cosRotY * cosRotX',                                12: '-sinRotY * transX * cosRotY * sinRotX * transY * cosRotX * transZ', 
- 13: '0',               14: '0',                                               15: '0',                                                16: '1'}
+# {1: 'cosRotZ * cosRotY', 
+#  2: 'cosRotZ * sinRotY * sinRotX * -sinRotZ * cosRotX', 
+#  3: 'cosRotZ * sinRotY * cosRotX * -sinRotZ * -sinRotX', 
+#  4: 'cosRotZ * cosRotY * transX * sinRotY * sinRotX * transY * cosRotX * transZ * -sinRotZ * cosRotX * transY * -sinRotX * transZ', 
+#  5: 'sinRotZ * cosRotY', 
+#  6: 'sinRotZ * sinRotY * sinRotX * cosRotZ * cosRotX',  
+#  7: 'sinRotZ * sinRotY * cosRotX * cosRotZ * -sinRotX',  
+#  8: 'sinRotZ * cosRotY * transX * sinRotY * sinRotX * transY * cosRotX * transZ * cosRotZ * cosRotX * transY * -sinRotX * transZ', 
+#  9: '-sinRotY',         
+#  10: 'cosRotY * sinRotX',                               
+#  11: 'cosRotY * cosRotX',                                
+#  12: '-sinRotY * transX * cosRotY * sinRotX * transY * cosRotX * transZ', 
+#  13: '0',               
+#  14: '0',                                               
+#  15: '0',                                                
+#  16: '1'}
+
+
+
+# 1: cos(RAD(rot.z)) * cos(RAD(rot.y));
+# 2: cos(RAD(rot.z)) * sin(RAD(rot.y)) * sin(RAD(rot.x)) * -sin(RAD(rot.z)) * cos(RAD(rot.x));
+# 3: cos(RAD(rot.z)) * sin(RAD(rot.y)) * cos(RAD(rot.x)) * -sin(RAD(rot.z)) * -sin(RAD(rot.x));
+# 4: cos(RAD(rot.z)) * cos(RAD(rot.y)) * trans.x * sin(RAD(rot.y)) * sin(RAD(rot.x)) * trans.y * cos(RAD(rot.x)) * trans.z * -sin(RAD(rot.z)) * cos(RAD(rot.x)) * trans.y * -sin(RAD(rot.x)) * trans.z;
+# 5: sin(RAD(rot.z)) * cos(RAD(rot.y));
+# 6: sin(RAD(rot.z)) * sin(RAD(rot.y)) * sin(RAD(rot.x)) * cos(RAD(rot.z)) * cos(RAD(rot.x));
+# 7: sin(RAD(rot.z)) * sin(RAD(rot.y)) * cos(RAD(rot.x)) * cos(RAD(rot.z)) * -sin(RAD(rot.x));
+# 8: sin(RAD(rot.z)) * cos(RAD(rot.y)) * trans.x * sin(RAD(rot.y)) * sin(RAD(rot.x)) * trans.y * cos(RAD(rot.x)) * trans.z * cos(RAD(rot.z)) * cos(RAD(rot.x)) * trans.y * -sin(RAD(rot.x)) * trans.z;
+# 9: -sin(RAD(rot.y));
+# 10: cos(RAD(rot.y)) * sin(RAD(rot.x));
+# 11: cos(RAD(rot.y)) * cos(RAD(rot.x));
+# 12: -sin(RAD(rot.y)) * trans.x * cos(RAD(rot.y)) * sin(RAD(rot.x)) * trans.y * cos(RAD(rot.x)) * trans.z;
+# 13: 0;
+# 14: 0;
+# 15: 0;
+# 16: 1;

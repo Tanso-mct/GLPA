@@ -67,7 +67,8 @@ typedef struct tagNUMCOMB3{
 
 #define PI 3.14159265
 
-
+#define RAD(angle) \
+    angle *PI /180
 
 
 
