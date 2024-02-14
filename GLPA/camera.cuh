@@ -15,6 +15,8 @@
 #include "cg.h"
 #include "view_volume.cuh"
 
+#include "matrix.cuh"
+
 
 
 /// @brief Has data related to the 3DCG camera.
@@ -31,6 +33,8 @@ public :
     );
 
     void defineViewVolume();
+
+    // void updateObjRectRange();
 
     void objRangeCoordTrans();
 

@@ -61,6 +61,21 @@ std::vector<Vec3d> Matrix::transRotConvert(Vec3d trans, Vec3d rot, std::vector<V
     
     std::vector<Vec3d> rtCalcVec(sourceVecs.size());
 
+    for (int i = 0; i < sourceVecs.size(); i++){
+        rtCalcVec[i].x = hResultMt[i*3 + 0];
+        rtCalcVec[i].y = hResultMt[i*3 + 1];
+        rtCalcVec[i].z = hResultMt[i*3 + 2];
+    }
+
+    // Release all memory allocated by malloc
+    free(hLeftMt);
+    free(hRightMt);
+    free(hResultMt);
+
+    cudaFree(dLeftMt);
+    cudaFree(dRightMt);
+    cudaFree(dResultMt);
+
 
     return std::vector<Vec3d>();
 }
