@@ -8,12 +8,18 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
 #include <vector>
 #include <math.h>
 #include <string>
+#include <unordered_map>
 
 #include "cg.h"
 #include "view_volume.cuh"
+
+#include "object.h"
 
 #include "matrix.cuh"
 
@@ -36,7 +42,7 @@ public :
 
     // void updateObjRectRange();
 
-    void objRangeCoordTrans();
+    void objRangeCoordTrans(std::unordered_map<std::wstring, Object>* objects);
 
     void objCulling();
 
@@ -70,6 +76,9 @@ private :
     std::vector<MeshNameInfo> renderTargetMesh;
     std::vector<PolyNameInfo> renderTargetPoly;
     std::vector<PolyNameInfo> shapeConvertTargetPoly;
+
+
+    Matrix mt;
 
     
 };

@@ -57,6 +57,7 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 
 void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].defineViewVolume();
+    cams[useCamName].objRangeCoordTrans(&objects);
 }
 
 

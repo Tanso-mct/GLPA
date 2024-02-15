@@ -22,17 +22,17 @@ std::vector<Vec3d> Matrix::transRotConvert(Vec3d trans, Vec3d rot, std::vector<V
     hResultMt = (double*)malloc(sizeof(double)*sourceVecs.size()*3);
 
     hLeftMt[0] = cos(RAD(rot.z)) * cos(RAD(rot.y));
-    hLeftMt[1] = cos(RAD(rot.z)) * sin(RAD(rot.y)) * sin(RAD(rot.x)) * -sin(RAD(rot.z)) * cos(RAD(rot.x));
-    hLeftMt[2] = cos(RAD(rot.z)) * sin(RAD(rot.y)) * cos(RAD(rot.x)) * -sin(RAD(rot.z)) * -sin(RAD(rot.x));
-    hLeftMt[3] = cos(RAD(rot.z)) * cos(RAD(rot.y)) * trans.x * sin(RAD(rot.y)) * sin(RAD(rot.x)) * trans.y * cos(RAD(rot.x)) * trans.z * -sin(RAD(rot.z)) * cos(RAD(rot.x)) * trans.y * -sin(RAD(rot.x)) * trans.z;
+    hLeftMt[1] = cos(RAD(rot.z)) * sin(RAD(rot.y)) * sin(RAD(rot.x)) + -sin(RAD(rot.z)) * cos(RAD(rot.x));
+    hLeftMt[2] = cos(RAD(rot.z)) * sin(RAD(rot.y)) * cos(RAD(rot.x)) + -sin(RAD(rot.z)) * -sin(RAD(rot.x));
+    hLeftMt[3] = trans.x;
     hLeftMt[4] = sin(RAD(rot.z)) * cos(RAD(rot.y));
-    hLeftMt[5] = sin(RAD(rot.z)) * sin(RAD(rot.y)) * sin(RAD(rot.x)) * cos(RAD(rot.z)) * cos(RAD(rot.x));
-    hLeftMt[6] = sin(RAD(rot.z)) * sin(RAD(rot.y)) * cos(RAD(rot.x)) * cos(RAD(rot.z)) * -sin(RAD(rot.x));
-    hLeftMt[7] = sin(RAD(rot.z)) * cos(RAD(rot.y)) * trans.x * sin(RAD(rot.y)) * sin(RAD(rot.x)) * trans.y * cos(RAD(rot.x)) * trans.z * cos(RAD(rot.z)) * cos(RAD(rot.x)) * trans.y * -sin(RAD(rot.x)) * trans.z;
+    hLeftMt[5] = sin(RAD(rot.z)) * sin(RAD(rot.y)) * sin(RAD(rot.x)) + cos(RAD(rot.z)) * cos(RAD(rot.x));
+    hLeftMt[6] = sin(RAD(rot.z)) * sin(RAD(rot.y)) * cos(RAD(rot.x)) + cos(RAD(rot.z)) * -sin(RAD(rot.x));
+    hLeftMt[7] = trans.y;
     hLeftMt[8] = -sin(RAD(rot.y));
     hLeftMt[9] = cos(RAD(rot.y)) * sin(RAD(rot.x));
     hLeftMt[10] = cos(RAD(rot.y)) * cos(RAD(rot.x));
-    hLeftMt[11] = -sin(RAD(rot.y)) * trans.x * cos(RAD(rot.y)) * sin(RAD(rot.x)) * trans.y * cos(RAD(rot.x)) * trans.z;
+    hLeftMt[11] = trans.z;
     hLeftMt[12] = 0;
     hLeftMt[13] = 0;
     hLeftMt[14] = 0;

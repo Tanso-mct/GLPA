@@ -43,6 +43,8 @@ void Object::loadMesh(std::string fileName, std::string folderPass){
         }
     }
 
+    range.wVertex.resize(8);
+
     range.wVertex[0] = {range.origin.x, range.opposite.y, range.origin.z};
     range.wVertex[1] = {range.opposite.x, range.opposite.y, range.origin.z};
     range.wVertex[2] = {range.opposite.x, range.origin.y, range.origin.z};

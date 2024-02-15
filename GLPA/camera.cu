@@ -171,6 +171,16 @@ void Camera::defineViewVolume(){
 }
 
 
-void Camera::objRangeCoordTrans(){
-    
+void Camera::objRangeCoordTrans(std::unordered_map<std::wstring, Object>* objects){
+    std::vector<Vec3d> rangeVs(objects->size() * 8);
+
+    int iN1 = 0;
+    for (auto obj : *objects){
+        for (int i = 0; i < 8; i++){
+            rangeVs[iN1*8 + i] = obj.second.range.wVertex[i];
+        }
+        iN1 += 1;
+    }
+
+    mt.transRotConvert(wPos, rotAngle, rangeVs);
 }

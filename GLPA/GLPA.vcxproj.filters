@@ -66,9 +66,6 @@
     <ClCompile Include="material.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="matrix.cu">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -197,9 +194,6 @@
     <ClInclude Include="material.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
-    <ClInclude Include="matrix.cuh">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
@@ -308,6 +302,12 @@
       <Filter>ソース ファイル\glpa</Filter>
     </CudaCompile>
     <CudaCompile Include="view_volume.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="matrix.cu">
+      <Filter>ソース ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="matrix.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>

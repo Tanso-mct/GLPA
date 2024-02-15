@@ -1,6 +1,9 @@
 #ifndef VIEW_VOLUME_H_
 #define VIEW_VOLUME_H_
 
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
 #include <vector>
 #include <math.h>
 
