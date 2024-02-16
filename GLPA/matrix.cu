@@ -76,7 +76,6 @@ std::vector<Vec3d> Matrix::transRotConvert(Vec3d trans, Vec3d rot, std::vector<V
     cudaFree(dRightMt);
     cudaFree(dResultMt);
 
-
-    return std::vector<Vec3d>();
+    return rtCalcVec;
 }
 
