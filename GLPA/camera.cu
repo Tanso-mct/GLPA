@@ -171,7 +171,7 @@ void Camera::defineViewVolume(){
 }
 
 
-void Camera::objRangeCoordTrans(std::unordered_map<std::wstring, Object>* objects){
+void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
     std::vector<Vec3d> rangeVs(objects->size() * 8);
 
     int iN1 = 0;
@@ -182,5 +182,58 @@ void Camera::objRangeCoordTrans(std::unordered_map<std::wstring, Object>* object
         iN1 += 1;
     }
 
-    mt.transRotConvert(wPos, rotAngle, rangeVs);
+    rangeVs = mt.transRotConvert(wPos, rotAngle, rangeVs);
+
+    std::vector<std::wstring> objOrder;
+    std::vector<Vec3d> rectPts;
+
+    int iN2 = 0;
+    for (auto& obj : *objects){
+        objOrder.push_back(obj.first);
+        
+        obj.second.range.status = false;
+        for (int i = 0; i < 8; i++){
+            if (obj.second.range.status){
+                if (rangeVs[iN2*8 + i].x < rectPts[iN2*2].x){
+                    rectPts[iN2*2].x = rangeVs[iN2*8 + i].x;
+                }
+                if (rangeVs[iN2*8 + i].y < rectPts[iN2*2].y){
+                    rectPts[iN2*2].y = rangeVs[iN2*8 + i].y;
+                }
+                if (rangeVs[iN2*8 + i].z > rectPts[iN2*2].z){
+                    rectPts[iN2*2].z = rangeVs[iN2*8 + i].z;
+                }
+
+                // Processing with respect to opposite point
+                if (rangeVs[iN2*8 + i].x > rectPts[iN2*2 + 1].x){
+                    rectPts[iN2*2 + 1].x = rangeVs[iN2*8 + i].x;
+                }
+                if (rangeVs[iN2*8 + i].y > rectPts[iN2*2 + 1].y){
+                    rectPts[iN2*2 + 1].y = rangeVs[iN2*8 + i].y;
+                }
+                if (rangeVs[iN2*8 + i].z < rectPts[iN2*2 + 1].z){
+                    rectPts[iN2*2 + 1].z = rangeVs[iN2*8 + i].z;
+                }
+            }
+            else{
+                Vec3d tempVec;
+                rectPts.push_back(tempVec);
+                rectPts.push_back(tempVec);
+
+                rectPts[iN2*2].x = rangeVs[iN2*8 + i].x;
+                rectPts[iN2*2].y = rangeVs[iN2*8 + i].y;
+                rectPts[iN2*2].z = rangeVs[iN2*8 + i].z;
+
+                rectPts[iN2*2 + 1].x = rangeVs[iN2*8 + i].x;
+                rectPts[iN2*2 + 1].y = rangeVs[iN2*8 + i].y;
+                rectPts[iN2*2 + 1].z = rangeVs[iN2*8 + i].z;
+                obj.second.range.status = true;
+            }
+        }
+
+        iN2 += 1;
+    }
+
+    
 }
+

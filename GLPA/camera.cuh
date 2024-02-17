@@ -42,9 +42,9 @@ public :
 
     // void updateObjRectRange();
 
-    void objRangeCoordTrans(std::unordered_map<std::wstring, Object>* objects);
+    void objCulling(std::unordered_map<std::wstring, Object>* objects);
 
-    void objCulling();
+    void meshRangeCoordTrans();
 
     void meshCulling();
 

@@ -11,10 +11,10 @@
 
 
 __global__ void glpaGpu4x4_4x1sMtProduct(
-    double* mt4x4,
-    double* mt4x1s,
-    double* resultMt,
-    int mt4x1sSize
+    double* mt_4x4,
+    double* mt_4x1s,
+    double* result_mt,
+    int mt_4x1sSize
 );
 
 
