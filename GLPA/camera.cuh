@@ -22,6 +22,7 @@
 #include "object.h"
 
 #include "matrix.cuh"
+#include "vector.cuh"
 
 
 
@@ -54,6 +55,9 @@ public :
 
     void polyShapeConvert();
 
+    Matrix mt;
+    Vector vc;
+
 
 private : 
     bool reload = false;
@@ -77,8 +81,6 @@ private :
     std::vector<PolyNameInfo> renderTargetPoly;
     std::vector<PolyNameInfo> shapeConvertTargetPoly;
 
-
-    Matrix mt;
 
     
 };

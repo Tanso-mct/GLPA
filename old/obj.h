@@ -1,5 +1,5 @@
-#ifndef MESH_H_
-#define MESH_H_
+#ifndef OBJ_H_
+#define OBJ_H_
 
 
 #include <string>
@@ -13,7 +13,7 @@
 #include "cg.h"
 #include "error.h"
 
-class Mesh{
+class Obj{
 public :
     RangeRect range;
     Vertices v;
@@ -27,4 +27,4 @@ public :
 };
 
 
-#endif MESH_H_
+#endif OBJ_H_

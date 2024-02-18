@@ -1,45 +1,172 @@
 #include "object.h"
 
+void Object::load(std::wstring fileName, std::string folderPass){
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 
-void Object::loadMesh(std::string fileName, std::string folderPass){
-    if (mesh.find(fileName) != mesh.end()){
-        std::runtime_error(ERROR_OBJECT_LOAD);
+    std::string narrowFileName = converter.to_bytes(fileName);
+
+
+    filePath = folderPass + "/" + narrowFileName;
+
+    std::ifstream file(filePath);
+
+    if (file.fail()){
+        std::runtime_error(ERROR_MESH_LOAD_FILE);
+        return;
     }
 
-    mesh[fileName].load(fileName, folderPass);
+    // Initialize data
+    range.status = false;
 
-    for (int i = 0; i < 8; i++){
-        if (range.status){
-            if (mesh[fileName].range.wVertex[i].x < range.origin.x){
-                range.origin.x = mesh[fileName].range.wVertex[i].x;
+    v.world.resize(0);
+    v.uv.resize(0);
+    v.normal.resize(0);
+
+    poly.vId.resize(0);
+    poly.uvId.resize(0);
+    poly.normalId.resize(0);
+
+    std::string tag;
+    std::string line;
+    std::string name;
+    std::size_t punc1;
+    std::size_t punc2;
+    std::size_t punc3;
+    std::size_t punc4;
+    Vec3d num3d;
+    Vec2d num2d;
+    NumComb3 numComb3V;
+    NumComb3 numComb3UV;
+    NumComb3 numComb3Normal;
+
+
+    while (std::getline(file, line)) {
+        punc1 = line.find(" ");
+        tag = line.substr(0, punc1);
+
+        // Branching by TAG
+        if (tag == "v"){
+            // Save the first number
+            punc2 = line.find(" ", tag.size() + 2);
+            num3d.x = std::stod(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
+
+            // Save the second number
+            punc3 = line.find(" ", punc2 + 1);
+            num3d.y = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            
+            // Save the third number
+            num3d.z = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
+
+            if (range.status){
+                // Processing with respect to origin point
+                if (num3d.x < range.origin.x)
+                {
+                    range.origin.x = num3d.x;
+                }
+                if (num3d.y < range.origin.y)
+                {
+                    range.origin.y = num3d.y;
+                }
+                if (num3d.z > range.origin.z)
+                {
+                    range.origin.z = num3d.z;
+                }
+
+                // Processing with respect to opposite point
+                if (num3d.x > range.opposite.x)
+                {
+                    range.opposite.x = num3d.x;
+                }
+                if (num3d.y > range.opposite.y)
+                {
+                    range.opposite.y = num3d.y;
+                }
+                if (num3d.z < range.opposite.z)
+                {
+                    range.opposite.z = num3d.z;
+                }
             }
-            if (mesh[fileName].range.wVertex[i].y < range.origin.y){
-                range.origin.y = mesh[fileName].range.wVertex[i].y;
-            }
-            if (mesh[fileName].range.wVertex[i].z > range.origin.z){
-                range.origin.z = mesh[fileName].range.wVertex[i].z;
+            else{
+                range.origin.x = num3d.x;
+                range.origin.y = num3d.y;
+                range.origin.z = num3d.z;
+
+                range.opposite.x = num3d.x;
+                range.opposite.y = num3d.y;
+                range.opposite.z = num3d.z;
+                range.status = true;
             }
 
-            // Processing with respect to opposite point
-            if (mesh[fileName].range.wVertex[i].x > range.opposite.x){
-                range.opposite.x = mesh[fileName].range.wVertex[i].x;
-            }
-            if (mesh[fileName].range.wVertex[i].y > range.opposite.y){
-                range.opposite.y = mesh[fileName].range.wVertex[i].y;
-            }
-            if (mesh[fileName].range.wVertex[i].z < range.opposite.z){
-                range.opposite.z = mesh[fileName].range.wVertex[i].z;
-            }
+            v.world.push_back(num3d);
         }
-        else{
-            range.origin.x = mesh[fileName].range.wVertex[i].x;
-            range.origin.y = mesh[fileName].range.wVertex[i].y;
-            range.origin.z = mesh[fileName].range.wVertex[i].z;
+        else if (tag == "vt"){
+            // Save the first number
+            punc2 = line.find(" ", tag.size() + 2);
+            num2d.x = std::stod(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
 
-            range.opposite.x = mesh[fileName].range.wVertex[i].x;
-            range.opposite.y = mesh[fileName].range.wVertex[i].y;
-            range.opposite.z = mesh[fileName].range.wVertex[i].z;
-            range.status = true;
+            // Save the second number
+            punc3 = line.find(" ", punc2 + 1);
+            num2d.y = std::stod(line.substr(punc2 + 1, line.size() - (punc2 + 1)));
+
+            v.uv.push_back(num2d);
+        }
+        else if (tag == "vn"){
+            // Save the first number
+            punc2 = line.find(" ", tag.size() + 2);
+            num3d.x = std::stod(line.substr(tag.size() + 1, punc2 - (tag.size() + 1)));
+
+            // Save the second number
+            punc3 = line.find(" ", punc2 + 1);
+            num3d.y = std::stod(line.substr(punc2 + 1, punc3 - (punc2 + 1)));
+            
+            // Save the third number
+            num3d.z = std::stod(line.substr(punc3 + 1, line.size() - (punc3 + 1)));
+
+            v.normal.push_back(num3d);
+        }
+        else if (tag == "f"){
+            // Save vertex numbers
+            // Save the first number
+            punc2 = line.find("/", tag.size() + 2);
+            numComb3V.n1 = std::stoi(line.substr(tag.size() + 1, punc2 - (tag.size() + 1))) - 1;
+
+            // Save the second number
+            punc3 = line.find("/", punc2 + 1);
+            numComb3UV.n1 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1))) - 1;
+
+            // Save the third number
+            punc4 = line.find(" ", punc3 + 1);
+            numComb3Normal.n1 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1))) - 1;
+
+            // Save uv numbers
+            // Save the first number
+            punc2 = line.find("/", punc4 + 1);
+            numComb3V.n2 = std::stoi(line.substr(punc4 + 1, punc2 - (punc4 + 1))) - 1;
+
+            // Save the second number
+            punc3 = line.find("/", punc2 + 1);
+            numComb3UV.n2 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1))) - 1;
+
+            // Save the third number
+            punc4 = line.find(" ", punc3 + 1);
+            numComb3Normal.n2 = std::stoi(line.substr(punc3 + 1, punc4 - (punc3 + 1))) - 1;
+
+            // Save normal numbers
+            // Save the first number
+            punc2 = line.find("/", punc4 + 1);
+            numComb3V.n3 = std::stoi(line.substr(punc4 + 1, punc2 - (punc4 + 1))) - 1;
+
+            // Save the second number
+            punc3 = line.find("/", punc2 + 1);
+            numComb3UV.n3 = std::stoi(line.substr(punc2 + 1, punc3 - (punc2 + 1))) - 1;
+
+            // Save the third number
+            numComb3Normal.n3 = std::stoi(line.substr(punc3 + 1, line.size() - (punc3 + 1))) - 1;
+
+            poly.vId.push_back(numComb3V);
+            poly.uvId.push_back(numComb3UV);
+            poly.normalId.push_back(numComb3Normal);
+
         }
     }
 
@@ -53,4 +180,7 @@ void Object::loadMesh(std::string fileName, std::string folderPass){
     range.wVertex[5] = {range.opposite.x, range.opposite.y, range.opposite.z};
     range.wVertex[6] = {range.opposite.x, range.origin.y, range.opposite.z};
     range.wVertex[7] = {range.origin.x, range.origin.y, range.opposite.z};
+    
+
+    file.close();
 }

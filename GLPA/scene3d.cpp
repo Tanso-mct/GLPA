@@ -17,8 +17,8 @@ void Scene3d::loadCam(std::wstring camName){
 
         cams[camName].load(
             camName,
-            {0, 0, 0},
-            {0, 0, 0},
+            {0, 170, 0},
+            {0, 0, 180},
             1,
             10000,
             80,
@@ -31,12 +31,12 @@ void Scene3d::loadCam(std::wstring camName){
 }
 
 
-void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std::string fileName)
+void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std::wstring fileName)
 {
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string folderPass = scFolderPass + "/" + converter.to_bytes(objFolderName);
-    objects[objFolderName].name = objFolderName;
-    objects[objFolderName].loadMesh(fileName, folderPass);
+    objects[fileName].name = fileName;
+    objects[fileName].load(fileName, folderPass);
 }
 
 void Scene3d::selectUseCam(std::wstring camName){
@@ -57,7 +57,7 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 
 void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].defineViewVolume();
-    cams[useCamName].objRangeCoordTrans(&objects);
+    cams[useCamName].objCulling(&objects);
 }
 
 

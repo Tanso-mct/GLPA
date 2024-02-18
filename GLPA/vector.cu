@@ -9,8 +9,8 @@ __global__ void glpaGpuGetVecsCos(
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < rightVecsSize){
-        rightVecs[i] 
-        = leftVec[0] * rightVecs[i*3 + 0] + leftVec[1] * rightVecs[i*3 + 1] + leftVec[2] * rightVecs[i*3 + 2] /
+        resultVecs[i] 
+        = (leftVec[0] * rightVecs[i*3 + 0] + leftVec[1] * rightVecs[i*3 + 1] + leftVec[2] * rightVecs[i*3 + 2]) /
         (sqrt(leftVec[0] * leftVec[0] + leftVec[1] * leftVec[1] + leftVec[2] * leftVec[2]) * 
         sqrt(rightVecs[i*3 + 0] * rightVecs[i*3 + 0] + rightVecs[i*3 + 1] * rightVecs[i*3 + 1] + 
         rightVecs[i*3 + 2] * rightVecs[i*3 + 2]));
@@ -18,8 +18,7 @@ __global__ void glpaGpuGetVecsCos(
 }
 
 
-std::vector<double> Vector::getVecsCis(Vec3d leftVec, std::vector<Vec3d> rightVecs)
-{
+std::vector<double> Vector::getVecsCos(Vec3d leftVec, std::vector<Vec3d> rightVecs){
     hLeftVec = (double*)malloc(sizeof(double)*3);
     hRightVec = (double*)malloc(sizeof(double)*rightVecs.size()*3);
     hResult = (double*)malloc(sizeof(double)*rightVecs.size());
@@ -41,13 +40,14 @@ std::vector<double> Vector::getVecsCis(Vec3d leftVec, std::vector<Vec3d> rightVe
     // GPU kernel function calls
     int blockSize = 1024;
     int numBlocks = (rightVecs.size() + blockSize - 1) / blockSize;
+
     dim3 dimBlock(blockSize, 1, 1);
     dim3 dimGrid(numBlocks, 1, 1);
     glpaGpuGetVecsCos<<<dimGrid, dimBlock>>>
     (dLeftVec, dRightVec, dResult, rightVecs.size());
 
     // Copy results from device memory to host memory
-    cudaMemcpy(dResult, hResult, sizeof(double)*rightVecs.size(), cudaMemcpyDeviceToHost);
+    cudaMemcpy(hResult, dResult, sizeof(double)*rightVecs.size(), cudaMemcpyDeviceToHost);
     
     std::vector<double> rtCalcNum(rightVecs.size());
 

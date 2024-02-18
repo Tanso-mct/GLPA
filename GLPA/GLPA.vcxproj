@@ -153,7 +153,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
     </CudaCompile>
-    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="movie.cpp" />
     <ClCompile Include="mp4.cpp" />
     <ClCompile Include="normal.cpp" />
@@ -171,7 +170,10 @@
     <ClCompile Include="text.cpp" />
     <ClCompile Include="transformation.cpp" />
     <ClCompile Include="triangle_ratio.cu" />
-    <ClCompile Include="vector.cu" />
+    <CudaCompile Include="vector.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="z_buffer.cpp" />
     <CudaCompile Include="camera.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -212,7 +214,6 @@
     <CudaCompile Include="matrix.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </CudaCompile>
-    <ClInclude Include="mesh.h" />
     <ClInclude Include="movie.h" />
     <ClInclude Include="mp4.h" />
     <ClInclude Include="normal.h" />
@@ -231,7 +232,9 @@
     <ClInclude Include="text.h" />
     <ClInclude Include="transformation.h" />
     <ClInclude Include="triangle_ratio.cuh" />
-    <ClInclude Include="vector.cuh" />
+    <CudaCompile Include="vector.cuh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </CudaCompile>
     <ClInclude Include="z_buffer.h" />
     <CudaCompile Include="camera.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

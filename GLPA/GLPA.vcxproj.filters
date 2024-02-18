@@ -66,9 +66,6 @@
     <ClCompile Include="material.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="normal.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -103,9 +100,6 @@
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="user_input.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="vector.cu">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
     <ClCompile Include="window.cpp">
@@ -194,9 +188,6 @@
     <ClInclude Include="material.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
     <ClInclude Include="normal.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
@@ -231,9 +222,6 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="user_input.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="vector.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="window.h">
@@ -308,6 +296,12 @@
       <Filter>ソース ファイル\glpa</Filter>
     </CudaCompile>
     <CudaCompile Include="matrix.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="vector.cu">
+      <Filter>ソース ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="vector.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>

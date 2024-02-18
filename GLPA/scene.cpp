@@ -75,17 +75,12 @@ void Scene::load(
     }
     else if (names[scName] == GLPA_SCENE_3D){
         for (auto group : allData){
-            for (auto pngName : group.second){
-                narrowName = converter.to_bytes(pngName);
-
-                lastPeriod = narrowName.rfind(".");
-                extension = narrowName.substr(lastPeriod+1, narrowName.size()-1);
-
-                if (extension == "obj"){
+            for (auto fileName : group.second){
+                if (group.first == GLPA_SCENE_3D_OBJ_FOLDER_NAME){
                     data3d[scName].loadObj(
                         narrowFolderPath,
                         group.first,
-                        narrowName
+                        fileName
                     );
                 }
 

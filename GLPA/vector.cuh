@@ -28,7 +28,7 @@ public :
     double* dRightVec;
     double* dResult;
 
-    std::vector<double> getVecsCis(Vec3d left_vec, std::vector<Vec3d> right_vecs);
+    std::vector<double> getVecsCos(Vec3d left_vec, std::vector<Vec3d> right_vecs);
 };
 
 #endif  VECTOR_H_

@@ -32,7 +32,7 @@ public :
     void storeUseWndParam(int width, int height, int dpi);
 
     void loadCam(std::wstring cam_name);
-    void loadObj(std::string scene_folder_path, std::wstring object_folder_name, std::string file_name);
+    void loadObj(std::string scene_folder_path, std::wstring object_folder_name, std::wstring file_name);
     void loadMtl();
     void loadField();
     void loadSky();

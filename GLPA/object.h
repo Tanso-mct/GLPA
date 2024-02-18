@@ -4,18 +4,25 @@
 #include <string>
 #include <unordered_map>
 
+#include <iostream>
+#include <fstream>
+
+#include <locale>
+#include <codecvt>
+
 #include "cg.h"
-#include "mesh.h"
 #include "error.h"
 
 class Object{
 public :
-    std::wstring name;
-    std::unordered_map<std::string, Mesh> mesh;
-
     RangeRect range;
+    Vertices v;
+    Polygons poly;
 
-    void loadMesh(std::string file_name, std::string folder_pass);
+    std::wstring name;
+    std::string filePath;
+
+    void load(std::wstring file_name, std::string folder_pass);
 };
 
 

@@ -185,54 +185,74 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
     rangeVs = mt.transRotConvert(wPos, rotAngle, rangeVs);
 
     std::vector<std::wstring> objOrder;
-    std::vector<Vec3d> rectPts;
+    std::vector<Vec3d> oppositeSideXzVs;
+    std::vector<Vec3d> oppositeSideYzVs;
+    std::vector<double> objZRange;
+
+
+    std::vector<Vec3d> rectVs(2);
+    bool status = false;
+    Vec3d pushVec1;
 
     int iN2 = 0;
+
     for (auto& obj : *objects){
         objOrder.push_back(obj.first);
         
-        obj.second.range.status = false;
+        status = false;
         for (int i = 0; i < 8; i++){
-            if (obj.second.range.status){
-                if (rangeVs[iN2*8 + i].x < rectPts[iN2*2].x){
-                    rectPts[iN2*2].x = rangeVs[iN2*8 + i].x;
+            if (status){
+                if (rangeVs[iN2*8 + i].x < rectVs[0].x){
+                    rectVs[0].x = rangeVs[iN2*8 + i].x;
                 }
-                if (rangeVs[iN2*8 + i].y < rectPts[iN2*2].y){
-                    rectPts[iN2*2].y = rangeVs[iN2*8 + i].y;
+                if (rangeVs[iN2*8 + i].y < rectVs[0].y){
+                    rectVs[0].y = rangeVs[iN2*8 + i].y;
                 }
-                if (rangeVs[iN2*8 + i].z > rectPts[iN2*2].z){
-                    rectPts[iN2*2].z = rangeVs[iN2*8 + i].z;
+                if (rangeVs[iN2*8 + i].z > rectVs[0].z){
+                    rectVs[0].z = rangeVs[iN2*8 + i].z;
                 }
 
                 // Processing with respect to opposite point
-                if (rangeVs[iN2*8 + i].x > rectPts[iN2*2 + 1].x){
-                    rectPts[iN2*2 + 1].x = rangeVs[iN2*8 + i].x;
+                if (rangeVs[iN2*8 + i].x > rectVs[1].x){
+                    rectVs[1].x = rangeVs[iN2*8 + i].x;
                 }
-                if (rangeVs[iN2*8 + i].y > rectPts[iN2*2 + 1].y){
-                    rectPts[iN2*2 + 1].y = rangeVs[iN2*8 + i].y;
+                if (rangeVs[iN2*8 + i].y > rectVs[1].y){
+                    rectVs[1].y = rangeVs[iN2*8 + i].y;
                 }
-                if (rangeVs[iN2*8 + i].z < rectPts[iN2*2 + 1].z){
-                    rectPts[iN2*2 + 1].z = rangeVs[iN2*8 + i].z;
+                if (rangeVs[iN2*8 + i].z < rectVs[1].z){
+                    rectVs[1].z = rangeVs[iN2*8 + i].z;
                 }
             }
             else{
-                Vec3d tempVec;
-                rectPts.push_back(tempVec);
-                rectPts.push_back(tempVec);
+                rectVs[0].x = rangeVs[iN2*8 + i].x;
+                rectVs[0].y = rangeVs[iN2*8 + i].y;
+                rectVs[0].z = rangeVs[iN2*8 + i].z;
 
-                rectPts[iN2*2].x = rangeVs[iN2*8 + i].x;
-                rectPts[iN2*2].y = rangeVs[iN2*8 + i].y;
-                rectPts[iN2*2].z = rangeVs[iN2*8 + i].z;
-
-                rectPts[iN2*2 + 1].x = rangeVs[iN2*8 + i].x;
-                rectPts[iN2*2 + 1].y = rangeVs[iN2*8 + i].y;
-                rectPts[iN2*2 + 1].z = rangeVs[iN2*8 + i].z;
-                obj.second.range.status = true;
+                rectVs[1].x = rangeVs[iN2*8 + i].x;
+                rectVs[1].y = rangeVs[iN2*8 + i].y;
+                rectVs[1].z = rangeVs[iN2*8 + i].z;
+                status = true;
             }
         }
-
         iN2 += 1;
+        
+        pushVec1 = {rectVs[0].x, 0, rectVs[1].z};
+        oppositeSideXzVs.push_back(pushVec1);
+
+        pushVec1 = {rectVs[1].x, 0, rectVs[1].z};
+        oppositeSideXzVs.push_back(pushVec1);
+
+        pushVec1 = {0, rectVs[0].y, rectVs[1].z};
+        oppositeSideYzVs.push_back(pushVec1);
+
+        pushVec1 = {0, rectVs[1].y, rectVs[1].z};
+        oppositeSideYzVs.push_back(pushVec1);
     }
+
+    Vec3d zVec = {0, 0, -1};
+
+    std::vector<double> rangeXzVsCos = vc.getVecsCos(zVec, oppositeSideXzVs);
+    std::vector<double> rangeYzVsCos = vc.getVecsCos(zVec, oppositeSideYzVs);
 
     
 }
