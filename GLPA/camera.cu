@@ -35,6 +35,8 @@ void Camera::defineViewVolume(){
     farScrSize.x = nearScrSize.x / 2 * farZ / nearZ;
     farScrSize.y = farScrSize.x * aspectRatio.y / aspectRatio.x;
 
+    viewAngleCos.x = cos(RAD(viewAngle));
+    viewAngleCos.y = cos(nearZ / sqrt(nearZ*nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
 
     // Defines the coordinates of the four vertices when the view volume is viewed from the positive y-axis direction.
     viewVolume.xzV[0].x = -nearScrSize.x / 2;
@@ -187,8 +189,8 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
     std::vector<std::wstring> objOrder;
     std::vector<Vec3d> oppositeSideXzVs;
     std::vector<Vec3d> oppositeSideYzVs;
-    std::vector<double> objZRange;
-
+    std::vector<double> orizinZ;
+    std::vector<double> oppositeZ;
 
     std::vector<Vec3d> rectVs(2);
     bool status = false;
@@ -253,6 +255,16 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
 
     std::vector<double> rangeXzVsCos = vc.getVecsCos(zVec, oppositeSideXzVs);
     std::vector<double> rangeYzVsCos = vc.getVecsCos(zVec, oppositeSideYzVs);
+
+    for (int i = 0; i < rangeXzVsCos.size() / 2; i++){
+        if (orizinZ[i])
+        if (rangeXzVsCos[i*2] >= viewAngleCos.x || rangeXzVsCos[i*2 + 1] >= viewAngleCos.x){
+            if (rangeYzVsCos[i*2] >= viewAngleCos.y || rangeYzVsCos[i*2 + 1] >= viewAngleCos.y){
+
+            }
+
+        }
+    }
 
     
 }
