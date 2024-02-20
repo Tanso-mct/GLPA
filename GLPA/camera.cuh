@@ -47,7 +47,7 @@ public :
 
     void polyBilateralJudge(std::unordered_map<std::wstring, Object> objects);
 
-    void polyCulling();
+    void polyCulling(std::unordered_map<std::wstring, Object> objects);
 
     void polyShapeConvert();
 

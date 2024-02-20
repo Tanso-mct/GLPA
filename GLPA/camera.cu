@@ -326,3 +326,17 @@ void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects
     }
 }
 
+
+void Camera::polyCulling(std::unordered_map<std::wstring, Object> objects){
+    std::vector<Vec3d> polyVs;
+
+    Object* ptObj;
+
+    for (int i = 0; i < renderTargetPoly.size(); i++){
+        polyVs.push_back(
+            objects[renderTargetPoly[i].objName].v.world[
+                objects[renderTargetPoly[i].objName]
+            ]
+        )
+    }
+}
