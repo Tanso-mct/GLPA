@@ -35,8 +35,9 @@ void Scene3d::loadObj(std::string scFolderPass, std::wstring objFolderName, std:
 {
     std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
     std::string folderPass = scFolderPass + "/" + converter.to_bytes(objFolderName);
-    objects[fileName].name = fileName;
-    objects[fileName].load(fileName, folderPass);
+    std::wstring assignName = fileName.substr(0, fileName.find(L"."));
+    objects[assignName].name = assignName;
+    objects[assignName].load(fileName, folderPass);
 }
 
 void Scene3d::selectUseCam(std::wstring camName){
@@ -57,7 +58,9 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 
 void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].defineViewVolume();
-    cams[useCamName].objCulling(&objects);
+    cams[useCamName].objCulling(objects);
+    cams[useCamName].polyBilateralJudge(objects);
+
 }
 
 

@@ -96,7 +96,8 @@
         "__config": "cpp",
         "version": "cpp",
         "__assert": "cpp",
-        "__undef_macros": "cpp"
+        "__undef_macros": "cpp",
+        "__bit_reference": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "dotnet.defaultSolution": "disable",

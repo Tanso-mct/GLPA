@@ -13,8 +13,8 @@ void Camera::load(
     name = argName;
     wPos = argWPos;
     rotAngle = argRotAngle;
-    nearZ = argNearZ;
-    farZ = argFarZ;
+    nearZ = -argNearZ;
+    farZ = -argFarZ;
     viewAngle = argViewAngle;
     aspectRatio = argAspectRatio;
 
@@ -132,12 +132,12 @@ void Camera::defineViewVolume(){
     }
 
     // Stores the coordinates of the starting vertex of the normal vector for each face of the view volume.
-    viewVolume.face[SURFACE_TOP].v = viewVolume.v[RECT_FRONT_TOP_LEFT];
-    viewVolume.face[SURFACE_FRONT].v = viewVolume.v[RECT_FRONT_TOP_LEFT];
-    viewVolume.face[SURFACE_RIGHT].v = viewVolume.v[RECT_BACK_BOTTOM_RIGHT];
-    viewVolume.face[SURFACE_LEFT].v = viewVolume.v[RECT_FRONT_TOP_LEFT];
-    viewVolume.face[SURFACE_BACK].v = viewVolume.v[RECT_BACK_BOTTOM_RIGHT];
-    viewVolume.face[SURFACE_BOTTOM].v = viewVolume.v[RECT_BACK_BOTTOM_RIGHT];
+    viewVolume.face.v[SURFACE_TOP] = viewVolume.v[RECT_FRONT_TOP_LEFT];
+    viewVolume.face.v[SURFACE_FRONT] = viewVolume.v[RECT_FRONT_TOP_LEFT];
+    viewVolume.face.v[SURFACE_RIGHT] = viewVolume.v[RECT_BACK_BOTTOM_RIGHT];
+    viewVolume.face.v[SURFACE_LEFT] = viewVolume.v[RECT_FRONT_TOP_LEFT];
+    viewVolume.face.v[SURFACE_BACK] = viewVolume.v[RECT_BACK_BOTTOM_RIGHT];
+    viewVolume.face.v[SURFACE_BOTTOM] = viewVolume.v[RECT_BACK_BOTTOM_RIGHT];
 
 
     // Get the normal vector of each face of the view volume.
@@ -163,9 +163,9 @@ void Camera::defineViewVolume(){
     calcVB[SURFACE_BOTTOM] = viewVolume.lines[6].vec;
 
     for (int i = 0; i < 6; i++){
-        viewVolume.face[i].normal.x = calcVA[i].y * calcVB[i].z - calcVA[i].z * calcVB[i].y;
-        viewVolume.face[i].normal.y = calcVA[i].z * calcVB[i].x - calcVA[i].x * calcVB[i].z;
-        viewVolume.face[i].normal.z = calcVA[i].x * calcVB[i].y - calcVA[i].y * calcVB[i].x;
+        viewVolume.face.normal[i].x = calcVA[i].y * calcVB[i].z - calcVA[i].z * calcVB[i].y;
+        viewVolume.face.normal[i].y = calcVA[i].z * calcVB[i].x - calcVA[i].x * calcVB[i].z;
+        viewVolume.face.normal[i].z = calcVA[i].x * calcVB[i].y - calcVA[i].y * calcVB[i].x;
     }
 
     reload = false;
@@ -173,11 +173,11 @@ void Camera::defineViewVolume(){
 }
 
 
-void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
-    std::vector<Vec3d> rangeVs(objects->size() * 8);
+void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
+    std::vector<Vec3d> rangeVs(objects.size() * 8);
 
     int iN1 = 0;
-    for (auto obj : *objects){
+    for (auto obj : objects){
         for (int i = 0; i < 8; i++){
             rangeVs[iN1*8 + i] = obj.second.range.wVertex[i];
         }
@@ -189,6 +189,7 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
     std::vector<std::wstring> objOrder;
     std::vector<Vec3d> oppositeSideXzVs;
     std::vector<Vec3d> oppositeSideYzVs;
+    std::vector<Vec3d> oppositeSideVs;
     std::vector<double> orizinZ;
     std::vector<double> oppositeZ;
 
@@ -198,7 +199,7 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
 
     int iN2 = 0;
 
-    for (auto& obj : *objects){
+    for (auto obj : objects){
         objOrder.push_back(obj.first);
         
         status = false;
@@ -239,33 +240,89 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object>* objects){
         iN2 += 1;
         
         pushVec1 = {rectVs[0].x, 0, rectVs[1].z};
-        oppositeSideXzVs.push_back(pushVec1);
+        oppositeSideVs.push_back(pushVec1);
 
         pushVec1 = {rectVs[1].x, 0, rectVs[1].z};
-        oppositeSideXzVs.push_back(pushVec1);
+        oppositeSideVs.push_back(pushVec1);
 
         pushVec1 = {0, rectVs[0].y, rectVs[1].z};
-        oppositeSideYzVs.push_back(pushVec1);
+        oppositeSideVs.push_back(pushVec1);
 
         pushVec1 = {0, rectVs[1].y, rectVs[1].z};
-        oppositeSideYzVs.push_back(pushVec1);
+        oppositeSideVs.push_back(pushVec1);
+
+        orizinZ.push_back(rectVs[0].z);
+        oppositeZ.push_back(rectVs[1].z);
     }
 
     Vec3d zVec = {0, 0, -1};
 
-    std::vector<double> rangeXzVsCos = vc.getVecsCos(zVec, oppositeSideXzVs);
-    std::vector<double> rangeYzVsCos = vc.getVecsCos(zVec, oppositeSideYzVs);
+    std::vector<double> rangeXzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
 
-    for (int i = 0; i < rangeXzVsCos.size() / 2; i++){
-        if (orizinZ[i])
-        if (rangeXzVsCos[i*2] >= viewAngleCos.x || rangeXzVsCos[i*2 + 1] >= viewAngleCos.x){
-            if (rangeYzVsCos[i*2] >= viewAngleCos.y || rangeYzVsCos[i*2 + 1] >= viewAngleCos.y){
-
+    for (int i = 0; i < rangeXzVsCos.size() / 4; i++){
+        if (orizinZ[i] >= farZ && oppositeZ[i] <= nearZ){
+            if (rangeXzVsCos[i*4] >= viewAngleCos.x || rangeXzVsCos[i*4 + 1] >= viewAngleCos.x){
+                if (rangeXzVsCos[i*4 + 2] >= viewAngleCos.y || rangeXzVsCos[i*4 + 3] >= viewAngleCos.y){
+                    renderTargetObj.push_back(objOrder[i]);
+                }
             }
-
         }
     }
+}
 
-    
+
+void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects){
+    std::vector<Vec3d> vs;
+    std::vector<Vec3d> normals;
+
+    std::vector<int> objFaceIs;
+
+    FaceNormals faceN;
+    int iN1 = 0;
+    for(int i = 0; i < renderTargetObj.size(); i++){
+        for (int j = 0; j < objects[renderTargetObj[i]].poly.vId.size(); j++){
+            faceN.v.push_back(
+                objects[renderTargetObj[i]].v.world[
+                    objects[renderTargetObj[i]].poly.vId[j].n1
+                ]
+            );
+
+            faceN.normal.push_back(
+                objects[renderTargetObj[i]].v.normal[
+                    objects[renderTargetObj[i]].poly.normalId[j].n1
+                ]
+            );
+
+            iN1 += 1;
+        }
+
+        objFaceIs.push_back(iN1);
+        iN1 = 0;
+
+        vs.insert(vs.end(), faceN.v.begin(), faceN.v.end());
+        normals.insert(normals.end(), faceN.normal.begin(), faceN.normal.end());
+        faceN.v.clear();
+        faceN.normal.clear();
+    }
+
+    std::vector<Vec3d> convertedVs = mt.transRotConvert(wPos, rotAngle, vs);
+    std::vector<Vec3d> convertedNs = mt.rotConvert(rotAngle, normals);
+
+    std::vector<double> vecsCos = vec.getSameSizeVecsDotCos(convertedVs, convertedNs);
+
+    int iN2 = 0;
+    PolyNameInfo pushPoly;
+    for (int i = 0; i < objFaceIs.size(); i++){
+        for (int j = 0; j < objFaceIs[i]; j++){
+            if (vecsCos[iN2 + j] >= 0){
+                pushPoly.objName = renderTargetObj[i];
+                pushPoly.polyId = j;
+
+                renderTargetPoly.push_back(pushPoly);
+            }
+        }
+
+        iN2 += objFaceIs[i];
+    }
 }
 

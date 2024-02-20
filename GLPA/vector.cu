@@ -18,7 +18,7 @@ __global__ void glpaGpuGetVecsCos(
 }
 
 
-std::vector<double> Vector::getVecsCos(Vec3d leftVec, std::vector<Vec3d> rightVecs){
+std::vector<double> Vector::getVecsDotCos(Vec3d leftVec, std::vector<Vec3d> rightVecs){
     hLeftVec = (double*)malloc(sizeof(double)*3);
     hRightVec = (double*)malloc(sizeof(double)*rightVecs.size()*3);
     hResult = (double*)malloc(sizeof(double)*rightVecs.size());
@@ -52,6 +52,75 @@ std::vector<double> Vector::getVecsCos(Vec3d leftVec, std::vector<Vec3d> rightVe
     std::vector<double> rtCalcNum(rightVecs.size());
 
     for (int i = 0; i < rightVecs.size(); i++){
+        rtCalcNum[i] = hResult[i];
+    }
+
+    // Release all memory allocated by malloc
+    free(hLeftVec);
+    free(hRightVec);
+    free(hResult);
+
+    cudaFree(dLeftVec);
+    cudaFree(dRightVec);
+    cudaFree(dResult);
+
+    return rtCalcNum;
+}
+
+
+__global__ void glpaGpuGetSameSizeVecsCos(
+    double* leftVecs,
+    double* rightVecs,
+    double* resultVecs,
+    int size
+){
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < size){
+        resultVecs[i] 
+        = (leftVecs[i*3] * rightVecs[i*3] + leftVecs[i*3 + 1] * rightVecs[i*3 + 1] + leftVecs[i*3 + 2] * rightVecs[i*3 + 2]) /
+        (sqrt(leftVecs[i*3] * leftVecs[i*3] + leftVecs[i*3 + 1] * leftVecs[i*3 + 1] + leftVecs[i*3 + 2] * leftVecs[i*3 + 2]) * 
+        sqrt(rightVecs[i*3] * rightVecs[i*3] + rightVecs[i*3 + 1] * rightVecs[i*3 + 1] + 
+        rightVecs[i*3 + 2] * rightVecs[i*3 + 2]));
+    }
+}
+
+
+
+std::vector<double> Vector::getSameSizeVecsDotCos(std::vector<Vec3d> leftVec, std::vector<Vec3d> rightVecs){
+    int size = leftVec.size() * 3;
+
+    hLeftVec = (double*)malloc(sizeof(double)*size);
+    hRightVec = (double*)malloc(sizeof(double)*size);
+    hResult = (double*)malloc(sizeof(double)*size / 3);
+
+    memcpy(hLeftVec, leftVec.data(), sizeof(double)*size);
+    memcpy(hRightVec, rightVecs.data(), sizeof(double)*size);
+
+    // Allocate device-side memory using CUDAMALLOC
+    cudaMalloc((void**)&dLeftVec, sizeof(double)*size);
+    cudaMalloc((void**)&dRightVec, sizeof(double)*size);
+    cudaMalloc((void**)&dResult, sizeof(double)*size / 3);
+
+    // Copy host-side data to device-side memory
+    cudaMemcpy(dLeftVec, hLeftVec, sizeof(double)*size, cudaMemcpyHostToDevice);
+    cudaMemcpy(dRightVec, hRightVec, sizeof(double)*size, cudaMemcpyHostToDevice);
+
+    // GPU kernel function calls
+    int blockSize = 1024;
+    int numBlocks = (size / 3 + blockSize - 1) / blockSize;
+
+    dim3 dimBlock(blockSize, 1, 1);
+    dim3 dimGrid(numBlocks, 1, 1);
+    glpaGpuGetSameSizeVecsCos<<<dimGrid, dimBlock>>>
+    (dLeftVec, dRightVec, dResult, size);
+
+    // Copy results from device memory to host memory
+    cudaMemcpy(hResult, dResult, sizeof(double)*size / 3, cudaMemcpyDeviceToHost);
+    
+    std::vector<double> rtCalcNum(size / 3);
+
+    for (int i = 0; i < size / 3; i++){
         rtCalcNum[i] = hResult[i];
     }
 

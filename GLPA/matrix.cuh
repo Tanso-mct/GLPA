@@ -31,6 +31,7 @@ public :
     double* dResultMt;
 
     std::vector<Vec3d> transRotConvert(Vec3d trans_vec, Vec3d rot_angle, std::vector<Vec3d> source_vecs);
+    std::vector<Vec3d> rotConvert(Vec3d rot_angle, std::vector<Vec3d> source_vecs);
 };
 
 

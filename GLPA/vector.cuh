@@ -16,6 +16,13 @@ __global__ void glpaGpuGetVecsCos(
     int right_vecs_size
 );
 
+__global__ void glpaGpuGetSameSizeVecsCos(
+    double* left_vecs,
+    double* right_vecs,
+    double* result_vecs,
+    int vecs_size
+);
+
 class Vector{
 public :
     // host memory
@@ -28,7 +35,8 @@ public :
     double* dRightVec;
     double* dResult;
 
-    std::vector<double> getVecsCos(Vec3d left_vec, std::vector<Vec3d> right_vecs);
+    std::vector<double> getVecsDotCos(Vec3d left_vec, std::vector<Vec3d> right_vecs);
+    std::vector<double> getSameSizeVecsDotCos(std::vector<Vec3d> left_vecs, std::vector<Vec3d> right_vecs);
 };
 
 #endif  VECTOR_H_

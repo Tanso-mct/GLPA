@@ -43,20 +43,16 @@ public :
 
     // void updateObjRectRange();
 
-    void objCulling(std::unordered_map<std::wstring, Object>* objects);
+    void objCulling(std::unordered_map<std::wstring, Object> objects);
 
-    void meshRangeCoordTrans();
-
-    void meshCulling();
-
-    void polyBilateralJudge();
+    void polyBilateralJudge(std::unordered_map<std::wstring, Object> objects);
 
     void polyCulling();
 
     void polyShapeConvert();
 
     Matrix mt;
-    Vector vc;
+    Vector vec;
 
 
 private : 
@@ -66,8 +62,8 @@ private :
     Vec3d wPos = {0, 0, 0};
     Vec3d rotAngle = {0, 0, 0};
 
-    double nearZ = 1;
-    double farZ = 10000;
+    double nearZ = -1;
+    double farZ = -10000;
     double viewAngle = 80;
     Vec2d viewAngleCos;
     Vec2d aspectRatio = {16, 9};
@@ -78,7 +74,6 @@ private :
     ViewVolume viewVolume;
     
     std::vector<std::wstring> renderTargetObj;
-    std::vector<MeshNameInfo> renderTargetMesh;
     std::vector<PolyNameInfo> renderTargetPoly;
     std::vector<PolyNameInfo> shapeConvertTargetPoly;
 

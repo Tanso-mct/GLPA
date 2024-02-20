@@ -19,7 +19,9 @@ public :
         v.resize(8);
 
         lines.resize(12);
-        face.resize(6);
+        
+        face.v.resize(6);
+        face.normal.resize(6);
     };
 
     std::vector<Vec2dXZ> xzV;
@@ -27,7 +29,7 @@ public :
     std::vector<Vec3d> v;
 
     std::vector<shapeLine> lines;
-    std::vector<FaceNormal> face;
+    FaceNormals face;
 };
 
 #endif VIEW_VOLUME_H_

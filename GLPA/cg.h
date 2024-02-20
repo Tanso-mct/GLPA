@@ -85,10 +85,10 @@ typedef struct tagShapeLine{
 } shapeLine;
 
 
-typedef struct tagFaceNormal{
-    Vec3d v;
-    Vec3d normal;
-} FaceNormal;
+typedef struct tagFaceNormals{
+    std::vector<Vec3d> v;
+    std::vector<Vec3d> normal;
+} FaceNormals;
 
 
 #define SURFACE_TOP 0
@@ -180,22 +180,12 @@ typedef struct tagRangeRect{
 
 
 /**
- * 日本語 : メッシュの名前を保存する際に、どのオブジェクトのメッシュかも保存するために使用する。
- * English : Used to save the name of the mesh and also which object's mesh is being saved.
-*/
-typedef struct tagMeshNameInfo{
-    std::wstring objName = GLPA_WSTRING_DEF;
-    std::wstring meshName = GLPA_WSTRING_DEF;
-} MeshNameInfo;
-
-/**
  * 日本語 : ポリゴンの名前を保存する際に、どのオブジェクトどのメッシュどのポリゴンかも保存するために使用する。
  * English : Used to save the polygon name, which object, which mesh, and which polygon.
 */
 typedef struct tagPolyNameInfo{
-    std::wstring objName = GLPA_WSTRING_DEF;
-    std::wstring meshName = GLPA_WSTRING_DEF;
-    std::wstring polyName = GLPA_WSTRING_DEF;
+    std::wstring objName;
+    int polyId;
 } PolyNameInfo;
 
 
