@@ -500,48 +500,59 @@ void Camera::polyCulling(
     }
 }
 
+
+__global__ void glpaGpuGetPolyVvDot(
+    double* polyFaceDot,
+    double* vvFaceDot,
+    double* polyOneVs,
+    double* polyNs,
+    double* vvLineStartVs,
+    double* vvLineEndVs,
+    double* vvOneVs,
+    double* vvNs,
+    double* polyLineStartVs,
+    double* polyLineEndVs,
+    int polyFaceAmout,
+    int vvLineAmout,
+    int vvFaceAmout,
+    int polyLineAmout
+){
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < polyFaceAmout){
+        if (j < vvLineAmout){
+            polyFaceDot[i*vvLineAmout*2 + j*2] = 
+            (vvLineStartVs[j*3] - polyOneVs[i*3]) * polyNs[i*3] + 
+            (vvLineStartVs[j*3 +1] - polyOneVs[i*3 + 1]) * polyNs[i*3 + 1] + 
+            (vvLineStartVs[j*3 +2] - polyOneVs[i*3 + 2]) * polyNs[i*3 + 2];
+
+            polyFaceDot[i*vvLineAmout*2 + j*2 + 1] = 
+            (vvLineEndVs[j*3] - polyOneVs[i*3]) * polyNs[i*3] + 
+            (vvLineEndVs[j*3 +1] - polyOneVs[i*3 + 1]) * polyNs[i*3 + 1] + 
+            (vvLineEndVs[j*3 +2] - polyOneVs[i*3 + 2]) * polyNs[i*3 + 2];
+        }
+    }
+
+    if (i < polyLineAmout){
+        if (j < vvFaceAmout){
+            vvFaceDot[i*vvFaceAmout*2 + j*2] = 
+            (polyLineStartVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
+            (polyLineStartVs[i*3 +1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
+            (polyLineStartVs[i*3 +2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
+
+            polyFaceDot[i*vvFaceAmout*2 + j*2 + 1] = 
+            (polyLineEndVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
+            (polyLineEndVs[i*3 +1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
+            (polyLineEndVs[i*3 +2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
+        }
+    }
+}
+
+
 void Camera::polyShapeConvert(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
 ){
-    std::vector<Vec3d> polyOneVs;
-    std::vector<Vec3d> polyNs;
-    std::vector<Vec3d> vvLineStartVs;
-    std::vector<Vec3d> vvLineEndVs;
-
-    for (int i = 0; i < shapeCnvtTargetI.size(); i++){
-        polyOneVs.push_back((*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0]);
-        polyNs.push_back((*ptRS)[shapeCnvtTargetI[i]].polyN);
-    }
-
-    for (int i = 0; i < viewVolume.lines.size(); i++){
-        vvLineStartVs.push_back(viewVolume.lines[i].startV);
-        vvLineEndVs.push_back(viewVolume.lines[i].endV);
-    }
-
-    std::vector<Vec3d> polyLineStartVs;
-    std::vector<Vec3d> polyLineEndVs;
-
-    for (int i = 0; i < shapeCnvtTargetI.size(); i++){
-        for (int j = 0; j < 3; j++){
-            polyLineStartVs.push_back(
-                (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j]
-            );
-        }
-
-        for (int j = 0; j < 3; j++){
-            if (j != 2){
-                polyLineEndVs.push_back(
-                    (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1]
-                );
-            }
-            else{
-                polyLineEndVs.push_back(
-                    (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0]
-                );
-            }
-        }
-    }
-
     int polyFaceAmount = shapeCnvtTargetI.size();
     int vvLineAmout = 12;
 
@@ -581,6 +592,16 @@ void Camera::polyShapeConvert(
     double* hVvNs = (double*)malloc(sizeof(double)*viewVolume.face.normal.size()*3);
     double* hPolyLineStartVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
     double* hPolyLineEndVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
+    for (int i = 0; i < viewVolume.face.v.size(); i++){
+        hVvOneVs[i*3] = viewVolume.face.v[i].x;
+        hVvOneVs[i*3 + 1] = viewVolume.face.v[i].y;
+        hVvOneVs[i*3 + 2] = viewVolume.face.v[i].z;
+
+        hVvNs[i*3] = viewVolume.face.normal[i].x;
+        hVvNs[i*3 + 1] = viewVolume.face.normal[i].y;
+        hVvNs[i*3 + 2] = viewVolume.face.normal[i].z;
+    }
+
     for (int i = 0; i < shapeCnvtTargetI.size(); i++){
         for (int j = 0; j < 3; j++){
             hPolyLineStartVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].x;
@@ -595,9 +616,6 @@ void Camera::polyShapeConvert(
                 hPolyLineEndVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].z;
             }
             else{
-                polyLineEndVs.push_back(
-                    (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0]
-                );
                 hPolyLineEndVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
                 hPolyLineEndVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
                 hPolyLineEndVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
@@ -615,15 +633,15 @@ void Camera::polyShapeConvert(
     double* dPolyNs;
     double* dVvLineStartVs;
     double* dVvLineEndVs;
-    cudaMalloc((void**)&dPolyOneVs, sizeof(double)*polyOneVs.size()*3);
-    cudaMalloc((void**)&dPolyNs, sizeof(double)*polyNs.size()*3);
-    cudaMalloc((void**)&dVvLineStartVs, sizeof(double)*vvLineStartVs.size()*3);
-    cudaMalloc((void**)&dVvLineEndVs, sizeof(double)*vvLineEndVs.size()*3);
+    cudaMalloc((void**)&dPolyOneVs, sizeof(double)*shapeCnvtTargetI.size()*3);
+    cudaMalloc((void**)&dPolyNs, sizeof(double)*shapeCnvtTargetI.size()*3);
+    cudaMalloc((void**)&dVvLineStartVs, sizeof(double)*viewVolume.lines.size()*3);
+    cudaMalloc((void**)&dVvLineEndVs, sizeof(double)*viewVolume.lines.size()*3);
 
-    cudaMemcpy(dPolyOneVs, hPolyOneVs, sizeof(double)*polyOneVs.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dPolyNs, hPolyNs, sizeof(double)*polyNs.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dVvLineStartVs, hVvLineStartVs, sizeof(double)*vvLineStartVs.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dVvLineEndVs, hVvLineEndVs, sizeof(double)*vvLineEndVs.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyOneVs, hPolyOneVs, sizeof(double)*shapeCnvtTargetI.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyNs, hPolyNs, sizeof(double)*shapeCnvtTargetI.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvLineStartVs, hVvLineStartVs, sizeof(double)*viewVolume.lines.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvLineEndVs, hVvLineEndVs, sizeof(double)*viewVolume.lines.size()*3, cudaMemcpyHostToDevice);
 
     double* dVvOneVs;
     double* dVvNs;
@@ -631,13 +649,13 @@ void Camera::polyShapeConvert(
     double* dPolyLineEndVs;
     cudaMalloc((void**)&dVvOneVs, sizeof(double)*viewVolume.face.v.size()*3);
     cudaMalloc((void**)&dVvNs, sizeof(double)*viewVolume.face.normal.size()*3);
-    cudaMalloc((void**)&dPolyLineStartVs, sizeof(double)*polyLineStartVs.size()*3);
-    cudaMalloc((void**)&dPolyLineEndVs, sizeof(double)*polyLineEndVs.size()*3);
+    cudaMalloc((void**)&dPolyLineStartVs, sizeof(double)*shapeCnvtTargetI.size()*3*3);
+    cudaMalloc((void**)&dPolyLineEndVs, sizeof(double)*shapeCnvtTargetI.size()*3*3);
 
     cudaMemcpy(dVvOneVs, hVvOneVs, sizeof(double)*viewVolume.face.v.size()*3, cudaMemcpyHostToDevice);
     cudaMemcpy(dVvNs, hVvNs, sizeof(double)*viewVolume.face.normal.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dPolyLineStartVs, hPolyLineStartVs, sizeof(double)*polyLineStartVs.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dPolyLineEndVs, hPolyLineEndVs, sizeof(double)*polyLineEndVs.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyLineStartVs, hPolyLineStartVs, sizeof(double)*shapeCnvtTargetI.size()*3*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyLineEndVs, hPolyLineEndVs, sizeof(double)*shapeCnvtTargetI.size()*3*3, cudaMemcpyHostToDevice);
 
     dim3 dimBlock(32, 32); // Thread block size
     dim3 dimGrid((polyFaceAmount + dimBlock.x - 1) 
@@ -653,11 +671,45 @@ void Camera::polyShapeConvert(
         dVvNs,
         dPolyLineStartVs,
         dPolyLineEndVs,
-        polyFaceAmount
+        polyFaceAmount,
+        vvLineAmout,
+        vvFaceAmout,
+        polyLineAmout
     );
 
     cudaMemcpy(hPolyFaceDot, dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceDot, dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2, cudaMemcpyDeviceToHost);
+
+
+
+
+
+    
+
+    free(hPolyFaceDot);
+    free(hVvFaceDot);
+    free(hPolyOneVs);
+    free(hPolyNs);
+    free(hVvLineStartVs);
+    free(hVvLineEndVs);
+    free(hVvOneVs);
+    free(hVvNs);
+    free(hPolyLineStartVs);
+    free(hPolyLineEndVs);
+
+    cudaFree(dPolyFaceDot);
+    cudaFree(dVvFaceDot);
+    cudaFree(dPolyOneVs);
+    cudaFree(dPolyNs);
+    cudaFree(dVvLineStartVs);
+    cudaFree(dVvLineEndVs);
+    cudaFree(dVvOneVs);
+    cudaFree(dVvNs);
+    cudaFree(dPolyLineStartVs);
+    cudaFree(dPolyLineEndVs);
+
+
+
 
 
 

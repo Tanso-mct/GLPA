@@ -61,7 +61,10 @@ __global__ void glpaGpuGetPolyVvDot(
     double* vv_ns,
     double* poly_line_start_vs,
     double* poly_line_end_vs,
-    int poly_face_amout
+    int poly_face_amout,
+    int vv_line_amout,
+    int vv_face_amout,
+    int poly_line_amout
 );
 
 /// @brief Has data related to the 3DCG camera.
