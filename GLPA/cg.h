@@ -195,6 +195,7 @@ typedef struct tagPolyNameInfo{
 */
 typedef struct tagMultiSidedShape{
     std::vector<Vec3d> wVs;
+    std::vector<Vec3d> vs;
     std::vector<Vec3d> sortedWVs;
 } MultiSidedShape;
 
@@ -204,6 +205,8 @@ typedef struct tagMultiSidedShape{
 */
 typedef struct tagRasterizeSource{
     PolyNameInfo  renderPoly;
+    std::vector<Vec3d> polyCamVs;
+    Vec3d polyN;
     MultiSidedShape scPixelVs;
     
 } RasterizeSource;

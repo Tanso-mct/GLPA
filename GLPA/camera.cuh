@@ -25,6 +25,44 @@
 #include "vector.cuh"
 
 
+#define GLPA_CAMERA_OBJ_WV_1(numCombN) \
+    objects[needRangeVs[i].objName].v.world[ \
+        objects[needRangeVs[i].objName].poly.vId[needRangeVs[i].polyId].numCombN] \
+
+#define GLPA_CAMERA_POLY_NEED_RANGE_IFS(numCombN) \
+    if (GLPA_CAMERA_OBJ_WV_1(numCombN).x < polyRange.origin.x){ \
+        polyRange.origin.x = GLPA_CAMERA_OBJ_WV_1(numCombN).x; \
+    } \
+    if (GLPA_CAMERA_OBJ_WV_1(numCombN).y < polyRange.origin.y){ \
+        polyRange.origin.y = GLPA_CAMERA_OBJ_WV_1(numCombN).y; \
+    } \
+    if (GLPA_CAMERA_OBJ_WV_1(numCombN).z > polyRange.origin.z){ \
+        polyRange.origin.z = GLPA_CAMERA_OBJ_WV_1(numCombN).z; \
+    } \
+    if (GLPA_CAMERA_OBJ_WV_1(numCombN).x > polyRange.opposite.x){ \
+        polyRange.opposite.x = GLPA_CAMERA_OBJ_WV_1(numCombN).x; \
+    } \
+    if (GLPA_CAMERA_OBJ_WV_1(numCombN).y > polyRange.opposite.y){ \
+        polyRange.opposite.y = GLPA_CAMERA_OBJ_WV_1(numCombN).y; \
+    } \
+    if (GLPA_CAMERA_OBJ_WV_1(numCombN).z < polyRange.opposite.z){ \
+        polyRange.opposite.z = GLPA_CAMERA_OBJ_WV_1(numCombN).z; \
+    } 
+
+
+__global__ void glpaGpuGetPolyVvDot(
+    double* poly_face_dot,
+    double* vv_face_dot,
+    double* poly_one_vs,
+    double* poly_ns,
+    double* vv_line_start_vs,
+    double* vv_line_end_vs,
+    double* vv_one_vs,
+    double* vv_ns,
+    double* poly_line_start_vs,
+    double* poly_line_end_vs,
+    int poly_face_amout
+);
 
 /// @brief Has data related to the 3DCG camera.
 class Camera{
@@ -47,13 +85,16 @@ public :
 
     void polyBilateralJudge(std::unordered_map<std::wstring, Object> objects);
 
-    void polyCulling(std::unordered_map<std::wstring, Object> objects);
+    void polyCulling(
+        std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
+    );
 
-    void polyShapeConvert();
+    void polyShapeConvert(
+        std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
+    );
 
     Matrix mt;
     Vector vec;
-
 
 private : 
     bool reload = false;
@@ -75,8 +116,8 @@ private :
     
     std::vector<std::wstring> renderTargetObj;
     std::vector<PolyNameInfo> renderTargetPoly;
-    std::vector<PolyNameInfo> shapeConvertTargetPoly;
 
+    std::vector<int> shapeCnvtTargetI;
 
     
 };

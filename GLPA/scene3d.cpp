@@ -18,7 +18,7 @@ void Scene3d::loadCam(std::wstring camName){
         cams[camName].load(
             camName,
             {0, 170, 0},
-            {0, 0, 180},
+            {0, 0, 0},
             1,
             10000,
             80,
@@ -60,6 +60,7 @@ void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].defineViewVolume();
     cams[useCamName].objCulling(objects);
     cams[useCamName].polyBilateralJudge(objects);
+    cams[useCamName].polyCulling(objects, &rasterizeSource);
 
 }
 

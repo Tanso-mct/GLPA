@@ -257,12 +257,12 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
 
     Vec3d zVec = {0, 0, -1};
 
-    std::vector<double> rangeXzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
+    std::vector<double> rangeXyzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
 
-    for (int i = 0; i < rangeXzVsCos.size() / 4; i++){
+    for (int i = 0; i < rangeXyzVsCos.size() / 4; i++){
         if (orizinZ[i] >= farZ && oppositeZ[i] <= nearZ){
-            if (rangeXzVsCos[i*4] >= viewAngleCos.x || rangeXzVsCos[i*4 + 1] >= viewAngleCos.x){
-                if (rangeXzVsCos[i*4 + 2] >= viewAngleCos.y || rangeXzVsCos[i*4 + 3] >= viewAngleCos.y){
+            if (rangeXyzVsCos[i*4] >= viewAngleCos.x || rangeXyzVsCos[i*4 + 1] >= viewAngleCos.x){
+                if (rangeXyzVsCos[i*4 + 2] >= viewAngleCos.y || rangeXyzVsCos[i*4 + 3] >= viewAngleCos.y){
                     renderTargetObj.push_back(objOrder[i]);
                 }
             }
@@ -305,16 +305,16 @@ void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects
         faceN.normal.clear();
     }
 
-    std::vector<Vec3d> convertedVs = mt.transRotConvert(wPos, rotAngle, vs);
-    std::vector<Vec3d> convertedNs = mt.rotConvert(rotAngle, normals);
+    std::vector<Vec3d> cnvtVs = mt.transRotConvert(wPos, rotAngle, vs);
+    std::vector<Vec3d> cnvtNs = mt.rotConvert(rotAngle, normals);
 
-    std::vector<double> vecsCos = vec.getSameSizeVecsDotCos(convertedVs, convertedNs);
+    std::vector<double> vecsCos = vec.getSameSizeVecsDotCos(cnvtVs, cnvtNs);
 
     int iN2 = 0;
     PolyNameInfo pushPoly;
     for (int i = 0; i < objFaceIs.size(); i++){
         for (int j = 0; j < objFaceIs[i]; j++){
-            if (vecsCos[iN2 + j] >= 0){
+            if (vecsCos[iN2 + j] <= 0){
                 pushPoly.objName = renderTargetObj[i];
                 pushPoly.polyId = j;
 
@@ -327,16 +327,343 @@ void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects
 }
 
 
-void Camera::polyCulling(std::unordered_map<std::wstring, Object> objects){
+void Camera::polyCulling(
+    std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* ptRS
+){
     std::vector<Vec3d> polyVs;
-
-    Object* ptObj;
-
+    std::vector<Vec3d> polyNs;
     for (int i = 0; i < renderTargetPoly.size(); i++){
         polyVs.push_back(
             objects[renderTargetPoly[i].objName].v.world[
-                objects[renderTargetPoly[i].objName]
+                objects[renderTargetPoly[i].objName].poly.vId[renderTargetPoly[i].polyId].n1
             ]
-        )
+        );
+        polyVs.push_back(
+            objects[renderTargetPoly[i].objName].v.world[
+                objects[renderTargetPoly[i].objName].poly.vId[renderTargetPoly[i].polyId].n2
+            ]
+        );
+        polyVs.push_back(
+            objects[renderTargetPoly[i].objName].v.world[
+                objects[renderTargetPoly[i].objName].poly.vId[renderTargetPoly[i].polyId].n3
+            ]
+        );
+
+        polyNs.push_back(
+            objects[renderTargetPoly[i].objName].v.normal[
+                objects[renderTargetPoly[i].objName].poly.normalId[renderTargetPoly[i].polyId].n1
+            ]
+        );
+
     }
+
+    std::vector<Vec3d> cnvtPolyVs = mt.transRotConvert(wPos, rotAngle, polyVs);
+    std::vector<Vec3d> cnvtPolyNs = mt.rotConvert(rotAngle, polyNs);
+
+    std::vector<Vec3d> cnvt2dPolyVs;
+    for (int i = 0; i < cnvtPolyVs.size(); i++){
+        cnvt2dPolyVs.push_back({
+            cnvtPolyVs[i].x,
+            0,
+            cnvtPolyVs[i].z
+        });
+
+        cnvt2dPolyVs.push_back({
+            0,
+            cnvtPolyVs[i].y,
+            cnvtPolyVs[i].z
+        });
+    }
+
+    Vec3d zVec = {0, 0, -1};
+
+    std::vector<double> polyVCos = vec.getVecsDotCos(zVec, cnvt2dPolyVs);
+
+    RasterizeSource pushRS;
+    std::vector<PolyNameInfo> needRangeVs;
+    std::vector<int> cnvtVsIndex;
+    int inViewVolume = 0;
+    for (int i = 0; i < renderTargetPoly.size(); i++){
+        if (cnvtPolyVs[i*3].z >= farZ && cnvtPolyVs[i*3].z <= nearZ){
+            if (polyVCos[i*6] >= viewAngleCos.x){
+                if (polyVCos[i*6 + 1] >= viewAngleCos.y){
+                    inViewVolume += 1;
+                    pushRS.scPixelVs.wVs.push_back(cnvtPolyVs[i*3]);
+                }
+            }
+        }
+
+        if (cnvtPolyVs[i*3 + 1].z >= farZ && cnvtPolyVs[i*3 + 1].z <= nearZ){
+            if (polyVCos[i*6 + 2] >= viewAngleCos.x){
+                if (polyVCos[i*6 + 3] >= viewAngleCos.y){
+                    inViewVolume += 1;
+                    pushRS.scPixelVs.wVs.push_back(cnvtPolyVs[i*3 + 1]);
+                }
+            }
+        }
+
+        if (cnvtPolyVs[i*3 + 2].z >= farZ && cnvtPolyVs[i*3 + 2].z <= nearZ){
+            if (polyVCos[i*6 + 4] >= viewAngleCos.x){
+                if (polyVCos[i*6 + 5] >= viewAngleCos.y){
+                    inViewVolume += 1;
+                    pushRS.scPixelVs.wVs.push_back(cnvtPolyVs[i*3 + 2]);
+                }
+            }
+        }
+
+        if (inViewVolume != 0){
+            pushRS.renderPoly.objName = renderTargetPoly[i].objName;
+            pushRS.renderPoly.polyId = renderTargetPoly[i].polyId;
+
+            pushRS.polyCamVs.push_back(cnvtPolyVs[i*3]);
+            pushRS.polyCamVs.push_back(cnvtPolyVs[i*3 + 1]);
+            pushRS.polyCamVs.push_back(cnvtPolyVs[i*3 + 2]);
+
+            pushRS.polyN = cnvtPolyNs[i];
+
+            (*ptRS).push_back(pushRS);
+
+            if (inViewVolume != 3){
+                shapeCnvtTargetI.push_back((*ptRS).size() - 1);
+            }
+
+            inViewVolume = 0;
+            pushRS.polyCamVs.clear();
+            pushRS.scPixelVs.wVs.clear();
+        }
+        else{
+            needRangeVs.push_back({
+                renderTargetPoly[i].objName, renderTargetPoly[i].polyId
+            });
+
+            cnvtVsIndex.push_back(i);
+        }
+    }
+
+    RangeRect polyRange;
+    std::vector<Vec3d> oppositeSideVs;
+    std::vector<double> orizinZ;
+    std::vector<double> oppositeZ;
+    Vec3d pushVec;
+    for (int i = 0; i < needRangeVs.size(); i++){
+        polyRange.origin.x = GLPA_CAMERA_OBJ_WV_1(n1).x;
+        polyRange.origin.y = GLPA_CAMERA_OBJ_WV_1(n1).y;
+        polyRange.origin.z = GLPA_CAMERA_OBJ_WV_1(n1).z;
+
+        polyRange.opposite.x = GLPA_CAMERA_OBJ_WV_1(n1).x;
+        polyRange.opposite.y = GLPA_CAMERA_OBJ_WV_1(n1).y;
+        polyRange.opposite.z = GLPA_CAMERA_OBJ_WV_1(n1).z;
+        polyRange.status = true;
+
+        GLPA_CAMERA_POLY_NEED_RANGE_IFS(n2);
+        GLPA_CAMERA_POLY_NEED_RANGE_IFS(n3);
+
+        pushVec = {polyRange.origin.x, 0, polyRange.opposite.z};
+        oppositeSideVs.push_back(pushVec);
+
+        pushVec = {polyRange.opposite.x, 0, polyRange.opposite.z};
+        oppositeSideVs.push_back(pushVec);
+
+        pushVec = {0, polyRange.origin.y, polyRange.opposite.z};
+        oppositeSideVs.push_back(pushVec);
+
+        pushVec = {0, polyRange.origin.y, polyRange.opposite.z};
+        oppositeSideVs.push_back(pushVec);
+
+        orizinZ.push_back(polyRange.origin.z);
+        oppositeZ.push_back(polyRange.opposite.z);
+    }
+
+    std::vector<double> rangeXyzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
+
+    RasterizeSource pushRS2;
+    for (int i = 0; i < needRangeVs.size(); i++){
+        if (orizinZ[i] >= farZ && oppositeZ[i] <= nearZ){
+            if (rangeXyzVsCos[i*4] >= viewAngleCos.x || rangeXyzVsCos[i*4 + 1] >= viewAngleCos.x){
+                if (rangeXyzVsCos[i*4 + 2] >= viewAngleCos.y || rangeXyzVsCos[i*4 + 3] >= viewAngleCos.y){
+                    pushRS2.renderPoly.objName = needRangeVs[i].objName;
+                    pushRS2.renderPoly.polyId = needRangeVs[i].polyId;
+
+                    pushRS2.polyCamVs.push_back(cnvtPolyVs[cnvtVsIndex[i]*3]);
+                    pushRS2.polyCamVs.push_back(cnvtPolyVs[cnvtVsIndex[i]*3 + 1]);
+                    pushRS2.polyCamVs.push_back(cnvtPolyVs[cnvtVsIndex[i]*3 + 2]);
+
+                    pushRS2.polyN = cnvtPolyNs[cnvtVsIndex[i]];
+
+                    (*ptRS).push_back(pushRS2);
+                    shapeCnvtTargetI.push_back((*ptRS).size() - 1);
+                    
+                    pushRS2.polyCamVs.clear();
+                }
+            }
+        }
+    }
+}
+
+void Camera::polyShapeConvert(
+    std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
+){
+    std::vector<Vec3d> polyOneVs;
+    std::vector<Vec3d> polyNs;
+    std::vector<Vec3d> vvLineStartVs;
+    std::vector<Vec3d> vvLineEndVs;
+
+    for (int i = 0; i < shapeCnvtTargetI.size(); i++){
+        polyOneVs.push_back((*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0]);
+        polyNs.push_back((*ptRS)[shapeCnvtTargetI[i]].polyN);
+    }
+
+    for (int i = 0; i < viewVolume.lines.size(); i++){
+        vvLineStartVs.push_back(viewVolume.lines[i].startV);
+        vvLineEndVs.push_back(viewVolume.lines[i].endV);
+    }
+
+    std::vector<Vec3d> polyLineStartVs;
+    std::vector<Vec3d> polyLineEndVs;
+
+    for (int i = 0; i < shapeCnvtTargetI.size(); i++){
+        for (int j = 0; j < 3; j++){
+            polyLineStartVs.push_back(
+                (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j]
+            );
+        }
+
+        for (int j = 0; j < 3; j++){
+            if (j != 2){
+                polyLineEndVs.push_back(
+                    (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1]
+                );
+            }
+            else{
+                polyLineEndVs.push_back(
+                    (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0]
+                );
+            }
+        }
+    }
+
+    int polyFaceAmount = shapeCnvtTargetI.size();
+    int vvLineAmout = 12;
+
+    int vvFaceAmout = 6;
+    int polyLineAmout = shapeCnvtTargetI.size() * 3;
+
+    double* hPolyFaceDot = (double*)malloc(sizeof(double)*polyFaceAmount*vvLineAmout*2);
+    double* hVvFaceDot = (double*)malloc(sizeof(double)*vvFaceAmout*polyLineAmout*2);
+
+    double* hPolyOneVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3);
+    double* hPolyNs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3);
+    double* hVvLineStartVs = (double*)malloc(sizeof(double)*viewVolume.lines.size()*3);
+    double* hVvLineEndVs = (double*)malloc(sizeof(double)*viewVolume.lines.size()*3);
+
+    for (int i = 0; i < shapeCnvtTargetI.size(); i++){
+        hPolyOneVs[i*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
+        hPolyOneVs[i*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
+        hPolyOneVs[i*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
+
+        hPolyNs[i*3] = (*ptRS)[shapeCnvtTargetI[i]].polyN.x;
+        hPolyNs[i*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyN.x;
+        hPolyNs[i*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyN.x;
+    }
+    
+    for (int i = 0; i < viewVolume.lines.size(); i++){
+        hVvLineStartVs[i*3] = viewVolume.lines[i].startV.x;
+        hVvLineStartVs[i*3 + 1] = viewVolume.lines[i].startV.y;
+        hVvLineStartVs[i*3 + 2] = viewVolume.lines[i].startV.z;
+
+        hVvLineEndVs[i*3] = viewVolume.lines[i].endV.x;
+        hVvLineEndVs[i*3 + 1] = viewVolume.lines[i].endV.y;
+        hVvLineEndVs[i*3 + 2] = viewVolume.lines[i].endV.z;
+    }
+
+
+    double* hVvOneVs = (double*)malloc(sizeof(double)*viewVolume.face.v.size()*3);
+    double* hVvNs = (double*)malloc(sizeof(double)*viewVolume.face.normal.size()*3);
+    double* hPolyLineStartVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
+    double* hPolyLineEndVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
+    for (int i = 0; i < shapeCnvtTargetI.size(); i++){
+        for (int j = 0; j < 3; j++){
+            hPolyLineStartVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].x;
+            hPolyLineStartVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].y;
+            hPolyLineStartVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].z;
+        }
+
+        for (int j = 0; j < 3; j++){
+            if (j != 2){
+                hPolyLineEndVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].x;
+                hPolyLineEndVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].y;
+                hPolyLineEndVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].z;
+            }
+            else{
+                polyLineEndVs.push_back(
+                    (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0]
+                );
+                hPolyLineEndVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
+                hPolyLineEndVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
+                hPolyLineEndVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
+            }
+        }
+    }
+
+
+    double* dPolyFaceDot;
+    double* dVvFaceDot;
+    cudaMalloc((void**)&dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2);
+    cudaMalloc((void**)&dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2);
+
+    double* dPolyOneVs;
+    double* dPolyNs;
+    double* dVvLineStartVs;
+    double* dVvLineEndVs;
+    cudaMalloc((void**)&dPolyOneVs, sizeof(double)*polyOneVs.size()*3);
+    cudaMalloc((void**)&dPolyNs, sizeof(double)*polyNs.size()*3);
+    cudaMalloc((void**)&dVvLineStartVs, sizeof(double)*vvLineStartVs.size()*3);
+    cudaMalloc((void**)&dVvLineEndVs, sizeof(double)*vvLineEndVs.size()*3);
+
+    cudaMemcpy(dPolyOneVs, hPolyOneVs, sizeof(double)*polyOneVs.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyNs, hPolyNs, sizeof(double)*polyNs.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvLineStartVs, hVvLineStartVs, sizeof(double)*vvLineStartVs.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvLineEndVs, hVvLineEndVs, sizeof(double)*vvLineEndVs.size()*3, cudaMemcpyHostToDevice);
+
+    double* dVvOneVs;
+    double* dVvNs;
+    double* dPolyLineStartVs;
+    double* dPolyLineEndVs;
+    cudaMalloc((void**)&dVvOneVs, sizeof(double)*viewVolume.face.v.size()*3);
+    cudaMalloc((void**)&dVvNs, sizeof(double)*viewVolume.face.normal.size()*3);
+    cudaMalloc((void**)&dPolyLineStartVs, sizeof(double)*polyLineStartVs.size()*3);
+    cudaMalloc((void**)&dPolyLineEndVs, sizeof(double)*polyLineEndVs.size()*3);
+
+    cudaMemcpy(dVvOneVs, hVvOneVs, sizeof(double)*viewVolume.face.v.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvNs, hVvNs, sizeof(double)*viewVolume.face.normal.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyLineStartVs, hPolyLineStartVs, sizeof(double)*polyLineStartVs.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyLineEndVs, hPolyLineEndVs, sizeof(double)*polyLineEndVs.size()*3, cudaMemcpyHostToDevice);
+
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((polyFaceAmount + dimBlock.x - 1) 
+    / dimBlock.x, (polyFaceAmount + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    glpaGpuGetPolyVvDot<<<dimGrid, dimBlock>>>(
+        dPolyFaceDot,
+        dVvFaceDot,
+        dPolyOneVs,
+        dPolyNs,
+        dVvLineStartVs,
+        dVvLineEndVs,
+        dVvOneVs,
+        dVvNs,
+        dPolyLineStartVs,
+        dPolyLineEndVs,
+        polyFaceAmount
+    );
+
+    cudaMemcpy(hPolyFaceDot, dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hVvFaceDot, dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2, cudaMemcpyDeviceToHost);
+
+
+
+    
+
+    
+
+
 }
