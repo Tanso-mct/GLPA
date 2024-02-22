@@ -538,13 +538,13 @@ __global__ void glpaGpuGetPolyVvDot(
         if (j < vvFaceAmout){
             vvFaceDot[i*vvFaceAmout*2 + j*2] = 
             (polyLineStartVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
-            (polyLineStartVs[i*3 +1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
-            (polyLineStartVs[i*3 +2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
+            (polyLineStartVs[i*3 + 1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
+            (polyLineStartVs[i*3 + 2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
 
-            polyFaceDot[i*vvFaceAmout*2 + j*2 + 1] = 
+            vvFaceDot[i*vvFaceAmout*2 + j*2 + 1] = 
             (polyLineEndVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
-            (polyLineEndVs[i*3 +1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
-            (polyLineEndVs[i*3 +2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
+            (polyLineEndVs[i*3 + 1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
+            (polyLineEndVs[i*3 + 2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
         }
     }
 }
@@ -573,8 +573,8 @@ void Camera::polyShapeConvert(
         hPolyOneVs[i*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
 
         hPolyNs[i*3] = (*ptRS)[shapeCnvtTargetI[i]].polyN.x;
-        hPolyNs[i*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyN.x;
-        hPolyNs[i*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyN.x;
+        hPolyNs[i*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyN.y;
+        hPolyNs[i*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyN.z;
     }
     
     for (int i = 0; i < viewVolume.lines.size(); i++){
@@ -604,21 +604,21 @@ void Camera::polyShapeConvert(
 
     for (int i = 0; i < shapeCnvtTargetI.size(); i++){
         for (int j = 0; j < 3; j++){
-            hPolyLineStartVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].x;
-            hPolyLineStartVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].y;
-            hPolyLineStartVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].z;
+            hPolyLineStartVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].x;
+            hPolyLineStartVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].y;
+            hPolyLineStartVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j].z;
         }
 
         for (int j = 0; j < 3; j++){
             if (j != 2){
-                hPolyLineEndVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].x;
-                hPolyLineEndVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].y;
-                hPolyLineEndVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].z;
+                hPolyLineEndVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].x;
+                hPolyLineEndVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].y;
+                hPolyLineEndVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].z;
             }
             else{
-                hPolyLineEndVs[i*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
-                hPolyLineEndVs[i*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
-                hPolyLineEndVs[i*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
+                hPolyLineEndVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
+                hPolyLineEndVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
+                hPolyLineEndVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
             }
         }
     }
@@ -658,8 +658,8 @@ void Camera::polyShapeConvert(
     cudaMemcpy(dPolyLineEndVs, hPolyLineEndVs, sizeof(double)*shapeCnvtTargetI.size()*3*3, cudaMemcpyHostToDevice);
 
     dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((polyFaceAmount + dimBlock.x - 1) 
-    / dimBlock.x, (polyFaceAmount + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    dim3 dimGrid((polyLineAmout + dimBlock.x - 1) 
+    / dimBlock.x, (polyLineAmout + dimBlock.y - 1) / dimBlock.y); // Grid Size
     glpaGpuGetPolyVvDot<<<dimGrid, dimBlock>>>(
         dPolyFaceDot,
         dVvFaceDot,
@@ -680,6 +680,99 @@ void Camera::polyShapeConvert(
     cudaMemcpy(hPolyFaceDot, dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceDot, dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2, cudaMemcpyDeviceToHost);
 
+
+    bool faceIExist = false;
+    std::vector<bool> polyIAdded(polyFaceAmount, false);
+    for (int i = 0; i < polyFaceAmount; i++){
+        (*ptRS)[shapeCnvtTargetI[i]].faceIntxn.clear();
+
+        for (int j = 0; j < vvLineAmout; j++){
+            if (hPolyFaceDot[i*vvLineAmout*2 + j*2] == 0){
+                (*ptRS)[shapeCnvtTargetI[i]].faceIntxn.push_back(viewVolume.lines[j].startV);
+                faceIExist = true;
+            }
+            if (hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1] == 0){
+                (*ptRS)[shapeCnvtTargetI[i]].faceIntxn.push_back(viewVolume.lines[j].endV);
+                faceIExist = true;
+            }
+
+            if (faceIExist){
+                if (!polyIAdded[i]){
+                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
+                    polyIAdded[i] = true;
+                }
+
+                faceIExist = false;
+                continue;
+            }
+
+            if (hPolyFaceDot[i*vvLineAmout*2 + j*2] > 0 && hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1] < 0){
+                if (!polyIAdded[i]){
+                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
+                    polyIAdded[i] = true;
+                }
+                continue;
+            }
+            else if(hPolyFaceDot[i*vvLineAmout*2 + j*2] < 0 && hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1] > 0){
+                if (!polyIAdded[i]){
+                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
+                    polyIAdded[i] = true;
+                }
+                continue;
+            }
+        }
+    }
+
+    bool LineIExist = false;
+    for (int i = 0; i < polyFaceAmount; i++){
+        (*ptRS)[shapeCnvtTargetI[i]].lineIntxn.clear();
+        (*ptRS)[shapeCnvtTargetI[i]].vvFaceI.clear();
+        (*ptRS)[shapeCnvtTargetI[i]].lineIntxn.resize(vvLineAmout);
+
+        for (int j = 0; j < 3; j++){
+            for (int k = 0; k < vvFaceAmout; k++){
+                if (hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2] == 0){
+                    (*ptRS)[shapeCnvtTargetI[i]].lineIntxn.push_back({
+                        hPolyLineStartVs[i*3 + j*3], hPolyLineStartVs[i*3 + j*3 + 1], hPolyLineStartVs[i*3 + j*3 + 2]
+                    });
+                    (*ptRS)[shapeCnvtTargetI[i]].vvFaceI.push_back(k);
+                    faceIExist = true;
+                }
+                if (hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2 + 1] == 0){
+                    (*ptRS)[shapeCnvtTargetI[i]].lineIntxn.push_back({
+                        hPolyLineEndVs[i*3 + j*3], hPolyLineEndVs[i*3 + j*3 + 1], hPolyLineEndVs[i*3 + j*3 + 2]
+                    });
+                    (*ptRS)[shapeCnvtTargetI[i]].vvFaceI.push_back(k);
+                    faceIExist = true;
+                }
+
+                if (faceIExist){
+                    faceIExist = false;
+                    continue;
+                }
+
+                if (
+                    hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2] > 0 && 
+                    hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2 + 1] < 0
+                ){
+                    if (!polyIAdded[i]){
+                        calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
+                        polyIAdded[i] = true;
+                    }
+                    continue;
+                }else if(
+                    hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2] < 0 && 
+                    hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2 + 1] > 0
+                ){
+                    if (!polyIAdded[i]){
+                        calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
+                        polyIAdded[i] = true;
+                    }
+                    continue;
+                }
+            }
+        }
+    }
 
 
 

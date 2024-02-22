@@ -121,6 +121,7 @@ private :
     std::vector<PolyNameInfo> renderTargetPoly;
 
     std::vector<int> shapeCnvtTargetI;
+    std::vector<int> calcIntxnTargetI;
 
     
 };

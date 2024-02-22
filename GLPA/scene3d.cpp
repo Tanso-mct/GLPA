@@ -61,6 +61,7 @@ void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].objCulling(objects);
     cams[useCamName].polyBilateralJudge(objects);
     cams[useCamName].polyCulling(objects, &rasterizeSource);
+    cams[useCamName].polyShapeConvert(objects, &rasterizeSource);
 
 }
 
