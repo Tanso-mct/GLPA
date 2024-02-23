@@ -680,6 +680,8 @@ void Camera::polyShapeConvert(
     cudaMemcpy(hPolyFaceDot, dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceDot, dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2, cudaMemcpyDeviceToHost);
 
+    int polyFaceVvLineI;
+
 
     bool faceIExist = false;
     std::vector<bool> polyIAdded(polyFaceAmount, false);
