@@ -774,32 +774,35 @@ void Camera::polyShapeConvert(
         }
     }
 
+    free(hPolyOneVs);
+    free(hPolyNs);
+    free(hVvOneVs);
+    free(hVvNs);
+
+    cudaFree(dPolyOneVs);
+    cudaFree(dPolyNs);
+    cudaFree(dVvOneVs);
+    cudaFree(dVvNs);
+
 
 
 
     
 
-    free(hPolyFaceDot);
-    free(hVvFaceDot);
-    free(hPolyOneVs);
-    free(hPolyNs);
+
     free(hVvLineStartVs);
     free(hVvLineEndVs);
-    free(hVvOneVs);
-    free(hVvNs);
     free(hPolyLineStartVs);
     free(hPolyLineEndVs);
+    free(hPolyFaceDot);
+    free(hVvFaceDot);
 
-    cudaFree(dPolyFaceDot);
-    cudaFree(dVvFaceDot);
-    cudaFree(dPolyOneVs);
-    cudaFree(dPolyNs);
-    cudaFree(dVvLineStartVs);
-    cudaFree(dVvLineEndVs);
-    cudaFree(dVvOneVs);
-    cudaFree(dVvNs);
     cudaFree(dPolyLineStartVs);
     cudaFree(dPolyLineEndVs);
+    cudaFree(dVvLineStartVs);
+    cudaFree(dVvLineEndVs);
+    cudaFree(dPolyFaceDot);
+    cudaFree(dVvFaceDot);
 
 
 

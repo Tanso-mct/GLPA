@@ -209,7 +209,6 @@ typedef struct tagRasterizeSource{
     std::vector<Vec3d> polyCamVs;
     Vec3d polyN;
 
-
     std::vector<Vec3d> faceIntxn;
 
     std::vector<Vec3d> lineIntxn;
