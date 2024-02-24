@@ -550,6 +550,78 @@ __global__ void glpaGpuGetPolyVvDot(
 }
 
 
+__global__ void glpaGpuGetPolyVvDot(
+    double* polyFaceDot,
+    double* vvFaceDot,
+    double* polyOneVs,
+    double* polyNs,
+    double* vvLineStartVs,
+    double* vvLineEndVs,
+    double* vvOneVs,
+    double* vvNs,
+    double* polyLineStartVs,
+    double* polyLineEndVs,
+    int polyFaceAmout,
+    int vvLineAmout,
+    int vvFaceAmout,
+    int polyLineAmout
+){
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < polyFaceAmout){
+        if (j < vvLineAmout){
+            polyFaceDot[i*vvLineAmout*2 + j*2] = 
+            (vvLineStartVs[j*3] - polyOneVs[i*3]) * polyNs[i*3] + 
+            (vvLineStartVs[j*3 +1] - polyOneVs[i*3 + 1]) * polyNs[i*3 + 1] + 
+            (vvLineStartVs[j*3 +2] - polyOneVs[i*3 + 2]) * polyNs[i*3 + 2];
+
+            polyFaceDot[i*vvLineAmout*2 + j*2 + 1] = 
+            (vvLineEndVs[j*3] - polyOneVs[i*3]) * polyNs[i*3] + 
+            (vvLineEndVs[j*3 +1] - polyOneVs[i*3 + 1]) * polyNs[i*3 + 1] + 
+            (vvLineEndVs[j*3 +2] - polyOneVs[i*3 + 2]) * polyNs[i*3 + 2];
+        }
+    }
+
+    if (i < polyLineAmout){
+        if (j < vvFaceAmout){
+            vvFaceDot[i*vvFaceAmout*2 + j*2] = 
+            (polyLineStartVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
+            (polyLineStartVs[i*3 + 1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
+            (polyLineStartVs[i*3 + 2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
+
+            vvFaceDot[i*vvFaceAmout*2 + j*2 + 1] = 
+            (polyLineEndVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
+            (polyLineEndVs[i*3 + 1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
+            (polyLineEndVs[i*3 + 2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
+        }
+    }
+}
+
+
+__global__ void glpaGpuCalcIntxn(
+    double* polyFaceDot,
+    double* vvFaceDot,
+    double* vvLineStartVs,
+    double* vvLineEndVs,
+    double* polyLineStartVs,
+    double* polyLineEndVs,
+    int* polyFaceVvLineI,
+    int* polyFaceI,
+    int* polyLineVvFaceI,
+    int* vvLineI,
+    int intxnAmount
+){
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < intxnAmount){
+        
+    }
+}
+
+
+
 void Camera::polyShapeConvert(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
 ){
@@ -680,11 +752,10 @@ void Camera::polyShapeConvert(
     cudaMemcpy(hPolyFaceDot, dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceDot, dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2, cudaMemcpyDeviceToHost);
 
-    int polyFaceVvLineI;
-
+    std::vector<int> polyFaceVvLineI;
+    std::vector<int> polyFaceI;
 
     bool faceIExist = false;
-    std::vector<bool> polyIAdded(polyFaceAmount, false);
     for (int i = 0; i < polyFaceAmount; i++){
         (*ptRS)[shapeCnvtTargetI[i]].faceIntxn.clear();
 
@@ -699,31 +770,29 @@ void Camera::polyShapeConvert(
             }
 
             if (faceIExist){
-                if (!polyIAdded[i]){
-                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
-                    polyIAdded[i] = true;
-                }
-
                 faceIExist = false;
                 continue;
             }
 
             if (hPolyFaceDot[i*vvLineAmout*2 + j*2] > 0 && hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1] < 0){
-                if (!polyIAdded[i]){
-                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
-                    polyIAdded[i] = true;
-                }
+                polyFaceI.push_back(i);
+                polyFaceVvLineI.push_back(j);
+                calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
                 continue;
             }
             else if(hPolyFaceDot[i*vvLineAmout*2 + j*2] < 0 && hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1] > 0){
-                if (!polyIAdded[i]){
-                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
-                    polyIAdded[i] = true;
-                }
+                polyFaceI.push_back(i);
+                polyFaceVvLineI.push_back(j);
+                calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
                 continue;
             }
         }
     }
+
+    std::vector<int> polyLineI;
+    std::vector<int> vvFaceI;
+
+    int polyFaceVvLineIntxnAmount = calcIntxnTargetI.size();
 
     bool LineIExist = false;
     for (int i = 0; i < polyFaceAmount; i++){
@@ -757,23 +826,21 @@ void Camera::polyShapeConvert(
                     hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2] > 0 && 
                     hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2 + 1] < 0
                 ){
-                    if (!polyIAdded[i]){
-                        calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
-                        polyIAdded[i] = true;
-                    }
+                    polyLineI.push_back(i*3 + j);
+                    vvFaceI.push_back(k);
+                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
                     continue;
                 }else if(
                     hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2] < 0 && 
                     hVvFaceDot[i*3*vvFaceAmout*2 + j*vvFaceAmout*2 + k*2 + 1] > 0
                 ){
-                    if (!polyIAdded[i]){
-                        calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
-                        polyIAdded[i] = true;
-                    }
+                    polyLineI.push_back(i*3 + j);
+                    vvFaceI.push_back(k);
+                    calcIntxnTargetI.push_back(shapeCnvtTargetI[i]);
                     continue;
                 }
             }
-        }
+        }   
     }
 
     free(hPolyOneVs);
@@ -786,7 +853,33 @@ void Camera::polyShapeConvert(
     cudaFree(dVvOneVs);
     cudaFree(dVvNs);
 
+    int* hPolyFaceVvLineI;
+    int* hPolyFaceI;
+    int* hPolyLineVvFaceI;
+    int* hVvLineI;
+    memcpy(hPolyFaceVvLineI, polyFaceVvLineI.data(), sizeof(double)*polyFaceVvLineI.size());
+    memcpy(hPolyFaceI, polyFaceVvLineI.data(), sizeof(double)*polyFaceI.size());
+    memcpy(hPolyLineVvFaceI, polyFaceVvLineI.data(), sizeof(double)*polyLineI.size());
+    memcpy(hVvLineI, polyFaceVvLineI.data(), sizeof(double)*vvFaceI.size());
 
+    dim3 dimBlock(32, 32); // Thread block size
+    dim3 dimGrid((calcIntxnTargetI.size() + dimBlock.x - 1) 
+    / dimBlock.x, (calcIntxnTargetI.size() + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    glpaGpuCalcIntxn<<<dimGrid, dimBlock>>>(
+        dPolyFaceDot, 
+        dVvFaceDot, 
+        dVvLineStartVs, 
+        dVvLineEndVs,
+        dPolyLineStartVs,
+        dPolyLineEndVs,
+        hPolyFaceVvLineI,
+        hPolyFaceI,
+        hPolyLineVvFaceI,
+        hVvLineI,
+        calcIntxnTargetI.size()
+    );
+
+    
 
 
     

@@ -67,6 +67,21 @@ __global__ void glpaGpuGetPolyVvDot(
     int poly_line_amout
 );
 
+
+__global__ void glpaGpuCalcIntxn(
+    double* poly_face_dot,
+    double* vv_face_dot,
+    double* vv_line_start_vs,
+    double* vv_line_end_vs,
+    double* poly_line_start_vs,
+    double* poly_line_end_vs,
+    int* polyFaceVvLineI,
+    int* polyFaceI,
+    int* polyLineVvFaceI,
+    int* vvLineI,
+    int intxnAmount
+);
+
 /// @brief Has data related to the 3DCG camera.
 class Camera{
 public :
