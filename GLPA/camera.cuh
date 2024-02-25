@@ -79,7 +79,11 @@ __global__ void glpaGpuCalcIntxn(
     int* polyFaceI,
     int* polyLineVvFaceI,
     int* vvLineI,
-    int intxnAmount
+    int intxnAmount,
+    double* face_inxtn,
+    double* line_inxtn,
+    double* poly_dot,
+    double* face_dot
 );
 
 /// @brief Has data related to the 3DCG camera.

@@ -550,55 +550,6 @@ __global__ void glpaGpuGetPolyVvDot(
 }
 
 
-__global__ void glpaGpuGetPolyVvDot(
-    double* polyFaceDot,
-    double* vvFaceDot,
-    double* polyOneVs,
-    double* polyNs,
-    double* vvLineStartVs,
-    double* vvLineEndVs,
-    double* vvOneVs,
-    double* vvNs,
-    double* polyLineStartVs,
-    double* polyLineEndVs,
-    int polyFaceAmout,
-    int vvLineAmout,
-    int vvFaceAmout,
-    int polyLineAmout
-){
-    int i = blockIdx.y * blockDim.y + threadIdx.y;
-    int j = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (i < polyFaceAmout){
-        if (j < vvLineAmout){
-            polyFaceDot[i*vvLineAmout*2 + j*2] = 
-            (vvLineStartVs[j*3] - polyOneVs[i*3]) * polyNs[i*3] + 
-            (vvLineStartVs[j*3 +1] - polyOneVs[i*3 + 1]) * polyNs[i*3 + 1] + 
-            (vvLineStartVs[j*3 +2] - polyOneVs[i*3 + 2]) * polyNs[i*3 + 2];
-
-            polyFaceDot[i*vvLineAmout*2 + j*2 + 1] = 
-            (vvLineEndVs[j*3] - polyOneVs[i*3]) * polyNs[i*3] + 
-            (vvLineEndVs[j*3 +1] - polyOneVs[i*3 + 1]) * polyNs[i*3 + 1] + 
-            (vvLineEndVs[j*3 +2] - polyOneVs[i*3 + 2]) * polyNs[i*3 + 2];
-        }
-    }
-
-    if (i < polyLineAmout){
-        if (j < vvFaceAmout){
-            vvFaceDot[i*vvFaceAmout*2 + j*2] = 
-            (polyLineStartVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
-            (polyLineStartVs[i*3 + 1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
-            (polyLineStartVs[i*3 + 2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
-
-            vvFaceDot[i*vvFaceAmout*2 + j*2 + 1] = 
-            (polyLineEndVs[i*3] - vvOneVs[j*3]) * vvNs[j*3] + 
-            (polyLineEndVs[i*3 + 1] - vvOneVs[j*3 + 1]) * vvNs[j*3 + 1] + 
-            (polyLineEndVs[i*3 + 2] - vvOneVs[j*3 + 2]) * vvNs[j*3 + 2];
-        }
-    }
-}
-
-
 __global__ void glpaGpuCalcIntxn(
     double* polyFaceDot,
     double* vvFaceDot,
@@ -610,13 +561,58 @@ __global__ void glpaGpuCalcIntxn(
     int* polyFaceI,
     int* polyLineVvFaceI,
     int* vvLineI,
-    int intxnAmount
+    int intxnAmount,
+    double* faceInxtn,
+    double* lineInxtn,
+    double* polyDot,
+    double* faceDot
 ){
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
 
+    int vvLineAmount = 12;
+    int vvFaceAmout = 6;
+
     if (i < intxnAmount){
-        
+        if (j < sizeof(polyFaceI) / sizeof(polyFaceI[0])){
+            faceInxtn[j*3] = vvLineStartVs[polyFaceVvLineI[j]*3] +
+            (vvLineEndVs[polyFaceVvLineI[j]*3] - vvLineStartVs[polyFaceVvLineI[j]*3]) *
+            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) /
+            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) +
+            abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2 + 1])));
+
+            faceInxtn[j*3 + 1] = vvLineStartVs[polyFaceVvLineI[j]*3 + 1] +
+            (vvLineEndVs[polyFaceVvLineI[j]*3 + 1] - vvLineStartVs[polyFaceVvLineI[j]*3 + 1]) *
+            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) /
+            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) +
+            abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2 + 1])));
+
+            faceInxtn[j*3 + 1] = vvLineStartVs[polyFaceVvLineI[j]*3 + 1] +
+            (vvLineEndVs[polyFaceVvLineI[j]*3 + 1] - vvLineStartVs[polyFaceVvLineI[j]*3 + 1]) *
+            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) /
+            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) +
+            abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2 + 1])));
+        }
+
+        if (j < sizeof(vvLineI) / sizeof(vvLineI[0])){
+            lineInxtn[j*3] = polyLineStartVs[vvLineI[j]*3] +
+            (polyLineEndVs[vvLineI[j]*3] - polyLineStartVs[vvLineI[j]*3]) *
+            (abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2]) /
+            (abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2]) +
+            abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2 + 1])));
+
+            lineInxtn[j*3 + 1] = polyLineStartVs[vvLineI[j]*3 + 1] +
+            (polyLineEndVs[vvLineI[j]*3 + 1] - polyLineStartVs[vvLineI[j]*3 + 1]) *
+            (abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2]) /
+            (abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2]) +
+            abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2 + 1])));
+
+            lineInxtn[j*3 + 2] = polyLineStartVs[vvLineI[j]*3 + 2] +
+            (polyLineEndVs[vvLineI[j]*3 + 2] - polyLineStartVs[vvLineI[j]*3 + 2]) *
+            (abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2]) /
+            (abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2]) +
+            abs(polyFaceDot[vvLineI[i]*vvFaceAmout*2 + polyLineVvFaceI[j]*2 + 1])));
+        }
     }
 }
 
@@ -731,7 +727,7 @@ void Camera::polyShapeConvert(
 
     dim3 dimBlock(32, 32); // Thread block size
     dim3 dimGrid((polyLineAmout + dimBlock.x - 1) 
-    / dimBlock.x, (polyLineAmout + dimBlock.y - 1) / dimBlock.y); // Grid Size
+    / dimBlock.x, (polyLineAmout + dimBlock.y - 1) / dimBlock.y);
     glpaGpuGetPolyVvDot<<<dimGrid, dimBlock>>>(
         dPolyFaceDot,
         dVvFaceDot,
@@ -853,31 +849,61 @@ void Camera::polyShapeConvert(
     cudaFree(dVvOneVs);
     cudaFree(dVvNs);
 
-    int* hPolyFaceVvLineI;
-    int* hPolyFaceI;
-    int* hPolyLineVvFaceI;
-    int* hVvLineI;
-    memcpy(hPolyFaceVvLineI, polyFaceVvLineI.data(), sizeof(double)*polyFaceVvLineI.size());
-    memcpy(hPolyFaceI, polyFaceVvLineI.data(), sizeof(double)*polyFaceI.size());
-    memcpy(hPolyLineVvFaceI, polyFaceVvLineI.data(), sizeof(double)*polyLineI.size());
-    memcpy(hVvLineI, polyFaceVvLineI.data(), sizeof(double)*vvFaceI.size());
+    int* hPolyFaceVvLineI = (int*)malloc(sizeof(int)*polyFaceVvLineI.size()*3);;
+    int* hPolyFaceI = (int*)malloc(sizeof(int)*polyFaceI.size()*3);;
+    int* hPolyLineVvFaceI = (int*)malloc(sizeof(int)*vvFaceI.size()*3);;
+    int* hVvLineI = (int*)malloc(sizeof(int)*polyLineI.size()*3);;
+    memcpy(hPolyFaceVvLineI, polyFaceVvLineI.data(), sizeof(int)*polyFaceVvLineI.size());
+    memcpy(hPolyFaceI, polyFaceI.data(), sizeof(int)*polyFaceI.size());
+    memcpy(hPolyLineVvFaceI, vvFaceI.data(), sizeof(int)*vvFaceI.size());
+    memcpy(hVvLineI, polyLineI.data(), sizeof(int)*polyLineI.size());
 
-    dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((calcIntxnTargetI.size() + dimBlock.x - 1) 
-    / dimBlock.x, (calcIntxnTargetI.size() + dimBlock.y - 1) / dimBlock.y); // Grid Size
-    glpaGpuCalcIntxn<<<dimGrid, dimBlock>>>(
+    int* dPolyFaceVvLineI;
+    int* dPolyFaceI;
+    int* dPolyLineVvFaceI;
+    int* dVvLineI;
+    cudaMalloc((void**)&dPolyFaceVvLineI, sizeof(double)*polyFaceVvLineI.size()*3);
+    cudaMalloc((void**)&dPolyFaceI, sizeof(double)*polyFaceI.size()*3);
+    cudaMalloc((void**)&dPolyLineVvFaceI, sizeof(double)*vvFaceI.size()*3);
+    cudaMalloc((void**)&dVvLineI, sizeof(double)*polyLineI.size()*3);
+
+    double* hFaceInxtn = (double*)malloc(sizeof(double)*polyFaceI.size()*3);
+    double* hLineInxtn = (double*)malloc(sizeof(double)*polyLineI.size()*3);
+    double* hPolyDot = (double*)malloc(sizeof(double)*polyFaceI.size()*3*2);
+    double* hFaceDot = (double*)malloc(sizeof(double)*vvFaceI.size()*4*2);
+
+    double* dFaceInxtn;
+    double* dLineInxtn;
+    double* dPolyDot;
+    double* dFaceDot;
+    cudaMalloc((void**)&dFaceInxtn, sizeof(double)*polyFaceI.size()*3);
+    cudaMalloc((void**)&dLineInxtn, sizeof(double)*polyLineI.size()*3);
+    cudaMalloc((void**)&dPolyDot, sizeof(double)*polyFaceI.size()*3*2);
+    cudaMalloc((void**)&dFaceDot, sizeof(double)*polyLineI.size()*4*2);
+
+    dim3 dimBlock2(32, 32);
+    dim3 dimGrid2((calcIntxnTargetI.size() + dimBlock2.x - 1) 
+    / dimBlock2.x, (calcIntxnTargetI.size() + dimBlock2.y - 1) / dimBlock2.y); // Grid Size
+    glpaGpuCalcIntxn<<<dimGrid2, dimBlock2>>>(
         dPolyFaceDot, 
         dVvFaceDot, 
         dVvLineStartVs, 
         dVvLineEndVs,
         dPolyLineStartVs,
         dPolyLineEndVs,
-        hPolyFaceVvLineI,
-        hPolyFaceI,
-        hPolyLineVvFaceI,
-        hVvLineI,
-        calcIntxnTargetI.size()
+        dPolyFaceVvLineI,
+        dPolyFaceI,
+        dPolyLineVvFaceI,
+        dVvLineI,
+        calcIntxnTargetI.size(),
+        dFaceInxtn,
+        dLineInxtn,
+        dPolyDot,
+        dFaceDot
     );
+
+    cudaMemcpy(hFaceInxtn, dFaceInxtn, sizeof(double)*polyFaceI.size()*3, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hLineInxtn, dLineInxtn, sizeof(double)*polyLineI.size()*3, cudaMemcpyDeviceToHost);
 
     
 
