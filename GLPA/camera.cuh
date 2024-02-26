@@ -68,7 +68,7 @@ __global__ void glpaGpuGetPolyVvDot(
 );
 
 
-__global__ void glpaGpuCalcIntxn(
+__global__ void glpaGpuIntxnInteriorAngle(
     double* poly_face_dot,
     double* vv_face_dot,
     double* vv_line_start_vs,
@@ -80,6 +80,10 @@ __global__ void glpaGpuCalcIntxn(
     int* polyLineVvFaceI,
     int* vvLineI,
     int intxnAmount,
+    int vvLineAmount,
+    int vv_face_amount,
+    int poly_face_i_size,
+    int vv_face_i_size,
     double* face_inxtn,
     double* line_inxtn,
     double* poly_dot,
@@ -111,6 +115,12 @@ public :
         std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
     );
 
+    void polyVvLineDot(
+        std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
+    );
+
+    void inxtnInteriorAngle(std::vector<RasterizeSource>* pt_rasterize_source);
+
     void polyShapeConvert(
         std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
     );
@@ -141,6 +151,15 @@ private :
 
     std::vector<int> shapeCnvtTargetI;
     std::vector<int> calcIntxnTargetI;
+
+    double* hPolyFaceDot;
+    double* hVvFaceDot;
+
+    int polyFaceAmount;
+    int polyLineAmout;
+
+    int vvFaceAmout = 6;
+    int vvLineAmout = 12;
 
     
 };
