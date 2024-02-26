@@ -135,3 +135,10 @@ std::vector<double> Vector::getSameSizeVecsDotCos(std::vector<Vec3d> leftVec, st
 
     return rtCalcNum;
 }
+
+
+void Vector::pushVecToDouble(std::vector<Vec3d> sourceVec, std::vector<double> *targetVec, int vecI){
+    (*targetVec).push_back(sourceVec[vecI].x);
+    (*targetVec).push_back(sourceVec[vecI].y);
+    (*targetVec).push_back(sourceVec[vecI].z);
+}

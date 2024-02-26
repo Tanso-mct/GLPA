@@ -8,6 +8,7 @@
 #include <math.h>
 
 #include "cg.h"
+#include "vector.cuh"
 
 /// @brief Within 3DCG, it has data related to the view volume.
 class ViewVolume
@@ -30,6 +31,13 @@ public :
 
     std::vector<shapeLine> lines;
     FaceNormals face;
+
+    Vector vec;
+
+    void pushFaceVsToDouble(
+        std::vector<double>* target_vec,
+        int face_i
+    );
 };
 
 #endif VIEW_VOLUME_H_

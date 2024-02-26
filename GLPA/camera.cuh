@@ -119,6 +119,13 @@ public :
         std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
     );
 
+    void pushLineToV(
+        std::vector<Vec3d> source_vs,
+        std::vector<double>* target_vs,
+        int start_i,
+        int end_i
+    );
+
     void inxtnInteriorAngle(std::vector<RasterizeSource>* pt_rasterize_source);
 
     void polyShapeConvert(
@@ -150,7 +157,6 @@ private :
     std::vector<PolyNameInfo> renderTargetPoly;
 
     std::vector<int> shapeCnvtTargetI;
-    std::vector<int> calcIntxnTargetI;
 
     double* hPolyFaceDot;
     double* hVvFaceDot;

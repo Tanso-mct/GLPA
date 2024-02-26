@@ -37,6 +37,12 @@ public :
 
     std::vector<double> getVecsDotCos(Vec3d left_vec, std::vector<Vec3d> right_vecs);
     std::vector<double> getSameSizeVecsDotCos(std::vector<Vec3d> left_vecs, std::vector<Vec3d> right_vecs);
+
+    void pushVecToDouble(
+        std::vector<Vec3d> source_vec,
+        std::vector<double>* target_vec,
+        int vec_i
+    );
 };
 
 #endif  VECTOR_H_
