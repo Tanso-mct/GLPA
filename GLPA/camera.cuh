@@ -68,26 +68,27 @@ __global__ void glpaGpuGetPolyVvDot(
 );
 
 
-__global__ void glpaGpuIntxnInteriorAngle(
+__global__ void glpaGpuGetIntxn(
+    double* poly_faceLine_vs,
     double* poly_face_dot,
+    double* poly_face_inxtn,
+    double* vv_faceLine_vs,
     double* vv_face_dot,
-    double* vv_line_start_vs,
-    double* vv_line_end_vs,
-    double* poly_line_start_vs,
-    double* poly_line_end_vs,
-    int* polyFaceVvLineI,
-    int* polyFaceI,
-    int* polyLineVvFaceI,
-    int* vvLineI,
-    int intxnAmount,
-    int vvLineAmount,
-    int vv_face_amount,
-    int poly_face_i_size,
-    int vv_face_i_size,
-    double* face_inxtn,
-    double* line_inxtn,
-    double* poly_dot,
-    double* face_dot
+    double* vv_face_inxtn,
+    int poly_face_size,
+    int vv_face_size
+);
+
+
+__global__ void glpaGpuGetIACos(
+    double* poly_face_vs,
+    double* poly_face_inxtn,
+    double* poly_face_ia_cos,
+    double* vv_face_vs,
+    double* vv_face_inxtn,
+    double* vv_face_ia_cos,
+    int poly_face_size,
+    int vv_face_size
 );
 
 /// @brief Has data related to the 3DCG camera.
