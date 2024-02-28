@@ -129,7 +129,7 @@ public :
 
     void inxtnInteriorAngle(std::vector<RasterizeSource>* pt_rasterize_source);
 
-    void polyShapeConvert(
+    void setPolyInxtn(
         std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
     );
 
@@ -161,6 +161,12 @@ private :
 
     double* hPolyFaceDot;
     double* hVvFaceDot;
+
+    std::vector<int> polyRsI;
+    std::vector<int> vvRsI;
+
+    double* hPolyFaceIACos;
+    double* hVvFaceIACos;
 
     int polyFaceAmount;
     int polyLineAmout;

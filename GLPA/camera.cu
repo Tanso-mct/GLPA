@@ -914,12 +914,10 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
     polyFaceAmount = shapeCnvtTargetI.size();
     polyLineAmout = shapeCnvtTargetI.size() * 3;
 
-    std::vector<int> polyRsI;
     std::vector<double> polyFaceVs; // 0.x 0.y 0.z 1.x 1.y 1.z 2.x 2.y 2.z n*9
     std::vector<double> polyFaceLineVs; // start.x start.y start.z end.x end.y end.z n*6
     std::vector<double> polyFaceDot; // startVdot endVdot n*2
 
-    std::vector<int> vvRsI;
     std::vector<double> vvFaceVs; // 0.x 0.y 0.z 1.x 1.y 1.z 2.x 2.y 2.z 3.x 3.y 3.z n*9
     std::vector<double> vvFaceLineVs; // start.x start.y start.z end.x end.y end.z n*6
     std::vector<double> vvFaceDot; // startVdot endVdot n*2
@@ -1020,11 +1018,9 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 
     double* hPolyFaceLineVs = (double*)malloc(sizeof(double)*polyFaceLineVs.size()*3);
     double* hPolyFaceDot = (double*)malloc(sizeof(double)*polyFaceDot.size()*3);
-    double* hPolyFaceInxtn = (double*)malloc(sizeof(double)*polyRsI.size()*3);
 
     double* hVvFaceLineVs = (double*)malloc(sizeof(double)*vvFaceLineVs.size()*3);
     double* hVvFaceDot = (double*)malloc(sizeof(double)*vvFaceDot.size()*3);
-    double* hVvFaceInxtn = (double*)malloc(sizeof(double)*vvRsI.size()*3);
 
     memcpy(hPolyFaceLineVs, polyFaceLineVs.data(), sizeof(int)*polyFaceLineVs.size()*3);
     memcpy(hPolyFaceDot, polyFaceDot.data(), sizeof(int)*polyFaceDot.size()*3);
@@ -1070,8 +1066,6 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
         vvRsI.size()
     );
     cudaError_t error = cudaGetLastError();
-    cudaMemcpy(hPolyFaceInxtn, dPolyFaceInxtn, sizeof(double)*polyRsI.size()*3, cudaMemcpyDeviceToHost);
-    cudaMemcpy(hVvFaceInxtn, dVvFaceInxtn, sizeof(double)*vvRsI.size()*3, cudaMemcpyDeviceToHost);
 
     free(hPolyFaceLineVs);
     free(hPolyFaceDot);
@@ -1084,11 +1078,11 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
     cudaFree(dVvFaceDot);
 
     double* hPolyFaceVs = (double*)malloc(sizeof(double)*polyFaceVs.size());
-    double* hPolyFaceIACos = (double*)malloc(sizeof(double)*polyRsI.size()*6);
+    hPolyFaceIACos = (double*)malloc(sizeof(double)*polyRsI.size()*6);
     memcpy(hPolyFaceVs, polyFaceVs.data(), sizeof(double)*polyFaceVs.size());
 
     double* hVvFaceVs = (double*)malloc(sizeof(double)*vvFaceVs.size());
-    double* hVvFaceIACos = (double*)malloc(sizeof(double)*vvRsI.size()*8);
+    hVvFaceIACos = (double*)malloc(sizeof(double)*vvRsI.size()*8);
     memcpy(hVvFaceVs, vvFaceVs.data(), sizeof(double)*vvFaceVs.size());
 
     double* dPolyFaceVs;
@@ -1117,15 +1111,24 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
     cudaMemcpy(hPolyFaceIACos, dPolyFaceIACos, sizeof(double)*polyRsI.size()*6, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceIACos, dVvFaceIACos, sizeof(double)*vvRsI.size()*8, cudaMemcpyDeviceToHost);
 
+    free(hPolyFaceVs);
+    free(hVvFaceVs);
+
+    cudaFree(dPolyFaceVs);
+    cudaFree(dPolyFaceInxtn);
+    cudaFree(dPolyFaceIACos);
+
+    cudaFree(dVvFaceVs);
+    cudaFree(dVvFaceInxtn);
+    cudaFree(dVvFaceIACos);
 
 }
 
 
-void Camera::polyShapeConvert(
+void Camera::setPolyInxtn(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
 ){
-    polyVvLineDot(objects, ptRS);
-    inxtnInteriorAngle(ptRS);
+    
 
 
 
