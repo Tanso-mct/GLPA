@@ -861,49 +861,49 @@ __global__ void glpaGpuGetIACos(
     }
     else if(i >= polyFaceSize && i < (polyFaceSize + vvFaceSize)){
         if (j < 4){
-            vvFaceIaCos[i*4*2 + j*2] = 
-            ((vvFaceVs[i*7*3 + (j+1)*4] - vvFaceVs[i*7*3 + j*4]) * 
-            (vvFaceInxtn[i*3] - vvFaceVs[i*7*3 + j*4]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) * 
-            (vvFaceInxtn[i*3 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]) * 
-            (vvFaceInxtn[i*3 + 2] - vvFaceVs[i*7*3 + j*4 + 2])) 
+            vvFaceIaCos[(i-polyFaceSize)*4*2 + j*2] = 
+            ((vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) * 
+            (vvFaceInxtn[(i-polyFaceSize)*3] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) * 
+            (vvFaceInxtn[(i-polyFaceSize)*3 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]) * 
+            (vvFaceInxtn[(i-polyFaceSize)*3 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2])) 
             /
-            (sqrt((vvFaceVs[i*7*3 + (j+1)*4] - vvFaceVs[i*7*3 + j*4]) * 
-            (vvFaceVs[i*7*3 + (j+1)*4] - vvFaceVs[i*7*3 + j*4]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) * 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]) * 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]))
+            (sqrt((vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]))
             * 
-            sqrt((vvFaceInxtn[i*3] - vvFaceVs[i*7*3 + j*4]) * 
-            (vvFaceInxtn[i*3] - vvFaceVs[i*7*3 + j*4]) + 
-            (vvFaceInxtn[i*3 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) * 
-            (vvFaceInxtn[i*3 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) + 
-            (vvFaceInxtn[i*3 + 2] - vvFaceVs[i*7*3 + j*4 + 2]) * 
-            (vvFaceInxtn[i*3 + 2] - vvFaceVs[i*7*3 + j*4 + 2])));
+            sqrt((vvFaceInxtn[(i-polyFaceSize)*3] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) * 
+            (vvFaceInxtn[(i-polyFaceSize)*3] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) + 
+            (vvFaceInxtn[(i-polyFaceSize)*3 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) * 
+            (vvFaceInxtn[(i-polyFaceSize)*3 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) + 
+            (vvFaceInxtn[(i-polyFaceSize)*3 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]) * 
+            (vvFaceInxtn[(i-polyFaceSize)*3 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2])));
 
-            vvFaceIaCos[i*4*2 + j*2 + 1] = 
-            ((vvFaceVs[i*7*3 + (j+1)*4] - vvFaceVs[i*7*3 + j*4]) * 
-            (vvFaceVs[i*7*3 + (j+3)*4] - vvFaceVs[i*7*3 + j*4]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) * 
-            (vvFaceVs[i*7*3 + (j+3)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]) * 
-            (vvFaceVs[i*7*3 + (j+3)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2])) 
+            vvFaceIaCos[(i-polyFaceSize)*4*2 + j*2 + 1] = 
+            ((vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2])) 
             /
-            (sqrt((vvFaceVs[i*7*3 + (j+1)*4] - vvFaceVs[i*7*3 + j*4]) * 
-            (vvFaceVs[i*7*3 + (j+1)*4] - vvFaceVs[i*7*3 + j*4]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) * 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) + 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]) * 
-            (vvFaceVs[i*7*3 + (j+1)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]))
+            (sqrt((vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+1)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]))
             * 
-            sqrt((vvFaceVs[i*7*3 + (j+3)*4] - vvFaceVs[i*7*3 + j*4]) * 
-            (vvFaceVs[i*7*3 + (j+3)*4] - vvFaceVs[i*7*3 + j*4]) + 
-            (vvFaceVs[i*7*3 + (j+3)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) * 
-            (vvFaceVs[i*7*3 + (j+3)*4 + 1] - vvFaceVs[i*7*3 + j*4 + 1]) + 
-            (vvFaceVs[i*7*3 + (j+3)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2]) * 
-            (vvFaceVs[i*7*3 + (j+3)*4 + 2] - vvFaceVs[i*7*3 + j*4 + 2])));
+            sqrt((vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4 + 1] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 1]) + 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2]) * 
+            (vvFaceVs[(i-polyFaceSize)*7*3 + (j+3)*4 + 2] - vvFaceVs[(i-polyFaceSize)*7*3 + j*4 + 2])));
         }
     }
 }
@@ -947,11 +947,11 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
                 (hPolyFaceDot[i*vvLineAmout*2 + j*2] < 0 && hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1] > 0)
             ){
                 polyRsI.push_back(shapeCnvtTargetI[i]);
+                vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[i]].polyCamVs, &polyFaceVs, 2);
                 vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[i]].polyCamVs, &polyFaceVs, 0);
                 vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[i]].polyCamVs, &polyFaceVs, 1);
                 vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[i]].polyCamVs, &polyFaceVs, 2);
                 vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[i]].polyCamVs, &polyFaceVs, 0);
-                vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[i]].polyCamVs, &polyFaceVs, 1);
 
                 polyFaceLineVs.push_back(viewVolume.lines[j].startV.x);
                 polyFaceLineVs.push_back(viewVolume.lines[j].startV.y);
