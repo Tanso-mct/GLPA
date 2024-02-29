@@ -165,6 +165,9 @@ private :
     std::vector<int> polyRsI;
     std::vector<int> vvRsI;
 
+    double* hPolyFaceInxtn;
+    double* hVvFaceInxtn;
+
     double* hPolyFaceIACos;
     double* hVvFaceIACos;
 

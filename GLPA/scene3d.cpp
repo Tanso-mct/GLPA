@@ -17,7 +17,7 @@ void Scene3d::loadCam(std::wstring camName){
 
         cams[camName].load(
             camName,
-            {0, 170, 0},
+            {0, 0, 0},
             {0, 0, 0},
             1,
             10000,

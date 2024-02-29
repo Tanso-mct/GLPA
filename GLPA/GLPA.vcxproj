@@ -253,15 +253,18 @@
     <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="resource\scene\game_1\cube1\temp_cube.obj">
+    <Resource Include="resource\scene\game_1\obj\temp_cube.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="resource\scene\game_1\cube2\temp_secondCube.obj">
+      <FileType>Document</FileType>
+    </Resource>
+    <Resource Include="resource\scene\game_1\obj\temp_field.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="resource\scene\game_1\cube3\temp_third_cube.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
+      <FileType>Document</FileType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\scene\game_1\mtl\temp_cube.mtl" />
+    <None Include="resource\scene\game_1\mtl\temp_field.mtl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

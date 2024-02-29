@@ -31,6 +31,15 @@
     <Filter Include="リソース ファイル\scene">
       <UniqueIdentifier>{0b01cc7d-f482-44d1-8cb6-fbad2b2d3a54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\scene\game_1">
+      <UniqueIdentifier>{de6c66f9-d0c7-47c9-9ee6-ae3a9bc68bc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\scene\game_1\obj">
+      <UniqueIdentifier>{853b33a9-8b61-4679-b732-34208a49f1bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\scene\game_1\mtl">
+      <UniqueIdentifier>{02a87367-dab7-473b-a3e0-35c96724c2c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ambient_occlusion.cpp">
@@ -311,8 +320,19 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="resource\scene\game_1\cube1\temp_cube.obj" />
-    <Object Include="resource\scene\game_1\cube2\temp_secondCube.obj" />
-    <Object Include="resource\scene\game_1\cube3\temp_third_cube.obj" />
+    <None Include="resource\scene\game_1\mtl\temp_cube.mtl">
+      <Filter>リソース ファイル\scene\game_1\mtl</Filter>
+    </None>
+    <None Include="resource\scene\game_1\mtl\temp_field.mtl">
+      <Filter>リソース ファイル\scene\game_1\mtl</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resource\scene\game_1\obj\temp_cube.obj">
+      <Filter>リソース ファイル\scene\game_1\obj</Filter>
+    </Resource>
+    <Resource Include="resource\scene\game_1\obj\temp_field.obj">
+      <Filter>リソース ファイル\scene\game_1\obj</Filter>
+    </Resource>
   </ItemGroup>
 </Project>

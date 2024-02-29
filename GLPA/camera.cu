@@ -1018,9 +1018,11 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 
     double* hPolyFaceLineVs = (double*)malloc(sizeof(double)*polyFaceLineVs.size()*3);
     double* hPolyFaceDot = (double*)malloc(sizeof(double)*polyFaceDot.size()*3);
+    hPolyFaceInxtn = (double*)malloc(sizeof(double)*polyRsI.size()*3);
 
     double* hVvFaceLineVs = (double*)malloc(sizeof(double)*vvFaceLineVs.size()*3);
     double* hVvFaceDot = (double*)malloc(sizeof(double)*vvFaceDot.size()*3);
+    hVvFaceInxtn = (double*)malloc(sizeof(double)*vvRsI.size()*3);
 
     memcpy(hPolyFaceLineVs, polyFaceLineVs.data(), sizeof(int)*polyFaceLineVs.size()*3);
     memcpy(hPolyFaceDot, polyFaceDot.data(), sizeof(int)*polyFaceDot.size()*3);
@@ -1066,6 +1068,8 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
         vvRsI.size()
     );
     cudaError_t error = cudaGetLastError();
+    cudaMemcpy(hPolyFaceInxtn, dPolyFaceInxtn, sizeof(double)*polyRsI.size()*3, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hVvFaceInxtn, dVvFaceInxtn, sizeof(double)*vvRsI.size()*3, cudaMemcpyDeviceToHost);
 
     free(hPolyFaceLineVs);
     free(hPolyFaceDot);
@@ -1128,7 +1132,45 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 void Camera::setPolyInxtn(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
 ){
-    
+    std::vector<Vec3d> debug_vec;
+
+    for (int i = 0; i < polyRsI.size(); i++){
+        debug_vec.push_back({
+            hVvFaceInxtn[i*3],
+            hVvFaceInxtn[i*3 + 1],
+            hVvFaceInxtn[i*3 + 2]
+        });
+    }
+
+
+    for (int i = 0; i < polyRsI.size(); i++){
+        if (
+            (hPolyFaceIACos[i*6] <= hPolyFaceIACos[i*6 + 1]) &&
+            (hPolyFaceIACos[i*6 + 2] <= hPolyFaceIACos[i*6 + 3]) &&
+            (hPolyFaceIACos[i*6 + 4] <= hPolyFaceIACos[i*6 + 5]) 
+        ){
+            (*ptRS)[polyRsI[i]].scPixelVs.wVs.push_back({
+                hPolyFaceInxtn[i*3],
+                hPolyFaceInxtn[i*3 + 1],
+                hPolyFaceInxtn[i*3 + 2]
+            });
+        }
+    }
+
+    for (int i = 0; i < vvRsI.size(); i++){
+        if (
+            (hVvFaceIACos[i*8] <= hVvFaceIACos[i*8 + 1]) &&
+            (hVvFaceIACos[i*8 + 2] <= hVvFaceIACos[i*8 + 3]) &&
+            (hVvFaceIACos[i*8 + 4] <= hVvFaceIACos[i*8 + 5]) &&
+            (hVvFaceIACos[i*8 + 6] <= hVvFaceIACos[i*8 + 7])
+        ){
+            (*ptRS)[vvRsI[i]].scPixelVs.wVs.push_back({
+                hVvFaceInxtn[i*3],
+                hVvFaceInxtn[i*3 + 1],
+                hVvFaceInxtn[i*3 + 2]
+            });
+        }
+    }
 
 
 
