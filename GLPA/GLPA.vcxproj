@@ -253,18 +253,22 @@
     <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resource\scene\game_1\obj\temp_cube.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <None Include="resource\scene\game_1\obj\temp_field.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
       <FileType>Document</FileType>
-    </Resource>
-    <Resource Include="resource\scene\game_1\obj\temp_field.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </Resource>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\scene\game_1\mtl\temp_cube.mtl" />
     <None Include="resource\scene\game_1\mtl\temp_field.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\scene\game_1\obj\temp_cube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

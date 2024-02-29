@@ -29,14 +29,14 @@ void Camera::defineViewVolume(){
     }
 
     // Get screen size
-    nearScrSize.x = tan(viewAngle / 2 * PI / 180) * nearZ * 2;
-    nearScrSize.y = nearScrSize.x * aspectRatio.y / aspectRatio.x;
+    nearScrSize.x = fabs(tan(RAD(viewAngle / 2)) * nearZ * 2);
+    nearScrSize.y = fabs(nearScrSize.x * aspectRatio.y / aspectRatio.x);
 
     farScrSize.x = nearScrSize.x / 2 * farZ / nearZ;
     farScrSize.y = farScrSize.x * aspectRatio.y / aspectRatio.x;
 
-    viewAngleCos.x = cos(RAD(viewAngle));
-    viewAngleCos.y = cos(nearZ / sqrt(nearZ*nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
+    viewAngleCos.x = cos(RAD(viewAngle / 2));
+    viewAngleCos.y = fabs(nearZ / sqrt(nearZ*nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
 
     // Defines the coordinates of the four vertices when the view volume is viewed from the positive y-axis direction.
     viewVolume.xzV[0].x = -nearScrSize.x / 2;
@@ -123,7 +123,6 @@ void Camera::defineViewVolume(){
     viewVolume.lines[10].endV = viewVolume.v[RECT_L11_ENDV];
     viewVolume.lines[11].endV = viewVolume.v[RECT_L12_ENDV];
 
-
     // Obtain a 3D vector for each line segment.
     for (auto& i : viewVolume.lines){
         i.vec.x = i.endV.x - i.startV.x;
@@ -165,7 +164,7 @@ void Camera::defineViewVolume(){
     for (int i = 0; i < 6; i++){
         viewVolume.face.normal[i].x = calcVA[i].y * calcVB[i].z - calcVA[i].z * calcVB[i].y;
         viewVolume.face.normal[i].y = calcVA[i].z * calcVB[i].x - calcVA[i].x * calcVB[i].z;
-        viewVolume.face.normal[i].z = calcVA[i].x * calcVB[i].y - calcVA[i].y * calcVB[i].x;
+        viewVolume.face.normal[i].z = -(calcVA[i].x * calcVB[i].y - calcVA[i].y * calcVB[i].x);
     }
 
     reload = false;
@@ -1134,7 +1133,7 @@ void Camera::setPolyInxtn(
 ){
     std::vector<Vec3d> debug_vec;
 
-    for (int i = 0; i < polyRsI.size(); i++){
+    for (int i = 0; i < vvRsI.size(); i++){
         debug_vec.push_back({
             hVvFaceInxtn[i*3],
             hVvFaceInxtn[i*3 + 1],
