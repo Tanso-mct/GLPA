@@ -13,8 +13,8 @@ void Camera::load(
     name = argName;
     wPos = argWPos;
     rotAngle = argRotAngle;
-    nearZ = -argNearZ;
-    farZ = -argFarZ;
+    nearZ = argNearZ;
+    farZ = argFarZ;
     viewAngle = argViewAngle;
     aspectRatio = argAspectRatio;
 
@@ -29,14 +29,17 @@ void Camera::defineViewVolume(){
     }
 
     // Get screen size
-    nearScrSize.x = fabs(tan(RAD(viewAngle / 2)) * nearZ * 2);
+    nearScrSize.x = fabs(tan(RAD(viewAngle / 2)) * -nearZ) * 2;
     nearScrSize.y = fabs(nearScrSize.x * aspectRatio.y / aspectRatio.x);
 
-    farScrSize.x = nearScrSize.x / 2 * farZ / nearZ;
-    farScrSize.y = farScrSize.x * aspectRatio.y / aspectRatio.x;
+    farScrSize.x = fabs(tan(RAD(viewAngle / 2)) * -farZ) * 2;
+    farScrSize.y = fabs(farScrSize.x * aspectRatio.y / aspectRatio.x);
 
     viewAngleCos.x = cos(RAD(viewAngle / 2));
-    viewAngleCos.y = fabs(nearZ / sqrt(nearZ*nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
+    viewAngleCos.y = fabs(-nearZ / sqrt(-nearZ*-nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
+
+    // farScrSize.x = nearScrSize.x / 2 * -farZ / -nearZ;
+    // farScrSize.y = farScrSize.x * aspectRatio.y / aspectRatio.x;
 
     // Defines the coordinates of the four vertices when the view volume is viewed from the positive y-axis direction.
     viewVolume.xzV[0].x = -nearScrSize.x / 2;
@@ -164,7 +167,7 @@ void Camera::defineViewVolume(){
     for (int i = 0; i < 6; i++){
         viewVolume.face.normal[i].x = calcVA[i].y * calcVB[i].z - calcVA[i].z * calcVB[i].y;
         viewVolume.face.normal[i].y = calcVA[i].z * calcVB[i].x - calcVA[i].x * calcVB[i].z;
-        viewVolume.face.normal[i].z = -(calcVA[i].x * calcVB[i].y - calcVA[i].y * calcVB[i].x);
+        viewVolume.face.normal[i].z = calcVA[i].x * calcVB[i].y - calcVA[i].y * calcVB[i].x;
     }
 
     reload = false;
@@ -259,7 +262,7 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
     std::vector<double> rangeXyzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
 
     for (int i = 0; i < rangeXyzVsCos.size() / 4; i++){
-        if (orizinZ[i] >= farZ && oppositeZ[i] <= nearZ){
+        if (orizinZ[i] >= -farZ && oppositeZ[i] <= -nearZ){
             if (rangeXyzVsCos[i*4] >= viewAngleCos.x || rangeXyzVsCos[i*4 + 1] >= viewAngleCos.x){
                 if (rangeXyzVsCos[i*4 + 2] >= viewAngleCos.y || rangeXyzVsCos[i*4 + 3] >= viewAngleCos.y){
                     renderTargetObj.push_back(objOrder[i]);
@@ -383,7 +386,7 @@ void Camera::polyCulling(
     std::vector<int> cnvtVsIndex;
     int inViewVolume = 0;
     for (int i = 0; i < renderTargetPoly.size(); i++){
-        if (cnvtPolyVs[i*3].z >= farZ && cnvtPolyVs[i*3].z <= nearZ){
+        if (cnvtPolyVs[i*3].z >= -farZ && cnvtPolyVs[i*3].z <= -nearZ){
             if (polyVCos[i*6] >= viewAngleCos.x){
                 if (polyVCos[i*6 + 1] >= viewAngleCos.y){
                     inViewVolume += 1;
@@ -392,7 +395,7 @@ void Camera::polyCulling(
             }
         }
 
-        if (cnvtPolyVs[i*3 + 1].z >= farZ && cnvtPolyVs[i*3 + 1].z <= nearZ){
+        if (cnvtPolyVs[i*3 + 1].z >= -farZ && cnvtPolyVs[i*3 + 1].z <= -nearZ){
             if (polyVCos[i*6 + 2] >= viewAngleCos.x){
                 if (polyVCos[i*6 + 3] >= viewAngleCos.y){
                     inViewVolume += 1;
@@ -401,7 +404,7 @@ void Camera::polyCulling(
             }
         }
 
-        if (cnvtPolyVs[i*3 + 2].z >= farZ && cnvtPolyVs[i*3 + 2].z <= nearZ){
+        if (cnvtPolyVs[i*3 + 2].z >= -farZ && cnvtPolyVs[i*3 + 2].z <= -nearZ){
             if (polyVCos[i*6 + 4] >= viewAngleCos.x){
                 if (polyVCos[i*6 + 5] >= viewAngleCos.y){
                     inViewVolume += 1;
@@ -477,7 +480,7 @@ void Camera::polyCulling(
 
     RasterizeSource pushRS2;
     for (int i = 0; i < needRangeVs.size(); i++){
-        if (orizinZ[i] >= farZ && oppositeZ[i] <= nearZ){
+        if (orizinZ[i] >= -farZ && oppositeZ[i] <= -nearZ){
             if (rangeXyzVsCos[i*4] >= viewAngleCos.x || rangeXyzVsCos[i*4 + 1] >= viewAngleCos.x){
                 if (rangeXyzVsCos[i*4 + 2] >= viewAngleCos.y || rangeXyzVsCos[i*4 + 3] >= viewAngleCos.y){
                     pushRS2.renderPoly.objName = needRangeVs[i].objName;
@@ -533,17 +536,17 @@ __global__ void glpaGpuGetPolyVvDot(
         }
     }
 
-    if (i < vvFaceAmout){
+    if (i >= polyFaceAmout && i < (polyFaceAmout + vvFaceAmout)){
         if (j < polyLineAmout){
-            vvFaceDot[i*polyLineAmout*2 + j*2] = 
-            (polyLineStartVs[j*3] - vvOneVs[i*3]) * vvNs[i*3] + 
-            (polyLineStartVs[j*3 + 1] - vvOneVs[i*3 + 1]) * vvNs[i*3 + 1] + 
-            (polyLineStartVs[j*3 + 2] - vvOneVs[i*3 + 2]) * vvNs[i*3 + 2];
+            vvFaceDot[(i-polyFaceAmout)*polyLineAmout*2 + j*2] = 
+            (polyLineStartVs[j*3] - vvOneVs[(i-polyFaceAmout)*3]) * vvNs[(i-polyFaceAmout)*3] + 
+            (polyLineStartVs[j*3 + 1] - vvOneVs[(i-polyFaceAmout)*3 + 1]) * vvNs[(i-polyFaceAmout)*3 + 1] + 
+            (polyLineStartVs[j*3 + 2] - vvOneVs[(i-polyFaceAmout)*3 + 2]) * vvNs[(i-polyFaceAmout)*3 + 2];
 
-            vvFaceDot[i*polyLineAmout*2 + j*2 + 1] = 
-            (polyLineEndVs[j*3] - vvOneVs[i*3]) * vvNs[i*3] + 
-            (polyLineEndVs[j*3 + 1] - vvOneVs[i*3 + 1]) * vvNs[i*3 + 1] + 
-            (polyLineEndVs[j*3 + 2] - vvOneVs[i*3 + 2]) * vvNs[i*3 + 2];
+            vvFaceDot[(i-polyFaceAmout)*polyLineAmout*2 + j*2 + 1] = 
+            (polyLineEndVs[j*3] - vvOneVs[(i-polyFaceAmout)*3]) * vvNs[(i-polyFaceAmout)*3] + 
+            (polyLineEndVs[j*3 + 1] - vvOneVs[(i-polyFaceAmout)*3 + 1]) * vvNs[(i-polyFaceAmout)*3 + 1] + 
+            (polyLineEndVs[j*3 + 2] - vvOneVs[(i-polyFaceAmout)*3 + 2]) * vvNs[(i-polyFaceAmout)*3 + 2];
         }
     }
 }
@@ -586,6 +589,9 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
     double* hVvNs = (double*)malloc(sizeof(double)*viewVolume.face.normal.size()*3);
     double* hPolyLineStartVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
     double* hPolyLineEndVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
+
+    std::vector<Vec3d> debug_line_combo;
+    Vec3d debug_push_vec;
     for (int i = 0; i < viewVolume.face.v.size(); i++){
         hVvOneVs[i*3] = viewVolume.face.v[i].x;
         hVvOneVs[i*3 + 1] = viewVolume.face.v[i].y;
@@ -605,11 +611,19 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
 
         for (int j = 0; j < 3; j++){
             if (j != 2){
+                debug_push_vec.x = shapeCnvtTargetI[i];
+                debug_push_vec.y = j;
+                debug_push_vec.z = j + 1;
+                debug_line_combo.push_back(debug_push_vec);
                 hPolyLineEndVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].x;
                 hPolyLineEndVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].y;
                 hPolyLineEndVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].z;
             }
             else{
+                debug_push_vec.x = shapeCnvtTargetI[i];
+                debug_push_vec.y = j;
+                debug_push_vec.z = 0;
+                debug_line_combo.push_back(debug_push_vec);
                 hPolyLineEndVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
                 hPolyLineEndVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
                 hPolyLineEndVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
@@ -651,8 +665,8 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
     cudaMemcpy(dPolyLineEndVs, hPolyLineEndVs, sizeof(double)*shapeCnvtTargetI.size()*3*3, cudaMemcpyHostToDevice);
 
     dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid((polyLineAmout + dimBlock.x - 1) 
-    / dimBlock.x, (polyLineAmout + dimBlock.y - 1) / dimBlock.y);
+    dim3 dimGrid(((polyFaceAmount*vvLineAmout + vvFaceAmout*polyLineAmout) + dimBlock.x - 1) 
+    / dimBlock.x, ((polyFaceAmount*vvLineAmout + vvFaceAmout*polyLineAmout) + dimBlock.y - 1) / dimBlock.y);
     glpaGpuGetPolyVvDot<<<dimGrid, dimBlock>>>(
         dPolyFaceDot,
         dVvFaceDot,

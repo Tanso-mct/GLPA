@@ -147,6 +147,7 @@ private :
     double farZ = -10000;
     double viewAngle = 80;
     Vec2d viewAngleCos;
+    Vec2d viewAngleTan;
     Vec2d aspectRatio = {16, 9};
 
     Vec2d nearScrSize;
