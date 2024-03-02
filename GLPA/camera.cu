@@ -590,8 +590,6 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
     double* hPolyLineStartVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
     double* hPolyLineEndVs = (double*)malloc(sizeof(double)*shapeCnvtTargetI.size()*3*3);
 
-    std::vector<Vec3d> debug_line_combo;
-    Vec3d debug_push_vec;
     for (int i = 0; i < viewVolume.face.v.size(); i++){
         hVvOneVs[i*3] = viewVolume.face.v[i].x;
         hVvOneVs[i*3 + 1] = viewVolume.face.v[i].y;
@@ -611,19 +609,11 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
 
         for (int j = 0; j < 3; j++){
             if (j != 2){
-                debug_push_vec.x = shapeCnvtTargetI[i];
-                debug_push_vec.y = j;
-                debug_push_vec.z = j + 1;
-                debug_line_combo.push_back(debug_push_vec);
                 hPolyLineEndVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].x;
                 hPolyLineEndVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].y;
                 hPolyLineEndVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[j + 1].z;
             }
             else{
-                debug_push_vec.x = shapeCnvtTargetI[i];
-                debug_push_vec.y = j;
-                debug_push_vec.z = 0;
-                debug_line_combo.push_back(debug_push_vec);
                 hPolyLineEndVs[i*3*3 + j*3] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].x;
                 hPolyLineEndVs[i*3*3 + j*3 + 1] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].y;
                 hPolyLineEndVs[i*3*3 + j*3 + 2] = (*ptRS)[shapeCnvtTargetI[i]].polyCamVs[0].z;
@@ -981,20 +971,21 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 
 
     for (int i = 0; i < vvFaceAmout; i++){
-        for (int k = 0; k < polyFaceAmount; k++){
-            for (int j = 0; j < 3; j++){
-                if (hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2] == 0){
-                    (*ptRS)[shapeCnvtTargetI[k]].scPixelVs.wVs.push_back((*ptRS)[shapeCnvtTargetI[k]].polyCamVs[j]);
+        for (int j = 0; j < polyFaceAmount; j++){
+            for (int k = 0; k < 3; k++){
+                if (hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2] == 0){
+                    (*ptRS)[shapeCnvtTargetI[j]].scPixelVs.wVs.push_back((*ptRS)[shapeCnvtTargetI[j]].polyCamVs[k]);
                     faceIExist = true;
                 }
-                if (hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2 + 1] == 0){
+
+                if (hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2 + 1] == 0){
                     if (j != 2){
-                        (*ptRS)[shapeCnvtTargetI[k]].scPixelVs.wVs.push_back(
-                            (*ptRS)[shapeCnvtTargetI[k]].polyCamVs[j + 1]
+                        (*ptRS)[shapeCnvtTargetI[j]].scPixelVs.wVs.push_back(
+                            (*ptRS)[shapeCnvtTargetI[j]].polyCamVs[k + 1]
                         );
                     } 
                     else{
-                        (*ptRS)[shapeCnvtTargetI[k]].scPixelVs.wVs.push_back((*ptRS)[shapeCnvtTargetI[k]].polyCamVs[0]);
+                        (*ptRS)[shapeCnvtTargetI[j]].scPixelVs.wVs.push_back((*ptRS)[shapeCnvtTargetI[j]].polyCamVs[0]);
                     }
                     faceIExist = true;
                 }
@@ -1005,43 +996,43 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
                 }
 
                 if (
-                    (hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2] > 0 && 
-                    hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2 + 1] < 0) ||
-                    (hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2] < 0 && 
-                    hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2 + 1] > 0)
+                    (hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2] > 0 && 
+                    hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2 + 1] < 0) ||
+                    (hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2] < 0 && 
+                    hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2 + 1 + 1] > 0)
                 ){
-                    vvRsI.push_back(shapeCnvtTargetI[k]);
+                    vvRsI.push_back(shapeCnvtTargetI[j]);
                     viewVolume.pushFaceVsToDouble(&vvFaceVs, i);
 
-                    vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[k]].polyCamVs, &vvFaceLineVs, j);
-                    if (j != 2){
-                        vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[k]].polyCamVs, &vvFaceLineVs, j + 1);
+                    vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[j]].polyCamVs, &vvFaceLineVs, k);
+                    if (k != 2){
+                        vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[j]].polyCamVs, &vvFaceLineVs, k + 1);
                     } 
                     else{
-                        vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[k]].polyCamVs, &vvFaceLineVs, 0);
+                        vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[j]].polyCamVs, &vvFaceLineVs, 0);
                     }
 
-                    vvFaceDot.push_back(hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2]);
-                    vvFaceDot.push_back(hVvFaceDot[i*polyLineAmout*2 + k*3*2 + j*2 + 1]);
+                    vvFaceDot.push_back(hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2]);
+                    vvFaceDot.push_back(hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2 + 1]);
                     continue;
                 }
             }
         }
     }
 
-    double* hPolyFaceLineVs = (double*)malloc(sizeof(double)*polyFaceLineVs.size()*3);
-    double* hPolyFaceDot = (double*)malloc(sizeof(double)*polyFaceDot.size()*3);
+    double* hPolyFaceLineVs = (double*)malloc(sizeof(double)*polyFaceLineVs.size());
+    double* hPolyFaceDot = (double*)malloc(sizeof(double)*polyFaceDot.size());
     hPolyFaceInxtn = (double*)malloc(sizeof(double)*polyRsI.size()*3);
 
-    double* hVvFaceLineVs = (double*)malloc(sizeof(double)*vvFaceLineVs.size()*3);
-    double* hVvFaceDot = (double*)malloc(sizeof(double)*vvFaceDot.size()*3);
+    double* hVvFaceLineVs = (double*)malloc(sizeof(double)*vvFaceLineVs.size());
+    double* hVvFaceDot = (double*)malloc(sizeof(double)*vvFaceDot.size());
     hVvFaceInxtn = (double*)malloc(sizeof(double)*vvRsI.size()*3);
 
-    memcpy(hPolyFaceLineVs, polyFaceLineVs.data(), sizeof(int)*polyFaceLineVs.size()*3);
-    memcpy(hPolyFaceDot, polyFaceDot.data(), sizeof(int)*polyFaceDot.size()*3);
+    memcpy(hPolyFaceLineVs, polyFaceLineVs.data(), sizeof(int)*polyFaceLineVs.size());
+    memcpy(hPolyFaceDot, polyFaceDot.data(), sizeof(int)*polyFaceDot.size());
 
-    memcpy(hVvFaceLineVs, vvFaceLineVs.data(), sizeof(int)*vvFaceLineVs.size()*3);
-    memcpy(hVvFaceDot, vvFaceDot.data(), sizeof(int)*vvFaceDot.size()*3);
+    memcpy(hVvFaceLineVs, vvFaceLineVs.data(), sizeof(int)*vvFaceLineVs.size());
+    memcpy(hVvFaceDot, vvFaceDot.data(), sizeof(int)*vvFaceDot.size());
 
     double* dPolyFaceLineVs;
     double* dPolyFaceDot;
@@ -1051,25 +1042,25 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
     double* dVvFaceDot;
     double* dVvFaceInxtn;
 
-    cudaMalloc((void**)&dPolyFaceLineVs, sizeof(double)*polyFaceLineVs.size()*3);
-    cudaMalloc((void**)&dPolyFaceDot, sizeof(double)*polyFaceDot.size()*3);
+    cudaMalloc((void**)&dPolyFaceLineVs, sizeof(double)*polyFaceLineVs.size());
+    cudaMalloc((void**)&dPolyFaceDot, sizeof(double)*polyFaceDot.size());
     cudaMalloc((void**)&dPolyFaceInxtn, sizeof(double)*polyRsI.size()*3);
 
-    cudaMalloc((void**)&dVvFaceLineVs, sizeof(double)*vvFaceLineVs.size()*3);
-    cudaMalloc((void**)&dVvFaceDot, sizeof(double)*vvFaceDot.size()*3);
+    cudaMalloc((void**)&dVvFaceLineVs, sizeof(double)*vvFaceLineVs.size());
+    cudaMalloc((void**)&dVvFaceDot, sizeof(double)*vvFaceDot.size());
     cudaMalloc((void**)&dVvFaceInxtn, sizeof(double)*vvRsI.size()*3);
 
-    cudaMemcpy(dPolyFaceLineVs, hPolyFaceLineVs, sizeof(double)*polyFaceLineVs.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dPolyFaceDot, hPolyFaceDot, sizeof(double)*polyFaceDot.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyFaceLineVs, hPolyFaceLineVs, sizeof(double)*polyFaceLineVs.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyFaceDot, hPolyFaceDot, sizeof(double)*polyFaceDot.size(), cudaMemcpyHostToDevice);
 
-    cudaMemcpy(dVvFaceLineVs, hVvFaceLineVs, sizeof(double)*vvFaceLineVs.size()*3, cudaMemcpyHostToDevice);
-    cudaMemcpy(dVvFaceDot, hVvFaceDot, sizeof(double)*vvFaceDot.size()*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvFaceLineVs, hVvFaceLineVs, sizeof(double)*vvFaceLineVs.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dVvFaceDot, hVvFaceDot, sizeof(double)*vvFaceDot.size(), cudaMemcpyHostToDevice);
 
 
-    int inxtnAmount = polyRsI.size() + vvRsI.size();
+    int inxtnAmount = (polyRsI.size() + vvRsI.size()) * 3;
     dim3 dimBlock(32, 32);
-    dim3 dimGrid((inxtnAmount*2 + dimBlock.x - 1) 
-    / dimBlock.x, (inxtnAmount*2 + dimBlock.y - 1) / dimBlock.y);
+    dim3 dimGrid((inxtnAmount + dimBlock.x - 1) 
+    / dimBlock.x, (inxtnAmount + dimBlock.y - 1) / dimBlock.y);
     glpaGpuGetIntxn<<<dimGrid, dimBlock>>>(
         dPolyFaceLineVs,
         dPolyFaceDot,
