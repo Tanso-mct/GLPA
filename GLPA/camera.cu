@@ -696,76 +696,6 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
 }
 
 
-__global__ void glpaGpuIntxnInteriorAngle(
-    double* polyFaceDot,
-    double* vvFaceDot,
-    double* vvLineStartVs,
-    double* vvLineEndVs,
-    double* polyLineStartVs,
-    double* polyLineEndVs,
-    int* polyFaceVvLineI,
-    int* polyFaceI,
-    int* polyLineVvFaceI,
-    int* vvLineI,
-    int intxnAmount,
-    int vvLineAmount,
-    int vvFaceAmount,
-    int polyFaceISize,
-    int vvFaceISize,
-    double* faceInxtn,
-    double* lineInxtn,
-    double* polyDot,
-    double* faceDot
-){
-    int i = blockIdx.y * blockDim.y + threadIdx.y;
-    int j = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (i < intxnAmount){
-        if (j < polyFaceISize){
-            faceInxtn[j*3] = vvLineStartVs[polyFaceVvLineI[j]*3] +
-            (vvLineEndVs[polyFaceVvLineI[j]*3] - vvLineStartVs[polyFaceVvLineI[j]*3]) *
-            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) /
-            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) +
-            abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2 + 1])));
-
-            faceInxtn[j*3 + 1] = vvLineStartVs[polyFaceVvLineI[j]*3 + 1] +
-            (vvLineEndVs[polyFaceVvLineI[j]*3 + 1] - vvLineStartVs[polyFaceVvLineI[j]*3 + 1]) *
-            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) /
-            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) +
-            abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2 + 1])));
-
-            faceInxtn[j*3 + 1] = vvLineStartVs[polyFaceVvLineI[j]*3 + 1] +
-            (vvLineEndVs[polyFaceVvLineI[j]*3 + 1] - vvLineStartVs[polyFaceVvLineI[j]*3 + 1]) *
-            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) /
-            (abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2]) +
-            abs(polyFaceDot[polyFaceI[i]*vvLineAmount*2 + polyFaceVvLineI[j]*2 + 1])));
-        }
-    }
-
-    if (i < intxnAmount){
-        if (j < vvFaceISize){
-            lineInxtn[j*3] = polyLineStartVs[vvLineI[j]*3] +
-            (polyLineEndVs[vvLineI[j]*3] - polyLineStartVs[vvLineI[j]*3]) *
-            (abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2]) /
-            (abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2]) +
-            abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2 + 1])));
-
-            lineInxtn[j*3 + 1] = polyLineStartVs[vvLineI[j]*3 + 1] +
-            (polyLineEndVs[vvLineI[j]*3 + 1] - polyLineStartVs[vvLineI[j]*3 + 1]) *
-            (abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2]) /
-            (abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2]) +
-            abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2 + 1])));
-
-            lineInxtn[j*3 + 2] = polyLineStartVs[vvLineI[j]*3 + 2] +
-            (polyLineEndVs[vvLineI[j]*3 + 2] - polyLineStartVs[vvLineI[j]*3 + 2]) *
-            (abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2]) /
-            (abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2]) +
-            abs(vvFaceDot[vvLineI[i]*vvFaceAmount*2 + polyLineVvFaceI[j]*2 + 1])));
-        }
-    }
-
-}
-
 
 __global__ void glpaGpuGetIntxn(
     double* polyFaceLineVs,
@@ -926,12 +856,8 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
     std::vector<double> vvFaceLineVs; // start.x start.y start.z end.x end.y end.z n*6
     std::vector<double> vvFaceDot; // startVdot endVdot n*2
 
-    std::vector<DebugSt> debug_st;
-    DebugSt push_debug_st;
-
     bool faceIExist = false;
     for (int i = 0; i < polyFaceAmount; i++){
-        (*ptRS)[shapeCnvtTargetI[i]].scPixelVs.wVs.clear();
 
         for (int j = 0; j < vvLineAmout; j++){
             if (hPolyFaceDot[i*vvLineAmout*2 + j*2] == 0){
@@ -969,18 +895,11 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
                 polyFaceDot.push_back(hPolyFaceDot[i*vvLineAmout*2 + j*2]);
                 polyFaceDot.push_back(hPolyFaceDot[i*vvLineAmout*2 + j*2 + 1]);
 
-                push_debug_st.objName = ((*ptRS)[shapeCnvtTargetI[i]].renderPoly.objName);
-                push_debug_st.polyId = ((*ptRS)[shapeCnvtTargetI[i]].renderPoly.polyId);
-                push_debug_st.lineVStart = viewVolume.lines[j].startV;
-                push_debug_st.lineVEnd = viewVolume.lines[j].endV;
-                debug_st.push_back(push_debug_st);
                 continue;
             }
         }
     }
 
-
-    std::vector<DebugSt> debug_st_2;
 
     for (int i = 0; i < vvFaceAmout; i++){
         for (int j = 0; j < polyFaceAmount; j++){
@@ -1017,22 +936,16 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
                     viewVolume.pushFaceVsToDouble(&vvFaceVs, i);
 
                     vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[j]].polyCamVs, &vvFaceLineVs, k);
-                    push_debug_st.lineVStart = (*ptRS)[shapeCnvtTargetI[j]].polyCamVs[k];
                     if (k != 2){
                         vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[j]].polyCamVs, &vvFaceLineVs, k + 1);
-                        push_debug_st.lineVEnd = (*ptRS)[shapeCnvtTargetI[j]].polyCamVs[k + 1];
                     } 
                     else{
                         vec.pushVecToDouble((*ptRS)[shapeCnvtTargetI[j]].polyCamVs, &vvFaceLineVs, 0);
-                        push_debug_st.lineVEnd = (*ptRS)[shapeCnvtTargetI[j]].polyCamVs[0];
                     }
 
                     vvFaceDot.push_back(hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2]);
                     vvFaceDot.push_back(hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2 + 1]);
 
-                    push_debug_st.objName = ((*ptRS)[shapeCnvtTargetI[j]].renderPoly.objName);
-                    push_debug_st.polyId = ((*ptRS)[shapeCnvtTargetI[j]].renderPoly.polyId);
-                    debug_st_2.push_back(push_debug_st);
                     continue;
                 }
             }
@@ -1155,22 +1068,14 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 void Camera::setPolyInxtn(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
 ){
-    std::vector<Vec3d> debug_vec;
-
-    for (int i = 0; i < vvRsI.size(); i++){
-        debug_vec.push_back({
-            hVvFaceInxtn[i*3],
-            hVvFaceInxtn[i*3 + 1],
-            hVvFaceInxtn[i*3 + 2]
-        });
-    }
-
+    // std::vector<int> wPixelsSize;
+    // int size4Amount = 0;
 
     for (int i = 0; i < polyRsI.size(); i++){
         if (
-            (hPolyFaceIACos[i*6] <= hPolyFaceIACos[i*6 + 1]) &&
-            (hPolyFaceIACos[i*6 + 2] <= hPolyFaceIACos[i*6 + 3]) &&
-            (hPolyFaceIACos[i*6 + 4] <= hPolyFaceIACos[i*6 + 5]) 
+            (hPolyFaceIACos[i*6] >= hPolyFaceIACos[i*6 + 1]) &&
+            (hPolyFaceIACos[i*6 + 2] >= hPolyFaceIACos[i*6 + 3]) &&
+            (hPolyFaceIACos[i*6 + 4] >= hPolyFaceIACos[i*6 + 5]) 
         ){
             (*ptRS)[polyRsI[i]].scPixelVs.wVs.push_back({
                 hPolyFaceInxtn[i*3],
@@ -1182,18 +1087,27 @@ void Camera::setPolyInxtn(
 
     for (int i = 0; i < vvRsI.size(); i++){
         if (
-            (hVvFaceIACos[i*8] <= hVvFaceIACos[i*8 + 1]) &&
-            (hVvFaceIACos[i*8 + 2] <= hVvFaceIACos[i*8 + 3]) &&
-            (hVvFaceIACos[i*8 + 4] <= hVvFaceIACos[i*8 + 5]) &&
-            (hVvFaceIACos[i*8 + 6] <= hVvFaceIACos[i*8 + 7])
+            (hVvFaceIACos[i*8] >= hVvFaceIACos[i*8 + 1]) &&
+            (hVvFaceIACos[i*8 + 2] >= hVvFaceIACos[i*8 + 3]) &&
+            (hVvFaceIACos[i*8 + 4] >= hVvFaceIACos[i*8 + 5]) &&
+            (hVvFaceIACos[i*8 + 6] >= hVvFaceIACos[i*8 + 7])
         ){
             (*ptRS)[vvRsI[i]].scPixelVs.wVs.push_back({
                 hVvFaceInxtn[i*3],
                 hVvFaceInxtn[i*3 + 1],
                 hVvFaceInxtn[i*3 + 2]
             });
+
         }
     }
+
+    // for (auto i : (*ptRS)){
+    //     wPixelsSize.push_back(i.scPixelVs.wVs.size());
+
+    //     if(i.scPixelVs.wVs.size() == 4){
+    //         size4Amount += 1;
+    //     }
+    // }
 
 
 

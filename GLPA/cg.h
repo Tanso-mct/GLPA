@@ -209,8 +209,7 @@ typedef struct tagRasterizeSource{
 typedef struct tagDebugSt{
     std::wstring objName;
     int polyId;
-    Vec3d lineVStart;
-    Vec3d lineVEnd;
+    Vec3d inxtn;
 } DebugSt;
 
 
