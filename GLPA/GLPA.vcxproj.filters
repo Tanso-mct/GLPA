@@ -323,11 +323,11 @@
     <None Include="resource\scene\game_1\mtl\temp_cube.mtl">
       <Filter>リソース ファイル\scene\game_1\mtl</Filter>
     </None>
-    <None Include="resource\scene\game_1\mtl\temp_field.mtl">
-      <Filter>リソース ファイル\scene\game_1\mtl</Filter>
-    </None>
     <None Include="resource\scene\game_1\obj\temp_cube.obj">
       <Filter>リソース ファイル\scene\game_1\obj</Filter>
+    </None>
+    <None Include="resource\scene\game_1\mtl\temp_field.mtl">
+      <Filter>リソース ファイル\scene\game_1\mtl</Filter>
     </None>
     <None Include="resource\scene\game_1\obj\temp_field.obj">
       <Filter>リソース ファイル\scene\game_1\obj</Filter>

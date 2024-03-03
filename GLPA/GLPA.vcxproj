@@ -253,20 +253,18 @@
     <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resource\scene\game_1\obj\temp_field.obj">
+    <None Include="resource\scene\game_1\mtl\temp_cube.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\scene\game_1\mtl\temp_field.mtl" />
+    <None Include="resource\scene\game_1\obj\temp_cube.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resource\scene\game_1\mtl\temp_cube.mtl" />
-    <None Include="resource\scene\game_1\mtl\temp_field.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\scene\game_1\obj\temp_cube.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
+    <None Include="resource\scene\game_1\obj\temp_field.obj">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

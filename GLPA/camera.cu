@@ -680,8 +680,13 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
 
     free(hPolyOneVs);
     free(hPolyNs);
+    free(hVvLineStartVs);
+    free(hVvLineEndVs);
+
     free(hVvOneVs);
     free(hVvNs);
+    free(hPolyLineStartVs);
+    free(hPolyLineEndVs);
 
     cudaFree(dPolyFaceDot);
     cudaFree(dVvFaceDot);
@@ -1009,8 +1014,10 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 
     free(hPolyFaceLineVs);
     free(hPolyFaceDot);
+    free(hCalcPolyFaceDot);
     free(hVvFaceLineVs);
     free(hVvFaceDot);
+    free(hCalcVvFaceDot);
 
     cudaFree(dPolyFaceLineVs);
     cudaFree(dPolyFaceDot);
@@ -1068,9 +1075,6 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
 void Camera::setPolyInxtn(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS
 ){
-    // std::vector<int> wPixelsSize;
-    // int size4Amount = 0;
-
     for (int i = 0; i < polyRsI.size(); i++){
         if (
             (hPolyFaceIACos[i*6] >= hPolyFaceIACos[i*6 + 1]) &&
@@ -1101,20 +1105,12 @@ void Camera::setPolyInxtn(
         }
     }
 
-    // for (auto i : (*ptRS)){
-    //     wPixelsSize.push_back(i.scPixelVs.wVs.size());
 
-    //     if(i.scPixelVs.wVs.size() == 4){
-    //         size4Amount += 1;
-    //     }
-    // }
+    free(hPolyFaceInxtn);
+    free(hVvFaceInxtn);
 
-
-
-
-    
-
-    
+    free(hPolyFaceIACos);
+    free(hVvFaceIACos);
 
 
 }
