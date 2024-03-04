@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <math.h>
+#include <cmath>
 #include <string>
 #include <unordered_map>
 
@@ -91,6 +92,17 @@ __global__ void glpaGpuGetIACos(
     int vv_face_size
 );
 
+
+__global__ void glpaGpuScPixelConvert(
+    double* world_vs,
+    double* near_z,
+    double* far_z,
+    double* near_screen_size,
+    double* screen_pixel_size,
+    double* result_vs,
+    int world_vs_amount
+);
+
 /// @brief Has data related to the 3DCG camera.
 class Camera{
 public :
@@ -101,7 +113,8 @@ public :
         double arg_near_z,
         double arg_far_z,
         double arg_view_angle,
-        Vec2d arg_aspect_ratio
+        Vec2d arg_aspect_ratio,
+        Vec2d arg_screen_pixel_size
     );
 
     void defineViewVolume();
@@ -133,6 +146,8 @@ public :
         std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* pt_rasterize_source
     );
 
+    void scPixelConvert(std::vector<RasterizeSource>* pt_rasterize_source);
+
     Matrix mt;
     Vector vec;
 
@@ -152,6 +167,7 @@ private :
 
     Vec2d nearScrSize;
     Vec2d farScrSize;
+    Vec2d scPixelSize;
 
     ViewVolume viewVolume;
     
@@ -159,6 +175,8 @@ private :
     std::vector<PolyNameInfo> renderTargetPoly;
 
     std::vector<int> shapeCnvtTargetI;
+
+    std::vector<int> sortTargetI;
 
     double* hPolyFaceDot;
     double* hVvFaceDot;

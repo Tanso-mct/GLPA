@@ -3,7 +3,7 @@
 
 void Game::createWnd(){
     glpa.createWindow(
-        WINDOW_GAME, WINDOW_CLASS_GAME, 1000, 650, 1, 60, CS_HREDRAW | CS_VREDRAW,
+        WINDOW_GAME, WINDOW_CLASS_GAME, 1920, 1080, 1, 60, CS_HREDRAW | CS_VREDRAW,
         IDI_APPLICATION, IDC_ARROW, WHITE_BRUSH, IDI_APPLICATION, false, true, WS_SYSMENU
     );
 
@@ -29,8 +29,8 @@ void Game::selectScene(){
 void Game::tempStart(){
     createWnd();
     createScene();
-    loadScene();
     selectScene();
+    loadScene();
 }
 
 

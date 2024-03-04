@@ -329,4 +329,18 @@
 #define ERROR_TEXT_EDIT NULL
 
 
+/**********************************************************************************************************************
+ * 日本語 : camera.cuh及びcamera.cuファイルに関するエラーメッセージ一覧
+ * English : List of error messages related to the camera.cuh and camera.cu files
+**********************************************************************************************************************/
+
+
+/********************************************************************************
+ * 日本語 : 交点を取得後にも頂点が足りず、ラスタライズが不可能なため出現するエラーです。
+ * English : This error appears because there are not enough vertices after the 
+ * intersection is obtained and rasterization is not possible.
+********************************************************************************/
+#define ERROR_CAMERA_CANT_RASTERIZE NULL
+
+
 #endif ERROR_H_

@@ -22,7 +22,8 @@ void Scene3d::loadCam(std::wstring camName){
             1,
             10000,
             80,
-            {16, 9}
+            {16, 9},
+            {(double)useWndWidth, (double)useWndHeight}
         );
     }
     else{
@@ -64,6 +65,7 @@ void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].polyVvLineDot(objects, &rasterizeSource);
     cams[useCamName].inxtnInteriorAngle(&rasterizeSource);
     cams[useCamName].setPolyInxtn(objects, &rasterizeSource);
+    cams[useCamName].scPixelConvert(&rasterizeSource);
 
 }
 

@@ -8,7 +8,8 @@ void Camera::load(
     double argNearZ, 
     double argFarZ, 
     double argViewAngle, 
-    Vec2d argAspectRatio
+    Vec2d argAspectRatio,
+    Vec2d argScPixelSize
 ){
     name = argName;
     wPos = argWPos;
@@ -17,6 +18,7 @@ void Camera::load(
     farZ = argFarZ;
     viewAngle = argViewAngle;
     aspectRatio = argAspectRatio;
+    scPixelSize = argScPixelSize;
 
     reload = true;
 }
@@ -1112,5 +1114,130 @@ void Camera::setPolyInxtn(
     free(hPolyFaceIACos);
     free(hVvFaceIACos);
 
+
+}
+
+
+__global__ void glpaGpuScPixelConvert(
+    double* wVs, 
+    double* nearZ, 
+    double* farZ, 
+    double* nearScSize, 
+    double* scPixelSize,
+    double* resultVs, 
+    int wVsAmount){
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < wVsAmount){
+        if (j == 0){
+            resultVs[i*2 + j] = 
+            std::round((((wVs[i*3 + j] * -nearZ[0] / wVs[i*3 + 2]) + nearScSize[j]) /
+            (nearScSize[j] * 2)) * scPixelSize[j]);
+        }
+        else if (j == 1){
+            resultVs[i*2 + j] = 
+            std::round(scPixelSize[j] - (((wVs[i*3 + j] * -nearZ[0] / wVs[i*3 + 2]) + nearScSize[j]) /
+            (nearScSize[j] * 2)) * scPixelSize[j]);
+        }
+    }
+}
+
+
+void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
+    std::vector<double> wVs;
+    std::vector<int> wVsSize;
+    int wVsAmount = 0;
+
+    for (int i = 0; i < (*ptRS).size(); i++){
+        wVsSize.push_back((*ptRS)[i].scPixelVs.wVs.size());
+
+        for (int j = 0; j < (*ptRS)[i].scPixelVs.wVs.size(); j++){
+            vec.pushVecToDouble((*ptRS)[i].scPixelVs.wVs, &wVs, j);
+            wVsAmount += 1;
+        }
+    }
+
+    double* hWvs = (double*)malloc(sizeof(double)*wVsAmount*3);
+    double* hNearZ = &nearZ;
+    double* hFarZ = &farZ;
+    double* hNearScSize = (double*)malloc(sizeof(double)*2);
+    double* hScPixelSize = (double*)malloc(sizeof(double)*2);
+    double* hResultVs = (double*)malloc(sizeof(double)*wVsAmount*2);
+
+    memcpy(hWvs, wVs.data(), sizeof(double)*wVsAmount*3);
+    hNearScSize[0] = nearScrSize.x;
+    hNearScSize[1] = nearScrSize.y;
+
+    hScPixelSize[0] = scPixelSize.x;
+    hScPixelSize[1] = scPixelSize.y;
+
+    double* dWvs;
+    double* dNearZ;
+    double* dFarZ;
+    double* dNearScSize;
+    double* dScPixelSize;
+    double* dResultVs;
+    cudaMalloc((void**)&dWvs, sizeof(double)*wVsAmount*3);
+    cudaMalloc((void**)&dNearZ, sizeof(double)*1);
+    cudaMalloc((void**)&dFarZ, sizeof(double)*1);
+    cudaMalloc((void**)&dNearScSize, sizeof(double)*2);
+    cudaMalloc((void**)&dScPixelSize, sizeof(double)*2);
+    cudaMalloc((void**)&dResultVs, sizeof(double)*wVsAmount*2);
+
+    cudaMemcpy(dWvs, hWvs, sizeof(double)*wVsAmount*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dNearZ, hNearZ, sizeof(double)*1, cudaMemcpyHostToDevice);
+    cudaMemcpy(dFarZ, hFarZ, sizeof(double)*1, cudaMemcpyHostToDevice);
+    cudaMemcpy(dNearScSize, hNearScSize, sizeof(double)*2, cudaMemcpyHostToDevice);
+    cudaMemcpy(dScPixelSize, hScPixelSize, sizeof(double)*2, cudaMemcpyHostToDevice);
+
+    dim3 dimBlock(32, 32);
+    dim3 dimGrid((wVsAmount*2 + dimBlock.x - 1) 
+    / dimBlock.x, (wVsAmount*2 + dimBlock.y - 1) / dimBlock.y);
+    glpaGpuScPixelConvert<<<dimGrid, dimBlock>>>(
+        dWvs, dNearZ, dFarZ, dNearScSize, dScPixelSize, dResultVs, wVsAmount
+    );
+    cudaError_t error = cudaGetLastError();
+
+    cudaMemcpy(hResultVs, dResultVs, sizeof(double)*wVsAmount*2, cudaMemcpyDeviceToHost);
+
+    int wVsI = 0;
+    for (int i = 0; i < (*ptRS).size(); i++){
+        if (wVsSize[i] > 3){
+            sortTargetI.push_back(i);
+        }
+        
+        for (int j = 0; j < wVsSize[i]; j++){
+            if (wVsSize[i] <= 2){
+                throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
+            }
+            else if(wVsSize[i] == 3){
+                (*ptRS)[i].scPixelVs.sortedWVs.push_back({
+                    hResultVs[wVsI*2],
+                    hResultVs[wVsI*2 + 1]
+                });
+            }
+            else if (wVsSize[i] > 3){
+                (*ptRS)[i].scPixelVs.vs.push_back({
+                    hResultVs[wVsI*2],
+                    hResultVs[wVsI*2 + 1]
+                });
+            }
+
+            wVsI += 1;
+        }
+    }
+
+    free(hWvs);
+    free(hNearScSize);
+    free(hScPixelSize);
+    free(hResultVs);
+
+    cudaFree(dWvs);
+    cudaFree(dNearZ);
+    cudaFree(dFarZ);
+    cudaFree(dNearScSize);
+    cudaFree(dScPixelSize);
+    cudaFree(dResultVs);
 
 }
