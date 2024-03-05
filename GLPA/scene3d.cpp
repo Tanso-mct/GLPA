@@ -66,6 +66,7 @@ void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].inxtnInteriorAngle(&rasterizeSource);
     cams[useCamName].setPolyInxtn(objects, &rasterizeSource);
     cams[useCamName].scPixelConvert(&rasterizeSource);
+    cams[useCamName].sortScPixelVs(&rasterizeSource);
 
 }
 

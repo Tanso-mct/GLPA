@@ -192,7 +192,6 @@ typedef struct tagPolyNameInfo{
 typedef struct tagMultiSidedShape{
     std::vector<Vec3d> wVs;
     std::vector<Vec2d> vs;
-    std::vector<Vec3d> sortedWVs;
 } MultiSidedShape;
 
 

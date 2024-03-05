@@ -1125,7 +1125,8 @@ __global__ void glpaGpuScPixelConvert(
     double* nearScSize, 
     double* scPixelSize,
     double* resultVs, 
-    int wVsAmount){
+    int wVsAmount
+){
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -1205,6 +1206,7 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
     for (int i = 0; i < (*ptRS).size(); i++){
         if (wVsSize[i] > 3){
             sortTargetI.push_back(i);
+            sortTargetSizes.push_back(wVsSize[i]);
         }
         
         for (int j = 0; j < wVsSize[i]; j++){
@@ -1212,16 +1214,14 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
                 throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
             }
             else if(wVsSize[i] == 3){
-                (*ptRS)[i].scPixelVs.sortedWVs.push_back({
+                (*ptRS)[i].scPixelVs.vs.push_back({
                     hResultVs[wVsI*2],
                     hResultVs[wVsI*2 + 1]
                 });
             }
             else if (wVsSize[i] > 3){
-                (*ptRS)[i].scPixelVs.vs.push_back({
-                    hResultVs[wVsI*2],
-                    hResultVs[wVsI*2 + 1]
-                });
+                sortVs.push_back(hResultVs[wVsI*2]);
+                sortVs.push_back(hResultVs[wVsI*2 + 1]);
             }
 
             wVsI += 1;
@@ -1239,5 +1239,95 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
     cudaFree(dNearScSize);
     cudaFree(dScPixelSize);
     cudaFree(dResultVs);
+
+}
+
+
+__global__ void glpaGpuSortVsDotCross(
+    int* sortVsSizes,
+    double* sortVs,
+    double* dotCos,
+    double* cross,
+    int targetSize
+){
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < targetSize){
+        if (j < (sortVsSizes[i] - 2)){
+            int sumSize = 0;
+            int sumResultSize = 0;
+            for (int k = 0; k < i; k++){
+                sumSize += sortVsSizes[k];
+                sumResultSize += sortVsSizes[k] - 2;
+            }
+
+            dotCos[sumResultSize + j] = 
+            ((sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]) + 
+            (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1]) * 
+            (sortVs[sumSize*2 + (j+2)*2 + 1]) - sortVs[sumSize*2 + 1]) /
+            (sqrt((sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) + 
+            (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1]) * (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1])) *
+            sqrt((sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]) + 
+            (sortVs[sumSize*2 + (j+2)*2 + 1] - sortVs[sumSize*2 + 1]) * (sortVs[sumSize*2 + (j+2)*2 + 1] - sortVs[sumSize*2 + 1])));
+
+            cross[sumResultSize + j] =
+            (sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + (j+2)*2 + 1] - sortVs[sumSize*2 + 1]) +
+            (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1]) * (sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]);
+
+        }
+    }
+}
+
+
+void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
+    int sumSize = 0;
+    for (int i = 0; i < sortTargetSizes.size(); i++){
+        sumSize += sortTargetSizes[i] - 2;
+    }
+    
+    int* hSortVsSizes = (int*)malloc(sizeof(int)*sortTargetSizes.size());
+    double* hSortVs = (double*)malloc(sizeof(double)*sortVs.size());
+    double* hVsDotCos = (double*)malloc(sizeof(double)*sumSize);
+    double* hVsCross = (double*)malloc(sizeof(double)*sumSize);
+
+    memcpy(hSortVsSizes, sortTargetSizes.data(), sizeof(int)*sortTargetSizes.size());
+    memcpy(hSortVs, sortVs.data(), sizeof(double)*sortVs.size());
+
+    int* dSortVsSizes;
+    double* dSortVs;
+    double* dVsDotCos;
+    double* dVsCross;
+    cudaMalloc((void**)&dSortVsSizes, sizeof(int)*sortTargetSizes.size());
+    cudaMalloc((void**)&dSortVs, sizeof(double)*sortVs.size());
+    cudaMalloc((void**)&dVsDotCos, sizeof(double)*sumSize);
+    cudaMalloc((void**)&dVsCross, sizeof(double)*sumSize);
+
+    cudaMemcpy(dSortVsSizes, hSortVsSizes, sizeof(int)*sortTargetSizes.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dSortVs, hSortVs, sizeof(double)*sortVs.size(), cudaMemcpyHostToDevice);
+
+    dim3 dimBlock(32, 32);
+    dim3 dimGrid((sumSize*2 + dimBlock.x - 1) 
+    / dimBlock.x, (sumSize*2 + dimBlock.y - 1) / dimBlock.y);
+    glpaGpuSortVsDotCross<<<dimGrid, dimBlock>>>(
+        dSortVsSizes, dSortVs, dVsDotCos, dVsCross, sortTargetSizes.size()
+    );
+    cudaError_t error = cudaGetLastError();
+
+    cudaMemcpy(hVsDotCos, dVsDotCos, sizeof(double)*sumSize, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hVsCross, dVsCross, sizeof(double)*sumSize, cudaMemcpyDeviceToHost);
+
+    free(hSortVsSizes);
+    free(hSortVs);
+    free(hVsDotCos);
+    free(hVsCross);
+
+    cudaFree(dSortVsSizes);
+    cudaFree(dSortVs);
+    cudaFree(dVsDotCos);
+    cudaFree(dVsCross);
+
+
+
 
 }

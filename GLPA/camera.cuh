@@ -16,6 +16,7 @@
 #include <cmath>
 #include <string>
 #include <unordered_map>
+#include <Windows.h>
 
 #include "cg.h"
 #include "view_volume.cuh"
@@ -103,6 +104,15 @@ __global__ void glpaGpuScPixelConvert(
     int world_vs_amount
 );
 
+
+__global__ void glpaGpuSortVsDotCross(
+    int* sort_vs_sizes,
+    double* sort_vs,
+    double* dot_cos,
+    double* cross,
+    int target_size
+);
+
 /// @brief Has data related to the 3DCG camera.
 class Camera{
 public :
@@ -148,6 +158,8 @@ public :
 
     void scPixelConvert(std::vector<RasterizeSource>* pt_rasterize_source);
 
+    void sortScPixelVs(std::vector<RasterizeSource>* pt_rasterize_source);
+
     Matrix mt;
     Vector vec;
 
@@ -177,6 +189,8 @@ private :
     std::vector<int> shapeCnvtTargetI;
 
     std::vector<int> sortTargetI;
+    std::vector<int> sortTargetSizes;
+    std::vector<double> sortVs;
 
     double* hPolyFaceDot;
     double* hVvFaceDot;
