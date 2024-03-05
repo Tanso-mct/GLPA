@@ -188,9 +188,15 @@ private :
 
     std::vector<int> shapeCnvtTargetI;
 
-    std::vector<int> sortTargetI;
-    std::vector<int> sortTargetSizes;
-    std::vector<double> sortVs;
+    std::vector<int> sort4TargetI;
+    std::vector<int> sort5TargetI;
+    std::vector<int> sort6TargetI;
+    std::vector<int> sort7TargetI;
+
+    std::vector<double> sort4Vs;
+    std::vector<double> sort5Vs;
+    std::vector<double> sort6Vs;
+    std::vector<double> sort7Vs;
 
     double* hPolyFaceDot;
     double* hVvFaceDot;
