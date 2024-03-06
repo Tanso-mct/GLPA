@@ -1270,39 +1270,116 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
 
 
 __global__ void glpaGpuSortVsDotCross(
-    int* sortVsSizes,
-    double* sortVs,
-    double* dotCos,
-    double* cross,
-    int targetSize
+    int sort4VsSizes,
+    int sort5VsSizes,
+    int sort6VsSizes,
+    int sort7VsSizes,
+    double* sort4Vs,
+    double* sort5Vs,
+    double* sort6Vs,
+    double* sort7Vs,
+    double* vs4DotCos,
+    double* vs4Cross,
+    double* vs5DotCos,
+    double* vs5Cross,
+    double* vs6DotCos,
+    double* vs6Cross,
+    double* vs7DotCos,
+    double* vs7Cross
 ){
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < targetSize){
-        if (j < (sortVsSizes[i] - 2)){
-            int sumSize = 0;
-            int sumResultSize = 0;
-            for (int k = 0; k < i; k++){
-                sumSize += sortVsSizes[k];
-                sumResultSize += sortVsSizes[k] - 2;
-            }
+    if (i < (sort4VsSizes / 2)){
+        if (j < 2){
+            vs4DotCos[i*2 + j] = 
+            ((sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2] - sort4Vs[i*4*2 + 0*2]) + 
+            (sort4Vs[i*4*2 + 1*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1])) /
+            (sqrt((sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) + 
+            (sort4Vs[i*4*2 + 1*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + 1*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1])) *
+            sqrt((sort4Vs[i*4*2 + (j+2)*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2] - sort4Vs[i*4*2 + 0*2]) + 
+            (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1])));
 
-            dotCos[sumResultSize + j] = 
-            ((sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]) + 
-            (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1]) * 
-            (sortVs[sumSize*2 + (j+2)*2 + 1]) - sortVs[sumSize*2 + 1]) /
-            (sqrt((sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) + 
-            (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1]) * (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1])) *
-            sqrt((sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]) + 
-            (sortVs[sumSize*2 + (j+2)*2 + 1] - sortVs[sumSize*2 + 1]) * (sortVs[sumSize*2 + (j+2)*2 + 1] - sortVs[sumSize*2 + 1])));
-
-            cross[sumResultSize + j] =
-            (sortVs[sumSize*2 + 2] - sortVs[sumSize*2]) * (sortVs[sumSize*2 + (j+2)*2 + 1] - sortVs[sumSize*2 + 1]) +
-            (sortVs[sumSize*2 + 2 + 1] - sortVs[sumSize*2 + 1]) * (sortVs[sumSize*2 + (j+2)*2] - sortVs[sumSize*2]);
-
+            vs4Cross[i*2 + j] =
+            (sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) +
+            (sort4Vs[i*4*2 + 1*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2] - sort4Vs[i*4*2 + 0*2]);
         }
     }
+    else if(i >= (sort4VsSizes / 2) && i < (sort4VsSizes / 2) + (sort5VsSizes / 3)){
+        if (j < 3){
+            vs4DotCos[(i - (sort4VsSizes / 2))*3 + j] = 
+            ((sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) + 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1])) /
+            (sqrt((sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) + 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1])) *
+            sqrt((sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) + 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1])));
+
+            vs4Cross[(i - (sort4VsSizes / 2))*3 + j] =
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) +
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2 + 1] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2] - sort4Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]);
+        }
+    }
+    else if(
+        i >= (sort4VsSizes / 2) + (sort5VsSizes / 3) && 
+        i < (sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)){
+        if (j < 4){
+            vs4DotCos[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] = 
+            ((sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) + 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1])) /
+            (sqrt((sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) + 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1])) *
+            sqrt((sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) + 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * (
+            sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1])));
+
+            vs4Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] =
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) +
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]);
+        }
+    }
+    else if(
+        i >= (sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4) && 
+        i < (sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4) + (sort7VsSizes / 5)){
+        if (j < 5){
+            vs4DotCos[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*5 + j] = 
+            ((sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) + 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1])) /
+            (sqrt((sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) + 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1])) *
+            sqrt((sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) + 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1])));
+
+            vs4Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*5 + j] =
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) +
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2 + 1] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) * 
+            (sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2] - sort4Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]);
+        }
+    }
+        
+    
 }
 
 
@@ -1317,10 +1394,10 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     memcpy(hSort6Vs, sort6Vs.data(), sizeof(double)*sort6Vs.size());
     memcpy(hSort7Vs, sort7Vs.data(), sizeof(double)*sort7Vs.size());
 
-    int v4Size = sort4Vs.size() / 4 * 2;
-    int v5Size = sort4Vs.size() / 5 * 3;
-    int v6Size = sort4Vs.size() / 6 * 4;
-    int v7Size = sort4Vs.size() / 7 * 5;
+    int v4Size = sort4Vs.size() / 2 / 4 * 2;
+    int v5Size = sort5Vs.size() / 2 / 5 * 3;
+    int v6Size = sort6Vs.size() / 2 / 6 * 4;
+    int v7Size = sort7Vs.size() / 2 / 7 * 5;
 
     double* h4VsDotCos = (double*)malloc(sizeof(double)*v4Size);
     double* h4VsCross = (double*)malloc(sizeof(double)*v4Size);
@@ -1362,24 +1439,57 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     cudaMalloc((void**)&d7VsDotCos, sizeof(double)*v7Size);
     cudaMalloc((void**)&d7VsCross, sizeof(double)*v7Size);
 
-    dim3 dimBlock(32, 32);
-    dim3 dimGrid((sumSize*2 + dimBlock.x - 1) 
-    / dimBlock.x, (sumSize*2 + dimBlock.y - 1) / dimBlock.y);
+    int gridSize = v4Size / 2 + v5Size / 3 + v6Size / 4 + v7Size / 5;
+    dim3 dimBlock(16, 16);
+    dim3 dimGrid((gridSize + dimBlock.x - 1) 
+    / dimBlock.x, (gridSize + dimBlock.y - 1) / dimBlock.y);
     glpaGpuSortVsDotCross<<<dimGrid, dimBlock>>>(
-        dSortVsSizes, dSortVs, dVsDotCos, dVsCross, sortTargetSizes.size()
+        v4Size, v5Size, v6Size, v7Size,
+        dSort4Vs, dSort5Vs, dSort6Vs, dSort7Vs,
+        d4VsDotCos, d4VsCross,
+        d5VsDotCos, d5VsCross,
+        d6VsDotCos, d6VsCross,
+        d7VsDotCos, d7VsCross
     );
     cudaError_t error = cudaGetLastError();
 
-    cudaMemcpy(hVsDotCos, dVsDotCos, sizeof(double)*sumSize, cudaMemcpyDeviceToHost);
-    cudaMemcpy(hVsCross, dVsCross, sizeof(double)*sumSize, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h4VsDotCos, d4VsDotCos, sizeof(double)*v4Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h4VsCross, d4VsCross, sizeof(double)*v4Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h5VsDotCos, d5VsDotCos, sizeof(double)*v5Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h5VsCross, d5VsCross, sizeof(double)*v5Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h6VsDotCos, d6VsDotCos, sizeof(double)*v6Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h6VsCross, d6VsCross, sizeof(double)*v6Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h7VsDotCos, d7VsDotCos, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h7VsCross, d7VsCross, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
 
-    free(hSortVs);
-    free(hVsDotCos);
-    free(hVsCross);
 
-    cudaFree(dSortVs);
-    cudaFree(dVsDotCos);
-    cudaFree(dVsCross);
+    free(hSort4Vs);
+    free(hSort5Vs);
+    free(hSort6Vs);
+    free(hSort7Vs);
+
+    free(h4VsDotCos);
+    free(h4VsCross);
+    free(h5VsDotCos);
+    free(h5VsCross);
+    free(h6VsDotCos);
+    free(h6VsCross);
+    free(h7VsDotCos);
+    free(h7VsCross);
+
+    cudaFree(dSort4Vs);
+    cudaFree(dSort5Vs);
+    cudaFree(dSort6Vs);
+    cudaFree(dSort7Vs);
+
+    cudaFree(d4VsDotCos);
+    cudaFree(d4VsCross);
+    cudaFree(d5VsDotCos);
+    cudaFree(d5VsCross);
+    cudaFree(d6VsDotCos);
+    cudaFree(d6VsCross);
+    cudaFree(d7VsDotCos);
+    cudaFree(d7VsCross);
 
 
 

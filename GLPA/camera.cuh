@@ -106,11 +106,22 @@ __global__ void glpaGpuScPixelConvert(
 
 
 __global__ void glpaGpuSortVsDotCross(
-    int* sort_vs_sizes,
-    double* sort_vs,
-    double* dot_cos,
-    double* cross,
-    int target_size
+    int sort_4_vs_sizes,
+    int sort_5_vs_sizes,
+    int sort_6_vs_sizes,
+    int sort_7_vs_sizes,
+    double* sort_4_vs,
+    double* sort_5_vs,
+    double* sort_6_vs,
+    double* sort_7_vs,
+    double* vs_4_dot_cos,
+    double* vs_4_cross,
+    double* vs_5_dot_cos,
+    double* vs_5_cross,
+    double* vs_6_dot_cos,
+    double* vs_6_cross,
+    double* vs_7_dot_cos,
+    double* vs_7_cross
 );
 
 /// @brief Has data related to the 3DCG camera.
