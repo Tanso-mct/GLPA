@@ -1301,7 +1301,7 @@ __global__ void glpaGpuSortVsDotCross(
             (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1])));
 
             vs4Cross[i*2 + j] =
-            (sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) -
+            (sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) +
             (sort4Vs[i*4*2 + 1*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2] - sort4Vs[i*4*2 + 0*2]);
         }
     }
@@ -1323,7 +1323,7 @@ __global__ void glpaGpuSortVsDotCross(
 
             vs5Cross[(i - (sort4VsSizes / 2))*3 + j] =
             (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) * 
-            (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) -
+            (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) +
             (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2 + 1] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) * 
             (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]);
         }
@@ -1332,7 +1332,7 @@ __global__ void glpaGpuSortVsDotCross(
         i >= (sort4VsSizes / 2) + (sort5VsSizes / 3) && 
         i < (sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)){
         if (j < 4){
-            vs6DotCos[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] = 
+            vs5DotCos[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] = 
             ((sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) + 
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * 
@@ -1346,9 +1346,9 @@ __global__ void glpaGpuSortVsDotCross(
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * (
             sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1])));
 
-            vs6Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] =
+            vs5Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] =
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
-            (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) -
+            (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) +
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * 
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]);
         }
@@ -1373,7 +1373,7 @@ __global__ void glpaGpuSortVsDotCross(
 
             vs7Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*5 + j] =
             (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) * 
-            (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) -
+            (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) +
             (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2 + 1] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) * 
             (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]);
         }
@@ -1513,6 +1513,7 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     cudaMemcpy(h6VsCross, d6VsCross, sizeof(double)*v6Size, cudaMemcpyDeviceToHost);
     cudaMemcpy(h7VsDotCos, d7VsDotCos, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
     cudaMemcpy(h7VsCross, d7VsCross, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
+
 
     // setSortedVs(v4Size / 2, 4, h4VsDotCos, h4VsCross, sort4TargetI, sort4Vs, ptRS);
     // setSortedVs(v5Size / 3, 5, h5VsDotCos, h5VsCross, sort5TargetI, sort5Vs, ptRS);
