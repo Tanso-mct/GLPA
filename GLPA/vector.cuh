@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <math.h>
+#include <algorithm>
 
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
@@ -43,6 +44,11 @@ public :
         std::vector<double>* target_vec,
         int vec_i
     );
+
+    bool compareDecen(double a, double b);
+
+    std::vector<int> sortDecenOrder(std::vector<double>* source_nums);
+    std::vector<int> sortAsenOrder(std::vector<double>* source_nums);
 };
 
 #endif  VECTOR_H_

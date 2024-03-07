@@ -1462,34 +1462,53 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     cudaMemcpy(h7VsDotCos, d7VsDotCos, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
     cudaMemcpy(h7VsCross, d7VsCross, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
 
-    // true -> +  false -> minus
-    std::vector<bool> vSigns(6);
-
-    std::vector<int> sortI(2);
     for (int i = 0; i < v4Size / 2; i++){
+        std::vector<int> leftSideVsId;
+        std::vector<double> leftSideVsCos;
+
+        std::vector<int> rightSideVsId;
+        std::vector<double> rightSideVsCos;
+
         for (int j = 0; j < 2; j++){
             if (h4VsCross[i*2 + j] >= 0){
-                vSigns[j] = true;
+                leftSideVsId.push_back(j + 2);
+                leftSideVsCos.push_back(h4VsDotCos[i*2 + j]);
             }
             else{
-                vSigns[j] = false;
+                rightSideVsId.push_back(j + 2);
+                rightSideVsCos.push_back(h4VsDotCos[i*2 + j]);
             }
         }
 
-        if (vSigns[0] == vSigns[1]){
-            if (h4VsDotCos[i*2] >= h4VsDotCos[i*2 + 1]){
-                sortI[0] = 0;
-                sortI[0] = 1;
-            }
-            else{
-                sortI[0] = 1;
-                sortI[0] = 0;
-            }
+        std::vector<int> sortLeftCos = vec.sortDecenOrder(&rightSideVsCos);
+        std::vector<int> sortRightCos = vec.sortAsenOrder(&leftSideVsCos);
+
+        (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
+            sort4Vs[i*8 + 2*0],
+            sort4Vs[i*8 + 2*0 + 1]
+        });
+
+        for (int j = 0; j < sortLeftCos.size(); j++){
+            (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
+                sort4Vs[i*8 + 2*leftSideVsCos[sortLeftCos[j]]],
+                sort4Vs[i*8 + 2*leftSideVsCos[sortLeftCos[j]] + 1]
+            });
         }
-        else{
-            
+
+        (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
+            sort4Vs[i*8 + 2*1],
+            sort4Vs[i*8 + 2*1 + 1]
+        });
+
+        for (int j = 0; j < sortRightCos.size(); j++){
+            (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
+                sort4Vs[i*8 + 2*rightSideVsId[sortRightCos[j]]],
+                sort4Vs[i*8 + 2*rightSideVsId[sortRightCos[j]] + 1]
+            });
         }
     }
+
+    
 
 
     free(hSort4Vs);
