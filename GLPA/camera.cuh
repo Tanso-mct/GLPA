@@ -169,7 +169,12 @@ public :
 
     void scPixelConvert(std::vector<RasterizeSource>* pt_rasterize_source);
 
+    void setSortedVs(
+        int faceAmout, int face_size, double* dot_cos, double* cross, std::vector<int> target_i, 
+        std::vector<double> sortVs, std::vector<RasterizeSource>* pt_rasterize_source
+    );
     void sortScPixelVs(std::vector<RasterizeSource>* pt_rasterize_source);
+    
 
     Matrix mt;
     Vector vec;

@@ -143,26 +143,32 @@ void Vector::pushVecToDouble(std::vector<Vec3d> sourceVec, std::vector<double> *
     (*targetVec).push_back(sourceVec[vecI].z);
 }
 
-
-bool Vector::compareDecen(double a, double b){
+bool Vector::ascending(double a, double b){
     return a > b;
 }
 
 
-std::vector<int> Vector::sortDecenOrder(std::vector<double>* sourceNums){
-    std::vector<int> rtIs((*sourceNums).size());
+bool Vector::descending(double a, double b){
+    return a < b;
+}
 
-    if ((*sourceNums).size() == 0){
+
+std::vector<int> Vector::sortDecenOrder(std::vector<double>& sourceNums){
+    std::vector<int> rtIs(sourceNums.size());
+
+    if (sourceNums.size() == 0){
         return rtIs;
     }
     
-    std::vector<double> beforeNums = (*sourceNums);
+    std::vector<double> beforeNums = sourceNums;
 
-    std::sort((*sourceNums).begin(), (*sourceNums).end(), compareDecen);
+    std::sort(sourceNums.begin(), sourceNums.end(), [this](double a, double b){
+        return this->descending(a, b);
+    });
 
     std::vector<double>::iterator itDouble;
     int index;
-    for (int i = 0; i < (*sourceNums).size(); i++){
+    for (int i = 0; i < sourceNums.size(); i++){
         itDouble = std::find(beforeNums.begin(), beforeNums.end(), sourceNums[i]);
         index = std::distance(beforeNums.begin(), itDouble);
         rtIs[i] = index;
@@ -172,20 +178,22 @@ std::vector<int> Vector::sortDecenOrder(std::vector<double>* sourceNums){
 }
 
 
-std::vector<int> Vector::sortAsenOrder(std::vector<double> *sourceNums){
-    std::vector<int> rtIs((*sourceNums).size());
+std::vector<int> Vector::sortAsenOrder(std::vector<double>& sourceNums){
+    std::vector<int> rtIs(sourceNums.size());
 
-    if ((*sourceNums).size() == 0){
+    if (sourceNums.size() == 0){
         return rtIs;
     }
     
-    std::vector<double> beforeNums = (*sourceNums);
+    std::vector<double> beforeNums = sourceNums;
 
-    std::sort((*sourceNums).begin(), (*sourceNums).end());
+    std::sort(sourceNums.begin(), sourceNums.end(), [this](double a, double b){
+        return this->ascending(a, b);
+    });
 
     std::vector<double>::iterator itDouble;
     int index;
-    for (int i = 0; i < (*sourceNums).size(); i++){
+    for (int i = 0; i < sourceNums.size(); i++){
         itDouble = std::find(beforeNums.begin(), beforeNums.end(), sourceNums[i]);
         index = std::distance(beforeNums.begin(), itDouble);
         rtIs[i] = index;

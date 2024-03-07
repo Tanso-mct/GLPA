@@ -45,10 +45,12 @@ public :
         int vec_i
     );
 
-    bool compareDecen(double a, double b);
+    static bool ascending(double a, double b);
+    static bool descending(double a, double b);
 
-    std::vector<int> sortDecenOrder(std::vector<double>* source_nums);
-    std::vector<int> sortAsenOrder(std::vector<double>* source_nums);
+
+    std::vector<int> sortDecenOrder(std::vector<double>& source_nums);
+    std::vector<int> sortAsenOrder(std::vector<double>& source_nums);
 };
 
 #endif  VECTOR_H_
