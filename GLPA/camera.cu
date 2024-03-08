@@ -1202,6 +1202,7 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
 
     cudaMemcpy(hResultVs, dResultVs, sizeof(double)*wVsAmount*2, cudaMemcpyDeviceToHost);
 
+    int wVsI = 0;
     for (int i = 0; i < (*ptRS).size(); i++){
         if (wVsSize[i] == 4){
             sort4TargetI.push_back(i);
@@ -1219,7 +1220,6 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
             throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
         }
         
-        int wVsI = 0;
         for (int j = 0; j < wVsSize[i]; j++){
             if (wVsSize[i] <= 2){
                 throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
@@ -1301,7 +1301,7 @@ __global__ void glpaGpuSortVsDotCross(
             (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1])));
 
             vs4Cross[i*2 + j] =
-            (sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) +
+            (sort4Vs[i*4*2 + 1*2] - sort4Vs[i*4*2 + 0*2]) * (sort4Vs[i*4*2 + (j+2)*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) -
             (sort4Vs[i*4*2 + 1*2 + 1] - sort4Vs[i*4*2 + 0*2 + 1]) * (sort4Vs[i*4*2 + (j+2)*2] - sort4Vs[i*4*2 + 0*2]);
         }
     }
@@ -1323,7 +1323,7 @@ __global__ void glpaGpuSortVsDotCross(
 
             vs5Cross[(i - (sort4VsSizes / 2))*3 + j] =
             (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]) * 
-            (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) +
+            (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2 + 1] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) -
             (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 1*2 + 1] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2 + 1]) * 
             (sort5Vs[(i - (sort4VsSizes / 2))*5*2 + (j+2)*2] - sort5Vs[(i - (sort4VsSizes / 2))*5*2 + 0*2]);
         }
@@ -1348,7 +1348,7 @@ __global__ void glpaGpuSortVsDotCross(
 
             vs5Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*4 + j] =
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]) * 
-            (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) +
+            (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) -
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 1*2 + 1] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2 + 1]) * 
             (sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + (j+2)*2] - sort6Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3)))*6*2 + 0*2]);
         }
@@ -1373,7 +1373,7 @@ __global__ void glpaGpuSortVsDotCross(
 
             vs7Cross[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*5 + j] =
             (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]) * 
-            (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) +
+            (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2 + 1] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) -
             (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 1*2 + 1] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2 + 1]) * 
             (sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + (j+2)*2] - sort7Vs[(i - ((sort4VsSizes / 2) + (sort5VsSizes / 3) + (sort6VsSizes / 4)))*7*2 + 0*2]);
         }
@@ -1387,7 +1387,7 @@ void Camera::setSortedVs(
     int faceAmout, int faceSize, double *dotCos, double* cross, 
     std::vector<int> targetI, std::vector<double> sortVs, std::vector<RasterizeSource> *ptRS
 ){
-    for (int i = 0; i < faceAmout / (faceSize - 2); i++){
+    for (int i = 0; i < faceAmout; i++){
         std::vector<int> leftSideVsId;
         std::vector<double> leftSideVsCos;
 
@@ -1396,17 +1396,17 @@ void Camera::setSortedVs(
 
         for (int j = 0; j < (faceSize - 2); j++){
             if (cross[i*(faceSize - 2) + j] >= 0){
-                leftSideVsId.push_back(j + 2);
-                leftSideVsCos.push_back(dotCos[i*(faceSize - 2) + j]);
-            }
-            else{
                 rightSideVsId.push_back(j + 2);
                 rightSideVsCos.push_back(dotCos[i*(faceSize - 2) + j]);
             }
+            else{
+                leftSideVsId.push_back(j + 2);
+                leftSideVsCos.push_back(dotCos[i*(faceSize - 2) + j]);
+            }
         }
 
-        std::vector<int> sortLeftCos = vec.sortDecenOrder(rightSideVsCos);
-        std::vector<int> sortRightCos = vec.sortAsenOrder(leftSideVsCos);
+        std::vector<int> sortRightCos = vec.sortAsenOrder(rightSideVsCos);
+        std::vector<int> sortLeftCos = vec.sortDecenOrder(leftSideVsCos);
 
         (*ptRS)[targetI[i]].scPixelVs.vs.push_back({
             sortVs[i*(faceSize*2) + 2*0],
@@ -1415,8 +1415,8 @@ void Camera::setSortedVs(
 
         for (int j = 0; j < sortLeftCos.size(); j++){
             (*ptRS)[targetI[i]].scPixelVs.vs.push_back({
-                sortVs[i*(faceSize*2) + 2*leftSideVsCos[sortLeftCos[j]]],
-                sortVs[i*(faceSize*2) + 2*leftSideVsCos[sortLeftCos[j]] + 1]
+                sortVs[i*(faceSize*2) + 2*leftSideVsId[sortLeftCos[j]]],
+                sortVs[i*(faceSize*2) + 2*leftSideVsId[sortLeftCos[j]] + 1]
             });
         }
 
@@ -1514,61 +1514,10 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     cudaMemcpy(h7VsDotCos, d7VsDotCos, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
     cudaMemcpy(h7VsCross, d7VsCross, sizeof(double)*v7Size, cudaMemcpyDeviceToHost);
 
-
-    // setSortedVs(v4Size / 2, 4, h4VsDotCos, h4VsCross, sort4TargetI, sort4Vs, ptRS);
-    // setSortedVs(v5Size / 3, 5, h5VsDotCos, h5VsCross, sort5TargetI, sort5Vs, ptRS);
-    // setSortedVs(v6Size / 4, 6, h6VsDotCos, h6VsCross, sort6TargetI, sort6Vs, ptRS);
-    // setSortedVs(v7Size / 5, 7, h7VsDotCos, h7VsCross, sort7TargetI, sort7Vs, ptRS);
-
-
-    // for (int i = 0; i < v4Size / 2; i++){
-    //     std::vector<int> leftSideVsId;
-    //     std::vector<double> leftSideVsCos;
-
-    //     std::vector<int> rightSideVsId;
-    //     std::vector<double> rightSideVsCos;
-
-    //     for (int j = 0; j < 2; j++){
-    //         if (h4VsCross[i*2 + j] >= 0){
-    //             leftSideVsId.push_back(j + 2);
-    //             leftSideVsCos.push_back(h4VsDotCos[i*2 + j]);
-    //         }
-    //         else{
-    //             rightSideVsId.push_back(j + 2);
-    //             rightSideVsCos.push_back(h4VsDotCos[i*2 + j]);
-    //         }
-    //     }
-
-    //     std::vector<int> sortLeftCos = vec.sortDecenOrder(&rightSideVsCos);
-    //     std::vector<int> sortRightCos = vec.sortAsenOrder(&leftSideVsCos);
-
-    //     (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
-    //         sort4Vs[i*8 + 2*0],
-    //         sort4Vs[i*8 + 2*0 + 1]
-    //     });
-
-    //     for (int j = 0; j < sortLeftCos.size(); j++){
-    //         (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
-    //             sort4Vs[i*8 + 2*leftSideVsCos[sortLeftCos[j]]],
-    //             sort4Vs[i*8 + 2*leftSideVsCos[sortLeftCos[j]] + 1]
-    //         });
-    //     }
-
-    //     (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
-    //         sort4Vs[i*8 + 2*1],
-    //         sort4Vs[i*8 + 2*1 + 1]
-    //     });
-
-    //     for (int j = 0; j < sortRightCos.size(); j++){
-    //         (*ptRS)[sort4TargetI[i]].scPixelVs.vs.push_back({
-    //             sort4Vs[i*8 + 2*rightSideVsId[sortRightCos[j]]],
-    //             sort4Vs[i*8 + 2*rightSideVsId[sortRightCos[j]] + 1]
-    //         });
-    //     }
-    // }
-
-    
-
+    setSortedVs(v4Size / 2, 4, h4VsDotCos, h4VsCross, sort4TargetI, sort4Vs, ptRS);
+    setSortedVs(v5Size / 3, 5, h5VsDotCos, h5VsCross, sort5TargetI, sort5Vs, ptRS);
+    setSortedVs(v6Size / 4, 6, h6VsDotCos, h6VsCross, sort6TargetI, sort6Vs, ptRS);
+    setSortedVs(v7Size / 5, 7, h7VsDotCos, h7VsCross, sort7TargetI, sort7Vs, ptRS);
 
     free(hSort4Vs);
     free(hSort5Vs);
