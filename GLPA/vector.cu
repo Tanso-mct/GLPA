@@ -37,14 +37,25 @@ std::vector<double> Vector::getVecsDotCos(Vec3d leftVec, std::vector<Vec3d> righ
     cudaMemcpy(dLeftVec, hLeftVec, sizeof(double)*3, cudaMemcpyHostToDevice);
     cudaMemcpy(dRightVec, hRightVec, sizeof(double)*rightVecs.size()*3, cudaMemcpyHostToDevice);
 
-    // GPU kernel function calls
-    int blockSize = 1024;
-    int numBlocks = (rightVecs.size() + blockSize - 1) / blockSize;
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
 
-    dim3 dimBlock(blockSize, 1, 1);
-    dim3 dimGrid(numBlocks, 1, 1);
+    int dataSize = rightVecs.size();
+    int desiredThreadsPerBlock = 256;
+
+    int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
+
+    int threadsPerBlock = min(desiredThreadsPerBlock, deviceProp.maxThreadsPerBlock);
+
+    dim3 dimBlock(threadsPerBlock);
+    dim3 dimGrid(blocks);
+
     glpaGpuGetVecsCos<<<dimGrid, dimBlock>>>
     (dLeftVec, dRightVec, dResult, rightVecs.size());
+    cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_VECTOR_CUDA_ERROR);
+    }
 
     // Copy results from device memory to host memory
     cudaMemcpy(hResult, dResult, sizeof(double)*rightVecs.size(), cudaMemcpyDeviceToHost);
@@ -106,14 +117,25 @@ std::vector<double> Vector::getSameSizeVecsDotCos(std::vector<Vec3d> leftVec, st
     cudaMemcpy(dLeftVec, hLeftVec, sizeof(double)*size, cudaMemcpyHostToDevice);
     cudaMemcpy(dRightVec, hRightVec, sizeof(double)*size, cudaMemcpyHostToDevice);
 
-    // GPU kernel function calls
-    int blockSize = 1024;
-    int numBlocks = (size / 3 + blockSize - 1) / blockSize;
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
 
-    dim3 dimBlock(blockSize, 1, 1);
-    dim3 dimGrid(numBlocks, 1, 1);
+    int dataSize = size / 3;
+    int desiredThreadsPerBlock = 256;
+
+    int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
+
+    int threadsPerBlock = min(desiredThreadsPerBlock, deviceProp.maxThreadsPerBlock);
+
+    dim3 dimBlock(threadsPerBlock);
+    dim3 dimGrid(blocks);
+
     glpaGpuGetSameSizeVecsCos<<<dimGrid, dimBlock>>>
-    (dLeftVec, dRightVec, dResult, size);
+    (dLeftVec, dRightVec, dResult, size / 3);
+    cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_VECTOR_CUDA_ERROR);
+    }
 
     // Copy results from device memory to host memory
     cudaMemcpy(hResult, dResult, sizeof(double)*size / 3, cudaMemcpyDeviceToHost);

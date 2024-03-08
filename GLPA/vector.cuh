@@ -9,6 +9,7 @@
 #include "device_launch_parameters.h"
 
 #include "cg.h"
+#include "error.h"
 
 __global__ void glpaGpuGetVecsCos(
     double* left_vec,

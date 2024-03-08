@@ -353,4 +353,18 @@
 #define ERROR_CAMERA_CUDA_ERROR NULL
 
 
+/**********************************************************************************************************************
+ * 日本語 : vector.cuh及びcamera.cuファイルに関するエラーメッセージ一覧
+ * English : List of error messages related to the vector.cuh and vector.cu files
+**********************************************************************************************************************/
+
+/********************************************************************************
+ * 日本語 : vector.cuでのcudaでの処理でエラーが発生しました。
+ * エラーの詳細はcudaError_t型変数の値を確認してください。
+ * 
+ * English : An error occurred in processing with cuda in vector.cu.
+ * Check the value of the cudaError_t type variable for details of the error.
+********************************************************************************/
+#define ERROR_VECTOR_CUDA_ERROR NULL
+
 #endif ERROR_H_
