@@ -656,9 +656,30 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
     cudaMemcpy(dPolyLineStartVs, hPolyLineStartVs, sizeof(double)*shapeCnvtTargetI.size()*3*3, cudaMemcpyHostToDevice);
     cudaMemcpy(dPolyLineEndVs, hPolyLineEndVs, sizeof(double)*shapeCnvtTargetI.size()*3*3, cudaMemcpyHostToDevice);
 
-    dim3 dimBlock(32, 32); // Thread block size
-    dim3 dimGrid(((polyFaceAmount*vvLineAmout + vvFaceAmout*polyLineAmout) + dimBlock.x - 1) 
-    / dimBlock.x, ((polyFaceAmount*vvLineAmout + vvFaceAmout*polyLineAmout) + dimBlock.y - 1) / dimBlock.y);
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSizeY = polyFaceAmount + vvFaceAmout;
+    int dataSizeX;
+
+    if (vvLineAmout >= polyLineAmout){
+        dataSizeX = vvLineAmout;
+    }
+    else{
+        dataSizeX = polyLineAmout;
+    }
+    int desiredThreadsPerBlockX = 16;
+    int desiredThreadsPerBlockY = 16;
+
+    int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+    int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+    int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+    int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+    dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+    dim3 dimGrid(blocksX, blocksY);
+
     glpaGpuGetPolyVvDot<<<dimGrid, dimBlock>>>(
         dPolyFaceDot,
         dVvFaceDot,
@@ -676,6 +697,9 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
         polyLineAmout
     );
     cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_CAMERA_CUDA_ERROR);
+    }
 
     cudaMemcpy(hPolyFaceDot, dPolyFaceDot, sizeof(double)*polyFaceAmount*vvLineAmout*2, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceDot, dVvFaceDot, sizeof(double)*vvFaceAmout*polyLineAmout*2, cudaMemcpyDeviceToHost);
@@ -917,7 +941,7 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
                 }
 
                 if (hVvFaceDot[i*polyFaceAmount*6 + 6*j + k*2 + 1] == 0){
-                    if (j != 2){
+                    if (k != 2){
                         (*ptRS)[shapeCnvtTargetI[j]].scPixelVs.wVs.push_back(
                             (*ptRS)[shapeCnvtTargetI[j]].polyCamVs[k + 1]
                         );
@@ -995,11 +1019,24 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
     cudaMemcpy(dVvFaceLineVs, hVvFaceLineVs, sizeof(double)*vvFaceLineVs.size(), cudaMemcpyHostToDevice);
     cudaMemcpy(dVvFaceDot, hCalcVvFaceDot, sizeof(double)*vvFaceDot.size(), cudaMemcpyHostToDevice);
 
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
 
-    int inxtnAmount = polyRsI.size() * 3 + vvRsI.size() * 3;
-    dim3 dimBlock(32, 32);
-    dim3 dimGrid((inxtnAmount + dimBlock.x - 1) 
-    / dimBlock.x, (inxtnAmount + dimBlock.y - 1) / dimBlock.y);
+    int dataSizeY = polyRsI.size() + vvRsI.size();
+    int dataSizeX = 4;
+
+    int desiredThreadsPerBlockX = 16;
+    int desiredThreadsPerBlockY = 16;
+
+    int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+    int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+    int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+    int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+    dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+    dim3 dimGrid(blocksX, blocksY);
+
     glpaGpuGetIntxn<<<dimGrid, dimBlock>>>(
         dPolyFaceLineVs,
         dPolyFaceDot,
@@ -1011,6 +1048,10 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
         vvRsI.size()
     );
     cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_CAMERA_CUDA_ERROR);
+    }
+
     cudaMemcpy(hPolyFaceInxtn, dPolyFaceInxtn, sizeof(double)*polyRsI.size()*3, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceInxtn, dVvFaceInxtn, sizeof(double)*vvRsI.size()*3, cudaMemcpyDeviceToHost);
 
@@ -1057,6 +1098,10 @@ void Camera::inxtnInteriorAngle(std::vector<RasterizeSource>* ptRS){
         vvRsI.size()
     );
     cudaError_t error2 = cudaGetLastError();
+    if (error2 != 0){
+        throw std::runtime_error(ERROR_CAMERA_CUDA_ERROR);
+    }
+
     cudaMemcpy(hPolyFaceIACos, dPolyFaceIACos, sizeof(double)*polyRsI.size()*6, cudaMemcpyDeviceToHost);
     cudaMemcpy(hVvFaceIACos, dVvFaceIACos, sizeof(double)*vvRsI.size()*8, cudaMemcpyDeviceToHost);
 
@@ -1192,13 +1237,31 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
     cudaMemcpy(dNearScSize, hNearScSize, sizeof(double)*2, cudaMemcpyHostToDevice);
     cudaMemcpy(dScPixelSize, hScPixelSize, sizeof(double)*2, cudaMemcpyHostToDevice);
 
-    dim3 dimBlock(32, 32);
-    dim3 dimGrid((wVsAmount*2 + dimBlock.x - 1) 
-    / dimBlock.x, (wVsAmount*2 + dimBlock.y - 1) / dimBlock.y);
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSizeY = wVsAmount;
+    int dataSizeX = 2;
+
+    int desiredThreadsPerBlockX = 16;
+    int desiredThreadsPerBlockY = 16;
+
+    int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+    int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+    int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+    int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+    dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+    dim3 dimGrid(blocksX, blocksY);
+
     glpaGpuScPixelConvert<<<dimGrid, dimBlock>>>(
         dWvs, dNearZ, dFarZ, dNearScSize, dScPixelSize, dResultVs, wVsAmount
     );
     cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_CAMERA_CUDA_ERROR);
+    }
 
     cudaMemcpy(hResultVs, dResultVs, sizeof(double)*wVsAmount*2, cudaMemcpyDeviceToHost);
 
@@ -1491,10 +1554,23 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     cudaMalloc((void**)&d7VsDotCos, sizeof(double)*v7Size);
     cudaMalloc((void**)&d7VsCross, sizeof(double)*v7Size);
 
-    int gridSize = v4Size / 2 + v5Size / 3 + v6Size / 4 + v7Size / 5;
-    dim3 dimBlock(16, 16);
-    dim3 dimGrid((gridSize + dimBlock.x - 1) 
-    / dimBlock.x, (gridSize + dimBlock.y - 1) / dimBlock.y);
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSizeY = v4Size / 2 + v5Size / 3 + v6Size / 4 + v7Size / 5;
+    int dataSizeX = 5;
+    int desiredThreadsPerBlockX = 16;
+    int desiredThreadsPerBlockY = 16;
+
+    int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+    int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+    int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+    int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+    dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+    dim3 dimGrid(blocksX, blocksY);
+
     glpaGpuSortVsDotCross<<<dimGrid, dimBlock>>>(
         v4Size, v5Size, v6Size, v7Size,
         dSort4Vs, dSort5Vs, dSort6Vs, dSort7Vs,
@@ -1504,6 +1580,9 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
         d7VsDotCos, d7VsCross
     );
     cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_CAMERA_CUDA_ERROR);
+    }
 
     cudaMemcpy(h4VsDotCos, d4VsDotCos, sizeof(double)*v4Size, cudaMemcpyDeviceToHost);
     cudaMemcpy(h4VsCross, d4VsCross, sizeof(double)*v4Size, cudaMemcpyDeviceToHost);

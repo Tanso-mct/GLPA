@@ -343,4 +343,14 @@
 #define ERROR_CAMERA_CANT_RASTERIZE NULL
 
 
+/********************************************************************************
+ * 日本語 : camera.cuでのcudaでの処理でエラーが発生しました。
+ * エラーの詳細はcudaError_t型変数の値を確認してください。
+ * 
+ * English : An error occurred in processing with cuda in camera.cu.
+ * Check the value of the cudaError_t type variable for details of the error.
+********************************************************************************/
+#define ERROR_CAMERA_CUDA_ERROR NULL
+
+
 #endif ERROR_H_
