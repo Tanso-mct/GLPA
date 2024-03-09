@@ -1625,8 +1625,138 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
     cudaFree(d6VsCross);
     cudaFree(d7VsDotCos);
     cudaFree(d7VsCross);
+}
+
+
+void Camera::inputSideScRvs(
+    std::vector<RasterizeSource> *ptRS, 
+    int ptRSI, 
+    int pixelVsI, 
+    int scPixelVsYMin
+){
+    if ((*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x == -2){
+        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x 
+        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
+
+        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].y 
+        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y;
+    }
+    else if (
+        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x > 
+        (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x
+    ){
+        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x 
+        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
+    }
+
+
+    if ((*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x == -2){
+        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x 
+        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
+
+        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].y 
+        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y;
+    }
+    else if (
+        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x < 
+        (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x
+    ){
+        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - (scPixelVsYMin+1)].x 
+        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
+    }
+}
+
+
+void Camera::inputSideScRvs(
+    std::vector<RasterizeSource> *ptRS,
+    int ptRSI,
+    Vec2d pixelV,
+    int scPixelVsYMin
+){
+    if ((*ptRS)[ptRSI].leftScRVs[pixelV.y - (scPixelVsYMin+1)].x == -2){
+        (*ptRS)[ptRSI].leftScRVs[pixelV.y - (scPixelVsYMin+1)].x 
+        = pixelV.x;
+
+        (*ptRS)[ptRSI].leftScRVs[pixelV.y - (scPixelVsYMin+1)].y 
+        = pixelV.y;
+    }
+    else if (
+        (*ptRS)[ptRSI].leftScRVs[pixelV.y - (scPixelVsYMin+1)].x > 
+        pixelV.x
+    ){
+        (*ptRS)[ptRSI].leftScRVs[pixelV.y - (scPixelVsYMin+1)].x 
+        = pixelV.x;
+    }
+
+
+    if ((*ptRS)[ptRSI].rightScRVs[pixelV.y - (scPixelVsYMin+1)].x == -2){
+        (*ptRS)[ptRSI].rightScRVs[pixelV.y - (scPixelVsYMin+1)].x 
+        = pixelV.x;
+
+        (*ptRS)[ptRSI].rightScRVs[pixelV.y - (scPixelVsYMin+1)].y 
+        = pixelV.y;
+    }
+    else if (
+        (*ptRS)[ptRSI].rightScRVs[pixelV.y - (scPixelVsYMin+1)].x < 
+        pixelV.x
+    ){
+        (*ptRS)[ptRSI].rightScRVs[pixelV.y - (scPixelVsYMin+1)].x 
+        = pixelV.x;
+    }
+}
 
 
 
+void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
+    int scYMax = 0;
+    int scYMin = scPixelSize.y;
+    int scYSize;
 
+    Vec2d nowScPixel;
+    int sign;
+    for (int i = 0; i < ptRS->size(); i++){
+        if ((*ptRS)[i].scPixelVs.vs.size() >= 3){
+            for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size(); j++){
+                if ((*ptRS)[i].scPixelVs.vs[j].y > scYMax){
+                    scYMax = (*ptRS)[i].scPixelVs.vs[j].y;
+                }
+                if ((*ptRS)[i].scPixelVs.vs[j].y < scYMin){
+                    scYMin = (*ptRS)[i].scPixelVs.vs[j].y;
+                }
+            }
+
+            scYSize = scYMax - scYMin + 1;
+            (*ptRS)[i].leftScRVs.resize(scYSize);
+            (*ptRS)[i].rightScRVs.resize(scYSize);
+
+            for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size() - 1; j++){
+                if ((*ptRS)[i].scPixelVs.vs[j].x == (*ptRS)[i].scPixelVs.vs[j+1].x){
+                    nowScPixel.x = (*ptRS)[i].scPixelVs.vs[j].x;
+
+                    if ((*ptRS)[i].scPixelVs.vs[j+1].y - (*ptRS)[i].scPixelVs.vs[j].y >= 0){
+                        sign = 1;
+                    }
+                    else{
+                        sign = -1;
+                    }
+
+                    for (int k = 0; k < (*ptRS)[i].scPixelVs.vs[j+1].y - (*ptRS)[i].scPixelVs.vs[j].y + 1; k++){
+                        nowScPixel.y 
+                        = (*ptRS)[i].scPixelVs.vs[j].y + sign * k;
+                        inputSideScRvs(ptRS, i, nowScPixel, scYMin);
+                    }
+                    
+                }
+                else if ((*ptRS)[i].scPixelVs.vs[j].y == (*ptRS)[i].scPixelVs.vs[j+1].y){
+                    inputSideScRvs(ptRS, i, j, scYMin);
+                    inputSideScRvs(ptRS, i, j+1, scYMin);
+                }   
+                else{
+
+                }
+            }
+
+
+        }
+    }
 }

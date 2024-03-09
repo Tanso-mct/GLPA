@@ -169,12 +169,30 @@ public :
 
     void scPixelConvert(std::vector<RasterizeSource>* pt_rasterize_source);
 
+
     void setSortedVs(
         int faceAmout, int face_size, double* dot_cos, double* cross, std::vector<int> target_i, 
         std::vector<double> sortVs, std::vector<RasterizeSource>* pt_rasterize_source
     );
+
     void sortScPixelVs(std::vector<RasterizeSource>* pt_rasterize_source);
     
+
+    void inputSideScRvs(
+        std::vector<RasterizeSource>* pt_rasterize_source, 
+        int pt_rasterize_source_i,
+        int pixel_vs_i,
+        int screen_pixel_vs_y_min
+    );
+
+    void inputSideScRvs(
+        std::vector<RasterizeSource>* pt_rasterize_source, 
+        int pt_rasterize_source_i,
+        Vec2d pixel_v,
+        int screen_pixel_vs_y_min
+    );
+
+    void zBuffer(std::vector<RasterizeSource>* pt_rasterize_source);
 
     Matrix mt;
     Vector vec;

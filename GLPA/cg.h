@@ -40,6 +40,12 @@ typedef struct tagVECTOR2D{
     double y;
 } Vec2d;
 
+
+typedef struct tagRASTERIZE_VECTOR2D{
+    double x = -2;
+    double y = -2;
+} RasterizeVec2d;
+
 typedef struct tagVECTOR2DXZ{
     double x;
     double z;
@@ -201,15 +207,14 @@ typedef struct tagRasterizeSource{
     Vec3d polyN;
 
     MultiSidedShape scPixelVs;
+
+    std::vector<RasterizeVec2d> leftScRVs;
+    std::vector<RasterizeVec2d> rightScRVs;
+
+    std::vector<Vec3d> scRVs;
     
 } RasterizeSource;
 
-
-typedef struct tagDebugSt{
-    std::wstring objName;
-    int polyId;
-    Vec3d inxtn;
-} DebugSt;
 
 
 
