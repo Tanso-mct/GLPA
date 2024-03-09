@@ -40,7 +40,6 @@ typedef struct tagVECTOR2D{
     double y;
 } Vec2d;
 
-
 typedef struct tagRASTERIZE_VECTOR2D{
     double x = -2;
     double y = -2;
