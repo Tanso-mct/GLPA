@@ -17,6 +17,7 @@
 #include <string>
 #include <unordered_map>
 #include <Windows.h>
+#include <algorithm>
 
 #include "cg.h"
 #include "view_volume.cuh"
@@ -179,17 +180,22 @@ public :
     
 
     void inputSideScRvs(
-        std::vector<RasterizeSource>* pt_rasterize_source, 
-        int pt_rasterize_source_i,
-        int pixel_vs_i,
+        double* left_side_screen_vs,
+        double* right_side_screen_vs,
+        int current_size,
+        Vec2d pixel_v,
         int screen_pixel_vs_y_min
     );
 
-    void inputSideScRvs(
-        std::vector<RasterizeSource>* pt_rasterize_source, 
-        int pt_rasterize_source_i,
-        Vec2d pixel_v,
-        int screen_pixel_vs_y_min
+    void rasterize(
+        int v0_i,
+        int v1_i,
+        int rasterize_source_i,
+        int screen_y_min,
+        std::vector<RasterizeSource>* pt_rasterize_source,
+        double* left_side_screen_vs,
+        double* right_side_screen_vs,
+        int current_size
     );
 
     void zBuffer(std::vector<RasterizeSource>* pt_rasterize_source);
@@ -250,7 +256,6 @@ private :
     int vvFaceAmout = 6;
     int vvLineAmout = 12;
 
-    
 };
 
 #endif CAMERA_H_

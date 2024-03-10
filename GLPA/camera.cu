@@ -1629,82 +1629,126 @@ void Camera::sortScPixelVs(std::vector<RasterizeSource> *ptRS){
 
 
 void Camera::inputSideScRvs(
-    std::vector<RasterizeSource> *ptRS, 
-    int ptRSI, 
-    int pixelVsI, 
-    int scPixelVsYMin
-){
-    if ((*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x == -2){
-        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x 
-        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
-
-        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].y 
-        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y;
-    }
-    else if (
-        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x > 
-        (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x
-    ){
-        (*ptRS)[ptRSI].leftScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x 
-        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
-    }
-
-
-    if ((*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x == -2){
-        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x 
-        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
-
-        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].y 
-        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y;
-    }
-    else if (
-        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x < 
-        (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x
-    ){
-        (*ptRS)[ptRSI].rightScRVs[(*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].y - scPixelVsYMin].x 
-        = (*ptRS)[ptRSI].scPixelVs.vs[pixelVsI].x;
-    }
-}
-
-
-void Camera::inputSideScRvs(
-    std::vector<RasterizeSource> *ptRS,
-    int ptRSI,
+    double* leftSideScVs,
+    double* rightSideScVs,
+    int currentSize,
     Vec2d pixelV,
     int scPixelVsYMin
 ){
-    if ((*ptRS)[ptRSI].leftScRVs[pixelV.y - scPixelVsYMin].x == -2){
-        (*ptRS)[ptRSI].leftScRVs[pixelV.y - scPixelVsYMin].x 
-        = pixelV.x;
+    if (leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] == -2){
+        leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
 
-        (*ptRS)[ptRSI].leftScRVs[pixelV.y - scPixelVsYMin].y 
-        = pixelV.y;
+        leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2 + 1] = pixelV.y;
     }
-    else if (
-        (*ptRS)[ptRSI].leftScRVs[pixelV.y - scPixelVsYMin].x > 
-        pixelV.x
-    ){
-        (*ptRS)[ptRSI].leftScRVs[pixelV.y - scPixelVsYMin].x 
-        = pixelV.x;
+    else if (leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] > pixelV.x){
+        leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
     }
 
 
-    if ((*ptRS)[ptRSI].rightScRVs[pixelV.y - scPixelVsYMin].x == -2){
-        (*ptRS)[ptRSI].rightScRVs[pixelV.y - scPixelVsYMin].x 
-        = pixelV.x;
+    if (rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] == -2){
+        rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
 
-        (*ptRS)[ptRSI].rightScRVs[pixelV.y - scPixelVsYMin].y 
-        = pixelV.y;
+        rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2 + 1] = pixelV.y;
     }
-    else if (
-        (*ptRS)[ptRSI].rightScRVs[pixelV.y - scPixelVsYMin].x < 
-        pixelV.x
-    ){
-        (*ptRS)[ptRSI].rightScRVs[pixelV.y - scPixelVsYMin].x 
-        = pixelV.x;
+    else if (rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] < pixelV.x){
+        rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
     }
 }
 
+
+void Camera::rasterize(
+    int v0I,
+    int v1I,
+    int rsI,
+    int scYMin,
+    std::vector<RasterizeSource>* ptRS,
+    double* leftSideScVs,
+    double* rightSideScVs,
+    int currentSize
+){
+    Vec2d nowScPixel;
+    Vec2d nextScPixel;
+    double slope;
+    int signX;
+    int signY;
+    if ((*ptRS)[rsI].scPixelVs.vs[v0I].x == (*ptRS)[rsI].scPixelVs.vs[v1I].x){
+        nowScPixel.x = (*ptRS)[rsI].scPixelVs.vs[v0I].x;
+
+        if ((*ptRS)[rsI].scPixelVs.vs[v1I].y - (*ptRS)[rsI].scPixelVs.vs[v0I].y >= 0){
+            signY = 1;
+        }
+        else{
+            signY = -1;
+        }
+
+        for (int k = 0; k < (*ptRS)[rsI].scPixelVs.vs[v1I].y - (*ptRS)[rsI].scPixelVs.vs[v0I].y + 1; k++){
+            nowScPixel.y 
+            = (*ptRS)[rsI].scPixelVs.vs[v0I].y + signY * k;
+            inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, nowScPixel, scYMin);
+        }
+        
+    }
+    else if ((*ptRS)[rsI].scPixelVs.vs[v0I].y == (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+        inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, (*ptRS)[rsI].scPixelVs.vs[v0I], scYMin);
+        inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, (*ptRS)[rsI].scPixelVs.vs[v1I], scYMin);
+
+    }   
+    else{
+        nowScPixel.x = (*ptRS)[rsI].scPixelVs.vs[v0I].x;
+        nowScPixel.y = (*ptRS)[rsI].scPixelVs.vs[v0I].y;
+        inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, nowScPixel, scYMin);
+
+        slope
+        = ((*ptRS)[rsI].scPixelVs.vs[v1I].y - (*ptRS)[rsI].scPixelVs.vs[v0I].y) /
+        ((*ptRS)[rsI].scPixelVs.vs[v1I].x - (*ptRS)[rsI].scPixelVs.vs[v0I].x);
+
+        if (slope >= 0 && (*ptRS)[rsI].scPixelVs.vs[v0I].y > (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+            signX = -1;
+            signY = -1;
+        }
+        else if(slope >= 0 && (*ptRS)[rsI].scPixelVs.vs[v0I].y < (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+            signX = 1;
+            signY = 1;
+        }
+        else if(slope < 0 && (*ptRS)[rsI].scPixelVs.vs[v0I].y > (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+            signX = 1;
+            signY = -1;
+        }
+        else if(slope < 0 && (*ptRS)[rsI].scPixelVs.vs[v0I].y < (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+            signX = -1;
+            signY = 1;
+        }
+
+        while (nowScPixel.y != (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+            nextScPixel.x = nowScPixel.x + 0.5 * signX;
+
+            nextScPixel.y 
+            = ((*ptRS)[rsI].scPixelVs.vs[v1I].y - (*ptRS)[rsI].scPixelVs.vs[v0I].y) /
+            ((*ptRS)[rsI].scPixelVs.vs[v1I].x - (*ptRS)[rsI].scPixelVs.vs[v0I].x) *
+            (nextScPixel.x - (*ptRS)[rsI].scPixelVs.vs[v0I].x) + (*ptRS)[rsI].scPixelVs.vs[v0I].y;
+
+            if (signY >= 0){
+                if (nextScPixel.y - nowScPixel.y >= 0.5){
+                    nowScPixel.y += signY;
+                }
+                else{
+                    nowScPixel.x += signX;
+                }
+            }
+            else{
+                if (nextScPixel.y - nowScPixel.y <= -0.5){
+                    nowScPixel.y += signY;
+                }
+                else{
+                    nowScPixel.x += signX;
+                }
+            }
+
+            inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, nowScPixel, scYMin);
+        }
+    }
+
+}
 
 
 void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
@@ -1712,11 +1756,44 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     int scYMin = scPixelSize.y;
     int scYSize;
 
-    Vec2d nowScPixel;
-    Vec2d nextScPixel;
-    double slope;
-    int signX;
-    int signY;
+    Vec3d pushVec3d;
+
+    int sideScVsSize = 0;
+    int rasterizeTargetAmount = 0;
+    for (int i = 0; i < ptRS->size(); i++){
+        if ((*ptRS)[i].scPixelVs.vs.size() >= 3){
+            for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size(); j++){
+                if ((*ptRS)[i].scPixelVs.vs[j].y > scYMax){
+                    scYMax = (*ptRS)[i].scPixelVs.vs[j].y;
+                }
+                if ((*ptRS)[i].scPixelVs.vs[j].y < scYMin){
+                    scYMin = (*ptRS)[i].scPixelVs.vs[j].y;
+                }
+            }
+
+            sideScVsSize += scYMax - scYMin + 1;
+            rasterizeTargetAmount += 1;
+
+            scYMax = 0;
+            scYMin = scPixelSize.y;
+        }
+    }
+
+    // 212801
+    double* hLeftSideScVs = new double[sideScVsSize*2]{-2.0}; 
+    std::fill(hLeftSideScVs, hLeftSideScVs + sideScVsSize*2, -2.0); 
+
+    double* hRightSideScVs = new double[sideScVsSize*2]{-2.0}; 
+    std::fill(hRightSideScVs, hRightSideScVs + sideScVsSize*2, -2.0); 
+
+    double* hPolyCamOneVs = (double*)malloc(sizeof(double)*rasterizeTargetAmount*3);
+    double* hPolyCamOneNs = (double*)malloc(sizeof(double)*rasterizeTargetAmount*3);
+
+    int* hSideVsSize = (int*)malloc(sizeof(int)*rasterizeTargetAmount);
+    int* hRsI = (int*)malloc(sizeof(int)*rasterizeTargetAmount);
+
+    int iN1 = 0;;
+    int currentSize = 0;
     for (int i = 0; i < ptRS->size(); i++){
         if ((*ptRS)[i].scPixelVs.vs.size() >= 3){
             for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size(); j++){
@@ -1729,178 +1806,51 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
             }
 
             scYSize = scYMax - scYMin + 1;
-            (*ptRS)[i].leftScRVs.resize(scYSize);
-            (*ptRS)[i].rightScRVs.resize(scYSize);
+
+            hPolyCamOneVs[iN1*3 + 0] = (*ptRS)[i].polyCamVs[0].x;
+            hPolyCamOneVs[iN1*3 + 1] = (*ptRS)[i].polyCamVs[0].y;
+            hPolyCamOneVs[iN1*3 + 2] = (*ptRS)[i].polyCamVs[0].z;
+
+            hPolyCamOneNs[iN1*3 + 0] = (*ptRS)[i].polyN.x;
+            hPolyCamOneNs[iN1*3 + 1] = (*ptRS)[i].polyN.y;
+            hPolyCamOneNs[iN1*3 + 2] = (*ptRS)[i].polyN.z;
+
+            hSideVsSize[iN1] = scYSize;
+            hRsI[iN1] = i;
 
             for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size() - 1; j++){
-                if ((*ptRS)[i].scPixelVs.vs[j].x == (*ptRS)[i].scPixelVs.vs[j+1].x){
-                    nowScPixel.x = (*ptRS)[i].scPixelVs.vs[j].x;
-
-                    if ((*ptRS)[i].scPixelVs.vs[j+1].y - (*ptRS)[i].scPixelVs.vs[j].y >= 0){
-                        signY = 1;
-                    }
-                    else{
-                        signY = -1;
-                    }
-
-                    for (int k = 0; k < (*ptRS)[i].scPixelVs.vs[j+1].y - (*ptRS)[i].scPixelVs.vs[j].y + 1; k++){
-                        nowScPixel.y 
-                        = (*ptRS)[i].scPixelVs.vs[j].y + signY * k;
-                        inputSideScRvs(ptRS, i, nowScPixel, scYMin);
-                    }
-                    
-                }
-                else if ((*ptRS)[i].scPixelVs.vs[j].y == (*ptRS)[i].scPixelVs.vs[j+1].y){
-                    inputSideScRvs(ptRS, i, j, scYMin);
-                    inputSideScRvs(ptRS, i, j+1, scYMin);
-                }   
-                else{
-                    nowScPixel.x = (*ptRS)[i].scPixelVs.vs[j].x;
-                    nowScPixel.y = (*ptRS)[i].scPixelVs.vs[j].y;
-                    inputSideScRvs(ptRS, i, nowScPixel, scYMin);
-
-                    slope
-                    = ((*ptRS)[i].scPixelVs.vs[j+1].y - (*ptRS)[i].scPixelVs.vs[j].y) /
-                    ((*ptRS)[i].scPixelVs.vs[j+1].x - (*ptRS)[i].scPixelVs.vs[j].x);
-
-                    if (slope >= 0 && (*ptRS)[i].scPixelVs.vs[j].y > (*ptRS)[i].scPixelVs.vs[j+1].y){
-                        signX = -1;
-                        signY = -1;
-                    }
-                    else if(slope >= 0 && (*ptRS)[i].scPixelVs.vs[j].y < (*ptRS)[i].scPixelVs.vs[j+1].y){
-                        signX = 1;
-                        signY = 1;
-                    }
-                    else if(slope < 0 && (*ptRS)[i].scPixelVs.vs[j].y > (*ptRS)[i].scPixelVs.vs[j+1].y){
-                        signX = 1;
-                        signY = -1;
-                    }
-                    else if(slope < 0 && (*ptRS)[i].scPixelVs.vs[j].y < (*ptRS)[i].scPixelVs.vs[j+1].y){
-                        signX = -1;
-                        signY = 1;
-                    }
-
-                    while (nowScPixel.y != (*ptRS)[i].scPixelVs.vs[j+1].y){
-                        nextScPixel.x = nowScPixel.x + 0.5 * signX;
-
-                        nextScPixel.y 
-                        = ((*ptRS)[i].scPixelVs.vs[j+1].y - (*ptRS)[i].scPixelVs.vs[j].y) /
-                        ((*ptRS)[i].scPixelVs.vs[j+1].x - (*ptRS)[i].scPixelVs.vs[j].x) *
-                        (nextScPixel.x - (*ptRS)[i].scPixelVs.vs[j].x) + (*ptRS)[i].scPixelVs.vs[j].y;
-
-                        if (signY >= 0){
-                            if (nextScPixel.y - nowScPixel.y >= 0.5){
-                                nowScPixel.y += signY;
-                            }
-                            else{
-                                nowScPixel.x += signX;
-                            }
-                        }
-                        else{
-                            if (nextScPixel.y - nowScPixel.y <= -0.5){
-                                nowScPixel.y += signY;
-                            }
-                            else{
-                                nowScPixel.x += signX;
-                            }
-                        }
-
-                        inputSideScRvs(ptRS, i, nowScPixel, scYMin);
-                    }
-                }
+                rasterize(j, j+1, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize);
             }
 
-            if ((*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].x == (*ptRS)[i].scPixelVs.vs[0].x){
-                    nowScPixel.x = (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].x;
+            rasterize(
+                (*ptRS)[i].scPixelVs.vs.size() - 1, 0, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize
+            );
 
-                    if ((*ptRS)[i].scPixelVs.vs[0].y - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y >= 0){
-                        signX = 1;
-                    }
-                    else{
-                        signX = -1;
-                    }
+            // for (int j = 0; j < (*ptRS)[i].leftScRVs.size(); j++){
+            //     for (int k = 0; k <= (*ptRS)[i].rightScRVs[j].x - (*ptRS)[i].leftScRVs[j].x; k++){
+            //         rasterizeData.push_back((*ptRS)[i].leftScRVs[j].x + k);
+            //         rasterizeData.push_back((*ptRS)[i].leftScRVs[j].y);
+            //         rasterizeData.push_back(-1);
 
-                    for (int k = 0; k < (*ptRS)[i].scPixelVs.vs[0].y - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y + 1; k++){
-                        nowScPixel.y 
-                        = (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y + signX * k;
-                        inputSideScRvs(ptRS, i, nowScPixel, scYMin);
-                    }
-                    
-                }
-                else if ((*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y == (*ptRS)[i].scPixelVs.vs[0].y){
-                    inputSideScRvs(ptRS, i, (*ptRS)[i].scPixelVs.vs.size() - 1, scYMin);
-                    inputSideScRvs(ptRS, i, 0, scYMin);
-                }   
-                else{
-                    nowScPixel.x = (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].x;
-                    nowScPixel.y = (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y;
-                    inputSideScRvs(ptRS, i, nowScPixel, scYMin);
+            //         rasterizeData.push_back((*ptRS)[i].polyCamVs[0].x);
+            //         rasterizeData.push_back((*ptRS)[i].polyCamVs[0].y);
+            //         rasterizeData.push_back((*ptRS)[i].polyCamVs[0].y);
 
-                    slope
-                    = ((*ptRS)[i].scPixelVs.vs[0].y - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y) /
-                    ((*ptRS)[i].scPixelVs.vs[0].x - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].x);
+            //         rasterizeData.push_back((*ptRS)[i].polyN.x);
+            //         rasterizeData.push_back((*ptRS)[i].polyN.y);
+            //         rasterizeData.push_back((*ptRS)[i].polyN.z);
 
-                    if (
-                        slope >= 0 && (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y > 
-                        (*ptRS)[i].scPixelVs.vs[0].y
-                    ){
-                        signX = -1;
-                        signY = -1;
-                    }
-                    else if(
-                        slope >= 0 && (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y < 
-                        (*ptRS)[i].scPixelVs.vs[0].y
-                    ){
-                        signX = 1;
-                        signY = 1;
-                    }
-                    else if(
-                        slope < 0 && (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y > 
-                        (*ptRS)[i].scPixelVs.vs[0].y
-                    ){
-                        signX = 1;
-                        signY = -1;
-                    }
-                    else if(
-                        slope < 0 && (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y < 
-                        (*ptRS)[i].scPixelVs.vs[0].y
-                    ){
-                        signX = -1;
-                        signY = 1;
-                    }
+            //         rasterizeData.push_back(i);
+            //     }
+            // }
 
-                    while (nowScPixel.y != (*ptRS)[i].scPixelVs.vs[0].y){
-                        nextScPixel.x = nowScPixel.x + 0.5 * signX;
+            iN1 += 1;
+            currentSize += scYSize;
 
-                        nextScPixel.y 
-                        = ((*ptRS)[i].scPixelVs.vs[0].y - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y) /
-                        ((*ptRS)[i].scPixelVs.vs[0].x - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].x) *
-                        (nextScPixel.x - (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].x) + (*ptRS)[i].scPixelVs.vs[(*ptRS)[i].scPixelVs.vs.size() - 1].y;
-
-                        if (signY >= 0){
-                            if (nextScPixel.y - nowScPixel.y >= 0.5){
-                                nowScPixel.y += signY;
-                            }
-                            else{
-                                nowScPixel.x += signX;
-                            }
-                        }
-                        else{
-                            if (nextScPixel.y - nowScPixel.y <= -0.5){
-                                nowScPixel.y += signY;
-                            }
-                            else{
-                                nowScPixel.x += signX;
-                            }
-                        }
-
-                        inputSideScRvs(ptRS, i, nowScPixel, scYMin);
-                    }
-
-                    int debug_stop = 0;
-                }
-
-
+            scYMax = 0;
+            scYMin = scPixelSize.y;
         }
     }
+
+    
 }

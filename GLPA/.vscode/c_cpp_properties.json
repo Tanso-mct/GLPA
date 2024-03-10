@@ -3,9 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/*",
-                "GLPA/x64",
-                "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.2/include"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
