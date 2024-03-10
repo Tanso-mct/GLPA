@@ -1635,23 +1635,23 @@ void Camera::inputSideScRvs(
     Vec2d pixelV,
     int scPixelVsYMin
 ){
-    if (leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] == -2){
-        leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
+    if (leftSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] == -2){
+        leftSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
 
-        leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2 + 1] = pixelV.y;
+        leftSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2 + 1] = pixelV.y;
     }
-    else if (leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] > pixelV.x){
-        leftSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
+    else if (leftSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] > pixelV.x){
+        leftSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
     }
 
 
-    if (rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] == -2){
-        rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
+    if (rightSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] == -2){
+        rightSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
 
-        rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2 + 1] = pixelV.y;
+        rightSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2 + 1] = pixelV.y;
     }
-    else if (rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] < pixelV.x){
-        rightSideScVs[currentSize + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
+    else if (rightSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] < pixelV.x){
+        rightSideScVs[currentSize*2 + static_cast<int>((pixelV.y - scPixelVsYMin))*2] = pixelV.x;
     }
 }
 
@@ -1779,7 +1779,6 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
         }
     }
 
-    // 212801
     double* hLeftSideScVs = new double[sideScVsSize*2]{-2.0}; 
     std::fill(hLeftSideScVs, hLeftSideScVs + sideScVsSize*2, -2.0); 
 
