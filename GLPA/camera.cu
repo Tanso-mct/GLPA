@@ -1673,17 +1673,18 @@ void Camera::rasterize(
     int signY;
     if ((*ptRS)[rsI].scPixelVs.vs[v0I].x == (*ptRS)[rsI].scPixelVs.vs[v1I].x){
         nowScPixel.x = (*ptRS)[rsI].scPixelVs.vs[v0I].x;
+        nowScPixel.y = (*ptRS)[rsI].scPixelVs.vs[v0I].y;
+        inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, nowScPixel, scYMin);
 
-        if ((*ptRS)[rsI].scPixelVs.vs[v1I].y - (*ptRS)[rsI].scPixelVs.vs[v0I].y >= 0){
-            signY = 1;
-        }
-        else{
+        if ((*ptRS)[rsI].scPixelVs.vs[v0I].y >= (*ptRS)[rsI].scPixelVs.vs[v1I].y){
             signY = -1;
         }
+        else{
+            signY = 1;
+        }
 
-        for (int k = 0; k < (*ptRS)[rsI].scPixelVs.vs[v1I].y - (*ptRS)[rsI].scPixelVs.vs[v0I].y + 1; k++){
-            nowScPixel.y 
-            = (*ptRS)[rsI].scPixelVs.vs[v0I].y + signY * k;
+        while (nowScPixel.y != (*ptRS)[rsI].scPixelVs.vs[v1I].y){
+            nowScPixel.y += signY;
             inputSideScRvs(leftSideScVs, rightSideScVs, currentSize, nowScPixel, scYMin);
         }
         
@@ -1756,8 +1757,6 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     int scYMin = scPixelSize.y;
     int scYSize;
 
-    Vec3d pushVec3d;
-
     int sideScVsSize = 0;
     int rasterizeTargetAmount = 0;
     for (int i = 0; i < ptRS->size(); i++){
@@ -1825,24 +1824,6 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
                 (*ptRS)[i].scPixelVs.vs.size() - 1, 0, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize
             );
 
-            // for (int j = 0; j < (*ptRS)[i].leftScRVs.size(); j++){
-            //     for (int k = 0; k <= (*ptRS)[i].rightScRVs[j].x - (*ptRS)[i].leftScRVs[j].x; k++){
-            //         rasterizeData.push_back((*ptRS)[i].leftScRVs[j].x + k);
-            //         rasterizeData.push_back((*ptRS)[i].leftScRVs[j].y);
-            //         rasterizeData.push_back(-1);
-
-            //         rasterizeData.push_back((*ptRS)[i].polyCamVs[0].x);
-            //         rasterizeData.push_back((*ptRS)[i].polyCamVs[0].y);
-            //         rasterizeData.push_back((*ptRS)[i].polyCamVs[0].y);
-
-            //         rasterizeData.push_back((*ptRS)[i].polyN.x);
-            //         rasterizeData.push_back((*ptRS)[i].polyN.y);
-            //         rasterizeData.push_back((*ptRS)[i].polyN.z);
-
-            //         rasterizeData.push_back(i);
-            //     }
-            // }
-
             iN1 += 1;
             currentSize += scYSize;
 
@@ -1850,6 +1831,28 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
             scYMin = scPixelSize.y;
         }
     }
+
+    double* dLeftSideScVs;
+    double* dRightSideScVs;
+    double* dPolyCamOneVs;
+    double* dPolyCamOneNs;
+    int* dSideVsSize;
+    int* dRsI;
+    cudaMalloc((void**)&dLeftSideScVs, sizeof(double)*sideScVsSize*2);
+    cudaMalloc((void**)&dRightSideScVs, sizeof(double)*sideScVsSize*2);
+    cudaMalloc((void**)&hPolyCamOneVs, sizeof(double)*rasterizeTargetAmount*3);
+    cudaMalloc((void**)&dPolyCamOneNs, sizeof(double)*rasterizeTargetAmount*3);
+    cudaMalloc((void**)&dSideVsSize, sizeof(int)*rasterizeTargetAmount);
+    cudaMalloc((void**)&dRsI, sizeof(int)*rasterizeTargetAmount);
+
+    cudaMemcpy(dLeftSideScVs, hLeftSideScVs, sizeof(double)*sideScVsSize*2, cudaMemcpyHostToDevice);
+    cudaMemcpy(dRightSideScVs, hRightSideScVs, sizeof(double)*sideScVsSize*2, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyCamOneVs, hPolyCamOneVs, sizeof(double)*rasterizeTargetAmount*3, cudaMemcpyHostToDevice);
+    cudaMemcpy(dSideVsSize, hSideVsSize, sizeof(double)*rasterizeTargetAmount, cudaMemcpyHostToDevice);
+    cudaMemcpy(dRsI, hRsI, sizeof(double)*rasterizeTargetAmount, cudaMemcpyHostToDevice);
+
+
+
 
     
 }
