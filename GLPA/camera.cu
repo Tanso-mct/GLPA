@@ -1788,10 +1788,14 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     double* hPolyCamOneNs = (double*)malloc(sizeof(double)*rasterizeTargetAmount*3);
 
     int* hSideVsSize = (int*)malloc(sizeof(int)*rasterizeTargetAmount);
-    int* hRsI = (int*)malloc(sizeof(int)*rasterizeTargetAmount);
+
+    std::vector<int> rsI;
+    std::vector<int> rsPerSize;
 
     int iN1 = 0;;
     int currentSize = 0;
+    double rasterizeSize = 0;
+    double currentRasterizeSize = 0;
     for (int i = 0; i < ptRS->size(); i++){
         if ((*ptRS)[i].scPixelVs.vs.size() >= 3){
             for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size(); j++){
@@ -1814,7 +1818,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
             hPolyCamOneNs[iN1*3 + 2] = (*ptRS)[i].polyN.z;
 
             hSideVsSize[iN1] = scYSize;
-            hRsI[iN1] = i;
+            rsI.push_back(i);
 
             for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size() - 1; j++){
                 rasterize(j, j+1, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize);
@@ -1823,6 +1827,16 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
             rasterize(
                 (*ptRS)[i].scPixelVs.vs.size() - 1, 0, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize
             );
+
+            for (int i = 0; i < scYSize; i++){
+                for (int j = 0; j <= hRightSideScVs[currentSize*2 + i*2] - hLeftSideScVs[currentSize*2 + i*2]; j++){
+                    rasterizeSize += 1;
+                    currentRasterizeSize += 1;
+                }
+            }
+
+            rsPerSize.push_back(currentRasterizeSize);
+            currentRasterizeSize = 0;
 
             iN1 += 1;
             currentSize += scYSize;
@@ -1837,19 +1851,18 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     double* dPolyCamOneVs;
     double* dPolyCamOneNs;
     int* dSideVsSize;
-    int* dRsI;
     cudaMalloc((void**)&dLeftSideScVs, sizeof(double)*sideScVsSize*2);
     cudaMalloc((void**)&dRightSideScVs, sizeof(double)*sideScVsSize*2);
     cudaMalloc((void**)&hPolyCamOneVs, sizeof(double)*rasterizeTargetAmount*3);
     cudaMalloc((void**)&dPolyCamOneNs, sizeof(double)*rasterizeTargetAmount*3);
     cudaMalloc((void**)&dSideVsSize, sizeof(int)*rasterizeTargetAmount);
-    cudaMalloc((void**)&dRsI, sizeof(int)*rasterizeTargetAmount);
 
     cudaMemcpy(dLeftSideScVs, hLeftSideScVs, sizeof(double)*sideScVsSize*2, cudaMemcpyHostToDevice);
     cudaMemcpy(dRightSideScVs, hRightSideScVs, sizeof(double)*sideScVsSize*2, cudaMemcpyHostToDevice);
     cudaMemcpy(dPolyCamOneVs, hPolyCamOneVs, sizeof(double)*rasterizeTargetAmount*3, cudaMemcpyHostToDevice);
     cudaMemcpy(dSideVsSize, hSideVsSize, sizeof(double)*rasterizeTargetAmount, cudaMemcpyHostToDevice);
-    cudaMemcpy(dRsI, hRsI, sizeof(double)*rasterizeTargetAmount, cudaMemcpyHostToDevice);
+
+    double* hRasterizeVs = (double*)malloc(sizeof(double)*rasterizeSize*3);
 
 
 
