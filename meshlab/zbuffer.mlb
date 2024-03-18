@@ -1,0 +1,14 @@
+<!DOCTYPE MeshLabDocument>
+<MeshLabProject>
+ <MeshGroup>
+  <MLMesh idInFile="-1" label="hLeftSideScVs.txt" filename="hLeftSideScVs.ply" visible="1">
+   <MLMatrix44>AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw==</MLMatrix44>
+   <RenderingOption pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1" pointColor="252 233 79 255" solidColor="192 192 192 255">000111000000000000000000000001000000000010100000000100111011110000000101</RenderingOption>
+  </MLMesh>
+  <MLMesh idInFile="-1" label="hRightSideScVs.txt" filename="hRightSideScVs.ply" visible="1">
+   <MLMatrix44>AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw==</MLMatrix44>
+   <RenderingOption pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1" pointColor="252 233 79 255" solidColor="192 192 192 255">000111000000000000000100000001000000001010100000000100111011110000000101</RenderingOption>
+  </MLMesh>
+ </MeshGroup>
+ <RasterGroup/>
+</MeshLabProject>

@@ -1770,7 +1770,7 @@ __global__ void glpaGpuRasterize(
     if (i < polyAmount){
         if (j < sideVsSize[i]){
             for(int k = 0; k <= rightSideScVs[sumSideVsSize[i]*2 + j*2] - leftSideScVs[sumSideVsSize[i]*2 + j*2]; k++){
-                rasterizeVs[rsSumSize[i] + sidePerSize[sideVsSize[i]]]
+                rasterizeVs[rsSumSize[i] + sidePerSize[sideVsSize[i] + ]]
             }
         }
     }
@@ -1857,6 +1857,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
                 (*ptRS)[i].scPixelVs.vs.size() - 1, 0, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize
             );
 
+            sidePerSize.push_back(currentRasterizeSize);
             for (int i = 0; i < scYSize; i++){
                 for (int j = 0; j <= hRightSideScVs[currentSize*2 + i*2] - hLeftSideScVs[currentSize*2 + i*2]; j++){
                     rasterizeSize += 1;
@@ -1864,12 +1865,12 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
                 }
 
                 sidePerSize.push_back(currentRasterizeSize);
-                currentRasterizeSize = 0;
             }
 
             if (maxRasterizeSize < currentRasterizeSize){
                 maxRasterizeSize = currentRasterizeSize;
             }
+            currentRasterizeSize = 0;
 
             rsSumSize.push_back(rasterizeSize);
 
