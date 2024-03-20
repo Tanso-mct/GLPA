@@ -1760,7 +1760,7 @@ __global__ void glpaGpuRasterize(
     int polyAmount,
     int* sideVsSize,
     int* sumSideVsSize,
-    int* sidePerSize,
+    int* sumSidePerSize,
     int* rsSumSize,
     double* rasterizeVs
 ){
@@ -1770,7 +1770,9 @@ __global__ void glpaGpuRasterize(
     if (i < polyAmount){
         if (j < sideVsSize[i]){
             for(int k = 0; k <= rightSideScVs[sumSideVsSize[i]*2 + j*2] - leftSideScVs[sumSideVsSize[i]*2 + j*2]; k++){
-                rasterizeVs[rsSumSize[i] + sidePerSize[sideVsSize[i] + ]]
+                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sideVsSize[i] + j]*3 + k*3]
+                = polyCamOneVs[i*3] + 
+                (polyCamOneNs[i*3]*polyCamOneVs[i*3] - )
             }
         }
     }
@@ -1816,7 +1818,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     int* hSumSideVsSize = (int*)malloc(sizeof(int)*rasterizeTargetAmount);
 
     std::vector<int> rsI;
-    std::vector<int> sidePerSize;
+    std::vector<int> sumSidePerSize;
     std::vector<int> rsSumSize;
 
     int polyAmount = 0;;
@@ -1824,6 +1826,8 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     double rasterizeSize = 0;
     double currentRasterizeSize = 0;
     double maxRasterizeSize = 0;
+
+    rsSumSize.push_back(rasterizeSize);
     for (int i = 0; i < ptRS->size(); i++){
         if ((*ptRS)[i].scPixelVs.vs.size() >= 3){
             for (int j = 0; j < (*ptRS)[i].scPixelVs.vs.size(); j++){
@@ -1857,14 +1861,14 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
                 (*ptRS)[i].scPixelVs.vs.size() - 1, 0, i, scYMin, ptRS, hLeftSideScVs, hRightSideScVs, currentSize
             );
 
-            sidePerSize.push_back(currentRasterizeSize);
+            sumSidePerSize.push_back(currentRasterizeSize);
             for (int i = 0; i < scYSize; i++){
                 for (int j = 0; j <= hRightSideScVs[currentSize*2 + i*2] - hLeftSideScVs[currentSize*2 + i*2]; j++){
                     rasterizeSize += 1;
                     currentRasterizeSize += 1;
                 }
 
-                sidePerSize.push_back(currentRasterizeSize);
+                sumSidePerSize.push_back(currentRasterizeSize);
             }
 
             if (maxRasterizeSize < currentRasterizeSize){
@@ -1888,7 +1892,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     double* dPolyCamOneNs;
     int* dSideVsSize;
     int* dSumSideVsSize;
-    int* dSidePerVsSize;
+    int* dSumSidePerVsSize;
     int* dRsSumVsSize;
     cudaMalloc((void**)&dLeftSideScVs, sizeof(double)*sideScVsSize*2);
     cudaMalloc((void**)&dRightSideScVs, sizeof(double)*sideScVsSize*2);
@@ -1896,7 +1900,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     cudaMalloc((void**)&dPolyCamOneNs, sizeof(double)*rasterizeTargetAmount*3);
     cudaMalloc((void**)&dSideVsSize, sizeof(int)*rasterizeTargetAmount);
     cudaMalloc((void**)&dSumSideVsSize, sizeof(int)*rasterizeTargetAmount);
-    cudaMalloc((void**)&dSidePerVsSize, sizeof(int)*sidePerSize.size() * sizeof(int));
+    cudaMalloc((void**)&dSumSidePerVsSize, sizeof(int)*sumSidePerSize.size() * sizeof(int));
     cudaMalloc((void**)&dRsSumVsSize, sizeof(int)*rsSumSize.size() * sizeof(int));
 
     cudaMemcpy(dLeftSideScVs, hLeftSideScVs, sizeof(double)*sideScVsSize*2, cudaMemcpyHostToDevice);
@@ -1904,7 +1908,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     cudaMemcpy(dPolyCamOneVs, hPolyCamOneVs, sizeof(double)*rasterizeTargetAmount*3, cudaMemcpyHostToDevice);
     cudaMemcpy(dSideVsSize, hSideVsSize, sizeof(double)*rasterizeTargetAmount, cudaMemcpyHostToDevice);
     cudaMemcpy(dSumSideVsSize, hSumSideVsSize, sizeof(double)*rasterizeTargetAmount, cudaMemcpyHostToDevice);
-    cudaMemcpy(dSidePerVsSize, sidePerSize.data(), sidePerSize.size() * sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dSumSidePerVsSize, sumSidePerSize.data(), sumSidePerSize.size() * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dRsSumVsSize, rsSumSize.data(), rsSumSize.size() * sizeof(int), cudaMemcpyHostToDevice);
 
     double* hRasterizeVs = (double*)malloc(sizeof(double)*rasterizeSize*3);
@@ -1937,7 +1941,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
         polyAmount,
         dSideVsSize,
         dSumSideVsSize,
-        dSidePerVsSize,
+        dSumSidePerVsSize,
         dRsSumVsSize,
         dRasterizeVs
     );
