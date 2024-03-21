@@ -129,6 +129,7 @@ __global__ void glpaGpuSortVsDotCross(
 __global__ void glpaGpuRasterize(
     double* left_side_sc_vs,
     double* right_side_sc_vs,
+    double nearZ,
     double* poly_cam_one_vs,
     double* poly_cam_oneNs,
     int poly_amount,
@@ -136,7 +137,8 @@ __global__ void glpaGpuRasterize(
     int* sum_side_vs_size,
     int* side_per_size,
     int* rs_sum_size,
-    double* rasterize_vs
+    double* rasterize_vs,
+    double* rasterize_pixel_vs
 );
 
 /// @brief Has data related to the 3DCG camera.
