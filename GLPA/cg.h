@@ -207,11 +207,15 @@ typedef struct tagRasterizeSource{
 
     MultiSidedShape scPixelVs;
 
-    // std::vector<RasterizeVec2d> leftScRVs;
-    // std::vector<RasterizeVec2d> rightScRVs;
-
 } RasterizeSource;
 
+
+typedef struct tagArrayZBuffer{
+    int iRS;
+    double x;
+    double y;
+    double z = 1;
+} AryZBuffer;
 
 
 

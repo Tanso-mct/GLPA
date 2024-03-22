@@ -216,7 +216,7 @@ public :
         int current_size
     );
 
-    void zBuffer(std::vector<RasterizeSource>* pt_rasterize_source);
+    void zBuffer(std::vector<RasterizeSource>* pt_rasterize_source, std::vector<AryZBuffer>* aryZB);
 
     Matrix mt;
     Vector vec;

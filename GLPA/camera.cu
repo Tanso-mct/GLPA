@@ -1800,7 +1800,7 @@ __global__ void glpaGpuRasterize(
 }
 
 
-void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
+void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, std::vector<AryZBuffer>* aryZB){
     int scYMax = 0;
     int scYMin = scPixelSize.y;
     int scYSize;
@@ -2003,12 +2003,30 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     cudaMemcpy(hRasterizeVs, dRasterizeVs, sizeof(double)*rasterizeSize*3, cudaMemcpyDeviceToHost);
     cudaMemcpy(hRasterizePixelVs, dRasterizePixelVs, sizeof(double)*rasterizeSize*2, cudaMemcpyDeviceToHost);
 
+    aryZB->resize(scPixelSize.x * scPixelSize.y);
+
+    int workI = 0;
+    for (int i = 0; i < rsI.size(); i++){
+        for(int j = 0; j <= rsSumSize[i+1] - rsSumSize[i]; j++){
+            if (
+                (*aryZB)[hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2]*scPixelSize.x].z
+            )
+            
+        }
+    }
+
+
+
     free(hLeftSideScVs);
     free(hRightSideScVs);
     free(hPolyCamOneVs);
     free(hPolyCamOneNs);
     free(hSideVsSize);
     free(hSumSideVsSize);
+    free(hSumSidePerSize);
+    free(hRsSumSize);
+    free(hNearScSize);
+    free(hScPixelSize);
     free(hRasterizeVs);
     free(hRasterizePixelVs);
 
@@ -2020,6 +2038,8 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     cudaFree(dSumSideVsSize);
     cudaFree(dSumSidePerVsSize);
     cudaFree(dRsSumSize);
+    cudaFree(dNearScSize);
+    cudaFree(dScPixelSize);
     cudaFree(dRasterizeVs);
     cudaFree(dRasterizePixelVs);
     
