@@ -1,0 +1,42 @@
+<!DOCTYPE MeshLabDocument>
+<MeshLabProject>
+ <MeshGroup>
+  <MLMesh filename="hLeftSideScVs.ply" visible="0" label="hLeftSideScVs.txt" idInFile="-1">
+   <MLMatrix44>
+1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" solidColor="192 192 192 255" pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1">000111000000000000000100000001001100000010100000000100111011110000001001</RenderingOption>
+  </MLMesh>
+  <MLMesh filename="hRightSideScVs.ply" visible="0" label="hRightSideScVs.txt" idInFile="-1">
+   <MLMatrix44>
+1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" solidColor="192 192 192 255" pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1">000111000000000000000100000001001100000010100000000100111011110000001001</RenderingOption>
+  </MLMesh>
+  <MLMesh filename="hPolyCamOneVs.txt" visible="0" label="hPolyCamOneVs.txt" idInFile="-1">
+   <MLMatrix44>
+1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" solidColor="192 192 192 255" pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1">000001000000000000000100000001001100000010100000000100111011110000001001</RenderingOption>
+  </MLMesh>
+  <MLMesh filename="hPolyCamOneVs.txt" visible="0" label="hPolyCamOneVs(1).txt" idInFile="-1">
+   <MLMatrix44>
+1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" solidColor="192 192 192 255" pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1">000001000000000000000100000001001100000010100000000100111011110000001001</RenderingOption>
+  </MLMesh>
+  <MLMesh filename="hRasterizePixelVs.txt" visible="0" label="hRasterizePixelVs(1).txt" idInFile="-1">
+   <MLMatrix44>
+1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" solidColor="192 192 192 255" pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1">000111000000000000000100000001001100000010100000000100111011110000001001</RenderingOption>
+  </MLMesh>
+  <MLMesh filename="hRasterizeVs.txt" visible="1" label="hRasterizeVs.txt" idInFile="-1">
+   <MLMatrix44>
+1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 
+</MLMatrix44>
+   <RenderingOption pointColor="252 233 79 255" solidColor="192 192 192 255" pointSize="3" wireColor="64 64 64 255" boxColor="234 234 234 255" wireWidth="1">000111000000000000000000000000000000000010100000000100111011110000001101</RenderingOption>
+  </MLMesh>
+ </MeshGroup>
+ <RasterGroup/>
+</MeshLabProject>

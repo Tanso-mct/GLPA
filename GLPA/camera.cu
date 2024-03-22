@@ -1763,6 +1763,8 @@ __global__ void glpaGpuRasterize(
     int* sumSideVsSize,
     int* sumSidePerSize,
     int* rsSumSize,
+    double* nearScSize,
+    double* scPixelSize,
     double* rasterizeVs,
     double* rasterizePixelVs
 ){
@@ -1772,25 +1774,25 @@ __global__ void glpaGpuRasterize(
     if (i < polyAmount){
         if (j < sideVsSize[i]){
             for(int k = 0; k <= rightSideScVs[sumSideVsSize[i]*2 + j*2] - leftSideScVs[sumSideVsSize[i]*2 + j*2]; k++){
-                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sumSideVsSize[i] + j]*3 + k*3]
+                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sumSideVsSize[i] + i + j]*3 + k*3]
                 = ((polyCamOneNs[i*3]*polyCamOneVs[i*3] + polyCamOneNs[i*3 + 1]*polyCamOneVs[i*3 + 1] + polyCamOneNs[i*3 + 2]*polyCamOneVs[i*3 + 2]) /
-                (polyCamOneNs[i*3]*(leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) + polyCamOneNs[i*3 + 1]*leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1] + polyCamOneNs[i*3 + 2]*-nearZ)) *
-                (leftSideScVs[sumSideVsSize[i]*2 + j*2] + k);
+                (polyCamOneNs[i*3]*(nearScSize[0] * (leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) / scPixelSize[0] - nearScSize[0] / 2) + polyCamOneNs[i*3 + 1]*(nearScSize[1] / 2 - nearScSize[1] * (leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1]) / scPixelSize[1]) + polyCamOneNs[i*3 + 2]*-nearZ)) *
+                (nearScSize[0] * (leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) / scPixelSize[0] - nearScSize[0] / 2);
 
-                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sumSideVsSize[i] + j]*3 + k*3 + 1]
+                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sumSideVsSize[i] + i + j]*3 + k*3 + 1]
                 = ((polyCamOneNs[i*3]*polyCamOneVs[i*3] + polyCamOneNs[i*3 + 1]*polyCamOneVs[i*3 + 1] + polyCamOneNs[i*3 + 2]*polyCamOneVs[i*3 + 2]) /
-                (polyCamOneNs[i*3]*(leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) + polyCamOneNs[i*3 + 1]*leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1] + polyCamOneNs[i*3 + 2]*-nearZ)) *
-                leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1];
+                (polyCamOneNs[i*3]*(nearScSize[0] * (leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) / scPixelSize[0] - nearScSize[0] / 2) + polyCamOneNs[i*3 + 1]*(nearScSize[1] / 2 - nearScSize[1] * (leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1]) / scPixelSize[1]) + polyCamOneNs[i*3 + 2]*-nearZ)) *
+                (nearScSize[1] / 2 - nearScSize[1] * (leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1]) / scPixelSize[1]);
 
-                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sumSideVsSize[i] + j]*3 + k*3 + 2]
+                rasterizeVs[rsSumSize[i]*3 + sumSidePerSize[sumSideVsSize[i] + i + j]*3 + k*3 + 2]
                 = ((polyCamOneNs[i*3]*polyCamOneVs[i*3] + polyCamOneNs[i*3 + 1]*polyCamOneVs[i*3 + 1] + polyCamOneNs[i*3 + 2]*polyCamOneVs[i*3 + 2]) /
-                (polyCamOneNs[i*3]*(leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) + polyCamOneNs[i*3 + 1]*leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1] + polyCamOneNs[i*3 + 2]*-nearZ)) *
+                (polyCamOneNs[i*3]*(nearScSize[0] * (leftSideScVs[sumSideVsSize[i]*2 + j*2] + k) / scPixelSize[0] - nearScSize[0] / 2) + polyCamOneNs[i*3 + 1]*(nearScSize[1] / 2 - nearScSize[1] * (leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1]) / scPixelSize[1]) + polyCamOneNs[i*3 + 2]*-nearZ)) *
                 -nearZ;
 
-                rasterizePixelVs[rsSumSize[i]*2 + sumSidePerSize[sumSideVsSize[i] + j]*2 + k*2]
+                rasterizePixelVs[rsSumSize[i]*2 + sumSidePerSize[sumSideVsSize[i] + i + j]*2 + k*2]
                 = leftSideScVs[sumSideVsSize[i]*2 + j*2] + k;
 
-                rasterizePixelVs[rsSumSize[i]*2 + sumSidePerSize[sumSideVsSize[i] + j]*2 + k*2 + 1]
+                rasterizePixelVs[rsSumSize[i]*2 + sumSidePerSize[sumSideVsSize[i] + i + j]*2 + k*2 + 1]
                 = leftSideScVs[sumSideVsSize[i]*2 + j*2 + 1];
             }
         }
@@ -1944,6 +1946,22 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
     cudaMalloc((void**)&dRasterizeVs, sizeof(double)*rasterizeSize*3);
     cudaMalloc((void**)&dRasterizePixelVs, sizeof(double)*rasterizeSize*2);
 
+    double* hNearScSize = (double*)malloc(sizeof(double)*2);
+    double* hScPixelSize = (double*)malloc(sizeof(double)*2);
+
+    hNearScSize[0] = nearScrSize.x;
+    hNearScSize[1] = nearScrSize.y;
+
+    hScPixelSize[0] = scPixelSize.x;
+    hScPixelSize[1] = scPixelSize.y;
+
+    double* dNearScSize;
+    double* dScPixelSize;
+    cudaMalloc((void**)&dNearScSize, sizeof(double)*2);
+    cudaMalloc((void**)&dScPixelSize, sizeof(double)*2);
+    cudaMemcpy(dNearScSize, hNearScSize, sizeof(double)*2, cudaMemcpyHostToDevice);
+    cudaMemcpy(dScPixelSize, hScPixelSize, sizeof(double)*2, cudaMemcpyHostToDevice);
+
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
 
@@ -1972,6 +1990,8 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS){
         dSumSideVsSize,
         dSumSidePerVsSize,
         dRsSumSize,
+        dNearScSize,
+        dScPixelSize,
         dRasterizeVs,
         dRasterizePixelVs
     );

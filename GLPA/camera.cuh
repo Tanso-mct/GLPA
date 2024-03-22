@@ -137,6 +137,8 @@ __global__ void glpaGpuRasterize(
     int* sum_side_vs_size,
     int* side_per_size,
     int* rs_sum_size,
+    double* near_screen_size,
+    double* screen_pixel_size,
     double* rasterize_vs,
     double* rasterize_pixel_vs
 );
