@@ -70,7 +70,8 @@ private :
     std::unordered_map<std::wstring, Camera> cams;
 
     std::vector<RasterizeSource> rasterizeSource;
-    std::vector<AryZBuffer> aryZBuffer;
+    double* zBufferCamVs;
+    double* zBufferRSIs;
 
 
 };

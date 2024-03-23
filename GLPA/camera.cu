@@ -1,16 +1,38 @@
 #include "camera.cuh"
 
 
+void Camera::initialize(){
+    renderTargetObj.clear();
+    renderTargetPoly.clear();
+
+    shapeCnvtTargetI.clear();
+
+    sort4TargetI.clear();
+    sort5TargetI.clear();
+    sort6TargetI.clear();
+    sort7TargetI.clear();
+
+    sort4Vs.clear();
+    sort5Vs.clear();
+    sort6Vs.clear();
+    sort7Vs.clear();
+
+    polyRsI.clear();
+    vvRsI.clear();
+
+}
+
+
 void Camera::load(
-    std::wstring argName, 
-    Vec3d argWPos, 
-    Vec3d argRotAngle, 
-    double argNearZ, 
-    double argFarZ, 
-    double argViewAngle, 
+    std::wstring argName,
+    Vec3d argWPos,
+    Vec3d argRotAngle,
+    double argNearZ,
+    double argFarZ,
+    double argViewAngle,
     Vec2d argAspectRatio,
-    Vec2d argScPixelSize
-){
+    Vec2d argScPixelSize)
+{
     name = argName;
     wPos = argWPos;
     rotAngle = argRotAngle;
@@ -22,7 +44,6 @@ void Camera::load(
 
     reload = true;
 }
-
 
 void Camera::defineViewVolume(){
     // If no reloading has been done and no changes have been made to the definition, no processing is done.
@@ -1800,7 +1821,7 @@ __global__ void glpaGpuRasterize(
 }
 
 
-void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, std::vector<AryZBuffer>* aryZB){
+void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, double* zbRSIs, double* zbVs){
     int scYMax = 0;
     int scYMin = scPixelSize.y;
     int scYSize;
@@ -2003,19 +2024,34 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, std::vector<AryZBuffer>
     cudaMemcpy(hRasterizeVs, dRasterizeVs, sizeof(double)*rasterizeSize*3, cudaMemcpyDeviceToHost);
     cudaMemcpy(hRasterizePixelVs, dRasterizePixelVs, sizeof(double)*rasterizeSize*2, cudaMemcpyDeviceToHost);
 
-    aryZB->resize(scPixelSize.x * scPixelSize.y);
+    zbRSIs = (double*)malloc(sizeof(double)*(scPixelSize.x + 1) * (scPixelSize.y + 1));
+    std::fill(zbRSIs, zbRSIs + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), -1); 
+
+    zbVs = (double*)malloc(sizeof(double)*(scPixelSize.x + 1) * (scPixelSize.y + 1) * 3);
+
+    double* aryCompZ = (double*)malloc(sizeof(double)*(scPixelSize.x + 1) * (scPixelSize.y + 1));
+    std::fill(aryCompZ, aryCompZ + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), 1); 
 
     int workI = 0;
     for (int i = 0; i < rsI.size(); i++){
-        for(int j = 0; j <= rsSumSize[i+1] - rsSumSize[i]; j++){
+        for(int j = 0; j < rsSumSize[i+1] - rsSumSize[i]; j++){
             if (
-                (*aryZB)[hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2]*scPixelSize.x].z
-            )
-            
+                aryCompZ[static_cast<int>(hRasterizePixelVs[workI*2] + (hRasterizePixelVs[workI*2 + 1])*(scPixelSize.x + 1))] >=
+                hRasterizeVs[workI*3 + 2] / -farZ
+            ){
+                zbRSIs[static_cast<int>(hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2 + 1]*(scPixelSize.x + 1))] = rsI[i];
+                zbVs[static_cast<int>(hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2 + 1]*(scPixelSize.x + 1)*3)] = hRasterizeVs[workI*3];
+                zbVs[static_cast<int>(hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2 + 1]*(scPixelSize.x + 1)*3 + 1)] = hRasterizeVs[workI*3 + 1];
+                zbVs[static_cast<int>(hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2 + 1]*(scPixelSize.x + 1)*3 + 2)] = hRasterizeVs[workI*3 + 2];
+
+                aryCompZ[static_cast<int>(hRasterizePixelVs[workI*2] + hRasterizePixelVs[workI*2 + 1]*(scPixelSize.x + 1))] = hRasterizeVs[workI*3 + 2] / -farZ;
+            }
+
+            workI += 1;
         }
     }
 
-
+    free(aryCompZ);
 
     free(hLeftSideScVs);
     free(hRightSideScVs);

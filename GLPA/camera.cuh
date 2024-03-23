@@ -146,6 +146,8 @@ __global__ void glpaGpuRasterize(
 /// @brief Has data related to the 3DCG camera.
 class Camera{
 public :
+    void initialize();
+
     void load(
         std::wstring arg_name,
         Vec3d arg_w_pos,
@@ -158,8 +160,6 @@ public :
     );
 
     void defineViewVolume();
-
-    // void updateObjRectRange();
 
     void objCulling(std::unordered_map<std::wstring, Object> objects);
 
@@ -216,7 +216,9 @@ public :
         int current_size
     );
 
-    void zBuffer(std::vector<RasterizeSource>* pt_rasterize_source, std::vector<AryZBuffer>* aryZB);
+    void zBuffer(
+        std::vector<RasterizeSource>* pt_rasterize_source, double* z_buffer_rasterize_source_i, double* z_buffer_vs
+    );
 
     Matrix mt;
     Vector vec;
@@ -225,15 +227,15 @@ private :
     bool reload = false;
 
     std::wstring name = GLPA_WSTRING_DEF;
-    Vec3d wPos = {0, 0, 0};
-    Vec3d rotAngle = {0, 0, 0};
+    Vec3d wPos;
+    Vec3d rotAngle;
 
-    double nearZ = -1;
-    double farZ = -10000;
-    double viewAngle = 80;
+    double nearZ;
+    double farZ;
+    double viewAngle;
     Vec2d viewAngleCos;
     Vec2d viewAngleTan;
-    Vec2d aspectRatio = {16, 9};
+    Vec2d aspectRatio;
 
     Vec2d nearScrSize;
     Vec2d farScrSize;

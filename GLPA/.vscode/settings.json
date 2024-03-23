@@ -66,6 +66,18 @@
         "xlocnum": "cpp",
         "xloctime": "cpp",
         "xmemory": "cpp",
-        "xstring": "cpp"
-    }
+        "xstring": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "filesystem": "cpp",
+        "mutex": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "stack": "cpp",
+        "__nullptr": "cpp"
+    },
+    "commentTranslate.hover.enabled": false,
+    "commentTranslate.targetLanguage": "en"
 }

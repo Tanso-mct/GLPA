@@ -214,7 +214,8 @@ typedef struct tagArrayZBuffer{
     int iRS;
     double x;
     double y;
-    double z = 1;
+    double z;
+    double compZ = 1;
 } AryZBuffer;
 
 
