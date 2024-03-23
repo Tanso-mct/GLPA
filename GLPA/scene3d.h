@@ -26,6 +26,8 @@
 #include "object.h"
 #include "camera.cuh"
 
+#include "buffer_3d.cuh"
+
 
 class Scene3d{
 public :

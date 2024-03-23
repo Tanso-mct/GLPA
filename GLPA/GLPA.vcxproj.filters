@@ -51,9 +51,6 @@
     <ClCompile Include="base_color.cpp">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
-    <ClCompile Include="buffer_3d.cpp">
-      <Filter>ソース ファイル\glpa</Filter>
-    </ClCompile>
     <ClCompile Include="equation.cu">
       <Filter>ソース ファイル\glpa</Filter>
     </ClCompile>
@@ -165,9 +162,6 @@
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="base_color.h">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="buffer_3d.h">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </ClInclude>
     <ClInclude Include="equation.cuh">
@@ -306,6 +300,12 @@
     </CudaCompile>
     <CudaCompile Include="vector.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="buffer_3d.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="buffer_3d.cu">
+      <Filter>ソース ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

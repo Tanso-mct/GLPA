@@ -179,7 +179,9 @@
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CudaCompile>
-    <ClCompile Include="buffer_3d.cpp" />
+    <CudaCompile Include="buffer_3d.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="hitbox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="user_input.cpp" />
@@ -193,7 +195,7 @@
   <ItemGroup>
     <ClInclude Include="ambient_occlusion.h" />
     <ClInclude Include="base_color.h" />
-    <ClInclude Include="buffer_3d.h" />
+    <CudaCompile Include="buffer_3d.cuh" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="color.h" />
