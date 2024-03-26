@@ -75,6 +75,8 @@ private :
     double* zBufferCamVs;
     double* zBufferRSIs;
 
+    Buffer3d buf3d;
+
 
 };
 
