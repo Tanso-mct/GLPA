@@ -79,5 +79,8 @@
         "__nullptr": "cpp"
     },
     "commentTranslate.hover.enabled": false,
-    "commentTranslate.targetLanguage": "en"
+    "commentTranslate.targetLanguage": "en",
+    "cSpell.words": [
+        "Intxn"
+    ]
 }

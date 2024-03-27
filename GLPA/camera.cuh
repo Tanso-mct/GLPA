@@ -64,10 +64,10 @@ __global__ void glpaGpuGetPolyVvDot(
     double* vv_ns,
     double* poly_line_start_vs,
     double* poly_line_end_vs,
-    int poly_face_amout,
-    int vv_line_amout,
-    int vv_face_amout,
-    int poly_line_amout
+    int poly_face_amount,
+    int vv_line_amount,
+    int vv_face_amount,
+    int poly_line_amount
 );
 
 
@@ -271,10 +271,10 @@ private :
     double* hVvFaceIACos;
 
     int polyFaceAmount;
-    int polyLineAmout;
+    int polyLineAmount;
 
-    int vvFaceAmout = 6;
-    int vvLineAmout = 12;
+    int vvFaceAmount = 6;
+    int vvLineAmount = 12;
 
 };
 
