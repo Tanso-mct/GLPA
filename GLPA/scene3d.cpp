@@ -1,6 +1,13 @@
 #include "scene3d.h"
 
 
+void Scene3d::initialize(){
+    rasterizeSource.clear();
+    delete[] zBuffRSIs;
+    delete[] zBuffCamVs;
+    delete[] zBuffComp;
+}
+
 void Scene3d::storeUseWndParam(int width, int height, int dpi){
     useWndWidth = width;
     useWndHeight = height;
@@ -20,7 +27,7 @@ void Scene3d::loadCam(std::wstring camName){
             {0, 0, 0},
             {0, 0, 0},
             1,
-            10000,
+            1000,
             80,
             {16, 9},
             {(double)useWndWidth, (double)useWndHeight}
@@ -67,7 +74,13 @@ void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].setPolyInxtn(objects, &rasterizeSource);
     cams[useCamName].scPixelConvert(&rasterizeSource);
     cams[useCamName].sortScPixelVs(&rasterizeSource);
-    cams[useCamName].zBuffer(&rasterizeSource, zBufferRSIs, zBufferCamVs);
+    cams[useCamName].zBuffer(&rasterizeSource, zBuffRSIs, zBuffCamVs, zBuffComp);
+
+    buf3d.initialize({(double)useWndWidth, (double)useWndHeight}, useWndDpi);
+    buf3d.drawZBuff(lpPixel, zBuffComp);
+
+    initialize();
+    cams[useCamName].initialize();
 
 }
 

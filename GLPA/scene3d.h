@@ -31,6 +31,7 @@
 
 class Scene3d{
 public :
+    void initialize();
     void storeUseWndParam(int width, int height, int dpi);
 
     void loadCam(std::wstring cam_name);
@@ -72,8 +73,10 @@ private :
     std::unordered_map<std::wstring, Camera> cams;
 
     std::vector<RasterizeSource> rasterizeSource;
-    double* zBufferCamVs;
-    double* zBufferRSIs;
+
+    double* zBuffRSIs = nullptr;
+    double* zBuffCamVs = nullptr;
+    double* zBuffComp = nullptr;
 
     Buffer3d buf3d;
 

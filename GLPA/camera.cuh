@@ -217,7 +217,10 @@ public :
     );
 
     void zBuffer(
-        std::vector<RasterizeSource>* pt_rasterize_source, double* z_buffer_rasterize_source_i, double* z_buffer_vs
+        std::vector<RasterizeSource>* pt_rasterize_source, 
+        double* &z_buffer_rasterize_source_i, 
+        double* &z_buffer_vs,
+        double* &z_buffer_comp
     );
 
     Matrix mt;
