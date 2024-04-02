@@ -1306,7 +1306,7 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
         
         for (int j = 0; j < wVsSize[i]; j++){
             if (wVsSize[i] <= 2){
-                throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
+                // throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
             }
             else if(wVsSize[i] == 3){
                 (*ptRS)[i].scPixelVs.vs.push_back({
