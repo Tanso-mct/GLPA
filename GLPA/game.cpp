@@ -50,14 +50,34 @@ void Game::tempRelease(){
 
 
 void Game::camEdit(){
-    scene->editCam();
+    scene->editCam({0,0,0}, {0,10,0});
 }
 
 
 void Game::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (wParam){
+    case 'Q':
+        scene->editCam({0,0,0}, {0,10,0});
+        break;
+
     case 'E':
-        scene->editCam();
+        scene->editCam({0,0,0}, {0,-10,0});
+        break;
+
+    case 'W':
+        scene->editCam({0,0,-10}, {0,0,0});
+        break;
+
+    case 'A':
+        scene->editCam({-10,0,0}, {0,0,0});
+        break;
+
+    case 'S':
+        scene->editCam({0,0,10}, {0,0,0});
+        break;
+
+    case 'D':
+        scene->editCam({10,0,0}, {0,0,0});
         break;
     
     default:

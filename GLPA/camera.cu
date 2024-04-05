@@ -73,9 +73,6 @@ void Camera::defineViewVolume(){
     viewAngleCos.x = cos(RAD(viewAngle / 2));
     viewAngleCos.y = fabs(-nearZ / sqrt(-nearZ*-nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
 
-    // farScrSize.x = nearScrSize.x / 2 * -farZ / -nearZ;
-    // farScrSize.y = farScrSize.x * aspectRatio.y / aspectRatio.x;
-
     // Defines the coordinates of the four vertices when the view volume is viewed from the positive y-axis direction.
     viewVolume.xzV[0].x = -nearScrSize.x / 2;
     viewVolume.xzV[1].x  = -farScrSize.x / 2;
@@ -1321,7 +1318,6 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
         for (int j = 0; j < wVsSize[i]; j++){
             if (wVsSize[i] <= 2){
                 // throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
-                OutputDebugStringA("DO");
             }
             else if(wVsSize[i] == 3){
                 (*ptRS)[i].scPixelVs.vs.push_back({
@@ -2054,14 +2050,6 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, double* &zbRSIs, double
 
     cudaMemcpy(hRasterizeVs, dRasterizeVs, sizeof(double)*rasterizeSize*3, cudaMemcpyDeviceToHost);
     cudaMemcpy(hRasterizePixelVs, dRasterizePixelVs, sizeof(double)*rasterizeSize*2, cudaMemcpyDeviceToHost);
-
-    // zbRSIs = (double*)malloc(sizeof(double)*(scPixelSize.x + 1) * (scPixelSize.y + 1));
-    // std::fill(zbRSIs, zbRSIs + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), -1); 
-
-    // zbVs = (double*)malloc(sizeof(double)*(scPixelSize.x + 1) * (scPixelSize.y + 1) * 3);
-
-    // zbComp = (double*)malloc(sizeof(double)*(scPixelSize.x + 1) * (scPixelSize.y + 1));
-    // std::fill(zbComp, zbComp + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), 1); 
 
     zbRSIs = new double[(scPixelSize.x + 1) * (scPixelSize.y + 1)];
     std::fill(zbRSIs, zbRSIs + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), -1); 

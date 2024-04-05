@@ -28,6 +28,8 @@ public :
 
     void camEdit();
 
+    void camMove();
+
     std::function<void(std::string, UINT, WPARAM, LPARAM)> keyDownFunc;
 
     GLPA_USER_FUNC(keyDown);

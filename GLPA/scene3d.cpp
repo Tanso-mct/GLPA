@@ -27,7 +27,7 @@ void Scene3d::loadCam(std::wstring camName){
             {0, 0, 0},
             {0, 0, 0},
             1,
-            1000,
+            100000,
             80,
             {16, 9},
             {(double)useWndWidth, (double)useWndHeight}
@@ -58,8 +58,8 @@ void Scene3d::selectUseCam(std::wstring camName){
 }
 
 
-void Scene3d::editCam(){
-    cams[useCamName].edit({ 0, 0, 0}, {0, 2, 0});
+void Scene3d::editCam(Vec3d diffMoveVec, Vec3d diffRotVec){
+    cams[useCamName].edit(diffMoveVec, diffRotVec);
 }
 
 void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){

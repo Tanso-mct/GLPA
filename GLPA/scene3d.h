@@ -43,7 +43,7 @@ public :
     
 
     void selectUseCam(std::wstring cam_name);
-    void editCam();
+    void editCam(Vec3d diff_move_vec, Vec3d diff_rot_vec);
 
     void edit(HDC h_buffer_dc, LPDWORD lp_pixel);
     void update(HDC h_buffer_dc, LPDWORD lp_pixel);
