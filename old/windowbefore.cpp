@@ -210,8 +210,7 @@ LRESULT CALLBACK WINDOW_LAU::wndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
                     0,
                     WINDOW_WIDTH * DISPLAY_RESOLUTION,
                     WINDOW_HEIGHT * DISPLAY_RESOLUTION, 
-                    WndLAU.buffer.lpPixel,
-                    &WndLAU.buffer.hBufBmpInfo,
+                    WndLAU.buffer.lpPixel,                     &WndLAU.buffer.hBufBmpInfo,
                     DIB_RGB_COLORS,
                     SRCCOPY
                 );

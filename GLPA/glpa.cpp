@@ -156,7 +156,7 @@ Scene2d* Glpa::getPtScene2d(std::string scName){
 }
 
 Scene3d *Glpa::getPtScene3d(std::string scName){
-    if(scene.data3d.find(scName) == scene.data3d.end()){
+    if(scene.data3d.find(scName) != scene.data3d.end()){
         return &scene.data3d[scName];
     }
 

@@ -159,6 +159,8 @@ public :
         Vec2d arg_screen_pixel_size
     );
 
+    void edit(Vec3d diff_move_vec, Vec3d diff_rot_vec);
+
     void defineViewVolume();
 
     void objCulling(std::unordered_map<std::wstring, Object> objects);

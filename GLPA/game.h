@@ -4,6 +4,8 @@
 #include "glpa.h"
 
 #include "command.h"
+#include "scene3d.h"
+#include "user_input.h"
 
 
 #define WINDOW_GAME L"Game"
@@ -15,6 +17,7 @@
 
 class Game{
 public :
+
     void createWnd();
     void createScene();
     void loadScene();
@@ -23,7 +26,15 @@ public :
     void tempStart();
     void tempRelease();
 
+    void camEdit();
+
+    std::function<void(std::string, UINT, WPARAM, LPARAM)> keyDownFunc;
+
+    GLPA_USER_FUNC(keyDown);
+    // GLPA_USER_FUNC(keyUp);
+
 private :
+    Scene3d* scene;
 };
 
 #endif GAME_H_

@@ -45,6 +45,18 @@ void Camera::load(
     reload = true;
 }
 
+void Camera::edit(Vec3d diffMoveVec, Vec3d diffRotVec){
+    wPos.x += diffMoveVec.x;
+    wPos.y += diffMoveVec.y;
+    wPos.z += diffMoveVec.z;
+
+    rotAngle.x += diffRotVec.x;
+    rotAngle.y += diffRotVec.y;
+    rotAngle.z += diffRotVec.z;
+
+    reload = true;
+}
+
 void Camera::defineViewVolume(){
     // If no reloading has been done and no changes have been made to the definition, no processing is done.
     if (!reload){
@@ -1219,9 +1231,11 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
     for (int i = 0; i < (*ptRS).size(); i++){
         wVsSize.push_back((*ptRS)[i].scPixelVs.wVs.size());
 
-        for (int j = 0; j < (*ptRS)[i].scPixelVs.wVs.size(); j++){
-            vec.pushVecToDouble((*ptRS)[i].scPixelVs.wVs, &wVs, j);
-            wVsAmount += 1;
+        if ((*ptRS)[i].scPixelVs.wVs.size() >= 3){
+            for (int j = 0; j < (*ptRS)[i].scPixelVs.wVs.size(); j++){
+                vec.pushVecToDouble((*ptRS)[i].scPixelVs.wVs, &wVs, j);
+                wVsAmount += 1;
+            }
         }
     }
 
@@ -1307,34 +1321,40 @@ void Camera::scPixelConvert(std::vector<RasterizeSource> *ptRS){
         for (int j = 0; j < wVsSize[i]; j++){
             if (wVsSize[i] <= 2){
                 // throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
+                OutputDebugStringA("DO");
             }
             else if(wVsSize[i] == 3){
                 (*ptRS)[i].scPixelVs.vs.push_back({
                     hResultVs[wVsI*2],
                     hResultVs[wVsI*2 + 1]
                 });
+                wVsI += 1;
             }
             else if (wVsSize[i] == 4){
                 sort4Vs.push_back(hResultVs[wVsI*2]);
                 sort4Vs.push_back(hResultVs[wVsI*2 + 1]);
+                wVsI += 1;
             }
             else if (wVsSize[i] == 5){
                 sort5Vs.push_back(hResultVs[wVsI*2]);
                 sort5Vs.push_back(hResultVs[wVsI*2 + 1]);
+                wVsI += 1;
             }
             else if (wVsSize[i] == 6){
                 sort6Vs.push_back(hResultVs[wVsI*2]);
                 sort6Vs.push_back(hResultVs[wVsI*2 + 1]);
+                wVsI += 1;
             }
             else if (wVsSize[i] == 7){
                 sort7Vs.push_back(hResultVs[wVsI*2]);
                 sort7Vs.push_back(hResultVs[wVsI*2 + 1]);
+                wVsI += 1;
             }
             else if(wVsSize[i] > 7){
                 throw std::runtime_error(ERROR_CAMERA_CANT_RASTERIZE);
             }
 
-            wVsI += 1;
+            // wVsI += 1;
         }
     }
 
@@ -1471,6 +1491,7 @@ void Camera::setSortedVs(
     int faceAmout, int faceSize, double *dotCos, double* cross, 
     std::vector<int> targetI, std::vector<double> sortVs, std::vector<RasterizeSource> *ptRS
 ){
+    bool noVs = false;
     for (int i = 0; i < faceAmout; i++){
         std::vector<int> leftSideVsId;
         std::vector<double> leftSideVsCos;
@@ -1479,6 +1500,11 @@ void Camera::setSortedVs(
         std::vector<double> rightSideVsCos;
 
         for (int j = 0; j < (faceSize - 2); j++){
+            if (std::isnan(dotCos[i*(faceSize - 2) + j])){
+                noVs = true;
+                break;
+            }
+
             if (cross[i*(faceSize - 2) + j] >= 0){
                 rightSideVsId.push_back(j + 2);
                 rightSideVsCos.push_back(dotCos[i*(faceSize - 2) + j]);
@@ -1487,6 +1513,11 @@ void Camera::setSortedVs(
                 leftSideVsId.push_back(j + 2);
                 leftSideVsCos.push_back(dotCos[i*(faceSize - 2) + j]);
             }
+        }
+
+        if (noVs){
+            noVs = false;
+            continue;
         }
 
         std::vector<int> sortRightCos = vec.sortAsenOrder(rightSideVsCos);

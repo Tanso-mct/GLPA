@@ -25,7 +25,7 @@ void Scene3d::loadCam(std::wstring camName){
         cams[camName].load(
             camName,
             {0, 0, 0},
-            {0, 40, 0},
+            {0, 0, 0},
             1,
             1000,
             80,
@@ -57,6 +57,10 @@ void Scene3d::selectUseCam(std::wstring camName){
     }
 }
 
+
+void Scene3d::editCam(){
+    cams[useCamName].edit({ 0, 0, 0}, {0, 2, 0});
+}
 
 void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
     for (auto it : sceneFrameFunc){
