@@ -26,9 +26,7 @@ public :
     void tempStart();
     void tempRelease();
 
-    void camEdit();
-
-    void camMove();
+    // void camReset();
 
     std::function<void(std::string, UINT, WPARAM, LPARAM)> keyDownFunc;
 

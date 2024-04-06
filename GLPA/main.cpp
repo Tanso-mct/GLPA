@@ -43,7 +43,7 @@ int WINAPI WinMain(
 
     console.command.add(L"start", COMMAND_FUN_PT(game, tempStart));
     console.command.add(L"release", COMMAND_FUN_PT(game, tempRelease));
-    // console.command.add(L"edit", COMMAND_FUN_PT(game, camEdit));
+    // console.command.add(L"reset", COMMAND_FUN_PT(game, camReset));
 
     glpa.runGraphicLoop();
 
@@ -54,7 +54,7 @@ int WINAPI WinMain(
 
     console.command.release(L"start");
     console.command.release(L"release");
-    // console.command.release(L"edit");
+    // console.command.release(L"reset");
 
 
     glpa.releaseScene(SCENE_GLPA_CONSOLE);

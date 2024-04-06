@@ -45,11 +45,23 @@ void Camera::load(
     reload = true;
 }
 
-void Camera::edit(Vec3d diffMoveVec, Vec3d diffRotVec){
+void Camera::setTrans(Vec3d pos, Vec3d rot){
+    wPos = pos;
+    rotAngle = rot;
+
+    reload = true;
+}
+
+void Camera::move(Vec3d diffMoveVec)
+{
     wPos.x += diffMoveVec.x;
     wPos.y += diffMoveVec.y;
     wPos.z += diffMoveVec.z;
 
+    reload = true;
+}
+
+void Camera::rot(Vec3d diffRotVec){
     rotAngle.x += diffRotVec.x;
     rotAngle.y += diffRotVec.y;
     rotAngle.z += diffRotVec.z;
@@ -291,6 +303,10 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
 
     Vec3d zVec = {0, 0, -1};
 
+    if (oppositeSideVs.size() == 0){
+        OutputDebugStringA("object rangeXyzVsCos ERROR\n");
+    }
+
     std::vector<double> rangeXyzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
 
     for (int i = 0; i < rangeXyzVsCos.size() / 4; i++){
@@ -411,6 +427,10 @@ void Camera::polyCulling(
 
     Vec3d zVec = {0, 0, -1};
 
+    if (cnvt2dPolyVs.size() == 0){
+        OutputDebugStringA("cnvt2dPolyVs ERROR\n");
+    }
+
     std::vector<double> polyVCos = vec.getVecsDotCos(zVec, cnvt2dPolyVs);
 
     RasterizeSource pushRS;
@@ -506,6 +526,10 @@ void Camera::polyCulling(
 
         orizinZ.push_back(polyRange.origin.z);
         oppositeZ.push_back(polyRange.opposite.z);
+    }
+
+    if (oppositeSideVs.size() == 0){
+        OutputDebugStringA("poly rangeXyzVsCos ERROR\n");
     }
 
     std::vector<double> rangeXyzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);

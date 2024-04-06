@@ -49,35 +49,54 @@ void Game::tempRelease(){
 }
 
 
-void Game::camEdit(){
-    scene->editCam({0,0,0}, {0,10,0});
-}
+// void Game::camReset(){
+//     // scene->editCam({0,0,0}, {0,10,0});
+// }
 
 
 void Game::keyDown(std::string scName, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (wParam){
-    case 'Q':
-        scene->editCam({0,0,0}, {0,10,0});
+    case 'Q' :
+        scene->rotUseCam({0,10,0});
         break;
 
-    case 'E':
-        scene->editCam({0,0,0}, {0,-10,0});
+    case 'E' :
+        scene->rotUseCam({0,-10,0});
         break;
 
-    case 'W':
-        scene->editCam({0,0,-10}, {0,0,0});
+    case 'Z' :
+        scene->rotUseCam({10,0,0});
         break;
 
-    case 'A':
-        scene->editCam({-10,0,0}, {0,0,0});
+    case 'C' :
+        scene->rotUseCam({-10,0,0});
         break;
 
-    case 'S':
-        scene->editCam({0,0,10}, {0,0,0});
+    case 'W' :
+        scene->moveUseCam({0,0,-50});
         break;
 
-    case 'D':
-        scene->editCam({10,0,0}, {0,0,0});
+    case 'A' :
+        scene->moveUseCam({-50,0,0});
+        break;
+
+    case 'S' :
+        scene->moveUseCam({0,0,50});
+        break;
+
+    case 'D' :
+        scene->moveUseCam({50,0,0});
+        break;
+
+    case '1' :
+        scene->setUseCamTrans({0,0,0}, {0,0,0});
+
+    case VK_SPACE :
+        scene->moveUseCam({0,50,0});
+        break;
+
+    case VK_SHIFT :
+        scene->moveUseCam({0,-50,0});
         break;
     
     default:

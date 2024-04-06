@@ -76,7 +76,12 @@
         "ranges": "cpp",
         "span": "cpp",
         "stack": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "__bit_reference": "cpp",
+        "__string": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "string_view": "cpp"
     },
     "commentTranslate.hover.enabled": false,
     "commentTranslate.targetLanguage": "en",

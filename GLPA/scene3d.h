@@ -40,10 +40,13 @@ public :
     void loadField();
     void loadSky();
     void loadLight();
-    
 
     void selectUseCam(std::wstring cam_name);
-    void editCam(Vec3d diff_move_vec, Vec3d diff_rot_vec);
+
+    void setUseCamTrans(Vec3d pos_vec, Vec3d rot_vec);
+    void moveUseCam(Vec3d diff_move_vec);
+    void rotUseCam(Vec3d diff_rot_vec);
+    
 
     void edit(HDC h_buffer_dc, LPDWORD lp_pixel);
     void update(HDC h_buffer_dc, LPDWORD lp_pixel);

@@ -159,7 +159,9 @@ public :
         Vec2d arg_screen_pixel_size
     );
 
-    void edit(Vec3d diff_move_vec, Vec3d diff_rot_vec);
+    void setTrans(Vec3d pos_vec, Vec3d rot_vec);
+    void move(Vec3d diff_move_vec);
+    void rot(Vec3d diff_rot_vec);
 
     void defineViewVolume();
 
