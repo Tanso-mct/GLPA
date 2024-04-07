@@ -30,6 +30,7 @@
 #define ERROR_H_
 
 #include <stdexcept>
+#include <string>
 
 
 

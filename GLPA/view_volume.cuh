@@ -13,14 +13,15 @@
 /// @brief Within 3DCG, it has data related to the view volume.
 class ViewVolume
 {
-public :
-    ViewVolume(){
+public:
+    ViewVolume()
+    {
         xzV.resize(4);
         yzV.resize(4);
         v.resize(8);
 
         lines.resize(12);
-        
+
         face.v.resize(6);
         face.normal.resize(6);
     };
@@ -35,9 +36,8 @@ public :
     Vector vec;
 
     void pushFaceVsToDouble(
-        std::vector<double>* target_vec,
-        int face_i
-    );
+        std::vector<double> *target_vec,
+        int face_i);
 };
 
 #endif VIEW_VOLUME_H_

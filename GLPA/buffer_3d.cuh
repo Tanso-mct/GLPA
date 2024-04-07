@@ -10,24 +10,21 @@
 #include "error.h"
 
 __global__ void glpaGpuDrawZBuff(
-    double* d_z_buffer_comp,
+    double *d_z_buffer_comp,
     LPDWORD d_wnd_buffer,
     int scPixelSizeX,
     int scPixelSizeY,
-    int scDpi
-);
+    int scDpi);
 
-class Buffer3d{
-public :
+class Buffer3d
+{
+public:
     void initialize(Vec2d screen_pixel_size, int screen_dpi);
-    void drawZBuff(LPDWORD window_buffer, double* &z_buffer_comp);
+    void drawZBuff(LPDWORD window_buffer, double *&z_buffer_comp);
 
-private :
+private:
     Vec2d scPixelSize;
     int scDpi;
-
 };
 
-
-#endif  BUFFER3D_H_
-
+#endif BUFFER3D_H_

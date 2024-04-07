@@ -81,7 +81,10 @@
         "__string": "cpp",
         "__hash_table": "cpp",
         "__split_buffer": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "__functional_base": "cpp",
+        "__node_handle": "cpp",
+        "__memory": "cpp"
     },
     "commentTranslate.hover.enabled": false,
     "commentTranslate.targetLanguage": "en",
