@@ -233,6 +233,8 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
     rangeVs = mt.transRotConvert(wPos, rotAngle, rangeVs);
 
     std::vector<std::wstring> objOrder;
+
+    //TODO: メッシュの数から以下の変数のサイズは分かるため、double型に変更し、cudamemcpyを使用できるようにする。
     std::vector<Vec3d> oppositeSideXzVs;
     std::vector<Vec3d> oppositeSideYzVs;
     std::vector<Vec3d> oppositeSideVs;
@@ -245,6 +247,7 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
 
     int iN2 = 0;
 
+    //TODO: rectVsを使わずにできるようにし、データの移行の時間を省く。
     for (auto obj : objects){
         objOrder.push_back(obj.first);
         
@@ -320,7 +323,7 @@ void Camera::objCulling(std::unordered_map<std::wstring, Object> objects){
     }
 }
 
-
+//TODO: objCulling処理の最後の分岐の中で、ポリゴンの面情報を取得できるように変更する。
 void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects){
     std::vector<Vec3d> vs;
     std::vector<Vec3d> normals;
@@ -349,6 +352,7 @@ void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects
         objFaceIs.push_back(iN1);
         iN1 = 0;
 
+        //TODO: faceNを使わずにできるため使用しないように変更。
         vs.insert(vs.end(), faceN.v.begin(), faceN.v.end());
         normals.insert(normals.end(), faceN.normal.begin(), faceN.normal.end());
         faceN.v.clear();

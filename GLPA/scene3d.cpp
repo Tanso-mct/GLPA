@@ -20,7 +20,7 @@ void Scene3d::loadCam(std::wstring camName){
         useCamName = camName;
 
 
-        //TODO: Ensure that camera data is read from an external source.
+        //TODO: カメラデータをファイルから読み込めるようにする。（FBXファイルを使用する必要がある可能性がある）
 
         cams[camName].load(
             camName,

@@ -67,7 +67,7 @@ void Scene::load(
                         narrowName
                     );
                 }
-                //TODO: Allow text to be read from a file.
+                //TODO: テキストデータをファイルから読み込めるようにする。
             }
         }
 
