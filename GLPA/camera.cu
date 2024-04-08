@@ -384,6 +384,7 @@ void Camera::polyBilateralJudge(std::unordered_map<std::wstring, Object> objects
 void Camera::polyCulling(
     std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource>* ptRS
 ){
+    //TODO: ポリゴンの数は決まっているため、double型に変更する。
     std::vector<Vec3d> polyVs;
     std::vector<Vec3d> polyNs;
     for (int i = 0; i < renderTargetPoly.size(); i++){
