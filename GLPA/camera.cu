@@ -470,6 +470,7 @@ void Camera::polyCulling(
             }
         }
 
+        //TODO: {}を使用してpushRSを使用しないように変更。
         if (inViewVolume != 0){
             pushRS.renderPoly.objName = renderTargetPoly[i].objName;
             pushRS.renderPoly.polyId = renderTargetPoly[i].polyId;
@@ -503,6 +504,8 @@ void Camera::polyCulling(
     std::vector<Vec3d> oppositeSideVs;
     std::vector<double> orizinZ;
     std::vector<double> oppositeZ;
+
+    //TODO: {}をしようしてpushVecを使用しないように変更する。
     Vec3d pushVec;
     for (int i = 0; i < needRangeVs.size(); i++){
         polyRange.origin.x = GLPA_CAMERA_OBJ_WV_1(n1).x;
@@ -539,6 +542,7 @@ void Camera::polyCulling(
 
     std::vector<double> rangeXyzVsCos = vec.getVecsDotCos(zVec, oppositeSideVs);
 
+    //TODO: {}を使用してpushRS2を使用しないように変更。
     RasterizeSource pushRS2;
     for (int i = 0; i < needRangeVs.size(); i++){
         if (orizinZ[i] >= -farZ && oppositeZ[i] <= -nearZ){
@@ -614,9 +618,11 @@ __global__ void glpaGpuGetPolyVvDot(
 
 
 void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std::vector<RasterizeSource> *ptRS){
+    //TODO: shapeCnvtTargetIを使用せず、vector型に格納後、.data()でホスト側にコピーする方が早いかどうか次第で変更する。
     polyFaceAmount = shapeCnvtTargetI.size();
     polyLineAmount = shapeCnvtTargetI.size() * 3;
 
+    //TODO: サイズは変数にした方が早い場合、変数に変更する。
     hPolyFaceDot = (double*)malloc(sizeof(double)*polyFaceAmount*vvLineAmount*2);
     hVvFaceDot = (double*)malloc(sizeof(double)*vvFaceAmount*polyLineAmount*2);
 
@@ -644,7 +650,6 @@ void Camera::polyVvLineDot(std::unordered_map<std::wstring, Object> objects, std
         hVvLineEndVs[i*3 + 1] = viewVolume.lines[i].endV.y;
         hVvLineEndVs[i*3 + 2] = viewVolume.lines[i].endV.z;
     }
-
 
     double* hVvOneVs = (double*)malloc(sizeof(double)*viewVolume.face.v.size()*3);
     double* hVvNs = (double*)malloc(sizeof(double)*viewVolume.face.normal.size()*3);
