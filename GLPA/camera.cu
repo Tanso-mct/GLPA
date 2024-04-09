@@ -2085,6 +2085,7 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, double* &zbRSIs, double
     cudaMemcpy(hRasterizeVs, dRasterizeVs, sizeof(double)*rasterizeSize*3, cudaMemcpyDeviceToHost);
     cudaMemcpy(hRasterizePixelVs, dRasterizePixelVs, sizeof(double)*rasterizeSize*2, cudaMemcpyDeviceToHost);
 
+    //TODO: 毎フレームサイズは変わることはないため、毎度newはしなくていよい。
     zbRSIs = new double[(scPixelSize.x + 1) * (scPixelSize.y + 1)];
     std::fill(zbRSIs, zbRSIs + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), -1); 
 
