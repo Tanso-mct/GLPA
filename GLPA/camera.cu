@@ -2094,6 +2094,8 @@ void Camera::zBuffer(std::vector<RasterizeSource>* ptRS, double* &zbRSIs, double
     std::fill(zbComp, zbComp + static_cast<int>((scPixelSize.x + 1) * (scPixelSize.y + 1)), 1); 
 
     int workI = 0;
+
+    //TODO: ポリゴンが増えれば増えるほど重くなるため対策する。
     for (int i = 0; i < rsI.size(); i++){
         for(int j = 0; j < rsSumSize[i+1] - rsSumSize[i]; j++){
             if (

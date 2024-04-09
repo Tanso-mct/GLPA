@@ -143,6 +143,7 @@ __global__ void glpaGpuRasterize(
     double* rasterize_pixel_vs
 );
 
+//TODO: malloc, freeをnew, deleteに変える。
 /// @brief Has data related to the 3DCG camera.
 class Camera{
 public :
