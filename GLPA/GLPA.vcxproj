@@ -255,6 +255,7 @@
     <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="resource\scene\game_1\mtl\temp_cube.mtl" />
   </ItemGroup>
   <ItemGroup>
