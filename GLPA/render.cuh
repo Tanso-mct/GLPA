@@ -14,7 +14,8 @@
 
 __global__ void glpaGpuPreparePoly(
     int obj_size,
-    double* obj_world_vs
+    float* obj_world_vs,
+    float
 );
 
 

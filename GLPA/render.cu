@@ -2,7 +2,7 @@
 
 __global__ void glpaGpuPreparePoly(
     int objSize,
-    double* objWVs
+    float* objWVs
 ){
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -32,12 +32,12 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     int sObjSize = sObj.size();
     int objWvsSize = sObjSize*8*3;
 
-    double* objWvs = new double[objWvsSize];
+    float* objWvs = new float[objWvsSize];
 
     int roopObj = 0;
     for (auto obj : sObj){
         for (int i = 0; i < 8; i++){
-            objWvs[roopObj*8*3 + i*3] = obj.second.range.wVertex[i].x;
+            objWvs[roopObj*8*3 + i*3] = obj.second.range.wVertex[i].x / ;
             objWvs[roopObj*8*3 + i*3 + 1] = obj.second.range.wVertex[i].y;
             objWvs[roopObj*8*3 + i*3 + 2] = obj.second.range.wVertex[i].z;
         }
