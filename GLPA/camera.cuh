@@ -231,12 +231,13 @@ public :
     Matrix mt;
     Vector vec;
 
+    Vec3d wPos;
+    Vec3d rotAngle;
+
 private : 
     bool reload = false;
 
     std::wstring name = GLPA_WSTRING_DEF;
-    Vec3d wPos;
-    Vec3d rotAngle;
 
     double nearZ;
     double farZ;

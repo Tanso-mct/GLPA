@@ -10,12 +10,16 @@
 
 #include "object.h"
 #include "camera.cuh"
+
 #include "cg.h"
+#include "error.h"
+
+#include "matrix.cuh"
 
 __global__ void glpaGpuPreparePoly(
-    int obj_size,
-    float* obj_world_vs,
-    float
+    int object_size,
+    float* object_world_vs,
+    float* matrix_camera_transformation_and_rotation
 );
 
 

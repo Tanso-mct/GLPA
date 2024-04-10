@@ -95,6 +95,10 @@ typedef struct tagFaceNormals{
     std::vector<Vec3d> normal;
 } FaceNormals;
 
+#define AX 0
+#define AY 1
+#define AZ 2
+#define ASIZE 3
 
 #define SURFACE_TOP 0
 #define SURFACE_FRONT 1
@@ -179,10 +183,12 @@ typedef struct tagRangeRect{
 
 
 /**********************************************************************************************************************
- * 日本語 : レンダリング処理で使用し、対象のデータの識別するものらを記述。
- * English : Describes the data to be used in the rendering process and identifies the target data.
+ * 日本語 : レンダリング処理で使用する。
+ * English : Used in rendering processing.
 **********************************************************************************************************************/
 
+
+#define CALC_SCALE 1000
 
 /**
  * 日本語 : ポリゴンの名前を保存する際に、どのオブジェクトどのメッシュどのポリゴンかも保存するために使用する。
