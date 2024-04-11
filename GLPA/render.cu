@@ -8,12 +8,20 @@ __global__ void glpaGpuPreparePoly(
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < objSize){
-        
+    if (i < objSize)
+    {
+        float vec3d[3] = {objWVs[i*8*3 + AX], objWVs[i*8*3 + AY], objWVs[i*8*3 + AZ]};
+
+        float camObjVs[3] = {
+            vec3d[AX] * mtCamTransRot[0] + vec3d[AY] * mtCamTransRot[1] + vec3d[AZ] * mtCamTransRot[2] + 1 * mtCamTransRot[3],
+            vec3d[AX] * mtCamTransRot[4] + vec3d[AY] * mtCamTransRot[5] + vec3d[AZ] * mtCamTransRot[6] + 1 * mtCamTransRot[7],
+            vec3d[AX] * mtCamTransRot[8] + vec3d[AY] * mtCamTransRot[9] + vec3d[AZ] * mtCamTransRot[10] + 1 * mtCamTransRot[11]
+        };
     }
 }
 
-void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera cam){
+void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera cam)
+{
     int sObjSize = sObj.size();
     int objWvsSize = sObjSize*8*3;
 

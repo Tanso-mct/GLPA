@@ -18,7 +18,7 @@ __global__ void glpaGpu4x4_4x1sMtProduct(
 );
 
 
-__device__ float mtProduct4x4Vec3d(
+__device__ float* mtProduct4x4Vec3d(
     float* mt_4x4,
     float* vector_3d
 );

@@ -16,7 +16,7 @@ __global__ void glpaGpu4x4_4x1sMtProduct(double *mt4x4, double *mt4x1s, double *
 }
 
 
-__device__ float mtProduct4x4Vec3d(float *mt4x4, float *vec){
+__device__ float* mtProduct4x4Vec3d(float *mt4x4, float *vec){
     float rt[3];
 
     rt[0] = vec[AX] * mt4x4[0] + vec[AY] * mt4x4[1] + vec[AZ] * mt4x4[2] + 1 * mt4x4[3];
