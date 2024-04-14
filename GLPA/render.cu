@@ -10,13 +10,41 @@ __global__ void glpaGpuPreparePoly(
 
     if (i < objSize)
     {
-        float vec3d[3] = {objWVs[i*8*3 + AX], objWVs[i*8*3 + AY], objWVs[i*8*3 + AZ]};
+        int objRectStatus = 0;
+        float objRectOrigin[3];
+        float objRectOpposite[3];
+        for (int objWvsI = 0; objWvsI < 8; objWvsI++)
+        {
+            float vec3d[3] = {objWVs[i*8*3 + objWvsI*3 + AX], objWVs[i*8*3 + objWvsI*3 + AY], objWVs[i*8*3 + objWvsI*3 + AZ]};
 
-        float camObjVs[3] = {
-            vec3d[AX] * mtCamTransRot[0] + vec3d[AY] * mtCamTransRot[1] + vec3d[AZ] * mtCamTransRot[2] + 1 * mtCamTransRot[3],
-            vec3d[AX] * mtCamTransRot[4] + vec3d[AY] * mtCamTransRot[5] + vec3d[AZ] * mtCamTransRot[6] + 1 * mtCamTransRot[7],
-            vec3d[AX] * mtCamTransRot[8] + vec3d[AY] * mtCamTransRot[9] + vec3d[AZ] * mtCamTransRot[10] + 1 * mtCamTransRot[11]
+            float camObjVs[3] = {
+                vec3d[AX] * mtCamTransRot[0] + vec3d[AY] * mtCamTransRot[1] + vec3d[AZ] * mtCamTransRot[2] + 1 * mtCamTransRot[3],
+                vec3d[AX] * mtCamTransRot[4] + vec3d[AY] * mtCamTransRot[5] + vec3d[AZ] * mtCamTransRot[6] + 1 * mtCamTransRot[7],
+                vec3d[AX] * mtCamTransRot[8] + vec3d[AY] * mtCamTransRot[9] + vec3d[AZ] * mtCamTransRot[10] + 1 * mtCamTransRot[11]
+            };
+
+            int objRectStatusIF = (objRectStatus > 0) ? 0 : 1;
+
+            objRectOrigin[AX] = (objRectStatusIF == 1) ? camObjVs[AX] : (camObjVs[AX] < objRectOrigin[AX]) ? camObjVs[AX] : objRectOrigin[AX];
+            objRectOrigin[AY] = (objRectStatusIF == 1) ? camObjVs[AY] : (camObjVs[AY] < objRectOrigin[AY]) ? camObjVs[AY] : objRectOrigin[AY];
+            objRectOrigin[AZ] = (objRectStatusIF == 1) ? camObjVs[AZ] : (camObjVs[AZ] > objRectOrigin[AZ]) ? camObjVs[AZ] : objRectOrigin[AZ];
+
+            objRectOpposite[AX] = (objRectStatusIF == 1) ? camObjVs[AX] : (camObjVs[AX] > objRectOpposite[AX]) ? camObjVs[AX] : objRectOpposite[AX];
+            objRectOpposite[AY] = (objRectStatusIF == 1) ? camObjVs[AY] : (camObjVs[AY] > objRectOpposite[AY]) ? camObjVs[AY] : objRectOpposite[AY];
+            objRectOpposite[AZ] = (objRectStatusIF == 1) ? camObjVs[AZ] : (camObjVs[AZ] < objRectOpposite[AZ]) ? camObjVs[AZ] : objRectOpposite[AZ];
+
+            objRectStatus += 1;
+
+        }
+
+        float objOppositeVs[12] = {
+            objRectOrigin[AX], 0, objRectOpposite[AZ],
+            objRectOpposite[AX], 0, objRectOpposite[AZ],
+            0, objRectOrigin[AY], objRectOpposite[AZ],
+            0, objRectOpposite[AY], objRectOpposite[AZ]
         };
+
+        
     }
 }
 
