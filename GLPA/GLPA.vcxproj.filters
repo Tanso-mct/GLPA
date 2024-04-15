@@ -275,9 +275,6 @@
     <ClInclude Include="game.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="render.cuh">
-      <Filter>ヘッダー ファイル\glpa</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="camera.cu">
@@ -312,6 +309,9 @@
     </CudaCompile>
     <CudaCompile Include="render.cu">
       <Filter>ソース ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="render.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

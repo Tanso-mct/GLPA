@@ -234,15 +234,17 @@ public :
     Vec3d wPos;
     Vec3d rotAngle;
 
+    double nearZ;
+    double farZ;
+
+    Vec2d viewAngleCos;
+
 private : 
     bool reload = false;
 
     std::wstring name = GLPA_WSTRING_DEF;
 
-    double nearZ;
-    double farZ;
     double viewAngle;
-    Vec2d viewAngleCos;
     Vec2d viewAngleTan;
     Vec2d aspectRatio;
 

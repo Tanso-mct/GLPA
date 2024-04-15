@@ -77,21 +77,24 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 
 void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].defineViewVolume();
-    cams[useCamName].objCulling(objects);
-    cams[useCamName].polyBilateralJudge(objects);
-    cams[useCamName].polyCulling(objects, &rasterizeSource);
-    cams[useCamName].polyVvLineDot(objects, &rasterizeSource);
-    cams[useCamName].inxtnInteriorAngle(&rasterizeSource);
-    cams[useCamName].setPolyInxtn(objects, &rasterizeSource);
-    cams[useCamName].scPixelConvert(&rasterizeSource);
-    cams[useCamName].sortScPixelVs(&rasterizeSource);
-    cams[useCamName].zBuffer(&rasterizeSource, zBuffRSIs, zBuffCamVs, zBuffComp);
 
-    buf3d.initialize({(double)useWndWidth, (double)useWndHeight}, useWndDpi);
-    buf3d.drawZBuff(lpPixel, zBuffComp);
+    render.prepareObjs(objects, cams[useCamName]);
 
-    initialize();
-    cams[useCamName].initialize();
+    // cams[useCamName].objCulling(objects);
+    // cams[useCamName].polyBilateralJudge(objects);
+    // cams[useCamName].polyCulling(objects, &rasterizeSource);
+    // cams[useCamName].polyVvLineDot(objects, &rasterizeSource);
+    // cams[useCamName].inxtnInteriorAngle(&rasterizeSource);
+    // cams[useCamName].setPolyInxtn(objects, &rasterizeSource);
+    // cams[useCamName].scPixelConvert(&rasterizeSource);
+    // cams[useCamName].sortScPixelVs(&rasterizeSource);
+    // cams[useCamName].zBuffer(&rasterizeSource, zBuffRSIs, zBuffCamVs, zBuffComp);
+
+    // buf3d.initialize({(double)useWndWidth, (double)useWndHeight}, useWndDpi);
+    // buf3d.drawZBuff(lpPixel, zBuffComp);
+
+    // initialize();
+    // cams[useCamName].initialize();
 
 }
 

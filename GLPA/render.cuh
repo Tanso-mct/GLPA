@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <string>
 #include <cmath>
+#include <algorithm>
 
 #include "object.h"
 #include "camera.cuh"
@@ -16,10 +17,14 @@
 
 #include "matrix.cuh"
 
-__global__ void glpaGpuPreparePoly(
+__global__ void glpaGpuPrepareObj(
     int object_size,
     float* object_world_vs,
-    float* matrix_camera_transformation_and_rotation
+    float* matrix_camera_transformation_and_rotation,
+    float camera_near_z,
+    float camera_far_z,
+    float* camera_view_angle_cos,
+    int* result_object_in_view_volume_judge_ary
 );
 
 
@@ -37,6 +42,9 @@ public :
     );
 
 private :
+    float* mtCamTransRot;
+    float* camViewAngleCos;
+    int* objInJudgeAry;
 
 };
 

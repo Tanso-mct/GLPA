@@ -26,6 +26,7 @@
 #include "object.h"
 #include "camera.cuh"
 
+#include "render.cuh"
 #include "buffer_3d.cuh"
 
 
@@ -82,6 +83,7 @@ private :
     double* zBuffComp = nullptr;
 
     Buffer3d buf3d;
+    Render render;
 
 
 };

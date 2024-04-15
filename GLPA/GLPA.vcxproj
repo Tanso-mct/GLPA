@@ -222,7 +222,7 @@
     <ClInclude Include="normal.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="png.h" />
-    <ClInclude Include="render.cuh" />
+    <CudaCompile Include="render.cuh" />
     <ClInclude Include="roughness.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />

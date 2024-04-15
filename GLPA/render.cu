@@ -1,9 +1,13 @@
 #include "render.cuh"
 
-__global__ void glpaGpuPreparePoly(
+__global__ void glpaGpuPrepareObj(
     int objSize,
     float* objWVs,
-    float* mtCamTransRot
+    float* mtCamTransRot,
+    float camNearZ,
+    float camFarZ,
+    float* camViewAngleCos,
+    int* result
 ){
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -23,15 +27,15 @@ __global__ void glpaGpuPreparePoly(
                 vec3d[AX] * mtCamTransRot[8] + vec3d[AY] * mtCamTransRot[9] + vec3d[AZ] * mtCamTransRot[10] + 1 * mtCamTransRot[11]
             };
 
-            int objRectStatusIF = (objRectStatus > 0) ? 0 : 1;
+            int objRectStatusIF = (objRectStatus > 0) ? TRUE : FALSE;
 
-            objRectOrigin[AX] = (objRectStatusIF == 1) ? camObjVs[AX] : (camObjVs[AX] < objRectOrigin[AX]) ? camObjVs[AX] : objRectOrigin[AX];
-            objRectOrigin[AY] = (objRectStatusIF == 1) ? camObjVs[AY] : (camObjVs[AY] < objRectOrigin[AY]) ? camObjVs[AY] : objRectOrigin[AY];
-            objRectOrigin[AZ] = (objRectStatusIF == 1) ? camObjVs[AZ] : (camObjVs[AZ] > objRectOrigin[AZ]) ? camObjVs[AZ] : objRectOrigin[AZ];
+            objRectOrigin[AX] = (objRectStatusIF == FALSE) ? camObjVs[AX] : (camObjVs[AX] < objRectOrigin[AX]) ? camObjVs[AX] : objRectOrigin[AX];
+            objRectOrigin[AY] = (objRectStatusIF == FALSE) ? camObjVs[AY] : (camObjVs[AY] < objRectOrigin[AY]) ? camObjVs[AY] : objRectOrigin[AY];
+            objRectOrigin[AZ] = (objRectStatusIF == FALSE) ? camObjVs[AZ] : (camObjVs[AZ] > objRectOrigin[AZ]) ? camObjVs[AZ] : objRectOrigin[AZ];
 
-            objRectOpposite[AX] = (objRectStatusIF == 1) ? camObjVs[AX] : (camObjVs[AX] > objRectOpposite[AX]) ? camObjVs[AX] : objRectOpposite[AX];
-            objRectOpposite[AY] = (objRectStatusIF == 1) ? camObjVs[AY] : (camObjVs[AY] > objRectOpposite[AY]) ? camObjVs[AY] : objRectOpposite[AY];
-            objRectOpposite[AZ] = (objRectStatusIF == 1) ? camObjVs[AZ] : (camObjVs[AZ] < objRectOpposite[AZ]) ? camObjVs[AZ] : objRectOpposite[AZ];
+            objRectOpposite[AX] = (objRectStatusIF == FALSE) ? camObjVs[AX] : (camObjVs[AX] > objRectOpposite[AX]) ? camObjVs[AX] : objRectOpposite[AX];
+            objRectOpposite[AY] = (objRectStatusIF == FALSE) ? camObjVs[AY] : (camObjVs[AY] > objRectOpposite[AY]) ? camObjVs[AY] : objRectOpposite[AY];
+            objRectOpposite[AZ] = (objRectStatusIF == FALSE) ? camObjVs[AZ] : (camObjVs[AZ] < objRectOpposite[AZ]) ? camObjVs[AZ] : objRectOpposite[AZ];
 
             objRectStatus += 1;
 
@@ -44,7 +48,25 @@ __global__ void glpaGpuPreparePoly(
             0, objRectOpposite[AY], objRectOpposite[AZ]
         };
 
-        
+
+        float zVec[3] = {0, 0, -1};
+        float vecsCos[4];
+
+        for (int aryI = 0; aryI < 4; aryI++){
+            vecsCos[aryI]
+            = (zVec[AX] * objOppositeVs[aryI*3 + AX] + zVec[AY] * objOppositeVs[aryI*3 + AY] + zVec[AZ] * objOppositeVs[aryI*3 + AZ]) /
+            (sqrt(zVec[AX] * zVec[AX] + zVec[AY] * zVec[AY] + zVec[AZ] * zVec[AZ]) * 
+            sqrt(objOppositeVs[aryI*3 + AX] * objOppositeVs[aryI*3 + AX] + objOppositeVs[aryI*3 + AY] * objOppositeVs[aryI*3 + AY] + 
+            objOppositeVs[aryI*3 + AZ] * objOppositeVs[aryI*3 + AZ]));
+        }
+
+        int objZInIF = (objRectOrigin[AZ] >= -camFarZ && objRectOpposite[AZ] <= -camNearZ) ? TRUE : FALSE;
+        int objXzInIF = (vecsCos[0] >= camViewAngleCos[AX] || vecsCos[1] >= camViewAngleCos[AX]) ? TRUE : FALSE;
+        int objYzInIF = (vecsCos[2] >= camViewAngleCos[AY] || vecsCos[3] >= camViewAngleCos[AY]) ? TRUE : FALSE;
+
+        int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
+
+        result[objInIF] = 0;
     }
 }
 
@@ -65,7 +87,7 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
         roopObj += 1;
     }
 
-    float* mtCamTransRot = new float[16];
+    mtCamTransRot = new float[16];
     mtCamTransRot[0] = cos(RAD(-cam.rotAngle.z)) * cos(RAD(-cam.rotAngle.y));
     mtCamTransRot[1] = cos(RAD(-cam.rotAngle.z)) * sin(RAD(-cam.rotAngle.y)) * sin(RAD(-cam.rotAngle.x)) + -sin(RAD(-cam.rotAngle.z)) * cos(RAD(-cam.rotAngle.x));
     mtCamTransRot[2] = cos(RAD(-cam.rotAngle.z)) * sin(RAD(-cam.rotAngle.y)) * cos(RAD(-cam.rotAngle.x)) + -sin(RAD(-cam.rotAngle.z)) * -sin(RAD(-cam.rotAngle.x));
@@ -83,6 +105,28 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     mtCamTransRot[14] = 0;
     mtCamTransRot[15] = 1;
 
+    camViewAngleCos = new float[2];
+    camViewAngleCos[AX] = cam.viewAngleCos.x;
+    camViewAngleCos[AY] = cam.viewAngleCos.y;
+
+    objInJudgeAry = new int[sObj.size() + 1];
+    std::fill(objInJudgeAry, objInJudgeAry + sObj.size() + 1, 1); 
+    
+
+    float* dObjWvs;
+    cudaMalloc((void**)&dObjWvs, sizeof(float)*objWvsSize);
+    cudaMemcpy(dObjWvs, objWvs, sizeof(float)*objWvsSize, cudaMemcpyHostToDevice);
+
+    float* dMtCamTransRot;
+    cudaMalloc((void**)&dMtCamTransRot, sizeof(float)*16);
+    cudaMemcpy(dMtCamTransRot, mtCamTransRot, sizeof(float)*16, cudaMemcpyHostToDevice);
+
+    float* dCamViewAngleCos;
+    cudaMalloc((void**)&dCamViewAngleCos, sizeof(float)*2);
+    cudaMemcpy(dCamViewAngleCos, camViewAngleCos, sizeof(float)*2, cudaMemcpyHostToDevice);
+
+    int* dObjInJudgeAry;
+    cudaMalloc((void**)&dObjInJudgeAry, sizeof(int)*(sObj.size() + 1));
 
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -102,9 +146,31 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
     dim3 dimGrid(blocksX, blocksY);
 
-    glpaGpuPreparePoly<<<dimGrid, dimBlock>>>(
-
+    glpaGpuPrepareObj<<<dimGrid, dimBlock>>>(
+        sObj.size(),
+        dObjWvs,
+        dMtCamTransRot,
+        static_cast<float>(cam.nearZ),
+        static_cast<float>(cam.farZ),
+        dCamViewAngleCos,
+        dObjInJudgeAry
     );
+
+    cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        throw std::runtime_error(ERROR_VECTOR_CUDA_ERROR);
+    }
+
+    cudaMemcpy(objInJudgeAry, dObjInJudgeAry, sizeof(int)*(sObj.size() + 1), cudaMemcpyDeviceToHost);
+
+    delete[] objWvs;
+
+    cudaFree(dObjWvs);
+    cudaFree(dMtCamTransRot);
+    cudaFree(dCamViewAngleCos);
+    cudaFree(dObjInJudgeAry);
+
+
 }
 
 void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, LPDWORD buffer){
