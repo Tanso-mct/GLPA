@@ -65,8 +65,10 @@ __global__ void glpaGpuPrepareObj(
         int objYzInIF = (vecsCos[2] >= camViewAngleCos[AY] || vecsCos[3] >= camViewAngleCos[AY]) ? TRUE : FALSE;
 
         int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
+        int objInIF2 = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? 2 : 0;
 
-        result[objInIF] = 0;
+
+        result[objInIF] = objInIF2;
     }
 }
 
@@ -132,7 +134,7 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     cudaGetDeviceProperties(&deviceProp, 0);
 
     int dataSizeY = sObj.size();
-    int dataSizeX = 4; // 4 because there are two opposite v's on each of the xz plane and yz plane.
+    int dataSizeX = 1; // 4 because there are two opposite v's on each of the xz plane and yz plane.
 
     int desiredThreadsPerBlockX = 16;
     int desiredThreadsPerBlockY = 16;
