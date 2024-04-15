@@ -65,10 +65,9 @@ __global__ void glpaGpuPrepareObj(
         int objYzInIF = (vecsCos[2] >= camViewAngleCos[AY] || vecsCos[3] >= camViewAngleCos[AY]) ? TRUE : FALSE;
 
         int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
-        int objInIF2 = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? 2 : 0;
+        // int objInIF2 = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? 2 : 0;
 
-
-        result[objInIF] = objInIF2;
+        result[objInIF] = TRUE;
     }
 }
 
@@ -112,8 +111,7 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     camViewAngleCos[AY] = cam.viewAngleCos.y;
 
     objInJudgeAry = new int[sObj.size() + 1];
-    std::fill(objInJudgeAry, objInJudgeAry + sObj.size() + 1, 1); 
-    
+    std::fill(objInJudgeAry, objInJudgeAry + sObj.size() + 1, FALSE); 
 
     float* dObjWvs;
     cudaMalloc((void**)&dObjWvs, sizeof(float)*objWvsSize);
@@ -152,8 +150,8 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
         sObj.size(),
         dObjWvs,
         dMtCamTransRot,
-        static_cast<float>(cam.nearZ),
-        static_cast<float>(cam.farZ),
+        static_cast<float>(cam.nearZ) / CALC_SCALE,
+        static_cast<float>(cam.farZ) / CALC_SCALE,
         dCamViewAngleCos,
         dObjInJudgeAry
     );
