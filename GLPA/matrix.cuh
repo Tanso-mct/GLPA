@@ -17,12 +17,13 @@ __global__ void glpaGpu4x4_4x1sMtProduct(
     int mt_4x1sSize
 );
 
-__device__ void mtProduct4x4Vec3d(
-    float* mt_4x4,
-    float* vector_3d,
-    float* result
-);
-
+// float ary mt4x4, float ary vec, float result
+#define MT_PRODUCT_4X4_VEC3D(mt4x4, vec, result) \
+    do { \
+        result[0] = vec[AX] * mt4x4[0] + vec[AY] * mt4x4[1] + vec[AZ] * mt4x4[2] + 1 * mt4x4[3]; \
+        result[1] = vec[AX] * mt4x4[4] + vec[AY] * mt4x4[5] + vec[AZ] * mt4x4[6] + 1 * mt4x4[7]; \
+        result[2] = vec[AX] * mt4x4[8] + vec[AY] * mt4x4[9] + vec[AZ] * mt4x4[10] + 1 * mt4x4[11]; \
+    } while(0);
 class Matrix{
 public :
     // host memory

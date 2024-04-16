@@ -53,19 +53,19 @@ __global__ void glpaGpuPrepareObj(
 
         for (int aryI = 0; aryI < 4; aryI++)
         {
-            // float calcObjOppositeV[3] = {
-            //     objOppositeVs[aryI*3 + AX],
-            //     objOppositeVs[aryI*3 + AY],
-            //     objOppositeVs[aryI*3 + AZ]
-            // };
+            float calcObjOppositeV[3] = {
+                objOppositeVs[aryI*3 + AX],
+                objOppositeVs[aryI*3 + AY],
+                objOppositeVs[aryI*3 + AZ]
+            };
 
-            // vecGetVecsCos(zVec, calcObjOppositeV, &vecsCos[aryI]);
+            VEC_GET_VECS_COS(zVec, calcObjOppositeV, vecsCos[aryI]);
 
-            vecsCos[aryI]
-            = (zVec[AX] * objOppositeVs[aryI*3 + AX] + zVec[AY] * objOppositeVs[aryI*3 + AY] + zVec[AZ] * objOppositeVs[aryI*3 + AZ]) /
-            (sqrt(zVec[AX] * zVec[AX] + zVec[AY] * zVec[AY] + zVec[AZ] * zVec[AZ]) * 
-            sqrt(objOppositeVs[aryI*3 + AX] * objOppositeVs[aryI*3 + AX] + objOppositeVs[aryI*3 + AY] * objOppositeVs[aryI*3 + AY] + 
-            objOppositeVs[aryI*3 + AZ] * objOppositeVs[aryI*3 + AZ]));
+            // vecsCos[aryI]
+            // = (zVec[AX] * objOppositeVs[aryI*3 + AX] + zVec[AY] * objOppositeVs[aryI*3 + AY] + zVec[AZ] * objOppositeVs[aryI*3 + AZ]) /
+            // (sqrt(zVec[AX] * zVec[AX] + zVec[AY] * zVec[AY] + zVec[AZ] * zVec[AZ]) * 
+            // sqrt(objOppositeVs[aryI*3 + AX] * objOppositeVs[aryI*3 + AX] + objOppositeVs[aryI*3 + AY] * objOppositeVs[aryI*3 + AY] + 
+            // objOppositeVs[aryI*3 + AZ] * objOppositeVs[aryI*3 + AZ]));
         }
 
         int objZInIF = (objRectOrigin[AZ] >= -camFarZ && objRectOpposite[AZ] <= -camNearZ) ? TRUE : FALSE;
@@ -196,30 +196,6 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
 
 }
 
-__device__ int judgePolyVInViewVolume(
-    float* cnvtPolyV,
-    float camFarZ,
-    float camNearZ,
-    float* camViewAngle
-){
-    float cnvtXzPolyV[3] = {cnvtPolyV[AX], 0, cnvtPolyV[AZ]};
-    float cnvtYzPolyV[3] = {0, cnvtPolyV[AY], cnvtPolyV[AZ]};
-
-    float zVec[3] = {0, 0, -1};
-
-    float cnvtXzPolyVxZVecDotCos;
-    vecGetVecsCos(zVec, cnvtXzPolyV, &cnvtXzPolyVxZVecDotCos);
-
-    float cnvtYzPolyVxZVecDotCos;
-    vecGetVecsCos(zVec, cnvtYzPolyV, &cnvtYzPolyVxZVecDotCos);
-
-    int polyVZInIF = (cnvtPolyV[AZ] >= -camFarZ && cnvtPolyV[AZ] <= -camNearZ) ? TRUE : FALSE;
-    int polyXzVInIF = (cnvtXzPolyVxZVecDotCos >= camViewAngle[AX]) ? TRUE : FALSE;
-    int polyYzVInIF = (cnvtYzPolyVxZVecDotCos >= camViewAngle[AY]) ? TRUE : FALSE;
-
-    return (polyVZInIF == TRUE && polyXzVInIF == TRUE && polyYzVInIF == TRUE) ? TRUE : FALSE;
-}
-
 __global__ void glpaGpuRender(
     float* polyVs,
     float* polyNs,
@@ -240,36 +216,39 @@ __global__ void glpaGpuRender(
         vec3d[AY] = polyVs[i*9 + AY];
         vec3d[AZ] = polyVs[i*9 + AZ];
         float cnvtPolyV1[3];
-        mtProduct4x4Vec3d(mtCamTransRot, vec3d, cnvtPolyV1);
+        MT_PRODUCT_4X4_VEC3D(mtCamTransRot, vec3d, cnvtPolyV1);
 
         vec3d[AX] = polyVs[i*9 + 3 + AX];
         vec3d[AY] = polyVs[i*9 + 3 + AY];
         vec3d[AZ] = polyVs[i*9 + 3 + AZ];
         float cnvtPolyV2[3];
-        mtProduct4x4Vec3d(mtCamTransRot, vec3d, cnvtPolyV2);
+        MT_PRODUCT_4X4_VEC3D(mtCamTransRot, vec3d, cnvtPolyV2);
 
         vec3d[AX] = polyVs[i*9 + 6 + AX];
         vec3d[AY] = polyVs[i*9 + 6 + AY];
         vec3d[AZ] = polyVs[i*9 + 6 + AZ];
         float cnvtPolyV3[3];
-        mtProduct4x4Vec3d(mtCamTransRot, vec3d, cnvtPolyV3);
+        MT_PRODUCT_4X4_VEC3D(mtCamTransRot, vec3d, cnvtPolyV3);
 
         vec3d[AX] = polyNs[i*3 + AX];
         vec3d[AY] = polyNs[i*3 + AY];
         vec3d[AZ] = polyNs[i*3 + AZ];
         float cnvtPolyN[3];
-        mtProduct4x4Vec3d(mtCamRot, vec3d, cnvtPolyN);
+        MT_PRODUCT_4X4_VEC3D(mtCamRot, vec3d, cnvtPolyN);
 
         float polyVxPolyNDotCos;
-        vecGetVecsCos(cnvtPolyN, cnvtPolyV1, &polyVxPolyNDotCos);
+        VEC_GET_VECS_COS(cnvtPolyN, cnvtPolyV1, polyVxPolyNDotCos);
         
         int polyBilateralIF = (polyVxPolyNDotCos <= 0) ? TRUE : FALSE;
 
         for (int conditionalBranch = 0; conditionalBranch < polyBilateralIF; conditionalBranch++)
         {
-            int polyV1InIF = judgePolyVInViewVolume(cnvtPolyV1, camFarZ, camNearZ, camViewAngle);
-            int polyV2InIF = judgePolyVInViewVolume(cnvtPolyV1, camFarZ, camNearZ, camViewAngle);
-            int polyV3InIF = judgePolyVInViewVolume(cnvtPolyV1, camFarZ, camNearZ, camViewAngle);
+            int polyV1InIF;
+            int polyV2InIF;
+            int polyV3InIF;
+            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngle, polyV1InIF);
+            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngle, polyV2InIF);
+            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngle, polyV3InIF);
 
             int noVsInIF = (polyV1InIF == FALSE && polyV2InIF == FALSE && polyV3InIF == FALSE) ? TRUE : FALSE;
 

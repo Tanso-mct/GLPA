@@ -313,6 +313,12 @@
     <CudaCompile Include="render.cuh">
       <Filter>ヘッダー ファイル\glpa</Filter>
     </CudaCompile>
+    <CudaCompile Include="device_funcs.cuh">
+      <Filter>ヘッダー ファイル\glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="device_funcs.cu">
+      <Filter>ソース ファイル\glpa</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png">

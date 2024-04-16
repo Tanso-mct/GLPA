@@ -96,18 +96,6 @@ __global__ void glpaGpuGetSameSizeVecsCos(
     }
 }
 
-__device__ void vecGetVecsCos(
-    float* vec1,
-    float* vec2,
-    float* result
-){
-    *result
-    = (vec1[AX] * vec2[AX] + vec1[AY] * vec2[AY] + vec1[AZ] * vec2[AZ]) /
-    (sqrt(vec1[AX] * vec1[AX] + vec1[AY] * vec1[AY] + vec1[AZ] * vec1[AZ]) * 
-    sqrt(vec2[AX] * vec2[AX] + vec2[AY] * vec2[AY] + 
-    vec2[AZ] * vec2[AZ]));
-}
-
 std::vector<double> Vector::getSameSizeVecsDotCos(std::vector<Vec3d> leftVec, std::vector<Vec3d> rightVecs){
     int size = leftVec.size() * 3;
 

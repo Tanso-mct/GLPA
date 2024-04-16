@@ -25,11 +25,15 @@ __global__ void glpaGpuGetSameSizeVecsCos(
     int vecs_size
 );
 
-__device__ void vecGetVecsCos(
-    float* vec_1,
-    float* vec_2,
-    float* result
-);
+// float ary vec1, float ary vec2, float result
+#define VEC_GET_VECS_COS(vec1, vec2, result) \
+    do { \
+        result \
+        = (vec1[AX] * vec2[AX] + vec1[AY] * vec2[AY] + vec1[AZ] * vec2[AZ]) / \
+        (sqrt(vec1[AX] * vec1[AX] + vec1[AY] * vec1[AY] + vec1[AZ] * vec1[AZ]) * \
+        sqrt(vec2[AX] * vec2[AX] + vec2[AY] * vec2[AY] + \
+        vec2[AZ] * vec2[AZ])); \
+    } while(0);
 
 class Vector{
 public :
