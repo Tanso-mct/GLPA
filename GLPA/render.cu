@@ -53,19 +53,19 @@ __global__ void glpaGpuPrepareObj(
 
         for (int aryI = 0; aryI < 4; aryI++)
         {
-            float calcObjOppositeV[3] = {
-                objOppositeVs[aryI*3 + AX],
-                objOppositeVs[aryI*3 + AY],
-                objOppositeVs[aryI*3 + AZ]
-            };
+            // float calcObjOppositeV[3] = {
+            //     objOppositeVs[aryI*3 + AX],
+            //     objOppositeVs[aryI*3 + AY],
+            //     objOppositeVs[aryI*3 + AZ]
+            // };
 
-            vecGetVecsCos(zVec, calcObjOppositeV, &vecsCos[aryI]);
+            // vecGetVecsCos(zVec, calcObjOppositeV, &vecsCos[aryI]);
 
-            // vecsCos[aryI]
-            // = (zVec[AX] * objOppositeVs[aryI*3 + AX] + zVec[AY] * objOppositeVs[aryI*3 + AY] + zVec[AZ] * objOppositeVs[aryI*3 + AZ]) /
-            // (sqrt(zVec[AX] * zVec[AX] + zVec[AY] * zVec[AY] + zVec[AZ] * zVec[AZ]) * 
-            // sqrt(objOppositeVs[aryI*3 + AX] * objOppositeVs[aryI*3 + AX] + objOppositeVs[aryI*3 + AY] * objOppositeVs[aryI*3 + AY] + 
-            // objOppositeVs[aryI*3 + AZ] * objOppositeVs[aryI*3 + AZ]));
+            vecsCos[aryI]
+            = (zVec[AX] * objOppositeVs[aryI*3 + AX] + zVec[AY] * objOppositeVs[aryI*3 + AY] + zVec[AZ] * objOppositeVs[aryI*3 + AZ]) /
+            (sqrt(zVec[AX] * zVec[AX] + zVec[AY] * zVec[AY] + zVec[AZ] * zVec[AZ]) * 
+            sqrt(objOppositeVs[aryI*3 + AX] * objOppositeVs[aryI*3 + AX] + objOppositeVs[aryI*3 + AY] * objOppositeVs[aryI*3 + AY] + 
+            objOppositeVs[aryI*3 + AZ] * objOppositeVs[aryI*3 + AZ]));
         }
 
         int objZInIF = (objRectOrigin[AZ] >= -camFarZ && objRectOpposite[AZ] <= -camNearZ) ? TRUE : FALSE;
@@ -275,7 +275,7 @@ __global__ void glpaGpuRender(
 
             for (int conditionalBranch2 = 0; conditionalBranch2 < noVsInIF; conditionalBranch2++)
             {
-                
+
             }
 
 
@@ -358,10 +358,10 @@ void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, L
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    glpaGpuRender<<<dimGrid, dimBlock>>>
-    (
+    // glpaGpuRender<<<dimGrid, dimBlock>>>
+    // (
         
-    );
+    // );
 
     cudaError_t error = cudaGetLastError();
     if (error != 0)
