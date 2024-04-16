@@ -25,6 +25,12 @@ __global__ void glpaGpuGetSameSizeVecsCos(
     int vecs_size
 );
 
+__device__ void vecGetVecsCos(
+    float* vec_1,
+    float* vec_2,
+    float* result
+);
+
 class Vector{
 public :
     // host memory

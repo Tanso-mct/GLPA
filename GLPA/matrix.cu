@@ -15,20 +15,15 @@ __global__ void glpaGpu4x4_4x1sMtProduct(double *mt4x4, double *mt4x1s, double *
     }
 }
 
-
-__device__ float* mtProduct4x4Vec3d(float *mt4x4, float *vec){
-    float rt[3];
-
-    rt[0] = vec[AX] * mt4x4[0] + vec[AY] * mt4x4[1] + vec[AZ] * mt4x4[2] + 1 * mt4x4[3];
-    rt[1] = vec[AX] * mt4x4[4] + vec[AY] * mt4x4[5] + vec[AZ] * mt4x4[6] + 1 * mt4x4[7];
-    rt[2] =vec[AX] * mt4x4[8] + vec[AY] * mt4x4[9] + vec[AZ] * mt4x4[10] + 1 * mt4x4[11];
-
-    return rt;
+__device__ void mtProduct4x4Vec3d(
+    float* mt4x4,
+    float* vec,
+    float* result
+){
+    result[0] = vec[AX] * mt4x4[0] + vec[AY] * mt4x4[1] + vec[AZ] * mt4x4[2] + 1 * mt4x4[3];
+    result[1] = vec[AX] * mt4x4[4] + vec[AY] * mt4x4[5] + vec[AZ] * mt4x4[6] + 1 * mt4x4[7];
+    result[2] = vec[AX] * mt4x4[8] + vec[AY] * mt4x4[9] + vec[AZ] * mt4x4[10] + 1 * mt4x4[11];
 }
-
-
-
-
 
 std::vector<Vec3d> Matrix::transRotConvert(Vec3d trans, Vec3d rot, std::vector<Vec3d> sourceVecs){
     hLeftMt = (double*)malloc(sizeof(double)*4*4);

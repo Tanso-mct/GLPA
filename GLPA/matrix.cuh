@@ -17,12 +17,11 @@ __global__ void glpaGpu4x4_4x1sMtProduct(
     int mt_4x1sSize
 );
 
-
-__device__ float* mtProduct4x4Vec3d(
+__device__ void mtProduct4x4Vec3d(
     float* mt_4x4,
-    float* vector_3d
+    float* vector_3d,
+    float* result
 );
-
 
 class Matrix{
 public :
