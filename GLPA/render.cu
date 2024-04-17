@@ -60,12 +60,6 @@ __global__ void glpaGpuPrepareObj(
             };
 
             VEC_GET_VECS_COS(zVec, calcObjOppositeV, vecsCos[aryI]);
-
-            // vecsCos[aryI]
-            // = (zVec[AX] * objOppositeVs[aryI*3 + AX] + zVec[AY] * objOppositeVs[aryI*3 + AY] + zVec[AZ] * objOppositeVs[aryI*3 + AZ]) /
-            // (sqrt(zVec[AX] * zVec[AX] + zVec[AY] * zVec[AY] + zVec[AZ] * zVec[AZ]) * 
-            // sqrt(objOppositeVs[aryI*3 + AX] * objOppositeVs[aryI*3 + AX] + objOppositeVs[aryI*3 + AY] * objOppositeVs[aryI*3 + AY] + 
-            // objOppositeVs[aryI*3 + AZ] * objOppositeVs[aryI*3 + AZ]));
         }
 
         int objZInIF = (objRectOrigin[AZ] >= -camFarZ && objRectOpposite[AZ] <= -camNearZ) ? TRUE : FALSE;
@@ -136,24 +130,6 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
 
     int* dObjInJudgeAry;
     cudaMalloc((void**)&dObjInJudgeAry, sizeof(int)*(sObj.size() + 1));
-
-    // cudaDeviceProp deviceProp;
-    // cudaGetDeviceProperties(&deviceProp, 0);
-
-    // int dataSizeY = sObj.size();
-    // int dataSizeX = 1; // 4 because there are two opposite v's on each of the xz plane and yz plane.
-
-    // int desiredThreadsPerBlockX = 16;
-    // int desiredThreadsPerBlockY = 16;
-
-    // int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
-    // int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
-
-    // int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
-    // int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
-
-    // dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
-    // dim3 dimGrid(blocksX, blocksY);
 
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -254,6 +230,47 @@ __global__ void glpaGpuRender(
 
             for (int conditionalBranch2 = 0; conditionalBranch2 < noVsInIF; conditionalBranch2++)
             {
+                float polyRectOrigin[3] = {cnvtPolyV1[AX], cnvtPolyV1[AY], cnvtPolyV1[AZ]};
+                float polyRectOpposite[3] = {cnvtPolyV1[AX], cnvtPolyV1[AY], cnvtPolyV1[AZ]};
+
+                polyRectOrigin[AX] = (cnvtPolyV2[AX] < polyRectOrigin[AX]) ? cnvtPolyV2[AX] : polyRectOrigin[AX];
+                polyRectOrigin[AY] = (cnvtPolyV2[AY] < polyRectOrigin[AY]) ? cnvtPolyV2[AY] : polyRectOrigin[AY];
+                polyRectOrigin[AZ] = (cnvtPolyV2[AZ] > polyRectOrigin[AZ]) ? cnvtPolyV2[AZ] : polyRectOrigin[AZ];
+
+                polyRectOpposite[AX] = (cnvtPolyV2[AX] > polyRectOpposite[AX]) ? cnvtPolyV2[AX] : polyRectOpposite[AX];
+                polyRectOpposite[AY] = (cnvtPolyV2[AY] > polyRectOpposite[AY]) ? cnvtPolyV2[AY] : polyRectOpposite[AY];
+                polyRectOpposite[AZ] = (cnvtPolyV2[AZ] < polyRectOpposite[AZ]) ? cnvtPolyV2[AZ] : polyRectOpposite[AZ];
+
+                polyRectOrigin[AX] = (cnvtPolyV3[AX] < polyRectOrigin[AX]) ? cnvtPolyV3[AX] : polyRectOrigin[AX];
+                polyRectOrigin[AY] = (cnvtPolyV3[AY] < polyRectOrigin[AY]) ? cnvtPolyV3[AY] : polyRectOrigin[AY];
+                polyRectOrigin[AZ] = (cnvtPolyV3[AZ] > polyRectOrigin[AZ]) ? cnvtPolyV3[AZ] : polyRectOrigin[AZ];
+
+                polyRectOpposite[AX] = (cnvtPolyV3[AX] > polyRectOpposite[AX]) ? cnvtPolyV3[AX] : polyRectOpposite[AX];
+                polyRectOpposite[AY] = (cnvtPolyV3[AY] > polyRectOpposite[AY]) ? cnvtPolyV3[AY] : polyRectOpposite[AY];
+                polyRectOpposite[AZ] = (cnvtPolyV3[AZ] < polyRectOpposite[AZ]) ? cnvtPolyV3[AZ] : polyRectOpposite[AZ];
+
+                // TODO: 3 and 4 are different from the source. This may be the cause of the bug, so please check.
+                float polyRectOppositeSideVs[12] = {
+                    polyRectOrigin[AX], 0,  polyRectOpposite[AZ],
+                    polyRectOpposite[AX], 0, polyRectOpposite[AZ],
+                    0, polyRectOrigin[AY], polyRectOpposite[AZ],
+                    0, polyRectOpposite[AY], polyRectOpposite[AZ]
+                };
+
+                float zVec[3] = {0, 0, -1};
+                float vecsCos[4];
+
+                for (int aryI = 0; aryI < 4; aryI++)
+                {
+                    float calcObjOppositeV[3] = {
+                        polyRectOppositeSideVs[aryI*3 + AX],
+                        polyRectOppositeSideVs[aryI*3 + AY],
+                        polyRectOppositeSideVs[aryI*3 + AZ]
+                    };
+
+                    VEC_GET_VECS_COS(zVec, calcObjOppositeV, vecsCos[aryI]);
+                }
+
 
             }
 
