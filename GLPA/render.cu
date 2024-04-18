@@ -180,7 +180,9 @@ __global__ void glpaGpuRender(
     float* mtCamRot,
     float camFarZ,
     float camNearZ,
-    float* camViewAngleCos
+    float* camViewAngleCos,
+    float* viewVolumeVs,
+    float* viewVolumeNs
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -279,6 +281,10 @@ __global__ void glpaGpuRender(
                 int polyYzInIF = (vecsCos[2] >= camViewAngleCos[AY] || vecsCos[3] >= camViewAngleCos[AY]) ? TRUE : FALSE;
 
                 polyInIF = (polyZInIF == TRUE && polyXzInIF == TRUE && polyYzInIF == TRUE) ? TRUE : FALSE;
+            }
+
+            for(int conditionalBranch2 = 0; conditionalBranch2 < polyInIF; conditionalBranch2++){
+                
             }
 
 

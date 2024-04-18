@@ -61,7 +61,9 @@ __global__ void glpaGpuRender(
     float* matrix_camera_rotation,
     float camera_far_z,
     float camera_near_z,
-    float* camera_view_angle
+    float* camera_view_angle,
+    float* view_volume_vertices,
+    float* view_volume_normals
 );
 
 
