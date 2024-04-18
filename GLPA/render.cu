@@ -1,5 +1,14 @@
 #include "render.cuh"
 
+Render::Render()
+{
+    hMtCamTransRot = std::vector<float>(16);
+    hMtCamRot = std::vector<float>(16);
+
+    hCamViewAngleCos = std::vector<float>(2);
+
+}
+
 __global__ void glpaGpuPrepareObj(
     int objSize,
     float* objWVs,
@@ -74,24 +83,22 @@ __global__ void glpaGpuPrepareObj(
 
 void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera cam)
 {
-    int sObjSize = sObj.size();
-    int objWvsSize = sObjSize*8*3;
+    std::vector<float> hObjWvs;
 
-    float* hObjWvs = new float[objWvsSize];
-
-    int roopObj = 0;
     for (auto obj : sObj)
     {
         for (int i = 0; i < 8; i++)
         {
-            hObjWvs[roopObj*8*3 + i*3] = obj.second.range.wVertex[i].x / CALC_SCALE;
-            hObjWvs[roopObj*8*3 + i*3 + 1] = obj.second.range.wVertex[i].y / CALC_SCALE;
-            hObjWvs[roopObj*8*3 + i*3 + 2] = obj.second.range.wVertex[i].z / CALC_SCALE;
+            hObjWvs.push_back(obj.second.range.wVertex[i].x / CALC_SCALE);
+            hObjWvs.push_back(obj.second.range.wVertex[i].y / CALC_SCALE);
+            hObjWvs.push_back(obj.second.range.wVertex[i].z / CALC_SCALE);
         }
-        roopObj += 1;
     }
 
-    hMtCamTransRot = new float[16];
+    float* dObjWvs;
+    cudaMalloc((void**)&dObjWvs, sizeof(float)*hObjWvs.size());
+    cudaMemcpy(dObjWvs, hObjWvs.data(), sizeof(float)*hObjWvs.size(), cudaMemcpyHostToDevice);
+
     hMtCamTransRot[0] = cos(RAD(-cam.rotAngle.z)) * cos(RAD(-cam.rotAngle.y));
     hMtCamTransRot[1] = cos(RAD(-cam.rotAngle.z)) * sin(RAD(-cam.rotAngle.y)) * sin(RAD(-cam.rotAngle.x)) + -sin(RAD(-cam.rotAngle.z)) * cos(RAD(-cam.rotAngle.x));
     hMtCamTransRot[2] = cos(RAD(-cam.rotAngle.z)) * sin(RAD(-cam.rotAngle.y)) * cos(RAD(-cam.rotAngle.x)) + -sin(RAD(-cam.rotAngle.z)) * -sin(RAD(-cam.rotAngle.x));
@@ -109,27 +116,24 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     hMtCamTransRot[14] = 0;
     hMtCamTransRot[15] = 1;
 
-    hCamViewAngleCos = new float[2];
+    float* dMtCamTransRot;
+    cudaMalloc((void**)&dMtCamTransRot, sizeof(float)*hMtCamTransRot.size());
+    cudaMemcpy(dMtCamTransRot, hMtCamTransRot.data(), sizeof(float)*hMtCamTransRot.size(), cudaMemcpyHostToDevice);
+
     hCamViewAngleCos[AX] = cam.viewAngleCos.x;
     hCamViewAngleCos[AY] = cam.viewAngleCos.y;
+
+    float* dCamViewAngleCos;
+    cudaMalloc((void**)&dCamViewAngleCos, sizeof(float)*hCamViewAngleCos.size());
+    cudaMemcpy(dCamViewAngleCos, hCamViewAngleCos.data(), sizeof(float)*hCamViewAngleCos.size(), cudaMemcpyHostToDevice);
+
 
     hObjInJudgeAry = new int[sObj.size() + 1];
     std::fill(hObjInJudgeAry, hObjInJudgeAry + sObj.size() + 1, FALSE); 
 
-    float* dObjWvs;
-    cudaMalloc((void**)&dObjWvs, sizeof(float)*objWvsSize);
-    cudaMemcpy(dObjWvs, hObjWvs, sizeof(float)*objWvsSize, cudaMemcpyHostToDevice);
-
-    float* dMtCamTransRot;
-    cudaMalloc((void**)&dMtCamTransRot, sizeof(float)*16);
-    cudaMemcpy(dMtCamTransRot, hMtCamTransRot, sizeof(float)*16, cudaMemcpyHostToDevice);
-
-    float* dCamViewAngleCos;
-    cudaMalloc((void**)&dCamViewAngleCos, sizeof(float)*2);
-    cudaMemcpy(dCamViewAngleCos, hCamViewAngleCos, sizeof(float)*2, cudaMemcpyHostToDevice);
-
     int* dObjInJudgeAry;
     cudaMalloc((void**)&dObjInJudgeAry, sizeof(int)*(sObj.size() + 1));
+
 
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -161,8 +165,6 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     }
 
     cudaMemcpy(hObjInJudgeAry, dObjInJudgeAry, sizeof(int)*(sObj.size() + 1), cudaMemcpyDeviceToHost);
-
-    delete[] hObjWvs;
 
     cudaFree(dObjWvs);
     cudaFree(dMtCamTransRot);
@@ -284,7 +286,9 @@ __global__ void glpaGpuRender(
             }
 
             for(int conditionalBranch2 = 0; conditionalBranch2 < polyInIF; conditionalBranch2++){
-                
+                float polyFaceDot[12] = {
+
+                }
             }
 
 
@@ -330,7 +334,19 @@ void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, L
         }
     }
 
-    hMtCamRot = new float[16];
+    float* dPolyVs;
+    float* dPolyNs;
+    cudaMalloc((void**)&dPolyVs, sizeof(float)*polyVs.size());
+    cudaMalloc((void**)&dPolyNs, sizeof(float)*polyNs.size());
+    cudaMemcpy(dPolyVs, polyVs.data(), sizeof(float)*polyVs.size(), cudaMemcpyHostToDevice);
+    cudaMemcpy(dPolyVs, polyNs.data(), sizeof(float)*polyNs.size(), cudaMemcpyHostToDevice);
+
+
+    float* dMtCamTransRot;
+    cudaMalloc((void**)&dMtCamTransRot, sizeof(float)*hMtCamTransRot.size());
+    cudaMemcpy(dMtCamTransRot, hMtCamTransRot.data(), sizeof(float)*hMtCamTransRot.size(), cudaMemcpyHostToDevice);
+
+
     hMtCamRot[0] = cos(RAD(-cam.rotAngle.z)) * cos(RAD(-cam.rotAngle.y));
     hMtCamRot[1] = cos(RAD(-cam.rotAngle.z)) * sin(RAD(-cam.rotAngle.y)) * sin(RAD(-cam.rotAngle.x)) + -sin(RAD(-cam.rotAngle.z)) * cos(RAD(-cam.rotAngle.x));
     hMtCamRot[2] = cos(RAD(-cam.rotAngle.z)) * sin(RAD(-cam.rotAngle.y)) * cos(RAD(-cam.rotAngle.x)) + -sin(RAD(-cam.rotAngle.z)) * -sin(RAD(-cam.rotAngle.x));
@@ -348,12 +364,39 @@ void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, L
     hMtCamRot[14] = 0;
     hMtCamRot[15] = 1;
 
-    float* dPolyVs;
-    float* dPolyNs;
-    cudaMalloc((void**)&dPolyVs, sizeof(int)*polyVs.size());
-    cudaMalloc((void**)&dPolyNs, sizeof(int)*polyNs.size());
-    cudaMemcpy(dPolyVs, polyVs.data(), sizeof(float)*polyVs.size(), cudaMemcpyHostToDevice);
-    cudaMemcpy(dPolyVs, polyNs.data(), sizeof(float)*polyNs.size(), cudaMemcpyHostToDevice);
+    float* dMtCamRot;
+    cudaMalloc((void**)&dMtCamRot, sizeof(float)*hMtCamRot.size());
+    cudaMemcpy(dMtCamRot, hMtCamRot.data(), sizeof(float)*hMtCamRot.size(), cudaMemcpyHostToDevice);
+
+
+    float* dCamViewAngleCos;
+    cudaMalloc((void**)&dCamViewAngleCos, sizeof(float)*hCamViewAngleCos.size());
+    cudaMemcpy(dCamViewAngleCos, hCamViewAngleCos.data(), sizeof(float)*hCamViewAngleCos.size(), cudaMemcpyHostToDevice);
+
+
+    std::vector<float> hViewVolumeVs;
+    for (int i = 0; i < 8; i++){
+        hViewVolumeVs.push_back(cam.viewVolume.v[i].x / CALC_SCALE);
+        hViewVolumeVs.push_back(cam.viewVolume.v[i].y / CALC_SCALE);
+        hViewVolumeVs.push_back(cam.viewVolume.v[i].z / CALC_SCALE);
+    }
+
+    float* dViewVolumeVs;
+    cudaMalloc((void**)&dViewVolumeVs, sizeof(float)*hViewVolumeVs.size());
+    cudaMemcpy(dViewVolumeVs, hViewVolumeVs.data(), sizeof(float)*hViewVolumeVs.size(), cudaMemcpyHostToDevice);
+
+    std::vector<float> hViewVolumeNs;
+    for (int i = 0; i < 6; i++){
+        hViewVolumeNs.push_back(cam.viewVolume.face.normal[i].x / CALC_SCALE);
+        hViewVolumeNs.push_back(cam.viewVolume.face.normal[i].y / CALC_SCALE);
+        hViewVolumeNs.push_back(cam.viewVolume.face.normal[i].z / CALC_SCALE);
+    }
+
+    float* dViewVolumeNs;
+    cudaMalloc((void**)&dViewVolumeNs, sizeof(float)*hViewVolumeNs.size());
+    cudaMemcpy(dViewVolumeNs, hViewVolumeNs.data(), sizeof(float)*hViewVolumeNs.size(), cudaMemcpyHostToDevice);
+
+
 
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -377,6 +420,8 @@ void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, L
     {
         throw std::runtime_error(ERROR_VECTOR_CUDA_ERROR);
     }
+
+    delete[] hObjInJudgeAry;
 
 
 

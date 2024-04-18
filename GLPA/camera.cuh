@@ -239,6 +239,8 @@ public :
 
     Vec2d viewAngleCos;
 
+    ViewVolume viewVolume;
+
 private : 
     bool reload = false;
 
@@ -251,8 +253,6 @@ private :
     Vec2d nearScrSize;
     Vec2d farScrSize;
     Vec2d scPixelSize;
-
-    ViewVolume viewVolume;
     
     std::vector<std::wstring> renderTargetObj;
     std::vector<PolyNameInfo> renderTargetPoly;

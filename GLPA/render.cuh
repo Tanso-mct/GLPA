@@ -69,6 +69,8 @@ __global__ void glpaGpuRender(
 
 class Render{
 public :
+    Render();
+
     void prepareObjs(
         std::unordered_map<std::wstring, Object> source_objects,
         Camera cam
@@ -81,10 +83,11 @@ public :
     );
 
 private :
-    float* hMtCamTransRot;
-    float* hMtCamRot;
+    std::vector<float> hMtCamTransRot;
+    std::vector<float> hMtCamRot;
 
-    float* hCamViewAngleCos;
+    std::vector<float> hCamViewAngleCos;
+
     int* hObjInJudgeAry;
 
 };
