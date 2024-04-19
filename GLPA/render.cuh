@@ -52,6 +52,28 @@ __global__ void glpaGpuPrepareObj(
         polyVInIF = (polyVZInIF == TRUE && polyXzVInIF == TRUE && polyYzVInIF == TRUE) ? TRUE : FALSE; \
     } while(0);
 
+#define CALC_POLY_FACE_DOT(result, vvLineV, vStartIndex, vEndIndex, polyOneV, polyN) \
+    do { \
+        result[0] = (vvLineV[vStartIndex*3 + AX] - polyOneV[AX]) * polyN[AX] + \
+            (vvLineV[vStartIndex*3 + AY] - polyOneV[AY]) * polyN[AY] + \
+            (vvLineV[vStartIndex*3 + AZ] - polyOneV[AZ]) * polyN[AZ]; \
+        result[1] = (vvLineV[vEndIndex*3 + AX] - polyOneV[AX]) * polyN[AX] + \
+            (vvLineV[vEndIndex*3 + AY] - polyOneV[AY]) * polyN[AY] + \
+            (vvLineV[vEndIndex*3 + AZ] - polyOneV[AZ]) * polyN[AZ]; \
+    } while(0);
+
+#define CALC_VV_FACE_DOT(result, polyLineStartV, polyLineEndV, vvOneV, vvOneVIndex, vvN, vvNIndex) \
+    do { \
+        result[0] = \
+        (polyLineStartV[AX] - vvOneV[vvOneVIndex + AX]) * vvN[vvNIndex + AX] + \
+        (polyLineStartV[AY] - vvOneV[vvOneVIndex + AY]) * vvN[vvNIndex + AY] + \
+        (polyLineStartV[AZ] - vvOneV[vvOneVIndex + AZ]) * vvN[vvNIndex + AZ]; \
+        result[1] = \
+        (polyLineEndV[AX] - vvOneV[vvOneVIndex + AX]) * vvN[vvNIndex + AX] + \
+        (polyLineEndV[AY] - vvOneV[vvOneVIndex + AY]) * vvN[vvNIndex + AY] + \
+        (polyLineEndV[AZ] - vvOneV[vvOneVIndex + AZ]) * vvN[vvNIndex + AZ]; \
+    } while(0);
+
 
 __global__ void glpaGpuRender(
     float* poly_vertices,
