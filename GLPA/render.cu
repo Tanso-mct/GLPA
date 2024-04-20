@@ -310,7 +310,7 @@ __global__ void glpaGpuRender(
                     RECT_L12_STARTV, RECT_L12_ENDV
                 };
 
-                
+                int inxtnAmount = polyV1InIF + polyV2InIF + polyV3InIF;
 
                 int polyFaceInxtnExistIF[24] = {FALSE};
                 int polyFaceCalcInxtnIF[12] = {FALSE};
@@ -321,7 +321,9 @@ __global__ void glpaGpuRender(
 
                     polyFaceInxtnExistIF[roopLineI*2] = (polyFaceDot[0] == 0) ? TRUE : FALSE;
                     polyFaceInxtnExistIF[roopLineI*2 + 1] = (polyFaceDot[1] == 0) ? TRUE : FALSE;
+                    inxtnAmount += polyFaceInxtnExistIF[roopLineI*2] + polyFaceInxtnExistIF[roopLineI*2 + 1];
                     polyFaceCalcInxtnIF[roopLineI] = ((polyFaceDot[0] > 0 && polyFaceDot[1] < 0) || (polyFaceDot[0] < 0 && polyFaceDot[1] > 0)) ? TRUE : FALSE;
+                    inxtnAmount += polyFaceCalcInxtnIF[roopLineI];
                 }
 
                 int vvFaceInxtnExistIF[36] = {FALSE};
@@ -332,17 +334,23 @@ __global__ void glpaGpuRender(
                     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceVI[roopFaceI], viewVolumeNs, roopFaceI);
                     vvFaceInxtnExistIF[roopFaceI*6] = (vvFaceDot[0] == 0) ? TRUE : FALSE;
                     vvFaceInxtnExistIF[roopFaceI*6 + 1]  = (vvFaceDot[1] == 0) ? TRUE : FALSE;
+                    inxtnAmount += vvFaceInxtnExistIF[roopFaceI*6] + vvFaceInxtnExistIF[roopFaceI*6 + 1];
                     vvFaceCalcInxtnIF[roopFaceI*3] = ((vvFaceDot[0] > 0 && vvFaceDot[1] < 0) || (vvFaceDot[0] < 0 && vvFaceDot[1] > 0)) ? TRUE : FALSE;
+                    inxtnAmount += vvFaceCalcInxtnIF[roopFaceI*3];
 
                     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceVI[roopFaceI], viewVolumeNs, roopFaceI);
                     vvFaceInxtnExistIF[roopFaceI*6 + 2] = (vvFaceDot[0] == 0) ? TRUE : FALSE;
                     vvFaceInxtnExistIF[roopFaceI*6 + 3] = (vvFaceDot[1] == 0) ? TRUE : FALSE;
+                    inxtnAmount += vvFaceInxtnExistIF[roopFaceI*6] + vvFaceInxtnExistIF[roopFaceI*6 + 1];
                     vvFaceCalcInxtnIF[roopFaceI*3 + 1] = ((vvFaceDot[0] > 0 && vvFaceDot[1] < 0) || (vvFaceDot[0] < 0 && vvFaceDot[1] > 0)) ? TRUE : FALSE;
+                    inxtnAmount += vvFaceCalcInxtnIF[roopFaceI*3 + 1];
 
                     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceVI[roopFaceI], viewVolumeNs, roopFaceI);
                     vvFaceInxtnExistIF[roopFaceI*6 + 4] = (vvFaceDot[0] == 0) ? TRUE : FALSE;
                     vvFaceInxtnExistIF[roopFaceI*6 + 5] = (vvFaceDot[1] == 0) ? TRUE : FALSE;
+                    inxtnAmount += vvFaceInxtnExistIF[roopFaceI*6] + vvFaceInxtnExistIF[roopFaceI*6 + 1];
                     vvFaceCalcInxtnIF[roopFaceI*3 + 2] = ((vvFaceDot[0] > 0 && vvFaceDot[1] < 0) || (vvFaceDot[0] < 0 && vvFaceDot[1] > 0)) ? TRUE : FALSE;
+                    inxtnAmount += vvFaceCalcInxtnIF[roopFaceI*3 + 2];
                 }
 
             }
