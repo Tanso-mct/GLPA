@@ -74,6 +74,20 @@ __global__ void glpaGpuPrepareObj(
         (polyLineEndV[AZ] - vvOneV[vvOneVIndex + AZ]) * vvN[vvNIndex + AZ]; \
     } while(0);
 
+#define CALC_VEC_COS(result, startVec1, endVec1, startVec2, endVec2) \
+    do { \
+        result = \
+        ((endVec1[AX] - startVec1[AX]) * (endVec2[AX] - startVec2[AX]) + \
+        (endVec1[AY] - startVec1[AY]) * (endVec2[AY] - startVec2[AY]) + \
+        (endVec1[AZ] - startVec1[AZ]) * (endVec2[AZ] - startVec2[AZ])) / \
+        (sqrt((endVec1[AX] - startVec1[AX]) * (endVec1[AX] - startVec1[AX]) + \
+        (endVec1[AY] - startVec1[AY]) * (endVec1[AY] - startVec1[AY]) + \
+        (endVec1[AZ] - startVec1[AZ]) * (endVec1[AZ] - startVec1[AZ])) * \
+        sqrt((endVec2[AX] - startVec2[AX]) * (endVec2[AX] - startVec2[AX]) + \
+        (endVec2[AY] - startVec2[AY]) * (endVec2[AY] - startVec2[AY]) + \
+        (endVec2[AZ] - startVec2[AZ]) * (endVec2[AZ] - startVec2[AZ]))); \
+    } while(0);
+
 
 __global__ void glpaGpuRender(
     float* poly_vertices,
