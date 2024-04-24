@@ -1,5 +1,225 @@
 #include "render.cuh"
 
+#define JUDGE_POLY_V_IN_VIEW_VOLUME(cnvt_poly_v, cam_far_z, cam_near_z, cam_view_angle, poly_v_in_if) \
+{ \
+    float cnvtXzPolyV[3] = {cnvt_poly_v[AX], 0, cnvt_poly_v[AZ]};\
+    float cnvtYzPolyV[3] = {0, cnvt_poly_v[AY], cnvt_poly_v[AZ]};\
+    \
+    float zVec[3] = {0, 0, -1};\
+    \
+    float cnvtXzPolyVxZVecDotCos;\
+    VEC_GET_VECS_COS(zVec, cnvtXzPolyV, cnvtXzPolyVxZVecDotCos);\
+    \
+    float cnvtYzPolyVxZVecDotCos;\
+    VEC_GET_VECS_COS(zVec, cnvtYzPolyV, cnvtYzPolyVxZVecDotCos);\
+    \
+    int polyVZInIF = (cnvt_poly_v[AZ] >= -cam_far_z && cnvt_poly_v[AZ] <= -cam_near_z) ? TRUE : FALSE;\
+    int polyXzVInIF = (cnvtXzPolyVxZVecDotCos >= cam_view_angle[AX]) ? TRUE : FALSE;\
+    int polyYzVInIF = (cnvtYzPolyVxZVecDotCos >= cam_view_angle[AY]) ? TRUE : FALSE;\
+    \
+    poly_v_in_if = (polyVZInIF == TRUE && polyXzVInIF == TRUE && polyYzVInIF == TRUE) ? TRUE : FALSE;\
+};
+
+#define CALC_POLY_FACE_DOT(result, vv_line_v, v_start_index, v_end_index, poly_one_v, poly_n) \
+{ \
+    result[0] = (vv_line_v[v_start_index*3 + AX] - poly_one_v[AX]) * poly_n[AX] + \
+        (vv_line_v[v_start_index*3 + AY] - poly_one_v[AY]) * poly_n[AY] + \
+        (vv_line_v[v_start_index*3 + AZ] - poly_one_v[AZ]) * poly_n[AZ];\
+    result[1] = (vv_line_v[v_end_index*3 + AX] - poly_one_v[AX]) * poly_n[AX] + \
+        (vv_line_v[v_end_index*3 + AY] - poly_one_v[AY]) * poly_n[AY] + \
+        (vv_line_v[v_end_index*3 + AZ] - poly_one_v[AZ]) * poly_n[AZ];\
+};
+
+#define CALC_VV_FACE_DOT(result, poly_line_start_v, poly_line_end_v, vv_one_v, vv_one_v_index, vv_n, vv_n_index) \
+{ \
+    result[0] = \
+    (poly_line_start_v[AX] - vv_one_v[vv_one_v_index + AX]) * vv_n[vv_n_index + AX] + \
+    (poly_line_start_v[AY] - vv_one_v[vv_one_v_index + AY]) * vv_n[vv_n_index + AY] + \
+    (poly_line_start_v[AZ] - vv_one_v[vv_one_v_index + AZ]) * vv_n[vv_n_index + AZ];\
+    result[1] = \
+    (poly_line_end_v[AX] - vv_one_v[vv_one_v_index + AX]) * vv_n[vv_n_index + AX] + \
+    (poly_line_end_v[AY] - vv_one_v[vv_one_v_index + AY]) * vv_n[vv_n_index + AY] + \
+    (poly_line_end_v[AZ] - vv_one_v[vv_one_v_index + AZ]) * vv_n[vv_n_index + AZ];\
+} 
+
+#define CALC_VEC_COS(result, start_vec_1, end_vec_1, start_vec_2, end_vec_2) \
+{ \
+    result = \
+    ((end_vec_1[AX] - start_vec_1[AX]) * (end_vec_2[AX] - start_vec_2[AX]) + \
+    (end_vec_1[AY] - start_vec_1[AY]) * (end_vec_2[AY] - start_vec_2[AY]) + \
+    (end_vec_1[AZ] - start_vec_1[AZ]) * (end_vec_2[AZ] - start_vec_2[AZ])) / \
+    (sqrt((end_vec_1[AX] - start_vec_1[AX]) * (end_vec_1[AX] - start_vec_1[AX]) + \
+    (end_vec_1[AY] - start_vec_1[AY]) * (end_vec_1[AY] - start_vec_1[AY]) + \
+    (end_vec_1[AZ] - start_vec_1[AZ]) * (end_vec_1[AZ] - start_vec_1[AZ])) * \
+    sqrt((end_vec_2[AX] - start_vec_2[AX]) * (end_vec_2[AX] - start_vec_2[AX]) + \
+    (end_vec_2[AY] - start_vec_2[AY]) * (end_vec_2[AY] - start_vec_2[AY]) + \
+    (end_vec_2[AZ] - start_vec_2[AZ]) * (end_vec_2[AZ] - start_vec_2[AZ])));\
+}
+
+#define CALC_VEC_ARY_COS(result, start_vec_1, start_vec_1_index, end_vec_1, end_vec_1_index, start_vec_2, start_vec_2_index, end_vec_2, end_vec_2_index) \
+{ \
+    result = \
+    ((end_vec_1[end_vec_1_index + AX] - start_vec_1[start_vec_1_index + AX]) * (end_vec_2[end_vec_2_index + AX] - start_vec_2[start_vec_2_index + AX]) + \
+    (end_vec_1[end_vec_1_index + AY] - start_vec_1[start_vec_1_index + AY]) * (end_vec_2[end_vec_2_index + AY] - start_vec_2[start_vec_2_index + AY]) + \
+    (end_vec_1[end_vec_1_index + AZ] - start_vec_1[start_vec_1_index + AZ]) * (end_vec_2[end_vec_2_index + AZ] - start_vec_2[start_vec_2_index + AZ])) / \
+    (sqrt((end_vec_1[end_vec_1_index + AX] - start_vec_1[start_vec_1_index + AX]) * (end_vec_1[end_vec_1_index + AX] - start_vec_1[start_vec_1_index + AX]) + \
+    (end_vec_1[end_vec_1_index + AY] - start_vec_1[start_vec_1_index + AY]) * (end_vec_1[end_vec_1_index + AY] - start_vec_1[start_vec_1_index + AY]) + \
+    (end_vec_1[end_vec_1_index + AZ] - start_vec_1[start_vec_1_index + AZ]) * (end_vec_1[end_vec_1_index + AZ] - start_vec_1[start_vec_1_index + AZ])) * \
+    sqrt((end_vec_2[end_vec_2_index + AX] - start_vec_2[start_vec_2_index + AX]) * (end_vec_2[end_vec_2_index + AX] - start_vec_2[start_vec_2_index + AX]) + \
+    (end_vec_2[end_vec_2_index + AY] - start_vec_2[start_vec_2_index + AY]) * (end_vec_2[end_vec_2_index + AY] - start_vec_2[start_vec_2_index + AY]) + \
+    (end_vec_2[end_vec_2_index + AZ] - start_vec_2[start_vec_2_index + AZ]) * (end_vec_2[end_vec_2_index + AZ] - start_vec_2[start_vec_2_index + AZ])));\
+}
+
+#define VX_SCREEN_PIXEL_CONVERT(result, world_v, world_v_index, camera_near_z, near_screen_size, screen_pixel_size) \
+{ \
+    result = \
+    std::round((((world_v[world_v_index + AX] * -camera_near_z / world_v[world_v_index + AZ]) + near_screen_size[AX] / 2) / \
+    (near_screen_size[AX])) * screen_pixel_size[AX]);\
+}
+
+#define VY_SCREEN_PIXEL_CONVERT(result, world_v, world_v_index, camera_near_z, near_screen_size, screen_pixel_size) \
+{ \
+    result = \
+    std::round(screen_pixel_size[AY] - (((world_v[world_v_index + AY] * -camera_near_z / world_v[world_v_index + AZ]) + near_screen_size[AY] / 2) / \
+    (near_screen_size[AY])) * screen_pixel_size[AY]);\
+}
+
+#define JUDGE_V_ON_POLY_FACE(result, result_index, inxtn_amount, face_dot, line_i, view_volume_vs, vv_line_v_index, poly_vec_1, poly_vec_2, poly_vec_3, nearZ, near_sc_size, sc_pixel_size) \
+{ \
+    int vOnFaceIF = (face_dot == 0) ? TRUE : FALSE;\
+    for (int conditionalBranch3; conditionalBranch3 < vOnFaceIF; conditionalBranch3++) \
+    { \
+        float inxtn[3] = { \
+            view_volume_vs[vv_line_v_index*3 + AX], \
+            view_volume_vs[vv_line_v_index*3 + AY], \
+            view_volume_vs[vv_line_v_index*3 + AZ] \
+        };\
+        \
+        float vecCos[6];\
+        CALC_VEC_COS(vecCos[0], poly_vec_1, poly_vec_2, poly_vec_1, inxtn);\
+        CALC_VEC_COS(vecCos[1], poly_vec_1, poly_vec_2, poly_vec_1, poly_vec_3);\
+        \
+        CALC_VEC_COS(vecCos[2], poly_vec_2, poly_vec_3, poly_vec_2, inxtn);\
+        CALC_VEC_COS(vecCos[3], poly_vec_2, poly_vec_3, poly_vec_2, poly_vec_1);\
+        \
+        CALC_VEC_COS(vecCos[4], poly_vec_3, poly_vec_1, poly_vec_3, inxtn);\
+        CALC_VEC_COS(vecCos[5], poly_vec_3, poly_vec_1, poly_vec_3, poly_vec_2);\
+        \
+        int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? TRUE : FALSE;\
+        \
+        for (int conditionalBranch4 = 0; conditionalBranch3 < inxtnInPolyFaceIF; conditionalBranch3++) \
+        { \
+            inxtn_amount += 1;\
+            VX_SCREEN_PIXEL_CONVERT(result[result_index + AX], view_volume_vs, vv_line_v_index*3, nearZ, near_sc_size, sc_pixel_size);\
+            VY_SCREEN_PIXEL_CONVERT(result[result_index + AY], view_volume_vs, vv_line_v_index*3, nearZ, near_sc_size, sc_pixel_size);\
+            result[result_index + AZ] = view_volume_vs[vv_line_v_index*3 + AZ];\
+        } \
+    } \
+}
+
+#define GET_POLY_ON_FACE_INXTN(result, line_index, inxtn_amount, face_dot, view_volume_vs, vv_line_index_1, vv_line_index_2, poly_vec_1, poly_vec_2, poly_vec_3, nearZ, near_sc_size, sc_pixel_size) \
+{ \
+    int calcInxtnIF = ((face_dot[0] > 0 && face_dot[1] < 0) || (face_dot[0] < 0 && face_dot[1] > 0)) ? TRUE : FALSE;\
+    for(int conditionalBranch3 = 0; conditionalBranch3 < calcInxtnIF; conditionalBranch3++) \
+    { \
+        float inxtn[3];\
+        for (int roopCoord = 0; roopCoord < 3; roopCoord++) \
+        { \
+            inxtn[roopCoord] = view_volume_vs[vv_line_index_1*3 + roopCoord] + \
+                (view_volume_vs[vv_line_index_2*3 + roopCoord] - view_volume_vs[vv_line_index_1*3 + roopCoord]) * \
+                (fabs(face_dot[0]) / (fabs(face_dot[0]) + fabs(face_dot[1])));\
+        } \
+        \
+        float vecCos[6];\
+        CALC_VEC_COS(vecCos[0], poly_vec_1, poly_vec_2, poly_vec_1, inxtn);\
+        CALC_VEC_COS(vecCos[1], poly_vec_1, poly_vec_2, poly_vec_1, poly_vec_3);\
+        CALC_VEC_COS(vecCos[2], poly_vec_2, poly_vec_3, poly_vec_2, inxtn);\
+        CALC_VEC_COS(vecCos[3], poly_vec_2, poly_vec_3, poly_vec_2, poly_vec_1);\
+        CALC_VEC_COS(vecCos[4], poly_vec_3, poly_vec_1, poly_vec_3, inxtn);\
+        CALC_VEC_COS(vecCos[5], poly_vec_3, poly_vec_1, poly_vec_3, poly_vec_2);\
+        \
+        int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? TRUE : FALSE;\
+        \
+        for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++) \
+        { \
+            inxtn_amount += 1;\
+            VX_SCREEN_PIXEL_CONVERT(result[line_index + AX], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);\
+            VY_SCREEN_PIXEL_CONVERT(result[line_index + AY], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);\
+            result[line_index + AZ] = inxtn[AZ];\
+        } \
+    } \
+}
+
+#define JUDGE_V_ON_VV_FACE(result, result_index, inxtn_amount, face_dot, poly_v, face_i, view_volume_vs, vv_face_vs_index, nearZ, near_sc_size, sc_pixel_size) \
+{ \
+    int vOnFaceIF = (face_dot == 0) ? TRUE : FALSE;\
+    for (int conditionalBranch3; conditionalBranch3 < vOnFaceIF; conditionalBranch3++) \
+    { \
+        float inxtn[3] = {poly_v[AX], poly_v[AY], poly_v[AZ]};\
+        \
+        float vecCos[8];\
+        CALC_VEC_ARY_COS(vecCos[0], view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[1], view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3);\
+        \
+        CALC_VEC_ARY_COS(vecCos[2], view_volume_vs, vv_face_vs_index[face_i*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V2]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[3], view_volume_vs, vv_face_vs_index[face_i*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3);\
+        \
+        CALC_VEC_ARY_COS(vecCos[4], view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[5], view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V2]*3);\
+        \
+        CALC_VEC_ARY_COS(vecCos[6], view_volume_vs, vv_face_vs_index[face_i*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V4]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[7], view_volume_vs, vv_face_vs_index[face_i*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_i*4 + V3]*3);\
+        \
+        int inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;\
+        \
+        for (int conditionalBranch4 = 0; conditionalBranch3 < inxtnInVvFaceIF; conditionalBranch3++) \
+        { \
+            inxtn_amount += 1;\
+            VX_SCREEN_PIXEL_CONVERT(result[result_index + AX], poly_v, 0, nearZ, near_sc_size, sc_pixel_size);\
+            VY_SCREEN_PIXEL_CONVERT(result[result_index + AY], poly_v, 0, nearZ, near_sc_size, sc_pixel_size);\
+            result[result_index + AZ] = poly_v[AZ];\
+        } \
+    } \
+}
+
+#define GET_POLY_ON_LINE_INXTN(result, result_index, inxtn_amount, poly_line_v1, poly_line_v2, face_dot, view_volume_vs, vv_face_vs_index, face_index, nearZ, near_sc_size, sc_pixel_size) \
+{ \
+    int calcInxtnIF  = ((face_dot[0] > 0 && face_dot[1] < 0) || (face_dot[0] < 0 && face_dot[1] > 0)) ? TRUE : FALSE;\
+    for(int conditionalBranch3 = 0; conditionalBranch3 < calcInxtnIF; conditionalBranch3++) \
+    { \
+        float inxtn[3];\
+        for (int roopCoord = 0; roopCoord < 3; roopCoord++) \
+        { \
+            inxtn[roopCoord] = poly_line_v1[roopCoord] + \
+                (poly_line_v2[roopCoord] - poly_line_v1[roopCoord]) * \
+                (fabs(face_dot[0]) / (fabs(face_dot[0]) + fabs(face_dot[1])));\
+        } \
+        \
+        float vecCos[8];\
+        CALC_VEC_ARY_COS(vecCos[0], view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[1], view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3);\
+        \
+        CALC_VEC_ARY_COS(vecCos[2], view_volume_vs, vv_face_vs_index[face_index*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V2]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[3], view_volume_vs, vv_face_vs_index[face_index*4 + V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3);\
+        \
+        CALC_VEC_ARY_COS(vecCos[4], view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[5], view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V2]*3);\
+        \
+        CALC_VEC_ARY_COS(vecCos[6], view_volume_vs, vv_face_vs_index[face_index*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V4]*3, inxtn, 0);\
+        CALC_VEC_ARY_COS(vecCos[7], view_volume_vs, vv_face_vs_index[face_index*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + V3]*3);\
+        \
+        int inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;\
+        \
+        for (int conditionalBranch4 = 0; conditionalBranch3 < inxtnInVvFaceIF; conditionalBranch3++) \
+        { \
+            inxtn_amount += 1;\
+            VX_SCREEN_PIXEL_CONVERT(result[result_index + AX], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);\
+            VY_SCREEN_PIXEL_CONVERT(result[result_index + AY], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);\
+            result[result_index + AZ] = inxtn[AZ];\
+        } \
+    } \
+}
+
 Render::Render()
 {
     hMtCamTransRot = std::vector<float>(16);
@@ -184,7 +404,9 @@ __global__ void glpaGpuRender(
     float camNearZ,
     float* camViewAngleCos,
     float* viewVolumeVs,
-    float* viewVolumeNs
+    float* viewVolumeNs,
+    float* nearScSize,
+    float* scPixelSize
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -227,8 +449,8 @@ __global__ void glpaGpuRender(
             int polyV2InIF;
             int polyV3InIF;
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngleCos, polyV1InIF);
-            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngleCos, polyV2InIF);
-            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngleCos, polyV3InIF);
+            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV2, camFarZ, camNearZ, camViewAngleCos, polyV2InIF);
+            JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV3, camFarZ, camNearZ, camViewAngleCos, polyV3InIF);
 
             int noVsInIF = (polyV1InIF == FALSE && polyV2InIF == FALSE && polyV3InIF == FALSE) ? TRUE : FALSE;
 
@@ -320,37 +542,65 @@ __global__ void glpaGpuRender(
                     RECT_L12_STARTV, RECT_L12_ENDV
                 };
 
-                float faceInxtn[12 * 3 * 3] = {FALSE};
+                int inxtnAmount = 0;
+
+                float pixelFaceInxtn[12 * 3 * 3] = {FALSE};
                 for (int roopLineI = 0; roopLineI < 12; roopLineI++)
                 {
                     float polyFaceDot[2];
                     CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
 
-                    JUDGE_V_ON_POLY_FACE(faceInxtn, roopLineI*3*3, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], cnvtPolyV1, cnvtPolyV2, cnvtPolyV3);
-                    JUDGE_V_ON_POLY_FACE(faceInxtn, roopLineI*3*3 + 3, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyV2, cnvtPolyV3);
+                    JUDGE_V_ON_POLY_FACE(
+                        pixelFaceInxtn, roopLineI*3*3, inxtnAmount, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
+                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    );
+                    JUDGE_V_ON_POLY_FACE(
+                        pixelFaceInxtn, roopLineI*3*3 + 6, inxtnAmount, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
+                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    );
 
                     GET_POLY_ON_FACE_INXTN(
-                        faceInxtn, roopLineI*3*3 + 6, polyFaceDot, viewVolumeNs, 
-                        vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyV2, cnvtPolyV3
+                        pixelFaceInxtn, roopLineI*3*3 + 9, inxtnAmount, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
+                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
                     );
                 }
 
-                float lineInxtn[3*3 + 3*3] = {FALSE};
+                float pixelLineInxtn[3*3 + 3*3] = {FALSE};
                 for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
                 {
                     float vvFaceDot[2];
                     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    JUDGE_V_ON_VV_FACE(lineInxtn, roopFaceI*3*9 + 0, vvFaceDot[0], cnvtPolyV1, roopFaceI, viewVolumeVs, vvFaceVsI);
-                    JUDGE_V_ON_VV_FACE(lineInxtn, roopFaceI*3*9 + 3, vvFaceDot[1], cnvtPolyV2, roopFaceI, viewVolumeVs, vvFaceVsI);
-                    GET_POLY_ON_LINE_INXTN(lineInxtn, roopFaceI*3*9 + 9, cnvtPolyV1, cnvtPolyV2, vvFaceDot, viewVolumeVs, vvFaceVsI, roopFaceI);
+                    JUDGE_V_ON_VV_FACE(
+                        pixelLineInxtn, roopFaceI*3*9 + 0, inxtnAmount, vvFaceDot[0], cnvtPolyV1, roopFaceI, 
+                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                    );
+                    JUDGE_V_ON_VV_FACE(
+                        pixelLineInxtn, roopFaceI*3*9 + 3, inxtnAmount, vvFaceDot[1], cnvtPolyV2, roopFaceI, 
+                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                    );
+                    GET_POLY_ON_LINE_INXTN(
+                        pixelLineInxtn, roopFaceI*3*9 + 9, inxtnAmount, cnvtPolyV1, cnvtPolyV2, vvFaceDot, 
+                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                    );
 
                     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    JUDGE_V_ON_VV_FACE(lineInxtn, roopFaceI*3*9 + 6, vvFaceDot[1], cnvtPolyV3, roopFaceI, viewVolumeVs, vvFaceVsI);
-                    GET_POLY_ON_LINE_INXTN(lineInxtn, roopFaceI*3*9 + 12, cnvtPolyV2, cnvtPolyV3, vvFaceDot, viewVolumeVs, vvFaceVsI, roopFaceI);
+                    JUDGE_V_ON_VV_FACE(
+                        pixelLineInxtn, roopFaceI*3*9 + 6, inxtnAmount, vvFaceDot[1], cnvtPolyV3, roopFaceI, 
+                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                    );
+                    GET_POLY_ON_LINE_INXTN(
+                        pixelLineInxtn, roopFaceI*3*9 + 12, inxtnAmount, cnvtPolyV2, cnvtPolyV3, vvFaceDot, 
+                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                    );
 
                     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    GET_POLY_ON_LINE_INXTN(lineInxtn, roopFaceI*3*9 + 15, cnvtPolyV3, cnvtPolyV1, vvFaceDot, viewVolumeVs, vvFaceVsI, roopFaceI);
+                    GET_POLY_ON_LINE_INXTN(
+                        pixelLineInxtn, roopFaceI*3*9 + 15, inxtnAmount, cnvtPolyV3, cnvtPolyV1, vvFaceDot, 
+                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                    );
                 }
+
+                float pixelVs[(polyV1InIF + polyV2InIF + polyV3InIF + inxtnAmount)*3];
 
             }
 
@@ -446,6 +696,7 @@ void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, L
     cudaMalloc((void**)&dViewVolumeVs, sizeof(float)*hViewVolumeVs.size());
     cudaMemcpy(dViewVolumeVs, hViewVolumeVs.data(), sizeof(float)*hViewVolumeVs.size(), cudaMemcpyHostToDevice);
 
+
     std::vector<float> hViewVolumeNs;
     for (int i = 0; i < 6; i++){
         hViewVolumeNs.push_back(cam.viewVolume.face.normal[i].x / CALC_SCALE);
@@ -457,6 +708,23 @@ void Render::render(std::unordered_map<std::wstring, Object> sObj, Camera cam, L
     cudaMalloc((void**)&dViewVolumeNs, sizeof(float)*hViewVolumeNs.size());
     cudaMemcpy(dViewVolumeNs, hViewVolumeNs.data(), sizeof(float)*hViewVolumeNs.size(), cudaMemcpyHostToDevice);
 
+
+    std::vector<float> hNearScSize;
+    hNearScSize.push_back(cam.nearScrSize.x / CALC_SCALE);
+    hNearScSize.push_back(cam.nearScrSize.y / CALC_SCALE);
+
+    float* dNearScSize;
+    cudaMalloc((void**)&dNearScSize, sizeof(float)*hNearScSize.size());
+    cudaMemcpy(dNearScSize, hNearScSize.data(), sizeof(float)*hNearScSize.size(), cudaMemcpyHostToDevice);
+
+    
+    std::vector<float> hScPixelSize;
+    hScPixelSize.push_back(cam.scPixelSize.x / CALC_SCALE);
+    hScPixelSize.push_back(cam.scPixelSize.y / CALC_SCALE);
+
+    float* dScPixelSize;
+    cudaMalloc((void**)&dScPixelSize, sizeof(float)*hScPixelSize.size());
+    cudaMemcpy(dScPixelSize, hScPixelSize.data(), sizeof(float)*hScPixelSize.size(), cudaMemcpyHostToDevice);
 
 
     cudaDeviceProp deviceProp;
