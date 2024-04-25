@@ -177,7 +177,9 @@
     <ClCompile Include="text.cpp" />
     <ClCompile Include="transformation.cpp" />
     <ClCompile Include="triangle_ratio.cu" />
-    <CudaCompile Include="render.cu" />
+    <CudaCompile Include="render.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </CudaCompile>
     <CudaCompile Include="vector.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
@@ -232,7 +234,9 @@
     <ClInclude Include="normal.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="png.h" />
-    <CudaCompile Include="render.cuh" />
+    <CudaCompile Include="render.cuh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </CudaCompile>
     <ClInclude Include="roughness.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />

@@ -78,7 +78,8 @@ void Scene3d::edit(HDC hBufDC, LPDWORD lpPixel){
 void Scene3d::update(HDC hBufDC, LPDWORD lpPixel){
     cams[useCamName].defineViewVolume();
 
-    render.prepareObjs(objects, cams[useCamName]);
+    // render.prepareObjs(objects, cams[useCamName]);
+    // render.render(objects, cams[useCamName], lpPixel);
 
     // cams[useCamName].objCulling(objects);
     // cams[useCamName].polyBilateralJudge(objects);

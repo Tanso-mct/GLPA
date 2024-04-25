@@ -87,7 +87,7 @@
         "__memory": "cpp",
         "__locale": "cpp"
     },
-    "commentTranslate.hover.enabled": false,
+    "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en",
     "cSpell.words": [
         "Cnvt",
