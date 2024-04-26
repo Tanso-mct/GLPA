@@ -31,8 +31,7 @@ __global__ void glpaGpuGetSameSizeVecsCos(
         result \
         = (vec1[AX] * vec2[AX] + vec1[AY] * vec2[AY] + vec1[AZ] * vec2[AZ]) / \
         (sqrt(vec1[AX] * vec1[AX] + vec1[AY] * vec1[AY] + vec1[AZ] * vec1[AZ]) * \
-        sqrt(vec2[AX] * vec2[AX] + vec2[AY] * vec2[AY] + \
-        vec2[AZ] * vec2[AZ])); \
+        sqrt(vec2[AX] * vec2[AX] + vec2[AY] * vec2[AY] + vec2[AZ] * vec2[AZ])); \
     } while(0);
 
 class Vector{

@@ -100,10 +100,10 @@ typedef struct tagFaceNormals{
 #define AZ 2
 #define ASIZE 3
 
-#define V1 0
-#define V2 0
-#define V3 0
-#define V4 0
+#define FACE_V1 0
+#define FACE_V2 0
+#define FACE_V3 0
+#define FACE_V4 0
 
 
 #define SURFACE_TOP 0
