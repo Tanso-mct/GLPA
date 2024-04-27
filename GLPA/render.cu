@@ -336,56 +336,171 @@ __global__ void glpaGpuRender(
                     float polyFaceDot[2];
                     CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
 
-                    JUDGE_V_ON_POLY_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
-                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                    );
-                    JUDGE_V_ON_POLY_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
-                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                    );
+                    // ERROR DEBUG
+                    do
+                    {
+                        int vOnFaceIF = (polyFaceDot[0] == 0) ? 1 : 0;
+                        for (int conditionalBranch3; conditionalBranch3 < vOnFaceIF; conditionalBranch3++)
+                        {
+                            float inxtn[3] = {viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 0], viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 1], viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 2]};
+                            float vecCos[6];
+                            do
+                            {
+                                vecCos[0] = ((cnvtPolyV2[0] - cnvtPolyV1[0]) * (inxtn[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (inxtn[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (inxtn[2] - cnvtPolyV1[2])) / (sqrt((cnvtPolyV2[0] - cnvtPolyV1[0]) * (cnvtPolyV2[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (cnvtPolyV2[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (cnvtPolyV2[2] - cnvtPolyV1[2])) * sqrt((inxtn[0] - cnvtPolyV1[0]) * (inxtn[0] - cnvtPolyV1[0]) + (inxtn[1] - cnvtPolyV1[1]) * (inxtn[1] - cnvtPolyV1[1]) + (inxtn[2] - cnvtPolyV1[2]) * (inxtn[2] - cnvtPolyV1[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[1] = ((cnvtPolyV2[0] - cnvtPolyV1[0]) * (cnvtPolyV3[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (cnvtPolyV3[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (cnvtPolyV3[2] - cnvtPolyV1[2])) / (sqrt((cnvtPolyV2[0] - cnvtPolyV1[0]) * (cnvtPolyV2[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (cnvtPolyV2[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (cnvtPolyV2[2] - cnvtPolyV1[2])) * sqrt((cnvtPolyV3[0] - cnvtPolyV1[0]) * (cnvtPolyV3[0] - cnvtPolyV1[0]) + (cnvtPolyV3[1] - cnvtPolyV1[1]) * (cnvtPolyV3[1] - cnvtPolyV1[1]) + (cnvtPolyV3[2] - cnvtPolyV1[2]) * (cnvtPolyV3[2] - cnvtPolyV1[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[2] = ((cnvtPolyV3[0] - cnvtPolyV2[0]) * (inxtn[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (inxtn[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (inxtn[2] - cnvtPolyV2[2])) / (sqrt((cnvtPolyV3[0] - cnvtPolyV2[0]) * (cnvtPolyV3[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (cnvtPolyV3[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (cnvtPolyV3[2] - cnvtPolyV2[2])) * sqrt((inxtn[0] - cnvtPolyV2[0]) * (inxtn[0] - cnvtPolyV2[0]) + (inxtn[1] - cnvtPolyV2[1]) * (inxtn[1] - cnvtPolyV2[1]) + (inxtn[2] - cnvtPolyV2[2]) * (inxtn[2] - cnvtPolyV2[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[3] = ((cnvtPolyV3[0] - cnvtPolyV2[0]) * (cnvtPolyV1[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (cnvtPolyV1[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (cnvtPolyV1[2] - cnvtPolyV2[2])) / (sqrt((cnvtPolyV3[0] - cnvtPolyV2[0]) * (cnvtPolyV3[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (cnvtPolyV3[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (cnvtPolyV3[2] - cnvtPolyV2[2])) * sqrt((cnvtPolyV1[0] - cnvtPolyV2[0]) * (cnvtPolyV1[0] - cnvtPolyV2[0]) + (cnvtPolyV1[1] - cnvtPolyV2[1]) * (cnvtPolyV1[1] - cnvtPolyV2[1]) + (cnvtPolyV1[2] - cnvtPolyV2[2]) * (cnvtPolyV1[2] - cnvtPolyV2[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[4] = ((cnvtPolyV1[0] - cnvtPolyV3[0]) * (inxtn[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (inxtn[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (inxtn[2] - cnvtPolyV3[2])) / (sqrt((cnvtPolyV1[0] - cnvtPolyV3[0]) * (cnvtPolyV1[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (cnvtPolyV1[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (cnvtPolyV1[2] - cnvtPolyV3[2])) * sqrt((inxtn[0] - cnvtPolyV3[0]) * (inxtn[0] - cnvtPolyV3[0]) + (inxtn[1] - cnvtPolyV3[1]) * (inxtn[1] - cnvtPolyV3[1]) + (inxtn[2] - cnvtPolyV3[2]) * (inxtn[2] - cnvtPolyV3[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[5] = ((cnvtPolyV1[0] - cnvtPolyV3[0]) * (cnvtPolyV2[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (cnvtPolyV2[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (cnvtPolyV2[2] - cnvtPolyV3[2])) / (sqrt((cnvtPolyV1[0] - cnvtPolyV3[0]) * (cnvtPolyV1[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (cnvtPolyV1[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (cnvtPolyV1[2] - cnvtPolyV3[2])) * sqrt((cnvtPolyV2[0] - cnvtPolyV3[0]) * (cnvtPolyV2[0] - cnvtPolyV3[0]) + (cnvtPolyV2[1] - cnvtPolyV3[1]) * (cnvtPolyV2[1] - cnvtPolyV3[1]) + (cnvtPolyV2[2] - cnvtPolyV3[2]) * (cnvtPolyV2[2] - cnvtPolyV3[2])));
+                            } while (0);
+                            ;
+                            int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? 1 : 0;
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++)
+                            {
+                                // do
+                                // {
+                                //     result[(i * pixelVsSize + targetIndex) * 3 + 0] = std::round((((viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 0] * -camNearZ / viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 2]) + nearScSize[0] / 2) / (nearScSize[0])) * scPixelSize[0]);
+                                // } while (0);
+                                // ;
+                                // do
+                                // {
+                                //     result[(i * pixelVsSize + targetIndex) * 3 + 1] = std::round(scPixelSize[1] - (((viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 1] * -camNearZ / viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 2]) + nearScSize[1] / 2) / (nearScSize[1])) * scPixelSize[1]);
+                                // } while (0);
+                                // ;
+                                // result[(i * pixelVsSize + targetIndex) * 3 + 2] = viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 2];
+                                // targetIndex++;
+                            }
+                        }
+                    } while (0);
 
-                    GET_POLY_ON_FACE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
-                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                    );
+                    // infinite roop error
+                    do
+                    {
+                        int vOnFaceIF = (polyFaceDot[1] == 0) ? 1 : 0;
+                        for (int conditionalBranch3; conditionalBranch3 < vOnFaceIF; conditionalBranch3++)
+                        {
+                            float inxtn[3] = {viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 0], viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 1], viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 2]};
+                            float vecCos[6];
+                            do
+                            {
+                                vecCos[0] = ((cnvtPolyV2[0] - cnvtPolyV1[0]) * (inxtn[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (inxtn[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (inxtn[2] - cnvtPolyV1[2])) / (sqrt((cnvtPolyV2[0] - cnvtPolyV1[0]) * (cnvtPolyV2[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (cnvtPolyV2[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (cnvtPolyV2[2] - cnvtPolyV1[2])) * sqrt((inxtn[0] - cnvtPolyV1[0]) * (inxtn[0] - cnvtPolyV1[0]) + (inxtn[1] - cnvtPolyV1[1]) * (inxtn[1] - cnvtPolyV1[1]) + (inxtn[2] - cnvtPolyV1[2]) * (inxtn[2] - cnvtPolyV1[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[1] = ((cnvtPolyV2[0] - cnvtPolyV1[0]) * (cnvtPolyV3[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (cnvtPolyV3[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (cnvtPolyV3[2] - cnvtPolyV1[2])) / (sqrt((cnvtPolyV2[0] - cnvtPolyV1[0]) * (cnvtPolyV2[0] - cnvtPolyV1[0]) + (cnvtPolyV2[1] - cnvtPolyV1[1]) * (cnvtPolyV2[1] - cnvtPolyV1[1]) + (cnvtPolyV2[2] - cnvtPolyV1[2]) * (cnvtPolyV2[2] - cnvtPolyV1[2])) * sqrt((cnvtPolyV3[0] - cnvtPolyV1[0]) * (cnvtPolyV3[0] - cnvtPolyV1[0]) + (cnvtPolyV3[1] - cnvtPolyV1[1]) * (cnvtPolyV3[1] - cnvtPolyV1[1]) + (cnvtPolyV3[2] - cnvtPolyV1[2]) * (cnvtPolyV3[2] - cnvtPolyV1[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[2] = ((cnvtPolyV3[0] - cnvtPolyV2[0]) * (inxtn[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (inxtn[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (inxtn[2] - cnvtPolyV2[2])) / (sqrt((cnvtPolyV3[0] - cnvtPolyV2[0]) * (cnvtPolyV3[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (cnvtPolyV3[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (cnvtPolyV3[2] - cnvtPolyV2[2])) * sqrt((inxtn[0] - cnvtPolyV2[0]) * (inxtn[0] - cnvtPolyV2[0]) + (inxtn[1] - cnvtPolyV2[1]) * (inxtn[1] - cnvtPolyV2[1]) + (inxtn[2] - cnvtPolyV2[2]) * (inxtn[2] - cnvtPolyV2[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[3] = ((cnvtPolyV3[0] - cnvtPolyV2[0]) * (cnvtPolyV1[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (cnvtPolyV1[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (cnvtPolyV1[2] - cnvtPolyV2[2])) / (sqrt((cnvtPolyV3[0] - cnvtPolyV2[0]) * (cnvtPolyV3[0] - cnvtPolyV2[0]) + (cnvtPolyV3[1] - cnvtPolyV2[1]) * (cnvtPolyV3[1] - cnvtPolyV2[1]) + (cnvtPolyV3[2] - cnvtPolyV2[2]) * (cnvtPolyV3[2] - cnvtPolyV2[2])) * sqrt((cnvtPolyV1[0] - cnvtPolyV2[0]) * (cnvtPolyV1[0] - cnvtPolyV2[0]) + (cnvtPolyV1[1] - cnvtPolyV2[1]) * (cnvtPolyV1[1] - cnvtPolyV2[1]) + (cnvtPolyV1[2] - cnvtPolyV2[2]) * (cnvtPolyV1[2] - cnvtPolyV2[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[4] = ((cnvtPolyV1[0] - cnvtPolyV3[0]) * (inxtn[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (inxtn[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (inxtn[2] - cnvtPolyV3[2])) / (sqrt((cnvtPolyV1[0] - cnvtPolyV3[0]) * (cnvtPolyV1[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (cnvtPolyV1[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (cnvtPolyV1[2] - cnvtPolyV3[2])) * sqrt((inxtn[0] - cnvtPolyV3[0]) * (inxtn[0] - cnvtPolyV3[0]) + (inxtn[1] - cnvtPolyV3[1]) * (inxtn[1] - cnvtPolyV3[1]) + (inxtn[2] - cnvtPolyV3[2]) * (inxtn[2] - cnvtPolyV3[2])));
+                            } while (0);
+                            ;
+                            do
+                            {
+                                vecCos[5] = ((cnvtPolyV1[0] - cnvtPolyV3[0]) * (cnvtPolyV2[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (cnvtPolyV2[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (cnvtPolyV2[2] - cnvtPolyV3[2])) / (sqrt((cnvtPolyV1[0] - cnvtPolyV3[0]) * (cnvtPolyV1[0] - cnvtPolyV3[0]) + (cnvtPolyV1[1] - cnvtPolyV3[1]) * (cnvtPolyV1[1] - cnvtPolyV3[1]) + (cnvtPolyV1[2] - cnvtPolyV3[2]) * (cnvtPolyV1[2] - cnvtPolyV3[2])) * sqrt((cnvtPolyV2[0] - cnvtPolyV3[0]) * (cnvtPolyV2[0] - cnvtPolyV3[0]) + (cnvtPolyV2[1] - cnvtPolyV3[1]) * (cnvtPolyV2[1] - cnvtPolyV3[1]) + (cnvtPolyV2[2] - cnvtPolyV3[2]) * (cnvtPolyV2[2] - cnvtPolyV3[2])));
+                            } while (0);
+                            ;
+                            int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? 1 : 0;
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++)
+                            {
+                                // do
+                                // {
+                                //     result[(i * pixelVsSize + targetIndex) * 3 + 0] = std::round((((viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 0] * -camNearZ / viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 2]) + nearScSize[0] / 2) / (nearScSize[0])) * scPixelSize[0]);
+                                // } while (0);
+                                // ;
+                                // do
+                                // {
+                                //     result[(i * pixelVsSize + targetIndex) * 3 + 1] = std::round(scPixelSize[1] - (((viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 1] * -camNearZ / viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 2]) + nearScSize[1] / 2) / (nearScSize[1])) * scPixelSize[1]);
+                                // } while (0);
+                                // ;
+                                // result[(i * pixelVsSize + targetIndex) * 3 + 2] = viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 2];
+                                // targetIndex++;
+                            }
+                        }
+                    } while (0);
+
+                    // JUDGE_V_ON_POLY_FACE(
+                    //     result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
+                    //     cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    // );
+
+                    // JUDGE_V_ON_POLY_FACE(
+                    //     result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
+                    //     cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    // );
+
+                    // GET_POLY_ON_FACE_INXTN(
+                    //     result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
+                    //     cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    // );
 
                     
                 }
 
-                for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
-                {
-                    float vvFaceDot[2];
-                    CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    JUDGE_V_ON_VV_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[0], cnvtPolyV1, roopFaceI, 
-                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    );
-                    JUDGE_V_ON_VV_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV2, roopFaceI, 
-                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    );
-                    GET_POLY_ON_LINE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV1, cnvtPolyV2, vvFaceDot, 
-                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    );
+                // for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
+                // {
+                //     float vvFaceDot[2];
+                //     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
+                //     JUDGE_V_ON_VV_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[0], cnvtPolyV1, roopFaceI, 
+                //         viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                //     );
+                //     JUDGE_V_ON_VV_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV2, roopFaceI, 
+                //         viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                //     );
+                //     GET_POLY_ON_LINE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV1, cnvtPolyV2, vvFaceDot, 
+                //         viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                //     );
 
-                    CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    JUDGE_V_ON_VV_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV3, roopFaceI, 
-                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    );
-                    GET_POLY_ON_LINE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV2, cnvtPolyV3, vvFaceDot, 
-                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    );
+                //     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
+                //     JUDGE_V_ON_VV_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV3, roopFaceI, 
+                //         viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                //     );
+                //     GET_POLY_ON_LINE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV2, cnvtPolyV3, vvFaceDot, 
+                //         viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                //     );
 
-                    CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    GET_POLY_ON_LINE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV3, cnvtPolyV1, vvFaceDot, 
-                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    );
-                }
+                //     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
+                //     GET_POLY_ON_LINE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV3, cnvtPolyV1, vvFaceDot, 
+                //         viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                //     );
+                // }
                 
 
             }
