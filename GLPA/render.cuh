@@ -106,7 +106,7 @@ do { \
 #define JUDGE_V_ON_POLY_FACE(result, result_index, currentIndex, face_dot, line_i, view_volume_vs, vv_line_v_index, poly_vec_1, poly_vec_2, poly_vec_3, nearZ, near_sc_size, sc_pixel_size) \
 do { \
     int vOnFaceIF = (face_dot == 0) ? TRUE : FALSE;\
-    for (int conditionalBranch3; conditionalBranch3 < vOnFaceIF; conditionalBranch3++) \
+    for (int conditionalBranch3 = 0; conditionalBranch3 < vOnFaceIF; conditionalBranch3++) \
     { \
         float inxtn[3] = { \
             view_volume_vs[vv_line_v_index*3 + AX], \
@@ -126,7 +126,7 @@ do { \
         \
         int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? TRUE : FALSE;\
         \
-        for (int conditionalBranch4 = 0; conditionalBranch3 < inxtnInPolyFaceIF; conditionalBranch3++) \
+        for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++) \
         { \
             VX_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AX], view_volume_vs, vv_line_v_index*3, nearZ, near_sc_size, sc_pixel_size);\
             VY_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AY], view_volume_vs, vv_line_v_index*3, nearZ, near_sc_size, sc_pixel_size);\
@@ -172,7 +172,7 @@ do { \
 #define JUDGE_V_ON_VV_FACE(result, result_index, currentIndex, face_dot, poly_v, face_i, view_volume_vs, vv_face_vs_index, nearZ, near_sc_size, sc_pixel_size) \
 do { \
     int vOnFaceIF = (face_dot == 0) ? TRUE : FALSE;\
-    for (int conditionalBranch3; conditionalBranch3 < vOnFaceIF; conditionalBranch3++) \
+    for (int conditionalBranch3 = 0; conditionalBranch3 < vOnFaceIF; conditionalBranch3++) \
     { \
         float inxtn[3] = {poly_v[AX], poly_v[AY], poly_v[AZ]};\
         \
@@ -191,7 +191,7 @@ do { \
         \
         int inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;\
         \
-        for (int conditionalBranch4 = 0; conditionalBranch3 < inxtnInVvFaceIF; conditionalBranch3++) \
+        for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInVvFaceIF; conditionalBranch4++) \
         { \
             VX_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AX], poly_v, 0, nearZ, near_sc_size, sc_pixel_size);\
             VY_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AY], poly_v, 0, nearZ, near_sc_size, sc_pixel_size);\
@@ -229,7 +229,7 @@ do { \
         \
         int inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;\
         \
-        for (int conditionalBranch4 = 0; conditionalBranch3 < inxtnInVvFaceIF; conditionalBranch3++) \
+        for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInVvFaceIF; conditionalBranch4++) \
         { \
             VX_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AX], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);\
             VY_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AY], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);\
