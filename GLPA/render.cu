@@ -189,7 +189,8 @@ __global__ void glpaGpuRender(
     float* viewVolumeNs,
     float* nearScSize,
     float* scPixelSize,
-    float* result
+    float* result,
+    float* debugFloatAry
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -222,7 +223,7 @@ __global__ void glpaGpuRender(
         MT_PRODUCT_4X4_VEC3D(mtCamRot, vec3d, cnvtPolyN);
 
         float polyVxPolyNDotCos;
-        VEC_GET_VECS_COS(cnvtPolyN, cnvtPolyV1, polyVxPolyNDotCos);
+        VEC_GET_VECS_COS(cnvtPolyV1, cnvtPolyN, polyVxPolyNDotCos);
         
         int polyBilateralIF = (polyVxPolyNDotCos <= 0) ? TRUE : FALSE;
 
@@ -235,9 +236,13 @@ __global__ void glpaGpuRender(
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV2, camFarZ, camNearZ, camViewAngleCos, polyV2InIF);
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV3, camFarZ, camNearZ, camViewAngleCos, polyV3InIF);
 
+            debugFloatAry[i*3 + 0] = polyV1InIF;
+            debugFloatAry[i*3 + 1] = polyV2InIF;
+            debugFloatAry[i*3 + 2] = polyV3InIF;
+
             int noVsInIF = (polyV1InIF == FALSE && polyV2InIF == FALSE && polyV3InIF == FALSE) ? TRUE : FALSE;
 
-            int shapeCnvtIF = (polyV1InIF + polyV2InIF + polyV3InIF != 3) ? TRUE : FALSE;
+            int notShapeCnvtIF = (polyV1InIF + polyV2InIF + polyV3InIF == 3) ? TRUE : FALSE;
 
             int polyInIF = (polyV1InIF == TRUE || polyV2InIF == TRUE || polyV3InIF == TRUE) ? TRUE : FALSE;
             for (int conditionalBranch2 = 0; conditionalBranch2 < noVsInIF; conditionalBranch2++)
@@ -290,7 +295,12 @@ __global__ void glpaGpuRender(
                 polyInIF = (polyZInIF == TRUE && polyXzInIF == TRUE && polyYzInIF == TRUE) ? TRUE : FALSE;
             }
 
-            for(int conditionalBranch2 = 0; conditionalBranch2 < polyInIF; conditionalBranch2++)
+            for (int conditionalBranch2 = 0; conditionalBranch2 < notShapeCnvtIF; conditionalBranch2++)
+            {
+
+            }
+
+            for(int conditionalBranch2 = 0; conditionalBranch2 < polyInIF - notShapeCnvtIF; conditionalBranch2++)
             {
                 int vvFaceI[6] = {
                     RECT_FRONT_TOP_LEFT,
@@ -535,12 +545,17 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
 
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
-    
+
+    int debugArySize = polyAmount * 3;
+    float* hDebugAry = new float[debugArySize];
+    float* dDebugAry;
+    cudaMalloc((void**)&dDebugAry, sizeof(float)*debugArySize);
+
     glpaGpuRender<<<dimGrid, dimBlock>>>
     (
         dPolyVs, dPolyNs, polyAmount, 
         dMtCamTransRot, dMtCamRot, camFarZ, camNearZ,
-        dCamViewAngleCos, dViewVolumeVs, dViewVolumeNs, dNearScSize, dScPixelSize, dResult
+        dCamViewAngleCos, dViewVolumeVs, dViewVolumeNs, dNearScSize, dScPixelSize, dResult, dDebugAry
     );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
@@ -549,6 +564,7 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
         throw std::runtime_error(ERROR_VECTOR_CUDA_ERROR);
     }
     
+    cudaMemcpy(hDebugAry, dDebugAry, sizeof(float)*debugArySize, cudaMemcpyDeviceToHost);
     cudaMemcpy(hResult, dResult, sizeof(float)*resultSize , cudaMemcpyDeviceToHost);
 
     delete[] hObjInJudgeAry;

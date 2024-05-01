@@ -264,7 +264,8 @@ __global__ void glpaGpuRender(
     float* view_volume_normals,
     float* near_screen_size,
     float* screen_pixel_size,
-    float* result
+    float* result,
+    float* debugAry
 );
 
 
