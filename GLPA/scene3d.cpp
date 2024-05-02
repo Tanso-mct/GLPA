@@ -27,7 +27,7 @@ void Scene3d::loadCam(std::wstring camName){
             {0, 0, 0},
             {0, 0, 0},
             1,
-            1000,
+            10000,
             80,
             {16, 9},
             {(double)useWndWidth, (double)useWndHeight}

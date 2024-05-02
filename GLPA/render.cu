@@ -72,8 +72,26 @@ __global__ void glpaGpuPrepareObj(
         }
 
         int objZInIF = (objRectOrigin[AZ] >= -camFarZ && objRectOpposite[AZ] <= -camNearZ) ? TRUE : FALSE;
-        int objXzInIF = (vecsCos[0] >= camViewAngleCos[AX] || vecsCos[1] >= camViewAngleCos[AX]) ? TRUE : FALSE;
-        int objYzInIF = (vecsCos[2] >= camViewAngleCos[AY] || vecsCos[3] >= camViewAngleCos[AY]) ? TRUE : FALSE;
+
+        // True if positive, false if negative.
+        int xzOriginSymbol = (objRectOrigin[AX] >= 0) ? TRUE : FALSE;
+        int xzOppositeSymbol = (objRectOpposite[AX] >= 0) ? TRUE : FALSE;
+        int yzOriginSymbol = (objRectOrigin[AY] >= 0) ? TRUE : FALSE;
+        int yzOppositeSymbol = (objRectOpposite[AY] >= 0) ? TRUE : FALSE;
+
+        int objXzInIF = 
+        (
+            (xzOriginSymbol == TRUE && vecsCos[0] >= camViewAngleCos[AX]) || 
+            (xzOriginSymbol == FALSE && xzOppositeSymbol == TRUE) ||
+            (xzOppositeSymbol == TRUE && vecsCos[1] >= camViewAngleCos[AX])
+        ) ? TRUE : FALSE;
+
+        int objYzInIF = 
+        (
+            (yzOriginSymbol == TRUE && vecsCos[2] >= camViewAngleCos[AY]) || 
+            (yzOriginSymbol == FALSE && yzOppositeSymbol == TRUE) || 
+            (xzOppositeSymbol == TRUE && vecsCos[3] >= camViewAngleCos[AY])
+        ) ? TRUE : FALSE;
 
         int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
 
@@ -171,9 +189,6 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     cudaFree(dMtCamTransRot);
     cudaFree(dCamViewAngleCos);
     cudaFree(dObjInJudgeAry);
-
-    hCamViewAngleCos = std::vector<float>(2);
-
 }
 
 __global__ void glpaGpuRender(
@@ -229,21 +244,17 @@ __global__ void glpaGpuRender(
 
         for (int conditionalBranch = 0; conditionalBranch < polyBilateralIF; conditionalBranch++)
         {
-            int polyV1InIF;
-            int polyV2InIF;
-            int polyV3InIF;
+            float inxtn[MAX_VIEW_VOLUE_POLY_INXTN*3] = {0};
+            
+            int polyV1InIF = 0;
+            int polyV2InIF = 0;
+            int polyV3InIF = 0;
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV1, camFarZ, camNearZ, camViewAngleCos, polyV1InIF);
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV2, camFarZ, camNearZ, camViewAngleCos, polyV2InIF);
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV3, camFarZ, camNearZ, camViewAngleCos, polyV3InIF);
 
-            debugFloatAry[i*3 + 0] = polyV1InIF;
-            debugFloatAry[i*3 + 1] = polyV2InIF;
-            debugFloatAry[i*3 + 2] = polyV3InIF;
-
             int noVsInIF = (polyV1InIF == FALSE && polyV2InIF == FALSE && polyV3InIF == FALSE) ? TRUE : FALSE;
-
-            int notShapeCnvtIF = (polyV1InIF + polyV2InIF + polyV3InIF == 3) ? TRUE : FALSE;
-
+            int shapeCnvtIF = ((polyV1InIF + polyV2InIF + polyV3InIF != 3) && noVsInIF == FALSE) ? TRUE : FALSE;
             int polyInIF = (polyV1InIF == TRUE || polyV2InIF == TRUE || polyV3InIF == TRUE) ? TRUE : FALSE;
             for (int conditionalBranch2 = 0; conditionalBranch2 < noVsInIF; conditionalBranch2++)
             {
@@ -289,18 +300,31 @@ __global__ void glpaGpuRender(
                 }
 
                 int polyZInIF = (polyRectOrigin[AZ] >= -camFarZ && polyRectOpposite[AZ] <= -camNearZ) ? TRUE : FALSE;
-                int polyXzInIF = (vecsCos[0] >= camViewAngleCos[AX] || vecsCos[1] >= camViewAngleCos[AX]) ? TRUE : FALSE;
-                int polyYzInIF = (vecsCos[2] >= camViewAngleCos[AY] || vecsCos[3] >= camViewAngleCos[AY]) ? TRUE : FALSE;
 
-                polyInIF = (polyZInIF == TRUE && polyXzInIF == TRUE && polyYzInIF == TRUE) ? TRUE : FALSE;
+                // True if positive, false if negative.
+                int xzOriginSymbol = (polyRectOrigin[AX] >= 0) ? TRUE : FALSE;
+                int xzOppositeSymbol = (polyRectOrigin[AX] >= 0) ? TRUE : FALSE;
+                int yzOriginSymbol = (polyRectOrigin[AY] >= 0) ? TRUE : FALSE;
+                int yzOppositeSymbol = (polyRectOrigin[AY] >= 0) ? TRUE : FALSE;
+
+                int polyXzInIF = 
+                (
+                    (xzOriginSymbol == TRUE && vecsCos[0] >= camViewAngleCos[AX]) || 
+                    (xzOriginSymbol == FALSE && xzOppositeSymbol == TRUE) ||
+                    (xzOppositeSymbol == TRUE && vecsCos[1] >= camViewAngleCos[AX])
+                ) ? TRUE : FALSE;
+
+                int polyYzInIF = 
+                (
+                    (yzOriginSymbol == TRUE && vecsCos[2] >= camViewAngleCos[AY]) || 
+                    (yzOriginSymbol == FALSE && yzOppositeSymbol == TRUE) || 
+                    (xzOppositeSymbol == TRUE && vecsCos[3] >= camViewAngleCos[AY])
+                ) ? TRUE : FALSE;
+
+                shapeCnvtIF = (polyZInIF == TRUE && polyXzInIF == TRUE && polyYzInIF == TRUE) ? TRUE : FALSE;
             }
 
-            for (int conditionalBranch2 = 0; conditionalBranch2 < notShapeCnvtIF; conditionalBranch2++)
-            {
-
-            }
-
-            for(int conditionalBranch2 = 0; conditionalBranch2 < polyInIF - notShapeCnvtIF; conditionalBranch2++)
+            for(int conditionalBranch2 = 0; conditionalBranch2 < shapeCnvtIF; conditionalBranch2++)
             {
                 int vvFaceI[6] = {
                     RECT_FRONT_TOP_LEFT,
@@ -335,68 +359,68 @@ __global__ void glpaGpuRender(
                     RECT_L12_STARTV, RECT_L12_ENDV
                 };
 
-                int inxtnAmount = 0;
+                // int inxtnAmount = 0;
 
-                // float pixelVs[12 * 3 * 3 + 3*3 + 3*3] = {-2};
-                int pixelVsSize = 12 * 3 * 3 + 3*3 + 3*3;
-                int targetIndex = 0;
+                // // float pixelVs[12 * 3 * 3 + 3*3 + 3*3] = {-2};
+                // int pixelVsSize = 12 * 3 * 3 + 3*3 + 3*3;
+                // int targetIndex = 0;
 
-                for (int roopLineI = 0; roopLineI < 12; roopLineI++)
-                {
-                    float polyFaceDot[2];
-                    CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
+                // for (int roopLineI = 0; roopLineI < 12; roopLineI++)
+                // {
+                //     float polyFaceDot[2];
+                //     CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
 
-                    JUDGE_V_ON_POLY_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
-                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                    );
+                //     JUDGE_V_ON_POLY_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
+                //         cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                //     );
 
-                    JUDGE_V_ON_POLY_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
-                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                    );
+                //     JUDGE_V_ON_POLY_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
+                //         cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                //     );
 
-                    GET_POLY_ON_FACE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
-                        cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                    );
+                //     GET_POLY_ON_FACE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
+                //         cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                //     );
 
                     
-                }
+                // }
 
-                for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
-                {
-                    float vvFaceDot[2];
-                    CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    JUDGE_V_ON_VV_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[0], cnvtPolyV1, roopFaceI, 
-                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    );
-                    JUDGE_V_ON_VV_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV2, roopFaceI, 
-                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    );
-                    GET_POLY_ON_LINE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV1, cnvtPolyV2, vvFaceDot, 
-                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    );
+                // for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
+                // {
+                //     float vvFaceDot[2];
+                //     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
+                //     JUDGE_V_ON_VV_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[0], cnvtPolyV1, roopFaceI, 
+                //         viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                //     );
+                //     JUDGE_V_ON_VV_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV2, roopFaceI, 
+                //         viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                //     );
+                //     GET_POLY_ON_LINE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV1, cnvtPolyV2, vvFaceDot, 
+                //         viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                //     );
 
-                    CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    JUDGE_V_ON_VV_FACE(
-                        result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV3, roopFaceI, 
-                        viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    );
-                    GET_POLY_ON_LINE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV2, cnvtPolyV3, vvFaceDot, 
-                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    );
+                //     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
+                //     JUDGE_V_ON_VV_FACE(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV3, roopFaceI, 
+                //         viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
+                //     );
+                //     GET_POLY_ON_LINE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV2, cnvtPolyV3, vvFaceDot, 
+                //         viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                //     );
 
-                    CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    GET_POLY_ON_LINE_INXTN(
-                        result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV3, cnvtPolyV1, vvFaceDot, 
-                        viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    );
-                }
+                //     CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
+                //     GET_POLY_ON_LINE_INXTN(
+                //         result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV3, cnvtPolyV1, vvFaceDot, 
+                //         viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
+                //     );
+                // }
                 
 
             }
@@ -546,7 +570,7 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    int debugArySize = polyAmount * 3;
+    int debugArySize = polyAmount;
     float* hDebugAry = new float[debugArySize];
     float* dDebugAry;
     cudaMalloc((void**)&dDebugAry, sizeof(float)*debugArySize);

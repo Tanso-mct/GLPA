@@ -26,10 +26,10 @@ do { \
     \
     float zVec[3] = {0, 0, -1};\
     \
-    float cnvtXzPolyVxZVecDotCos;\
+    float cnvtXzPolyVxZVecDotCos = 0;\
     VEC_GET_VECS_COS(zVec, cnvtXzPolyV, cnvtXzPolyVxZVecDotCos);\
     \
-    float cnvtYzPolyVxZVecDotCos;\
+    float cnvtYzPolyVxZVecDotCos = 0;\
     VEC_GET_VECS_COS(zVec, cnvtYzPolyV, cnvtYzPolyVxZVecDotCos);\
     \
     int polyVZInIF = (cnvt_poly_v[AZ] >= -cam_far_z && cnvt_poly_v[AZ] <= -cam_near_z) ? TRUE : FALSE;\
