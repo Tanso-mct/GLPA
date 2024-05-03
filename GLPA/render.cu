@@ -359,34 +359,70 @@ __global__ void glpaGpuRender(
                     RECT_L12_STARTV, RECT_L12_ENDV
                 };
 
-                // int inxtnAmount = 0;
+                int assignAryNum = 0;
+                float inxtn[12*3] = {0};
+                float pixelInxtn[12*2] = {0};
 
-                // // float pixelVs[12 * 3 * 3 + 3*3 + 3*3] = {-2};
-                // int pixelVsSize = 12 * 3 * 3 + 3*3 + 3*3;
-                // int targetIndex = 0;
+                // Obtain the intersection between the view volume line and the polygon surface.
+                for (int roopLineI = 0; roopLineI < 12; roopLineI++)
+                {
+                    float polyFaceDot[2];
+                    CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
 
-                // for (int roopLineI = 0; roopLineI < 12; roopLineI++)
-                // {
-                //     float polyFaceDot[2];
-                //     CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
+                    do {
+                        int vOnFaceIF = (polyFaceDot == 0) ? TRUE : FALSE;
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < vOnFaceIF; conditionalBranch3++)
+                        {
+                            float calc_inxtn[3] = {
+                                viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX],
+                                viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY],
+                                viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ]
+                            };
+                            
+                            float vecCos[6];
+                            CALC_VEC_COS(vecCos[0], cnvtPolyV1, cnvtPolyV2, cnvtPolyV1, calc_inxtn);
+                            CALC_VEC_COS(vecCos[1], cnvtPolyV1, cnvtPolyV2, cnvtPolyV1, cnvtPolyV3);
+                            
+                            CALC_VEC_COS(vecCos[2], cnvtPolyV2, cnvtPolyV3, cnvtPolyV2, calc_inxtn);
+                            CALC_VEC_COS(vecCos[3], cnvtPolyV2, cnvtPolyV3, cnvtPolyV2, cnvtPolyV1);
+                            
+                            CALC_VEC_COS(vecCos[4], cnvtPolyV3, cnvtPolyV1, cnvtPolyV3, calc_inxtn);
+                            CALC_VEC_COS(vecCos[5], cnvtPolyV3, cnvtPolyV1, cnvtPolyV3, cnvtPolyV2);
+                            
+                            int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? TRUE : FALSE;
+                            
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++)
+                            {
+                                VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], calc_inxtn, 0, camNearZ, nearScSize, scPixelSize);
+                                VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], calc_inxtn, 0, camNearZ, nearScSize, scPixelSize);
+                                inxtn[assignAryNum*3 + AX] = calc_inxtn[AX];
+                                inxtn[assignAryNum*3 + AY] = calc_inxtn[AY];
+                                inxtn[assignAryNum*3 + AZ] = calc_inxtn[AZ];
+                                debugFloatAry[i*12*3 + assignAryNum*3 + AX] = calc_inxtn[AX];
+                                debugFloatAry[i*12*3 + assignAryNum*3 + AY] = calc_inxtn[AY];
+                                debugFloatAry[i*12*3 + assignAryNum*3 + AZ] = calc_inxtn[AZ];
+                                assignAryNum++;
+                            }
+                        }
+                    } while(0);
 
-                //     JUDGE_V_ON_POLY_FACE(
-                //         result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
-                //         cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                //     );
+                    // JUDGE_V_ON_POLY_FACE(
+                    //     inxtn, assignAryNum, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
+                    //     cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    // );
 
-                //     JUDGE_V_ON_POLY_FACE(
-                //         result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
-                //         cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                //     );
+                    // JUDGE_V_ON_POLY_FACE(
+                    //     result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot[1], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2 + 1], 
+                    //     cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    // );
 
-                //     GET_POLY_ON_FACE_INXTN(
-                //         result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
-                //         cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
-                //     );
+                    // GET_POLY_ON_FACE_INXTN(
+                    //     result, i*pixelVsSize + targetIndex, targetIndex, polyFaceDot, viewVolumeNs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], 
+                    //     cnvtPolyV1, cnvtPolyV2, cnvtPolyV3, camNearZ, nearScSize, scPixelSize
+                    // );
 
                     
-                // }
+                }
 
                 // for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
                 // {
@@ -565,7 +601,7 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     int desiredThreadsPerBlock = 256;
 
     int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
-    int threadsPerBlock = std::min(desiredThreadsPerBlock, deviceProp.maxThreadsPerBlock);
+    int threadsPerBlock = std::min(desiredThreadsPerBlock, deviceProp.maxThreadsPerBlock);  
 
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
