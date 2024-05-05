@@ -29,7 +29,7 @@
  * English : Structures and macros related to mathematics are described below.
 **********************************************************************************************************************/
 
-
+#define CLOSE0 0.0001
 /********************************************************************************
  * 日本語 : ベクトルに関連するものらを記述。
  * English : Describes those related to vectors.

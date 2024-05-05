@@ -369,42 +369,124 @@ __global__ void glpaGpuRender(
                     float polyFaceDot[2];
                     CALC_POLY_FACE_DOT(polyFaceDot, viewVolumeVs, vvLineVI[roopLineI*2], vvLineVI[roopLineI*2 + 1], cnvtPolyV1, cnvtPolyN);
 
-                    do {
-                        int vOnFaceIF = (polyFaceDot == 0) ? TRUE : FALSE;
-                        for (int conditionalBranch3 = 0; conditionalBranch3 < vOnFaceIF; conditionalBranch3++)
+                    debugFloatAry[i*12*3 + roopLineI*3 + AX] = polyFaceDot[0];
+                    debugFloatAry[i*12*3 + roopLineI*3 + AY] = polyFaceDot[1];
+                    debugFloatAry[i*12*3 + roopLineI*3 + AZ] = (i >= 12) ? i - 12 : i;
+
+                    // do {
+                    //     int v1OnFaceIF = (polyFaceDot[0] == 0) ? TRUE : FALSE;
+                    //     int v2OnFaceIF = (polyFaceDot[1] == 0) ? TRUE : FALSE;
+                        
+                    //     for (int conditionalBranch3 = 0; conditionalBranch3 < v1OnFaceIF; conditionalBranch3++)
+                    //     {
+                    //         float calc_inxtn[3] = {
+                    //             viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX],
+                    //             viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY],
+                    //             viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ]
+                    //         };
+                            
+                    //         float vecCos[6];
+                    //         CALC_VEC_COS(vecCos[0], cnvtPolyV1, cnvtPolyV2, cnvtPolyV1, calc_inxtn);
+                    //         CALC_VEC_COS(vecCos[1], cnvtPolyV1, cnvtPolyV2, cnvtPolyV1, cnvtPolyV3);
+                            
+                    //         CALC_VEC_COS(vecCos[2], cnvtPolyV2, cnvtPolyV3, cnvtPolyV2, calc_inxtn);
+                    //         CALC_VEC_COS(vecCos[3], cnvtPolyV2, cnvtPolyV3, cnvtPolyV2, cnvtPolyV1);
+                            
+                    //         CALC_VEC_COS(vecCos[4], cnvtPolyV3, cnvtPolyV1, cnvtPolyV3, calc_inxtn);
+                    //         CALC_VEC_COS(vecCos[5], cnvtPolyV3, cnvtPolyV1, cnvtPolyV3, cnvtPolyV2);
+                            
+                    //         int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? TRUE : FALSE;
+                            
+                    //         for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++)
+                    //         {
+                    //             VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], calc_inxtn, 0, camNearZ, nearScSize, scPixelSize);
+                    //             VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], calc_inxtn, 0, camNearZ, nearScSize, scPixelSize);
+                    //             inxtn[assignAryNum*3 + AX] = calc_inxtn[AX];
+                    //             inxtn[assignAryNum*3 + AY] = calc_inxtn[AY];
+                    //             inxtn[assignAryNum*3 + AZ] = calc_inxtn[AZ];
+                    //             assignAryNum++;
+                    //         }
+                    //     }
+                    // } while(0);
+
+                    do { 
+                        int v1OnFaceIF = (polyFaceDot[0] == 0) ? TRUE : FALSE;
+                        int v2OnFaceIF = (polyFaceDot[1] == 0) ? TRUE : FALSE;
+                        int vAllOnFaceIF = (polyFaceDot[0] == 0 && polyFaceDot[1] == 0) ? TRUE : FALSE;
+
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < vAllOnFaceIF; conditionalBranch3++)
                         {
-                            float calc_inxtn[3] = {
-                                viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX],
-                                viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY],
-                                viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ]
-                            };
+                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX];
+                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY];
+                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
+                            assignAryNum++;
+
+                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AX];
+                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AY];
+                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
+                            assignAryNum++;
+
+                            break;
+                        }
+
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < v1OnFaceIF; conditionalBranch3++)
+                        {
+                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX];
+                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY];
+                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
+                            assignAryNum++;
+
+                            break;
+                        }
+
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < v2OnFaceIF; conditionalBranch3++)
+                        {
+                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AX];
+                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AY];
+                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
+                            assignAryNum++;
+
+                            break;
+                        }
+                        
+                        int calcInxtnIF = ((polyFaceDot[0] > 0 && polyFaceDot[1] < 0) || (polyFaceDot[0] < 0 && polyFaceDot[1] > 0)) ? TRUE : FALSE; 
+                        for(int conditionalBranch3 = 0; conditionalBranch3 < calcInxtnIF; conditionalBranch3++) 
+                        { 
+                            float inxtn[3];
+                            for (int roopCoord = 0; roopCoord < 3; roopCoord++) 
+                            { 
+                                inxtn[roopCoord] = view_volume_vs[vv_line_index_1*3 + roopCoord] + 
+                                    (view_volume_vs[vv_line_index_2*3 + roopCoord] - view_volume_vs[vv_line_index_1*3 + roopCoord]) * 
+                                    (fabs(polyFaceDot[0]) / (fabs(polyFaceDot[0]) + fabs(polyFaceDot[1])));
+                            } 
                             
                             float vecCos[6];
-                            CALC_VEC_COS(vecCos[0], cnvtPolyV1, cnvtPolyV2, cnvtPolyV1, calc_inxtn);
-                            CALC_VEC_COS(vecCos[1], cnvtPolyV1, cnvtPolyV2, cnvtPolyV1, cnvtPolyV3);
-                            
-                            CALC_VEC_COS(vecCos[2], cnvtPolyV2, cnvtPolyV3, cnvtPolyV2, calc_inxtn);
-                            CALC_VEC_COS(vecCos[3], cnvtPolyV2, cnvtPolyV3, cnvtPolyV2, cnvtPolyV1);
-                            
-                            CALC_VEC_COS(vecCos[4], cnvtPolyV3, cnvtPolyV1, cnvtPolyV3, calc_inxtn);
-                            CALC_VEC_COS(vecCos[5], cnvtPolyV3, cnvtPolyV1, cnvtPolyV3, cnvtPolyV2);
+                            CALC_VEC_COS(vecCos[0], poly_vec_1, poly_vec_2, poly_vec_1, inxtn);
+                            CALC_VEC_COS(vecCos[1], poly_vec_1, poly_vec_2, poly_vec_1, poly_vec_3);
+                            CALC_VEC_COS(vecCos[2], poly_vec_2, poly_vec_3, poly_vec_2, inxtn);
+                            CALC_VEC_COS(vecCos[3], poly_vec_2, poly_vec_3, poly_vec_2, poly_vec_1);
+                            CALC_VEC_COS(vecCos[4], poly_vec_3, poly_vec_1, poly_vec_3, inxtn);
+                            CALC_VEC_COS(vecCos[5], poly_vec_3, poly_vec_1, poly_vec_3, poly_vec_2);
                             
                             int inxtnInPolyFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5]) ? TRUE : FALSE;
                             
-                            for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++)
-                            {
-                                VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], calc_inxtn, 0, camNearZ, nearScSize, scPixelSize);
-                                VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], calc_inxtn, 0, camNearZ, nearScSize, scPixelSize);
-                                inxtn[assignAryNum*3 + AX] = calc_inxtn[AX];
-                                inxtn[assignAryNum*3 + AY] = calc_inxtn[AY];
-                                inxtn[assignAryNum*3 + AZ] = calc_inxtn[AZ];
-                                debugFloatAry[i*12*3 + assignAryNum*3 + AX] = calc_inxtn[AX];
-                                debugFloatAry[i*12*3 + assignAryNum*3 + AY] = calc_inxtn[AY];
-                                debugFloatAry[i*12*3 + assignAryNum*3 + AZ] = calc_inxtn[AZ];
-                                assignAryNum++;
-                            }
-                        }
-                    } while(0);
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInPolyFaceIF; conditionalBranch4++) 
+                            { 
+                                VX_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AX], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);
+                                VY_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AY], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);
+                                result[(result_index)*3 + AZ] = inxtn[AZ];
+                                currentIndex++;
+                            } 
+                        } 
+                    } while(0); 
 
                     // JUDGE_V_ON_POLY_FACE(
                     //     inxtn, assignAryNum, targetIndex, polyFaceDot[0], roopLineI, viewVolumeVs, vvLineVI[roopLineI*2], 
@@ -606,7 +688,7 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    int debugArySize = polyAmount;
+    int debugArySize = polyAmount * 12 * 3;
     float* hDebugAry = new float[debugArySize];
     float* dDebugAry;
     cudaMalloc((void**)&dDebugAry, sizeof(float)*debugArySize);
