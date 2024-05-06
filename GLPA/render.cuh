@@ -39,28 +39,6 @@ do { \
     poly_v_in_if = (polyVZInIF == TRUE && polyXzVInIF == TRUE && polyYzVInIF == TRUE) ? TRUE : FALSE;\
 } while(0); \
 
-#define CALC_POLY_FACE_DOT(result, vv_line_v, v_start_index, v_end_index, poly_one_v, poly_n) \
-do { \
-    result[0] = (vv_line_v[v_start_index*3 + AX] - poly_one_v[AX]) * poly_n[AX] + \
-        (vv_line_v[v_start_index*3 + AY] - poly_one_v[AY]) * poly_n[AY] + \
-        (vv_line_v[v_start_index*3 + AZ] - poly_one_v[AZ]) * poly_n[AZ];\
-    result[1] = (vv_line_v[v_end_index*3 + AX] - poly_one_v[AX]) * poly_n[AX] + \
-        (vv_line_v[v_end_index*3 + AY] - poly_one_v[AY]) * poly_n[AY] + \
-        (vv_line_v[v_end_index*3 + AZ] - poly_one_v[AZ]) * poly_n[AZ];\
-} while(0); \
-
-#define CALC_VV_FACE_DOT(result, poly_line_start_v, poly_line_end_v, vv_one_v, vv_one_v_index, vv_n, vv_n_index) \
-do { \
-    result[0] = \
-    (poly_line_start_v[AX] - vv_one_v[vv_one_v_index + AX]) * vv_n[vv_n_index + AX] + \
-    (poly_line_start_v[AY] - vv_one_v[vv_one_v_index + AY]) * vv_n[vv_n_index + AY] + \
-    (poly_line_start_v[AZ] - vv_one_v[vv_one_v_index + AZ]) * vv_n[vv_n_index + AZ];\
-    result[1] = \
-    (poly_line_end_v[AX] - vv_one_v[vv_one_v_index + AX]) * vv_n[vv_n_index + AX] + \
-    (poly_line_end_v[AY] - vv_one_v[vv_one_v_index + AY]) * vv_n[vv_n_index + AY] + \
-    (poly_line_end_v[AZ] - vv_one_v[vv_one_v_index + AZ]) * vv_n[vv_n_index + AZ];\
-} while(0); \
-
 #define CALC_VEC_COS(result, start_vec_1, end_vec_1, start_vec_2, end_vec_2) \
 do { \
     result = \
