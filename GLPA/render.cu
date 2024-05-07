@@ -474,7 +474,7 @@ __global__ void glpaGpuRender(
                 {
                     for (int startPolyVI = 0; startPolyVI < 3; startPolyVI++)
                     {
-                        int debugCosNotCalc = TRUE;
+                        // int debugCosNotCalc = TRUE;
 
                         int endPolyVI = (startPolyVI == 2) ? 0 : startPolyVI + 1;
 
@@ -567,15 +567,15 @@ __global__ void glpaGpuRender(
                             CALC_VEC_ARY_COS(vecCos[6], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, calcInxtn, 0);
                             CALC_VEC_ARY_COS(vecCos[7], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3);
 
-                            debugCosNotCalc = FALSE;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = vecCos[0];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = vecCos[1];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = vecCos[2];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = vecCos[3];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = vecCos[4];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = vecCos[5];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = vecCos[6];
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = vecCos[7];
+                            // debugCosNotCalc = FALSE;
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = vecCos[0];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = vecCos[1];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = vecCos[2];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = vecCos[3];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = vecCos[4];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = vecCos[5];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = vecCos[6];
+                            // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = vecCos[7];
 
                             
                             inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;
@@ -588,102 +588,34 @@ __global__ void glpaGpuRender(
                                 VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], calcInxtn, 0, camNearZ, nearScSize, scPixelSize);
                                 VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], calcInxtn, 0, camNearZ, nearScSize, scPixelSize);
 
-                                debugCosNotCalc = FALSE;
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = 1000;
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = inxtn[assignAryNum*3 + AX];
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = inxtn[assignAryNum*3 + AY];
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = inxtn[assignAryNum*3 + AZ];
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = (pixelInxtn[assignAryNum*2 + AX] == 0) ? 0.001 : pixelInxtn[assignAryNum*2 + AX];
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = (pixelInxtn[assignAryNum*2 + AY] == 0) ? 0.001 : pixelInxtn[assignAryNum*2 + AY];
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = startPolyVI + 1;
-                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = roopFaceI + 1;
+                                // debugCosNotCalc = FALSE;
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = 1000;
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = inxtn[assignAryNum*3 + AX];
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = inxtn[assignAryNum*3 + AY];
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = inxtn[assignAryNum*3 + AZ];
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = (pixelInxtn[assignAryNum*2 + AX] == 0) ? 0.001 : pixelInxtn[assignAryNum*2 + AX];
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = (pixelInxtn[assignAryNum*2 + AY] == 0) ? 0.001 : pixelInxtn[assignAryNum*2 + AY];
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = startPolyVI + 1;
+                                // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = roopFaceI + 1;
 
                                 assignAryNum++;
 
                             } 
                         } 
-                        for (int conditionalBranch4 = 0; conditionalBranch4 < debugCosNotCalc; conditionalBranch4++)
-                        {
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = -1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = -1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = -1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = -1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = -1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = -1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = startPolyVI + 1;
-                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = roopFaceI + 1;
-                        }
-                        debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 8] = (i >= 12) ? i - 12 : i;
+
+                        // for (int conditionalBranch4 = 0; conditionalBranch4 < debugCosNotCalc; conditionalBranch4++)
+                        // {
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = -1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = -1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = -1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = -1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = -1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = -1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = startPolyVI + 1;
+                        //     debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = roopFaceI + 1;
+                        // }
+                        // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 8] = (i >= 12) ? i - 12 : i;
                     }
-
-                    // CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-
-                    // do { 
-                    //     int calcInxtnIF  = ((vvFaceDot[0] > 0 && vvFaceDot[1] < 0) || (vvFaceDot[0] < 0 && vvFaceDot[1] > 0)) ? TRUE : FALSE;
-                    //     for(int conditionalBranch3 = 0; conditionalBranch3 < calcInxtnIF; conditionalBranch3++) 
-                    //     { 
-                    //         float inxtn[3];
-                    //         for (int roopCoord = 0; roopCoord < 3; roopCoord++) 
-                    //         { 
-                    //             inxtn[roopCoord] = poly_line_v1[roopCoord] + 
-                    //                 (poly_line_v2[roopCoord] - poly_line_v1[roopCoord]) * 
-                    //                 (fabs(vvFaceDot[0]) / (fabs(vvFaceDot[0]) + fabs(vvFaceDot[1])));
-                    //         } 
-                            
-                    //         float vecCos[8];
-                    //         CALC_VEC_ARY_COS(vecCos[0], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, inxtn, 0);
-                    //         CALC_VEC_ARY_COS(vecCos[1], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3);
-                            
-                    //         CALC_VEC_ARY_COS(vecCos[2], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, inxtn, 0);
-                    //         CALC_VEC_ARY_COS(vecCos[3], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3);
-                            
-                    //         CALC_VEC_ARY_COS(vecCos[4], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, inxtn, 0);
-                    //         CALC_VEC_ARY_COS(vecCos[5], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3);
-                            
-                    //         CALC_VEC_ARY_COS(vecCos[6], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, inxtn, 0);
-                    //         CALC_VEC_ARY_COS(vecCos[7], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3);
-                            
-                    //         int inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;
-                            
-                    //         for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInVvFaceIF; conditionalBranch4++) 
-                    //         { 
-                    //             VX_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AX], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);
-                    //             VY_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AY], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);
-                    //             result[(result_index)*3 + AZ] = inxtn[AZ];
-                    //             currentIndex++;
-                    //         } 
-                    //     } 
-                    // } while(0); 
-
-
-                    // JUDGE_V_ON_VV_FACE(
-                    //     result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[0], cnvtPolyV1, roopFaceI, 
-                    //     viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    // );
-                    // JUDGE_V_ON_VV_FACE(
-                    //     result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV2, roopFaceI, 
-                    //     viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    // );
-                    // GET_POLY_ON_LINE_INXTN(
-                    //     result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV1, cnvtPolyV2, vvFaceDot, 
-                    //     viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    // );
-
-                    // CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV2, cnvtPolyV3, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    // JUDGE_V_ON_VV_FACE(
-                    //     result, i*pixelVsSize + targetIndex, targetIndex, vvFaceDot[1], cnvtPolyV3, roopFaceI, 
-                    //     viewVolumeVs, vvFaceVsI, camNearZ, nearScSize, scPixelSize
-                    // );
-                    // GET_POLY_ON_LINE_INXTN(
-                    //     result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV2, cnvtPolyV3, vvFaceDot, 
-                    //     viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    // );
-
-                    // CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV3, cnvtPolyV1, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
-                    // GET_POLY_ON_LINE_INXTN(
-                    //     result, i*pixelVsSize + targetIndex, targetIndex, cnvtPolyV3, cnvtPolyV1, vvFaceDot, 
-                    //     viewVolumeVs, vvFaceVsI, roopFaceI, camNearZ, nearScSize, scPixelSize
-                    // );
                 }
                 
 
