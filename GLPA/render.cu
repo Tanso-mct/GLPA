@@ -250,7 +250,9 @@ __global__ void glpaGpuRender(
 
         for (int conditionalBranch = 0; conditionalBranch < polyBilateralIF; conditionalBranch++)
         {
+            int assignAryNum = 0;
             float inxtn[MAX_VIEW_VOLUE_POLY_INXTN*3] = {0};
+            float pixelInxtn[MAX_VIEW_VOLUE_POLY_INXTN*2] = {-1};
             
             int polyV1InIF = 0;
             int polyV2InIF = 0;
@@ -365,22 +367,18 @@ __global__ void glpaGpuRender(
                     RECT_L12_STARTV, RECT_L12_ENDV
                 };
 
-                int assignAryNum = 0;
-                float inxtn[12*3] = {0};
-                float pixelInxtn[12*2] = {0};
-
                 // Obtain the intersection between the view volume line and the polygon surface.
                 for (int roopLineI = 0; roopLineI < 12; roopLineI++)
                 {
                     float polyFaceDot[2];
                     polyFaceDot[0] = 
-                        (viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 0] - cnvtPolyV1[0]) * cnvtPolyN[0] + 
-                        (viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 1] - cnvtPolyV1[1]) * cnvtPolyN[1] + 
-                        (viewVolumeVs[vvLineVI[roopLineI * 2] * 3 + 2] - cnvtPolyV1[2]) * cnvtPolyN[2];
+                        (viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX] - cnvtPolyV1[AX]) * cnvtPolyN[AX] + 
+                        (viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY] - cnvtPolyV1[AY]) * cnvtPolyN[AY] + 
+                        (viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ] - cnvtPolyV1[AZ]) * cnvtPolyN[AZ];
                     polyFaceDot[1] = 
-                        (viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 0] - cnvtPolyV1[0]) * cnvtPolyN[0] + 
-                        (viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 1] - cnvtPolyV1[1]) * cnvtPolyN[1] + 
-                        (viewVolumeVs[vvLineVI[roopLineI * 2 + 1] * 3 + 2] - cnvtPolyV1[2]) * cnvtPolyN[2];
+                        (viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AX] - cnvtPolyV1[AX]) * cnvtPolyN[AX] + 
+                        (viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AY] - cnvtPolyV1[AY]) * cnvtPolyN[AY] + 
+                        (viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AZ] - cnvtPolyV1[AZ]) * cnvtPolyN[AZ];
 
                     int vAllOnFaceIF = (polyFaceDot[0] == 0 && polyFaceDot[1] == 0) ? TRUE : FALSE;
                     int v1OnFaceIF = (polyFaceDot[0] == 0 && vAllOnFaceIF == FALSE) ? TRUE : FALSE;
@@ -395,13 +393,12 @@ __global__ void glpaGpuRender(
                         VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
                         assignAryNum++;
 
-                        inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AX];
-                        inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AY];
-                        inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AZ];
+                        inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AX];
+                        inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AY];
+                        inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AZ];
                         VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
                         VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
                         assignAryNum++;
-
                     }
 
                     for (int conditionalBranch3 = 0; conditionalBranch3 < v1OnFaceIF; conditionalBranch3++)
@@ -412,18 +409,16 @@ __global__ void glpaGpuRender(
                         VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
                         VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
                         assignAryNum++;
-
                     }
 
                     for (int conditionalBranch3 = 0; conditionalBranch3 < v2OnFaceIF; conditionalBranch3++)
                     {
-                        inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AX];
-                        inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AY];
-                        inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AZ];
+                        inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AX];
+                        inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AY];
+                        inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1]*3 + AZ];
                         VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
                         VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
                         assignAryNum++;
-
                     }
                     
                     int calcInxtnIF = ((polyFaceDot[0] > 0 && polyFaceDot[1] < 0) || (polyFaceDot[0] < 0 && polyFaceDot[1] > 0)) ? TRUE : FALSE; 
