@@ -231,6 +231,12 @@ __global__ void glpaGpuRender(
         float cnvtPolyV3[3];
         MT_PRODUCT_4X4_VEC3D(mtCamTransRot, vec3d, cnvtPolyV3);
 
+        float cnvtPolyVs[9] = {
+            cnvtPolyV1[AX], cnvtPolyV1[AY], cnvtPolyV1[AZ],
+            cnvtPolyV2[AX], cnvtPolyV2[AY], cnvtPolyV2[AZ],
+            cnvtPolyV3[AX], cnvtPolyV3[AY], cnvtPolyV3[AZ]
+        };
+
         vec3d[AX] = polyNs[i*3 + AX];
         vec3d[AY] = polyNs[i*3 + AY];
         vec3d[AZ] = polyNs[i*3 + AZ];
@@ -466,14 +472,10 @@ __global__ void glpaGpuRender(
 
                 for (int roopFaceI = 0; roopFaceI < 6; roopFaceI++)
                 {
-                    float cnvtPolyVs[9] = {
-                        cnvtPolyV1[AX], cnvtPolyV1[AY], cnvtPolyV1[AZ],
-                        cnvtPolyV2[AX], cnvtPolyV2[AY], cnvtPolyV2[AZ],
-                        cnvtPolyV3[AX], cnvtPolyV3[AY], cnvtPolyV3[AZ]
-                    };
-
                     for (int startPolyVI = 0; startPolyVI < 3; startPolyVI++)
                     {
+                        int debugCosNotCalc = TRUE;
+
                         int endPolyVI = (startPolyVI == 2) ? 0 : startPolyVI + 1;
 
                         float startPolyV[3] ={
@@ -484,7 +486,7 @@ __global__ void glpaGpuRender(
                             cnvtPolyVs[endPolyVI*3 + AX], cnvtPolyVs[endPolyVI*3 + AY], cnvtPolyVs[endPolyVI*3 + AZ]
                         };
 
-                        float vvFaceDot[2] = {0};
+                        float vvFaceDot[2];
                         vvFaceDot[0] = 
                             (startPolyV[AX] - viewVolumeVs[vvFaceI[roopFaceI]*3 + AX]) * viewVolumeNs[roopFaceI*3 + AX] + 
                             (startPolyV[AY] - viewVolumeVs[vvFaceI[roopFaceI]*3 + AY]) * viewVolumeNs[roopFaceI*3 + AY] + 
@@ -508,75 +510,110 @@ __global__ void glpaGpuRender(
                             VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], startPolyV, 0, camNearZ, nearScSize, scPixelSize);
                             assignAryNum++;
 
-                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AX];
-                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AY];
-                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AZ];
-                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
-                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
+                            inxtn[assignAryNum*3 + AX] = endPolyV[AX];
+                            inxtn[assignAryNum*3 + AY] = endPolyV[AY];
+                            inxtn[assignAryNum*3 + AZ] = endPolyV[AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], endPolyV, 0, camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], endPolyV, 0, camNearZ, nearScSize, scPixelSize);
                             assignAryNum++;
-
                         }
 
                         for (int conditionalBranch3 = 0; conditionalBranch3 < startPolyVOnFaceIF; conditionalBranch3++)
                         {
-                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AX];
-                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AY];
-                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2]*3 + AZ];
-                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
-                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2]*3, camNearZ, nearScSize, scPixelSize);
+                            inxtn[assignAryNum*3 + AX] = startPolyV[AX];
+                            inxtn[assignAryNum*3 + AY] = startPolyV[AY];
+                            inxtn[assignAryNum*3 + AZ] = startPolyV[AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], startPolyV, 0, camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], startPolyV, 0, camNearZ, nearScSize, scPixelSize);
                             assignAryNum++;
-
                         }
 
                         for (int conditionalBranch3 = 0; conditionalBranch3 < endPolyVOnFaceIF; conditionalBranch3++)
                         {
-                            inxtn[assignAryNum*3 + AX] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AX];
-                            inxtn[assignAryNum*3 + AY] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AY];
-                            inxtn[assignAryNum*3 + AZ] = viewVolumeVs[vvLineVI[roopLineI*2 + 1] + AZ];
-                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
-                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], viewVolumeVs, vvLineVI[roopLineI*2 + 1], camNearZ, nearScSize, scPixelSize);
+                            inxtn[assignAryNum*3 + AX] = endPolyV[AX];
+                            inxtn[assignAryNum*3 + AY] = endPolyV[AY];
+                            inxtn[assignAryNum*3 + AZ] = endPolyV[AZ];
+                            VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], endPolyV, 0, camNearZ, nearScSize, scPixelSize);
+                            VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], endPolyV, 0, camNearZ, nearScSize, scPixelSize);
                             assignAryNum++;
-
                         }
 
                         int calcInxtnIF  = ((vvFaceDot[0] > 0 && vvFaceDot[1] < 0) || (vvFaceDot[0] < 0 && vvFaceDot[1] > 0)) ? TRUE : FALSE;
-                        debugFloatAry[i*54 + roopFaceI*9 + startPolyVI*3] = calcInxtnIF;
-                        debugFloatAry[i*54 + roopFaceI*9 + startPolyVI*3 + 1] = 0;
-                        debugFloatAry[i*54 + roopFaceI*9 + startPolyVI*3 + 2] = (i >= 12) ? i - 12 : i;
+                        // debugFloatAry[i*54 + roopFaceI*9 + startPolyVI*3] = 0;
+                        // debugFloatAry[i*54 + roopFaceI*9 + startPolyVI*3 + 1] = calcInxtnIF;
+                        // debugFloatAry[i*54 + roopFaceI*9 + startPolyVI*3 + 2] = (i >= 12) ? i - 12 : i;
 
-                        // for(int conditionalBranch3 = 0; conditionalBranch3 < calcInxtnIF; conditionalBranch3++) 
-                        // { 
-                        //     float inxtn[3];
-                        //     for (int roopCoord = 0; roopCoord < 3; roopCoord++) 
-                        //     { 
-                        //         inxtn[roopCoord] = poly_line_v1[roopCoord] + 
-                        //             (poly_line_v2[roopCoord] - poly_line_v1[roopCoord]) * 
-                        //             (fabs(vvFaceDot[0]) / (fabs(vvFaceDot[0]) + fabs(vvFaceDot[1])));
-                        //     } 
+                        int inxtnInVvFaceIF = 0;
+                        for(int conditionalBranch3 = 0; conditionalBranch3 < calcInxtnIF; conditionalBranch3++) 
+                        { 
+                            float calcInxtn[3];
+                            for (int roopCoord = 0; roopCoord < 3; roopCoord++) 
+                            { 
+                                calcInxtn[roopCoord] = startPolyV[roopCoord] + 
+                                    (endPolyV[roopCoord] - startPolyV[roopCoord]) * 
+                                    (fabs(vvFaceDot[0]) / (fabs(vvFaceDot[0]) + fabs(vvFaceDot[1])));
+                            } 
                             
-                        //     float vecCos[8];
-                        //     CALC_VEC_ARY_COS(vecCos[0], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, inxtn, 0);
-                        //     CALC_VEC_ARY_COS(vecCos[1], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3);
+                            float vecCos[8];
+                            CALC_VEC_ARY_COS(vecCos[0], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V2]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, calcInxtn, 0);
+                            CALC_VEC_ARY_COS(vecCos[1], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V2]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3);
                             
-                        //     CALC_VEC_ARY_COS(vecCos[2], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, inxtn, 0);
-                        //     CALC_VEC_ARY_COS(vecCos[3], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3);
+                            CALC_VEC_ARY_COS(vecCos[2], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V2]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V2]*3, calcInxtn, 0);
+                            CALC_VEC_ARY_COS(vecCos[3], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V2]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3);
                             
-                        //     CALC_VEC_ARY_COS(vecCos[4], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, inxtn, 0);
-                        //     CALC_VEC_ARY_COS(vecCos[5], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V2]*3);
+                            CALC_VEC_ARY_COS(vecCos[4], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, calcInxtn, 0);
+                            CALC_VEC_ARY_COS(vecCos[5], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V2]*3);
                             
-                        //     CALC_VEC_ARY_COS(vecCos[6], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, inxtn, 0);
-                        //     CALC_VEC_ARY_COS(vecCos[7], view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V1]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V4]*3, view_volume_vs, vv_face_vs_index[face_index*4 + FACE_V3]*3);
+                            CALC_VEC_ARY_COS(vecCos[6], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, calcInxtn, 0);
+                            CALC_VEC_ARY_COS(vecCos[7], viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V1]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V4]*3, viewVolumeVs, vvFaceVsI[roopFaceI*4 + FACE_V3]*3);
+
+                            debugCosNotCalc = FALSE;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = vecCos[0];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = vecCos[1];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = vecCos[2];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = vecCos[3];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = vecCos[4];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = vecCos[5];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = vecCos[6];
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = vecCos[7];
+
                             
-                        //     int inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;
+                            inxtnInVvFaceIF = (vecCos[0] >= vecCos[1] && vecCos[2] >= vecCos[3] && vecCos[4] >= vecCos[5] && vecCos[6] >= vecCos[7]) ? TRUE : FALSE;
                             
-                        //     for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInVvFaceIF; conditionalBranch4++) 
-                        //     { 
-                        //         VX_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AX], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);
-                        //         VY_SCREEN_PIXEL_CONVERT(result[(result_index)*3 + AY], inxtn, 0, nearZ, near_sc_size, sc_pixel_size);
-                        //         result[(result_index)*3 + AZ] = inxtn[AZ];
-                        //         currentIndex++;
-                        //     } 
-                        // } 
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < inxtnInVvFaceIF; conditionalBranch4++) 
+                            { 
+                                inxtn[assignAryNum*3 + AX] = calcInxtn[AX];
+                                inxtn[assignAryNum*3 + AY] = calcInxtn[AY];
+                                inxtn[assignAryNum*3 + AZ] = calcInxtn[AZ];
+                                VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], calcInxtn, 0, camNearZ, nearScSize, scPixelSize);
+                                VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], calcInxtn, 0, camNearZ, nearScSize, scPixelSize);
+
+                                debugCosNotCalc = FALSE;
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = 1000;
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = inxtn[assignAryNum*3 + AX];
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = inxtn[assignAryNum*3 + AY];
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = inxtn[assignAryNum*3 + AZ];
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = (pixelInxtn[assignAryNum*2 + AX] == 0) ? 0.001 : pixelInxtn[assignAryNum*2 + AX];
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = (pixelInxtn[assignAryNum*2 + AY] == 0) ? 0.001 : pixelInxtn[assignAryNum*2 + AY];
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = startPolyVI + 1;
+                                debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = roopFaceI + 1;
+
+                                assignAryNum++;
+
+                            } 
+                        } 
+                        for (int conditionalBranch4 = 0; conditionalBranch4 < debugCosNotCalc; conditionalBranch4++)
+                        {
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9] = -1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 1] = -1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 2] = -1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 3] = -1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 4] = -1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 5] = -1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 6] = startPolyVI + 1;
+                            debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 7] = roopFaceI + 1;
+                        }
+                        debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 8] = (i >= 12) ? i - 12 : i;
                     }
 
                     // CALC_VV_FACE_DOT(vvFaceDot, cnvtPolyV1, cnvtPolyV2, viewVolumeVs, vvFaceI[roopFaceI], viewVolumeNs, roopFaceI);
@@ -791,7 +828,8 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    int debugArySize = polyAmount * 9 * 6;
+    // int debugArySize = polyAmount * 9 * 6;
+    int debugArySize = polyAmount * 162;
     // int debugArySize = polyAmount * 12 * 6;
     float* hDebugAry = new float[debugArySize];
     float* dDebugAry;

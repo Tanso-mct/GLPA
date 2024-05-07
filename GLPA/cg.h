@@ -101,9 +101,9 @@ typedef struct tagFaceNormals{
 #define ASIZE 3
 
 #define FACE_V1 0
-#define FACE_V2 0
-#define FACE_V3 0
-#define FACE_V4 0
+#define FACE_V2 1
+#define FACE_V3 2
+#define FACE_V4 3
 
 #define MAX_VIEW_VOLUE_POLY_INXTN 12
 
