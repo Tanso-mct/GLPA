@@ -261,9 +261,38 @@ __global__ void glpaGpuRender(
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV2, camFarZ, camNearZ, camViewAngleCos, polyV2InIF);
             JUDGE_POLY_V_IN_VIEW_VOLUME(cnvtPolyV3, camFarZ, camNearZ, camViewAngleCos, polyV3InIF);
 
+            for (int conditionalBranch2 = 0; conditionalBranch2 < polyV1InIF; conditionalBranch2++)
+            {
+                inxtn[assignAryNum*3 + AX] = cnvtPolyV1[AX];
+                inxtn[assignAryNum*3 + AY] = cnvtPolyV1[AY];
+                inxtn[assignAryNum*3 + AZ] = cnvtPolyV1[AZ];
+                VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], cnvtPolyV1, 0, camNearZ, nearScSize, scPixelSize);
+                VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], cnvtPolyV1, 0, camNearZ, nearScSize, scPixelSize);
+                assignAryNum++;
+            }
+
+            for (int conditionalBranch2 = 0; conditionalBranch2 < polyV2InIF; conditionalBranch2++)
+            {
+                inxtn[assignAryNum*3 + AX] = cnvtPolyV2[AX];
+                inxtn[assignAryNum*3 + AY] = cnvtPolyV2[AY];
+                inxtn[assignAryNum*3 + AZ] = cnvtPolyV2[AZ];
+                VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], cnvtPolyV2, 0, camNearZ, nearScSize, scPixelSize);
+                VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], cnvtPolyV2, 0, camNearZ, nearScSize, scPixelSize);
+                assignAryNum++;
+            }
+
+            for (int conditionalBranch2 = 0; conditionalBranch2 < polyV3InIF; conditionalBranch2++)
+            {
+                inxtn[assignAryNum*3 + AX] = cnvtPolyV3[AX];
+                inxtn[assignAryNum*3 + AY] = cnvtPolyV3[AY];
+                inxtn[assignAryNum*3 + AZ] = cnvtPolyV3[AZ];
+                VX_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AX], cnvtPolyV3, 0, camNearZ, nearScSize, scPixelSize);
+                VY_SCREEN_PIXEL_CONVERT(pixelInxtn[assignAryNum*2 + AY], cnvtPolyV3, 0, camNearZ, nearScSize, scPixelSize);
+                assignAryNum++;
+            }
+
             int noVsInIF = (polyV1InIF == FALSE && polyV2InIF == FALSE && polyV3InIF == FALSE) ? TRUE : FALSE;
             int shapeCnvtIF = ((polyV1InIF + polyV2InIF + polyV3InIF != 3) && noVsInIF == FALSE) ? TRUE : FALSE;
-            int polyInIF = (polyV1InIF == TRUE || polyV2InIF == TRUE || polyV3InIF == TRUE) ? TRUE : FALSE;
             for (int conditionalBranch2 = 0; conditionalBranch2 < noVsInIF; conditionalBranch2++)
             {
                 float polyRectOrigin[3] = {cnvtPolyV1[AX], cnvtPolyV1[AY], cnvtPolyV1[AZ]};
@@ -612,9 +641,10 @@ __global__ void glpaGpuRender(
                         // debugFloatAry[i*162 + roopFaceI*27 + startPolyVI*9 + 8] = (i >= 12) ? i - 12 : i;
                     }
                 }
-                
-
             }
+            
+            int polyInIF = ((noVsInIF == FALSE || shapeCnvtIF == TRUE) && pixelInxtn[0] != -1) ? TRUE : FALSE;
+
         }
     }
 }
