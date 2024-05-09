@@ -643,7 +643,16 @@ __global__ void glpaGpuRender(
                 }
             }
             
-            int polyInIF = ((noVsInIF == FALSE || shapeCnvtIF == TRUE) && pixelInxtn[0] != -1) ? TRUE : FALSE;
+            int polyInIF = ((noVsInIF == FALSE || shapeCnvtIF == TRUE) && pixelInxtn[FACE_V3*2 + 1] != -1) ? TRUE : FALSE;
+
+            for (int conditionalBranch2 = 0; conditionalBranch2 < polyInIF; conditionalBranch2++)
+            {
+                int inxtnAmount = 3;
+                for (int vAryI = FACE_V4; vAryI < MAX_VIEW_VOLUE_POLY_INXTN; vAryI++)
+                {
+                    
+                }
+            }
 
         }
     }
