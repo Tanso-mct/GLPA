@@ -650,7 +650,7 @@ __global__ void glpaGpuRender(
                 int inxtnAmount = 3;
                 for (int vAryI = FACE_V4; vAryI < MAX_VIEW_VOLUE_POLY_INXTN; vAryI++)
                 {
-                    
+                    inxtnAmount += (pixelInxtn[vAryI*2 + 1] != -1) ? TRUE : FALSE;
                 }
             }
 
