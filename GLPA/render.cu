@@ -652,6 +652,60 @@ __global__ void glpaGpuRender(
                 {
                     inxtnAmount += (pixelInxtn[vAryI*2 + 1] != -1) ? TRUE : FALSE;
                 }
+
+                float fromV[3] = {
+                    pixelInxtn[3*0 + AX], pixelInxtn[3*0 + AY], pixelInxtn[3*0 + AZ]
+                };
+
+                float baseV[3] = {
+                    pixelInxtn[3*1 + AX], pixelInxtn[3*1 + AY], pixelInxtn[3*1 + AZ]
+                };
+
+                int plusSideVsI[MAX_VIEW_VOLUE_POLY_INXTN - 2];
+                float plusSideCos[MAX_VIEW_VOLUE_POLY_INXTN - 2];
+                int plusSideNowI = 0;
+
+                int minusSideVsI[MAX_VIEW_VOLUE_POLY_INXTN - 2];
+                float minusSideCos[MAX_VIEW_VOLUE_POLY_INXTN - 2];
+                int minusSideNowI = 0;
+
+                for (int vAryI = 2; vAryI < inxtnAmount; vAryI++)
+                {
+                    float toV[3] = {
+                        pixelInxtn[3*vAryI + AX], pixelInxtn[3*vAryI + AY], pixelInxtn[3*vAryI + AZ]
+                    };
+
+                    float sortSourceCos;
+                    VEC_GET_VECS_COS(fromV, toV, sortSourceCos);
+
+                    int cosPlus = (sortSourceCos >= 0) ? TRUE : FALSE;
+                    int cosMinus = (sortSourceCos < 0) ? TRUE : FALSE;
+
+                    for (int conditionalBranch3 = 0; conditionalBranch3 < cosPlus; conditionalBranch3++)
+                    {
+                        plusSideVsI[plusSideNowI] = vAryI;
+                        plusSideCos[plusSideNowI] = sortSourceCos;
+                        plusSideNowI++;
+                    }
+
+                    for (int conditionalBranch3 = 0; conditionalBranch3 < cosMinus; conditionalBranch3++)
+                    {
+                        minusSideVsI[minusSideNowI] = vAryI;
+                        minusSideCos[minusSideNowI] = sortSourceCos;
+                        minusSideNowI++;
+                    }
+                }
+                int sortingI = 0;
+
+                int sortPlusSideSize = plusSideNowI;
+                for (int sortPlusSide = 0; sortPlusSide < plusSideNowI - 1; sortPlusSide++)
+                {
+                    for (int sortAryI = 0; sortAryI < sortPlusSideSize - 1; sortAryI++)
+                    {
+                        int cosBigOrSmall = (plusSideCos[sortingI] <)
+                    }
+                }
+
             }
 
         }
