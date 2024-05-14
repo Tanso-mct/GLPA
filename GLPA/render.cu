@@ -9,6 +9,12 @@ Render::Render()
 
 }
 
+void Render::gpuRender(std::unordered_map<std::wstring, Object> sObj, Camera cam, LPDWORD buffer)
+{
+    prepareObjs(sObj, cam);
+    setVs(sObj, cam);
+}
+
 __global__ void glpaGpuPrepareObj(
     int objSize,
     float* objWVs,
@@ -191,7 +197,7 @@ void Render::prepareObjs(std::unordered_map<std::wstring, Object> sObj, Camera c
     cudaFree(dObjInJudgeAry);
 }
 
-__global__ void glpaGpuRender(
+__global__ void glpaGpuSetVs(
     float* polyVs,
     float* polyNs,
     int polyAmount,
@@ -204,7 +210,10 @@ __global__ void glpaGpuRender(
     float* viewVolumeNs,
     float* nearScSize,
     float* scPixelSize,
-    float* result,
+    int* inxtnAmount,
+    float* sortInxtn,
+    float* sortPixelInxtn,
+    int sideVsSize,
     float* debugFloatAry
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -792,49 +801,64 @@ __global__ void glpaGpuRender(
                 }
 
                 int sortAssignI = 0;
-                float sortInxtn[MAX_VIEW_VOLUE_POLY_INXTN*3] = {0};
-                float sortPixelInxtn[MAX_VIEW_VOLUE_POLY_INXTN*2] = {-1};
+                float biggestY = 0;
+                float smallestY = 0;
 
-                sortInxtn[3*0 + AX] = inxtn[3*0 + AX];
-                sortInxtn[3*0 + AY] = inxtn[3*0 + AY];
-                sortInxtn[3*0 + AZ] = inxtn[3*0 + AZ];
+                inxtnAmount[i] = assignAryNum;
 
-                sortPixelInxtn[3*0 + AX] = pixelInxtn[3*0 + AX];
-                sortPixelInxtn[3*0 + AY] = pixelInxtn[3*0 + AY];
+                sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + 3*0 + AX] = inxtn[3*0 + AX];
+                sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + 3*0 + AY] = inxtn[3*0 + AY];
+                sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + 3*0 + AZ] = inxtn[3*0 + AZ];
+
+                sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + 2*0 + AX] = pixelInxtn[2*0 + AX];
+                sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + 2*0 + AY] = pixelInxtn[2*0 + AY];
+
+                biggestY = (biggestY <= pixelInxtn[2*0 + AY]) ? pixelInxtn[2*0 + AY] : biggestY;
+                smallestY = (smallestY >= pixelInxtn[2*0 + AY]) ? pixelInxtn[2*0 + AY] : smallestY;
 
                 for (int plusSideAryI = 0; plusSideAryI < plusSideCosSize; plusSideAryI++)
                 {
-                    sortInxtn[sortAssignI*3 + AX] = inxtn[plusSideVsI[plusSideAryI]*3 + AX];
-                    sortInxtn[sortAssignI*3 + AY] = inxtn[plusSideVsI[plusSideAryI]*3 + AY];
-                    sortInxtn[sortAssignI*3 + AZ] = inxtn[plusSideVsI[plusSideAryI]*3 + AZ];
+                    sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + sortAssignI*3 + AX] = inxtn[plusSideVsI[plusSideAryI]*3 + AX];
+                    sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + sortAssignI*3 + AY] = inxtn[plusSideVsI[plusSideAryI]*3 + AY];
+                    sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + sortAssignI*3 + AZ] = inxtn[plusSideVsI[plusSideAryI]*3 + AZ];
 
-                    sortPixelInxtn[sortAssignI*2 + AX] = pixelInxtn[plusSideVsI[plusSideAryI]*2 + AX];
-                    sortPixelInxtn[sortAssignI*2 + AY] = pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY];
+                    sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + sortAssignI*2 + AX] = pixelInxtn[plusSideVsI[plusSideAryI]*2 + AX];
+                    sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + sortAssignI*2 + AY] = pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY];
+
+                    biggestY = (biggestY <= pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY]) ? pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY] : biggestY;
+                    smallestY = (smallestY >= pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY]) ? pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY] : smallestY;
 
                     sortAssignI++;
                 }
 
-                sortInxtn[3*1 + AX] = inxtn[3*1 + AX];
-                sortInxtn[3*1 + AY] = inxtn[3*1 + AY];
-                sortInxtn[3*1 + AZ] = inxtn[3*1 + AZ];
+                sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + 3*1 + AX] = inxtn[3*1 + AX];
+                sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + 3*1 + AY] = inxtn[3*1 + AY];
+                sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + 3*1 + AZ] = inxtn[3*1 + AZ];
 
-                sortPixelInxtn[3*1 + AX] = pixelInxtn[3*1 + AX];
-                sortPixelInxtn[3*1 + AY] = pixelInxtn[3*1 + AY];
+                sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + 2*1 + AX] = pixelInxtn[2*1 + AX];
+                sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + 2*1 + AY] = pixelInxtn[2*1 + AY];
+
+                biggestY = (biggestY <= pixelInxtn[2*1 + AY]) ? pixelInxtn[2*1 + AY] : biggestY;
+                smallestY = (smallestY >= pixelInxtn[2*1 + AY]) ? pixelInxtn[2*1 + AY] : smallestY;
 
                 sortAssignI++;
 
                 for (int minusSideAryI = 0; minusSideAryI < minusSideCosSize; minusSideAryI++)
                 {
-                    sortInxtn[sortAssignI*3 + AX] = inxtn[minusSideVsI[minusSideAryI]*3 + AX];
-                    sortInxtn[sortAssignI*3 + AY] = inxtn[minusSideVsI[minusSideAryI]*3 + AY];
-                    sortInxtn[sortAssignI*3 + AZ] = inxtn[minusSideVsI[minusSideAryI]*3 + AZ];
+                    sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + sortAssignI*3 + AX] = inxtn[minusSideVsI[minusSideAryI]*3 + AX];
+                    sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + sortAssignI*3 + AY] = inxtn[minusSideVsI[minusSideAryI]*3 + AY];
+                    sortInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*3 + sortAssignI*3 + AZ] = inxtn[minusSideVsI[minusSideAryI]*3 + AZ];
 
-                    sortPixelInxtn[sortAssignI*2 + AX] = pixelInxtn[minusSideVsI[minusSideAryI]*2 + AX];
-                    sortPixelInxtn[sortAssignI*2 + AY] = pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY];
+                    sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + sortAssignI*2 + AX] = pixelInxtn[minusSideVsI[minusSideAryI]*2 + AX];
+                    sortPixelInxtn[i*MAX_VIEW_VOLUE_POLY_INXTN*2 + sortAssignI*2 + AY] = pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY];
+
+                    biggestY = (biggestY <= pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY]) ? pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY] : biggestY;
+                    smallestY = (smallestY >= pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY]) ? pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY] : smallestY;
 
                     sortAssignI++;
                 }
-                
+
+                sideVsSize += biggestY - smallestY + 1;
 
             }
 
@@ -842,7 +866,7 @@ __global__ void glpaGpuRender(
     }
 }
 
-void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam, LPDWORD buffer)
+void Render::setVs(std::unordered_map<std::wstring, Object> sObj, Camera cam)
 {
     std::vector<float> polyVs;
     std::vector<float> polyNs;
@@ -956,12 +980,21 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     cudaMalloc((void**)&dScPixelSize, sizeof(float)*hScPixelSize.size());
     cudaMemcpy(dScPixelSize, hScPixelSize.data(), sizeof(float)*hScPixelSize.size(), cudaMemcpyHostToDevice);
 
-    int resultSize = (polyNs.size() / 3) * (12 * 3 * 3 + 3*3 + 3*3);
-    float* hResult = new float[resultSize];
-    float* dResult;
-    cudaMalloc((void**)&dResult, sizeof(float)*resultSize);
-
     int polyAmount = polyNs.size() / 3;
+
+    int* hInxtnAmount = new int[polyAmount];
+    int* dInxtnAmount;
+    cudaMalloc((void**)&dInxtnAmount, sizeof(int)*polyAmount);
+
+    int sortInxtnSize = polyAmount * MAX_VIEW_VOLUE_POLY_INXTN * 3;
+    float* hSortInxtn = new float[sortInxtnSize];
+    float* dSortInxtn;
+    cudaMalloc((void**)&dSortInxtn, sizeof(float)*sortInxtnSize);
+
+    int sortPixelInxtnSize = polyAmount * MAX_VIEW_VOLUE_POLY_INXTN * 2;
+    float* hSortPixelInxtn = new float[sortPixelInxtnSize];
+    float* dSortPixelInxtn;
+    cudaMalloc((void**)&dSortPixelInxtn, sizeof(float)*sortPixelInxtnSize);
 
     float camFarZ = static_cast<float>(cam.farZ / CALC_SCALE);
     float camNearZ = static_cast<float>(cam.nearZ / CALC_SCALE);
@@ -985,11 +1018,12 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     float* dDebugAry;
     cudaMalloc((void**)&dDebugAry, sizeof(float)*debugArySize);
 
-    glpaGpuRender<<<dimGrid, dimBlock>>>
+    glpaGpuSetVs<<<dimGrid, dimBlock>>>
     (
         dPolyVs, dPolyNs, polyAmount, 
         dMtCamTransRot, dMtCamRot, camFarZ, camNearZ,
-        dCamViewAngleCos, dViewVolumeVs, dViewVolumeNs, dNearScSize, dScPixelSize, dResult, dDebugAry
+        dCamViewAngleCos, dViewVolumeVs, dViewVolumeNs, dNearScSize, dScPixelSize, 
+        dInxtnAmount, dSortInxtn, dSortPixelInxtn, sideVsSize, dDebugAry
     );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
@@ -999,10 +1033,11 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     }
     
     cudaMemcpy(hDebugAry, dDebugAry, sizeof(float)*debugArySize, cudaMemcpyDeviceToHost);
-    cudaMemcpy(hResult, dResult, sizeof(float)*resultSize , cudaMemcpyDeviceToHost);
+    cudaMemcpy(hInxtnAmount, dInxtnAmount, sizeof(int)*polyAmount , cudaMemcpyDeviceToHost);
+    cudaMemcpy(hSortInxtn, dSortInxtn, sizeof(float)*sortInxtnSize , cudaMemcpyDeviceToHost);
+    cudaMemcpy(hSortPixelInxtn, dSortPixelInxtn, sizeof(float)*sortPixelInxtnSize , cudaMemcpyDeviceToHost);
 
     delete[] hObjInJudgeAry;
-    delete[] hResult;
 
     cudaFree(dPolyVs);
     cudaFree(dPolyNs);
@@ -1013,7 +1048,9 @@ void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam
     cudaFree(dViewVolumeNs);
     cudaFree(dNearScSize);
     cudaFree(dScPixelSize);
-    cudaFree(dResult);
+}
 
+void Render::rasterize(std::unordered_map<std::wstring, Object> sObj, Camera cam, LPDWORD buffer)
+{
 
 }

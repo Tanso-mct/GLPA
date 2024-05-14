@@ -163,7 +163,7 @@ __global__ void glpaGpuPrepareObj(
 );
 
 
-__global__ void glpaGpuRender(
+__global__ void glpaGpuSetVs(
     float* poly_vertices,
     float* poly_normals,
     int poly_amount,
@@ -176,7 +176,10 @@ __global__ void glpaGpuRender(
     float* view_volume_normals,
     float* near_screen_size,
     float* screen_pixel_size,
-    float* result,
+    int* inxtn_amout,
+    float* sort_inxtn,
+    float* sort_pixel_inxtn,
+    int side_vertices_size,
     float* debugAry
 );
 
@@ -185,12 +188,7 @@ class Render{
 public :
     Render();
 
-    void prepareObjs(
-        std::unordered_map<std::wstring, Object> source_objects,
-        Camera cam
-    );
-
-    void rasterize(
+    void gpuRender(
         std::unordered_map<std::wstring, Object> source_objects,
         Camera cam,
         LPDWORD buffer
@@ -201,7 +199,24 @@ public :
 
     std::vector<float> hCamViewAngleCos;
 
+    int sideVsSize = 0;
+
 private :
+    void prepareObjs(
+        std::unordered_map<std::wstring, Object> source_objects,
+        Camera cam
+    );
+
+    void setVs(
+        std::unordered_map<std::wstring, Object> source_objects,
+        Camera cam
+    );
+
+    void rasterize(
+        std::unordered_map<std::wstring, Object> source_objects,
+        Camera cam,
+        LPDWORD buffer
+    );
 
     int* hObjInJudgeAry;
 
