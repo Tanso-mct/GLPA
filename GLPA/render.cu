@@ -647,19 +647,8 @@ __global__ void glpaGpuRender(
 
             for (int conditionalBranch2 = 0; conditionalBranch2 < polyInIF; conditionalBranch2++)
             {
-                int inxtnAmount = 3;
-                for (int vAryI = FACE_V4; vAryI < MAX_VIEW_VOLUE_POLY_INXTN; vAryI++)
-                {
-                    inxtnAmount += (pixelInxtn[vAryI*2 + 1] != -1) ? TRUE : FALSE;
-                }
-
-                float fromV[3] = {
-                    pixelInxtn[3*0 + AX], pixelInxtn[3*0 + AY], pixelInxtn[3*0 + AZ]
-                };
-
-                float baseV[3] = {
-                    pixelInxtn[3*1 + AX], pixelInxtn[3*1 + AY], pixelInxtn[3*1 + AZ]
-                };
+                float fromV[2] = {pixelInxtn[2*0 + AX], pixelInxtn[2*0 + AY]};
+                float baseV[2] = {pixelInxtn[2*1 + AX], pixelInxtn[2*1 + AY]};
 
                 int plusSideVsI[MAX_VIEW_VOLUE_POLY_INXTN - 2];
                 float plusSideCos[MAX_VIEW_VOLUE_POLY_INXTN - 2];
@@ -669,11 +658,9 @@ __global__ void glpaGpuRender(
                 float minusSideCos[MAX_VIEW_VOLUE_POLY_INXTN - 2];
                 int minusSideNowI = 0;
 
-                for (int vAryI = 2; vAryI < inxtnAmount; vAryI++)
+                for (int vAryI = 2; vAryI < assignAryNum; vAryI++)
                 {
-                    float toV[3] = {
-                        pixelInxtn[3*vAryI + AX], pixelInxtn[3*vAryI + AY], pixelInxtn[3*vAryI + AZ]
-                    };
+                    float toV[2] = {pixelInxtn[2*vAryI + AX], pixelInxtn[2*vAryI + AY]};
 
                     float sortSourceCos;
                     VEC_GET_VECS_COS(fromV, toV, sortSourceCos);
@@ -695,16 +682,159 @@ __global__ void glpaGpuRender(
                         minusSideNowI++;
                     }
                 }
-                int sortingI = 0;
 
-                int sortPlusSideSize = plusSideNowI;
-                for (int sortPlusSide = 0; sortPlusSide < plusSideNowI - 1; sortPlusSide++)
+                int plusSideCosSize = plusSideNowI;
+                for (int sortPlusSide = 0; sortPlusSide < plusSideCosSize - 1; sortPlusSide++)
                 {
-                    for (int sortAryI = 0; sortAryI < sortPlusSideSize - 1; sortAryI++)
+                    for (int sortingI = 0; sortingI < plusSideNowI - 1; sortingI++)
                     {
-                        int cosBigOrSmall = (plusSideCos[sortingI] <)
+                        int cosEqual = (plusSideCos[sortingI] = plusSideCos[sortingI + 1]) ? TRUE : FALSE;
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < cosEqual; conditionalBranch3++)
+                        {
+                            float pixelV1[2] = {
+                                pixelInxtn[2*plusSideVsI[sortingI] + AX],
+                                pixelInxtn[2*plusSideVsI[sortingI] + AY]
+                            };
+
+                            float pixelV2[2] = {
+                                pixelInxtn[2*plusSideVsI[sortingI + 1] + AX],
+                                pixelInxtn[2*plusSideVsI[sortingI + 1] + AY]
+                            };
+
+                            float pixelV1Long = 0;
+                            VEC_GET_VS_LONG(fromV, pixelV1, pixelV1Long);
+
+                            float pixelV2Long = 0;
+                            VEC_GET_VS_LONG(fromV, pixelV2, pixelV2Long);
+
+                            int pixelV1LongSmaller = (pixelV1Long < pixelV2Long) ? TRUE : FALSE;
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < pixelV1LongSmaller; conditionalBranch4++)
+                            {
+                                plusSideCos[sortingI] += CREATE_DIFF;
+                            }
+
+                            int pixelV2LongSmaller = (pixelV1Long > pixelV2Long) ? TRUE : FALSE;
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < pixelV2LongSmaller; conditionalBranch4++)
+                            {
+                                plusSideCos[sortingI + 1] += CREATE_DIFF;
+                            }
+                        }
+
+                        int cosSmall = (plusSideCos[sortingI] < plusSideCos[sortingI + 1]) ? TRUE : FALSE;
+
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < cosSmall; conditionalBranch3++)
+                        {
+                            float tempCos = plusSideCos[sortingI + 1];
+                            plusSideCos[sortingI + 1] = plusSideCos[sortingI];
+                            plusSideCos[sortingI] = tempCos;
+
+                            int tempCosI = plusSideVsI[sortingI + 1];
+                            plusSideVsI[sortingI + 1] = plusSideVsI[sortingI];
+                            plusSideVsI[sortingI] = tempCosI;
+                        }
                     }
+
+                    plusSideNowI--;
                 }
+
+                int minusSideCosSize = minusSideNowI;
+                for (int sortMinusSide = 0; sortMinusSide < minusSideCosSize - 1; sortMinusSide++)
+                {
+                    for (int sortingI = 0; sortingI < minusSideNowI - 1; sortingI++)
+                    {
+                        int cosEqual = (minusSideCos[sortingI] = minusSideCos[sortingI + 1]) ? TRUE : FALSE;
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < cosEqual; conditionalBranch3++)
+                        {
+                            float pixelV1[2] = {
+                                pixelInxtn[2*minusSideVsI[sortingI] + AX],
+                                pixelInxtn[2*minusSideVsI[sortingI] + AY]
+                            };
+
+                            float pixelV2[2] = {
+                                pixelInxtn[2*minusSideVsI[sortingI + 1] + AX],
+                                pixelInxtn[2*minusSideVsI[sortingI + 1] + AY]
+                            };
+
+                            float pixelV1Long = 0;
+                            VEC_GET_VS_LONG(fromV, pixelV1, pixelV1Long);
+
+                            float pixelV2Long = 0;
+                            VEC_GET_VS_LONG(fromV, pixelV2, pixelV2Long);
+
+                            int pixelV1LongSmaller = (pixelV1Long < pixelV2Long) ? TRUE : FALSE;
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < pixelV1LongSmaller; conditionalBranch4++)
+                            {
+                                minusSideCos[sortingI] += CREATE_DIFF;
+                            }
+
+                            int pixelV2LongSmaller = (pixelV1Long > pixelV2Long) ? TRUE : FALSE;
+                            for (int conditionalBranch4 = 0; conditionalBranch4 < pixelV2LongSmaller; conditionalBranch4++)
+                            {
+                                minusSideCos[sortingI + 1] += CREATE_DIFF;
+                            }
+                        }
+
+                        int cosBig = (minusSideCos[sortingI] > minusSideCos[sortingI + 1]) ? TRUE : FALSE;
+
+                        for (int conditionalBranch3 = 0; conditionalBranch3 < cosBig; conditionalBranch3++)
+                        {
+                            float tempCos = minusSideCos[sortingI + 1];
+                            minusSideCos[sortingI + 1] = minusSideCos[sortingI];
+                            minusSideCos[sortingI] = tempCos;
+
+                            int tempCosI = minusSideVsI[sortingI + 1];
+                            minusSideVsI[sortingI + 1] = minusSideVsI[sortingI];
+                            minusSideVsI[sortingI] = tempCosI;
+                        }
+                    }
+
+                    minusSideNowI--;
+                }
+
+                int sortAssignI = 0;
+                float sortInxtn[MAX_VIEW_VOLUE_POLY_INXTN*3] = {0};
+                float sortPixelInxtn[MAX_VIEW_VOLUE_POLY_INXTN*2] = {-1};
+
+                sortInxtn[3*0 + AX] = inxtn[3*0 + AX];
+                sortInxtn[3*0 + AY] = inxtn[3*0 + AY];
+                sortInxtn[3*0 + AZ] = inxtn[3*0 + AZ];
+
+                sortPixelInxtn[3*0 + AX] = pixelInxtn[3*0 + AX];
+                sortPixelInxtn[3*0 + AY] = pixelInxtn[3*0 + AY];
+
+                for (int plusSideAryI = 0; plusSideAryI < plusSideCosSize; plusSideAryI++)
+                {
+                    sortInxtn[sortAssignI*3 + AX] = inxtn[plusSideVsI[plusSideAryI]*3 + AX];
+                    sortInxtn[sortAssignI*3 + AY] = inxtn[plusSideVsI[plusSideAryI]*3 + AY];
+                    sortInxtn[sortAssignI*3 + AZ] = inxtn[plusSideVsI[plusSideAryI]*3 + AZ];
+
+                    sortPixelInxtn[sortAssignI*2 + AX] = pixelInxtn[plusSideVsI[plusSideAryI]*2 + AX];
+                    sortPixelInxtn[sortAssignI*2 + AY] = pixelInxtn[plusSideVsI[plusSideAryI]*2 + AY];
+
+                    sortAssignI++;
+                }
+
+                sortInxtn[3*1 + AX] = inxtn[3*1 + AX];
+                sortInxtn[3*1 + AY] = inxtn[3*1 + AY];
+                sortInxtn[3*1 + AZ] = inxtn[3*1 + AZ];
+
+                sortPixelInxtn[3*1 + AX] = pixelInxtn[3*1 + AX];
+                sortPixelInxtn[3*1 + AY] = pixelInxtn[3*1 + AY];
+
+                sortAssignI++;
+
+                for (int minusSideAryI = 0; minusSideAryI < minusSideCosSize; minusSideAryI++)
+                {
+                    sortInxtn[sortAssignI*3 + AX] = inxtn[minusSideVsI[minusSideAryI]*3 + AX];
+                    sortInxtn[sortAssignI*3 + AY] = inxtn[minusSideVsI[minusSideAryI]*3 + AY];
+                    sortInxtn[sortAssignI*3 + AZ] = inxtn[minusSideVsI[minusSideAryI]*3 + AZ];
+
+                    sortPixelInxtn[sortAssignI*2 + AX] = pixelInxtn[minusSideVsI[minusSideAryI]*2 + AX];
+                    sortPixelInxtn[sortAssignI*2 + AY] = pixelInxtn[minusSideVsI[minusSideAryI]*2 + AY];
+
+                    sortAssignI++;
+                }
+                
 
             }
 

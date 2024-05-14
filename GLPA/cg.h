@@ -106,6 +106,7 @@ typedef struct tagFaceNormals{
 #define FACE_V4 3
 
 #define MAX_VIEW_VOLUE_POLY_INXTN 12
+#define CREATE_DIFF 0.00001
 
 #define SURFACE_TOP 0
 #define SURFACE_FRONT 1

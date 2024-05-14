@@ -34,6 +34,11 @@ __global__ void glpaGpuGetSameSizeVecsCos(
         sqrt(vec2[AX] * vec2[AX] + vec2[AY] * vec2[AY] + vec2[AZ] * vec2[AZ])); \
     } while(0);
 
+#define VEC_GET_VS_LONG(from_v, to_v, result) \
+    do { \
+        result = sqrt((to_v[AX] - from_v[AX]) * (to_v[AX] - from_v[AX]) + (to_v[AY] - from_v[AY]) * (to_v[AY] - from_v[AY])); \
+    } while(0);
+
 class Vector{
 public :
     // host memory
