@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -145,131 +145,6 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ambient_occlusion.cpp" />
-    <ClCompile Include="animation.cpp" />
-    <ClCompile Include="base_color.cpp" />
-    <ClCompile Include="character.cpp" />
-    <ClCompile Include="color.cpp" />
-    <ClCompile Include="command.cpp" />
-    <ClCompile Include="console.cpp" />
-    <ClCompile Include="equation.cu" />
-    <ClCompile Include="fbx.cpp" />
-    <ClCompile Include="field.cpp" />
-    <ClCompile Include="fps.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="glpa.cpp" />
-    <ClCompile Include="image.cpp" />
-    <ClCompile Include="light.cpp" />
-    <ClCompile Include="material.cpp" />
-    <CudaCompile Include="matrix.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CudaCompile>
-    <ClCompile Include="movie.cpp" />
-    <ClCompile Include="mp4.cpp" />
-    <ClCompile Include="normal.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="png.cpp" />
-    <ClCompile Include="roughness.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="scene2d.cpp" />
-    <ClCompile Include="scene3d.cpp" />
-    <ClCompile Include="screen.cpp" />
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="shadow.cpp" />
-    <ClCompile Include="sky.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="text.cpp" />
-    <ClCompile Include="transformation.cpp" />
-    <ClCompile Include="triangle_ratio.cu" />
-    <CudaCompile Include="render.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-    </CudaCompile>
-    <CudaCompile Include="vector.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CudaCompile>
-    <CudaCompile Include="camera.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </CudaCompile>
-    <CudaCompile Include="buffer_3d.cu">
-      <FileType>Document</FileType>
-    </CudaCompile>
-    <ClCompile Include="hitbox.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="user_input.cpp" />
-    <CudaCompile Include="view_volume.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CudaCompile>
-    <ClCompile Include="window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ambient_occlusion.h" />
-    <ClInclude Include="base_color.h" />
-    <CudaCompile Include="buffer_3d.cuh" />
-    <ClInclude Include="animation.h" />
-    <ClInclude Include="character.h" />
-    <ClInclude Include="color.h" />
-    <ClInclude Include="command.h" />
-    <ClInclude Include="console.h" />
-    <ClInclude Include="equation.cuh" />
-    <ClInclude Include="error.h" />
-    <ClInclude Include="fbx.h" />
-    <ClInclude Include="field.h" />
-    <ClInclude Include="fps.h" />
-    <ClInclude Include="game.h" />
-    <ClInclude Include="glpa.h" />
-    <ClInclude Include="cg.h" />
-    <ClInclude Include="image.h" />
-    <ClInclude Include="light.h" />
-    <ClInclude Include="material.h" />
-    <CudaCompile Include="matrix.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </CudaCompile>
-    <ClInclude Include="movie.h" />
-    <ClInclude Include="mp4.h" />
-    <ClInclude Include="normal.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="png.h" />
-    <CudaCompile Include="render.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-    </CudaCompile>
-    <ClInclude Include="roughness.h" />
-    <ClInclude Include="scene.h" />
-    <ClInclude Include="scene2d.h" />
-    <ClInclude Include="scene3d.h" />
-    <ClInclude Include="screen.h" />
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="shadow.h" />
-    <ClInclude Include="sky.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="text.h" />
-    <ClInclude Include="transformation.h" />
-    <ClInclude Include="triangle_ratio.cuh" />
-    <CudaCompile Include="vector.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </CudaCompile>
-    <CudaCompile Include="camera.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </CudaCompile>
-    <ClInclude Include="hitbox.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="user_input.h" />
-    <CudaCompile Include="view_volume.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </CudaCompile>
-    <ClInclude Include="window.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +163,34 @@
     <None Include="resource\scene\game_1\obj\temp_field.obj">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="example\ExampleBase.cpp" />
+    <ClCompile Include="example\ExampleEntry.cpp" />
+    <ClCompile Include="example\ExampleInput.cpp" />
+    <ClCompile Include="example\ExampleScene2d.cpp" />
+    <ClCompile Include="example\ExampleScene3d.cpp" />
+    <ClCompile Include="src\GlpaBase.cpp" />
+    <ClCompile Include="src\GlpaLib.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Scene2d.cpp" />
+    <ClCompile Include="src\Scene3d.cpp" />
+    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\WindowsInput.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="example\ExampleBase.h" />
+    <ClInclude Include="example\ExampleInput.h" />
+    <ClInclude Include="example\ExampleScene2d.h" />
+    <ClInclude Include="example\ExampleScene3d.h" />
+    <ClInclude Include="include\GlpaBase.h" />
+    <ClInclude Include="include\GlpaLib.h" />
+    <ClInclude Include="include\Macro.h" />
+    <ClInclude Include="include\Scene.h" />
+    <ClInclude Include="include\Scene2d.h" />
+    <ClInclude Include="include\Scene3d.h" />
+    <ClInclude Include="include\Window.h" />
+    <ClInclude Include="include\WindowsInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -85,7 +85,9 @@
         "__functional_base": "cpp",
         "__node_handle": "cpp",
         "__memory": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "map": "cpp",
+        "xtree": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en",
