@@ -18,7 +18,6 @@ private :
 
     std::string nowScName;
     std::unordered_map<std::string, Glpa::Scene*> pScs;
-
     
 public :
     std::string getName() const {return name;}
@@ -29,6 +28,19 @@ public :
 
     bool getStarted() const {return started;}
     void setStarted(bool value) {started = value;}
+
+    void minimizeWindow();
+    void killFocusWindow();
+    void setFocusWindow();
+    void editSizeWindow();
+    void createWindow();
+    void paintWindow();
+    void closeWindow();
+    void destroyWindow();
+
+    void keyDownMsg(UINT msg, WPARAM wParam, LPARAM lParam);
+    void keyUpMsg(UINT msg, WPARAM wParam, LPARAM lParam);
+    void mouseMsg(UINT msg, WPARAM wParam, LPARAM lParam);
 
     void start();
     void update();

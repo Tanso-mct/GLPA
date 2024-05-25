@@ -86,16 +86,10 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsInput.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
     <ClCompile Include="example\ExampleBase.cpp">
       <Filter>ソース ファイル\Example</Filter>
     </ClCompile>
     <ClCompile Include="example\ExampleEntry.cpp">
-      <Filter>ソース ファイル\Example</Filter>
-    </ClCompile>
-    <ClCompile Include="example\ExampleInput.cpp">
       <Filter>ソース ファイル\Example</Filter>
     </ClCompile>
     <ClCompile Include="example\ExampleScene2d.cpp">
@@ -127,13 +121,7 @@
     <ClInclude Include="include\Window.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
-    <ClInclude Include="include\WindowsInput.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
     <ClInclude Include="example\ExampleBase.h">
-      <Filter>ヘッダー ファイル\Example</Filter>
-    </ClInclude>
-    <ClInclude Include="example\ExampleInput.h">
       <Filter>ヘッダー ファイル\Example</Filter>
     </ClInclude>
     <ClInclude Include="example\ExampleScene2d.h">

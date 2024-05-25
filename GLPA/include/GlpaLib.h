@@ -11,13 +11,14 @@
 class GlpaLib
 {
 private :
-    HINSTANCE hInstance;
-    HINSTANCE hPrevInstance;
-    LPSTR lpCmdLine;
-    int nCmdShow;
-    MSG msg;
+    static HINSTANCE hInstance;
+    static HINSTANCE hPrevInstance;
+    static LPSTR lpCmdLine;
+    static int nCmdShow;
+    static MSG msg;
 
-    std::unordered_map<std::string, GlpaBase*> pBcs;
+    static std::unordered_map<std::string, GlpaBase*> pBcs;
+    static std::unordered_map<HWND, std::string> bcHWnds;
 
 public :
     GlpaLib
@@ -27,6 +28,8 @@ public :
     );
 
     ~GlpaLib();
+
+    static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     void addBase(GlpaBase* pBc);
     void deleteBase(GlpaBase* pBc);

@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "WindowsInput.h"
 
 namespace Glpa{
 
@@ -11,9 +10,19 @@ class Scene
 {
 private :
     std::string name;
-    Glpa::WindowsInput* input;
+
+protected :
+    std::string keyMsg;
+    bool keyMsgUpdated = false;
+
+    std::string mouseMsg;
+    bool mouseMsgUpdated = false;
 
 public :
+    void getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam);
+    void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
+    void getMouse(UINT msg, WPARAM wParam, LPARAM lParam);
+
     virtual void start() = 0;
     virtual void update() = 0;
 

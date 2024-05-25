@@ -3,7 +3,6 @@
 #include "ExampleBase.h"
 #include "ExampleScene3d.h"
 #include "ExampleScene2d.h"
-#include "ExampleInput.h"
 
 int WINAPI WinMain
 (
