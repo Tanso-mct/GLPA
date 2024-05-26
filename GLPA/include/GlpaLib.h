@@ -11,16 +11,25 @@
 class GlpaLib
 {
 private :
-    static HINSTANCE hInstance;
-    static HINSTANCE hPrevInstance;
-    static LPSTR lpCmdLine;
-    static int nCmdShow;
-    static MSG msg;
+    static GlpaLib* instance;
 
-    static std::unordered_map<std::string, GlpaBase*> pBcs;
-    static std::unordered_map<HWND, std::string> bcHWnds;
+    HINSTANCE hInstance;
+    HINSTANCE hPrevInstance;
+    LPSTR lpCmdLine;
+    int nCmdShow;
+    MSG msg;
+
+    std::unordered_map<std::string, GlpaBase*> pBcs;
+    std::unordered_map<HWND, std::string> bcHWnds;
 
 public :
+    static void newInstance
+    (
+        const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
+        const LPSTR arg_lpCmdLine, const int arg_nCmdShow
+    );
+    static void deleteInstance();
+
     GlpaLib
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
@@ -31,8 +40,23 @@ public :
 
     static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+    void minimizeMsg(GlpaBase* bc);
+    void killFocusMsg(GlpaBase* bc);
+    void setFocusMsg(GlpaBase* bc);
+    void editSizeMsg(GlpaBase* bc);
+    void createMsg(GlpaBase* bc);
+    void paintMsg(GlpaBase* bc);
+    void closeMsg(GlpaBase* bc);
+    void destroyMsg(GlpaBase* bc);
+
+    void keyDownMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
+    void keyUpMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
+    void mouseMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
+
     void addBase(GlpaBase* pBc);
     void deleteBase(GlpaBase* pBc);
+
+    static MSG getMsg(){return instance->msg;}
 
     void run();
     

@@ -1,9 +1,20 @@
 #include "GlpaLib.h"
 
-GlpaLib::GlpaLib
+void GlpaLib::newInstance
 (
-    const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, const LPSTR arg_lpCmdLine, const int arg_nCmdShow
-)
+    const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
+    const LPSTR arg_lpCmdLine, const int arg_nCmdShow
+){
+    instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
+}
+
+void GlpaLib::deleteInstance()
+{
+    delete instance;
+}
+
+GlpaLib::GlpaLib(
+    const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, const LPSTR arg_lpCmdLine, const int arg_nCmdShow)
 {
     hInstance = arg_hInstance;
     hPrevInstance = arg_hInstance;
@@ -16,45 +27,45 @@ LRESULT GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch (msg){
         case WM_SYSCOMMAND:
             if (wParam == SC_MINIMIZE) {
-                pBcs[bcHWnds[hWnd]]->minimizeWindow();
+                GlpaLib::instance->minimizeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             }
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
         case WM_KILLFOCUS:
-            pBcs[bcHWnds[hWnd]]->killFocusWindow();
+            GlpaLib::instance->killFocusMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
         case WM_SETFOCUS:
-            pBcs[bcHWnds[hWnd]]->setFocusWindow();
+            GlpaLib::instance->setFocusMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
         case WM_GETMINMAXINFO:
-            pBcs[bcHWnds[hWnd]]->editSizeWindow();
+            GlpaLib::instance->editSizeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
         case WM_CREATE:
-            pBcs[bcHWnds[hWnd]]->createWindow();
+            GlpaLib::instance->createMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
         case WM_PAINT:
-            pBcs[bcHWnds[hWnd]]->paintWindow();
+            GlpaLib::instance->paintMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
         case WM_CLOSE:
-            pBcs[bcHWnds[hWnd]]->closeWindow();
+            GlpaLib::instance->closeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
                 
 
         case WM_DESTROY:
-            pBcs[bcHWnds[hWnd]]->destroyWindow();
+            GlpaLib::instance->destroyMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
         case WM_KEYDOWN:
-            pBcs[bcHWnds[hWnd]]->keyDownMsg(msg, wParam, lParam);
+            GlpaLib::instance->keyDownMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
             return 0;
 
         case WM_KEYUP:
-            pBcs[bcHWnds[hWnd]]->keyUpMsg(msg, wParam, lParam);
+            GlpaLib::instance->keyUpMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
             return 0;
 
         case WM_LBUTTONDOWN:
@@ -67,13 +78,28 @@ LRESULT GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         case WM_MBUTTONUP:
         case WM_MOUSEWHEEL:
         case WM_MOUSEMOVE:
-            pBcs[bcHWnds[hWnd]]->mouseMsg(msg, wParam, lParam);
+            GlpaLib::instance->mouseMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
             return 0;
             
         default:
                 return DefWindowProc(hWnd, msg, wParam, lParam);
     }
     return 0;
+}
+
+void GlpaLib::keyDownMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    bc->getNowScenePt()->getKeyDown(msg, wParam, lParam);
+}
+
+void GlpaLib::keyUpMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    bc->getNowScenePt()->getKeyUp(msg, wParam, lParam);
+}
+
+void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    bc->getNowScenePt()->getMouse(msg, wParam, lParam);
 }
 
 void GlpaLib::addBase(GlpaBase *pBc)

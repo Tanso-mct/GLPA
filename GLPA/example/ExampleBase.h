@@ -5,6 +5,10 @@
 
 class ExampleBase : public GlpaBase
 {
+private :
+
+public :
+    void setup() override;
     
 };
 

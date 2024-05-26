@@ -29,18 +29,11 @@ public :
     bool getStarted() const {return started;}
     void setStarted(bool value) {started = value;}
 
-    void minimizeWindow();
-    void killFocusWindow();
-    void setFocusWindow();
-    void editSizeWindow();
-    void createWindow();
-    void paintWindow();
-    void closeWindow();
-    void destroyWindow();
+    Glpa::Scene* getNowScenePt(){return pScs[nowScName];}
 
-    void keyDownMsg(UINT msg, WPARAM wParam, LPARAM lParam);
-    void keyUpMsg(UINT msg, WPARAM wParam, LPARAM lParam);
-    void mouseMsg(UINT msg, WPARAM wParam, LPARAM lParam);
+    virtual void setup() = 0;
+
+
 
     void start();
     void update();
