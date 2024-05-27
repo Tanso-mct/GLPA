@@ -14,12 +14,12 @@ private :
     bool visible = true;
     bool started = false;
 
-    Glpa::Window* window;
-
     std::string nowScName;
     std::unordered_map<std::string, Glpa::Scene*> pScs;
     
 public :
+    Glpa::Window* window;
+    
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
 

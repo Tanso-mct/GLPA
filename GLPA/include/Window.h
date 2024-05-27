@@ -8,22 +8,22 @@ namespace Glpa {
 class Window
 {
 private :
-    LPCWSTR name;
-    LPCWSTR apiClassName;
+    LPCWSTR name = L"TEMP_NAME";
+    LPCWSTR apiClassName = L"TEMP_API_CLASS_NAME";
 
     HWND hWnd;
 
-    int width;
-    int height;
-    int dpi;
+    int width = 1200;
+    int height = 800;
+    int dpi = 1;
 
-    UINT style;
-    LPWSTR loadIcon;
-    LPWSTR loadCursor;
-    int bgColor;
-    LPWSTR smallIcon;
+    UINT style = CS_HREDRAW | CS_VREDRAW;
+    LPWSTR loadIcon = IDI_APPLICATION;
+    LPWSTR loadCursor = IDC_ARROW;
+    int bgColor = WHITE_BRUSH;
+    LPWSTR smallIcon = IDI_APPLICATION;
 
-    WNDCLASSEX apiClass;
+    DWORD viewStyle = WS_SYSMENU;
 
     HDC hWndDC = nullptr;
     PAINTSTRUCT hPs;
@@ -35,15 +35,24 @@ private :
     LPDWORD pixels;
 
 public :
-    Window
-    (
-        LPCWSTR argName, LPCWSTR argApiClassName, int argWidth, int argHeight, int argDpi,
-        UINT argStyle, LPWSTR argLoadIcon, LPWSTR argLoadCursor, int argBackgroundColor, LPWSTR argSmallIcon
-    );
+    WNDCLASSEX apiClass;
+    void createPixels();
+    void create(HINSTANCE hInstance);
+    void createDc();
 
+    void setName(LPCWSTR str) {name = str;}
+    void setApiClassName(LPCWSTR str) {apiClassName = str;}
 
+    void setWidth(int value) {width = value;}
+    void setHeight(int value) {height = value;}
+    void setDpi(int value) {dpi = value;}
 
-public :
+    void setStyle(UINT value) {style = value;}
+    void setLoadIcon(LPWSTR value) {loadIcon = value;}
+    void setLoadCursor(LPWSTR value) {loadCursor = value;}
+    void setBgColor(int value) {bgColor = value;}
+    void setSmallIcon(LPWSTR value) {smallIcon = value;}
+
     void sendPaintMsg();
 };
 

@@ -22,7 +22,7 @@ GlpaLib::GlpaLib(
     nCmdShow = arg_nCmdShow;
 }
 
-LRESULT GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg){
         case WM_SYSCOMMAND:
@@ -113,6 +113,14 @@ void GlpaLib::deleteBase(GlpaBase *pBc)
     pBcs.erase(pBc->getName());
 }
 
+void GlpaLib::createWindow(GlpaBase *pBc)
+{
+    Glpa::Window* ptWindow = pBc->window;
+
+    ptWindow->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
+    ptWindow->create(hInstance);
+}
+
 void GlpaLib::run()
 {
     while (true) {
@@ -135,4 +143,9 @@ void GlpaLib::run()
             }
         }
     }
+}
+
+void GlpaLib::createMsg(GlpaBase *bc)
+{
+    
 }
