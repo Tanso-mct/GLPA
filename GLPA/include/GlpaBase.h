@@ -19,6 +19,9 @@ private :
     
 public :
     Glpa::Window* window;
+
+    GlpaBase();
+    ~GlpaBase();
     
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
@@ -31,12 +34,14 @@ public :
 
     Glpa::Scene* getNowScenePt(){return pScs[nowScName];}
 
-    virtual void setup() = 0;
+    virtual void awake(){};
+    virtual void destroy(){};
 
+    virtual void start(){};
+    virtual void update(){};
 
-
-    void start();
-    void update();
+    void runStart();
+    void runUpdate();
 
 };
 

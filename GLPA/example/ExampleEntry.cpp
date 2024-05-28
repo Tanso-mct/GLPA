@@ -10,7 +10,6 @@ int WINAPI WinMain
     const LPSTR lpCmdLine, const int nCmdShow
 ){
     GlpaLib::newInstance(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
-    
 
     ExampleBase* pBc = new ExampleBase();
 

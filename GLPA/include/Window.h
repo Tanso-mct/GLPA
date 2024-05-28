@@ -2,6 +2,7 @@
 #define GLPA_WINDOW_H_
 
 #include <Windows.h>
+#include <stdexcept>
 
 namespace Glpa {
 
@@ -10,8 +11,6 @@ class Window
 private :
     LPCWSTR name = L"TEMP_NAME";
     LPCWSTR apiClassName = L"TEMP_API_CLASS_NAME";
-
-    HWND hWnd;
 
     int width = 1200;
     int height = 800;
@@ -35,6 +34,7 @@ private :
     LPDWORD pixels;
 
 public :
+    HWND hWnd;
     WNDCLASSEX apiClass;
     void createPixels();
     void create(HINSTANCE hInstance);

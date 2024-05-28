@@ -117,8 +117,13 @@ void GlpaLib::createWindow(GlpaBase *pBc)
 {
     Glpa::Window* ptWindow = pBc->window;
 
-    ptWindow->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
+    pBc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
     ptWindow->create(hInstance);
+}
+
+void GlpaLib::showWindow(GlpaBase *pBc, int type)
+{
+    ShowWindow(pBc->window->hWnd, type);
 }
 
 void GlpaLib::run()
@@ -133,13 +138,13 @@ void GlpaLib::run()
         } 
 
         for (auto& pBc : pBcs) {
-            if(pBc.second->getVisible() && !pBc.second->getStarted())
+            if(pBc.second->getVisible() && pBc.second->getStarted())
             {
-                pBc.second->start();
+                pBc.second->runUpdate();
             }
-            else if(pBc.second->getVisible() && pBc.second->getStarted())
+            else if(pBc.second->getVisible() && !pBc.second->getStarted())
             {
-                pBc.second->update();
+                pBc.second->runStart();
             }
         }
     }

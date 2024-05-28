@@ -59,6 +59,7 @@ public :
     static MSG getMsg(){return instance->msg;}
 
     void createWindow(GlpaBase* pBc);
+    void showWindow(GlpaBase* pBc, int type);
 
     void run();
     
