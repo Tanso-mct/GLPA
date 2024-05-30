@@ -68,10 +68,37 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ExampleBase.cpp">
+      <Filter>ソース ファイル\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="ExampleEntry.cpp">
+      <Filter>ソース ファイル\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="ExampleScene2d.cpp">
+      <Filter>ソース ファイル\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="ExampleScene3d.cpp">
+      <Filter>ソース ファイル\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Color.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
     <ClCompile Include="src\GlpaBase.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
     <ClCompile Include="src\GlpaLib.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Image.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Matrix.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Png.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Render.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene.cpp">
@@ -83,60 +110,57 @@
     <ClCompile Include="src\Scene3d.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
+    <ClCompile Include="src\SceneObject.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sound.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Text.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ui.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
     <ClCompile Include="src\Window.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="example\ExampleBase.cpp">
-      <Filter>ソース ファイル\Example</Filter>
-    </ClCompile>
-    <ClCompile Include="example\ExampleEntry.cpp">
-      <Filter>ソース ファイル\Example</Filter>
-    </ClCompile>
-    <ClCompile Include="example\ExampleScene2d.cpp">
-      <Filter>ソース ファイル\Example</Filter>
-    </ClCompile>
-    <ClCompile Include="example\ExampleScene3d.cpp">
-      <Filter>ソース ファイル\Example</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Png.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneObject.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Color.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Ui.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ExampleBase.h">
+      <Filter>ヘッダー ファイル\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="ExampleScene2d.h">
+      <Filter>ヘッダー ファイル\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="ExampleScene3d.h">
+      <Filter>ヘッダー ファイル\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Color.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
     <ClInclude Include="include\GlpaBase.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
     <ClInclude Include="include\GlpaLib.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
+    <ClInclude Include="include\Image.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
     <ClInclude Include="include\Macro.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Matrix.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Png.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
     <ClInclude Include="include\Scene.h">
@@ -148,46 +172,22 @@
     <ClInclude Include="include\Scene3d.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
+    <ClInclude Include="include\SceneObject.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sound.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Text.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Ui.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Vector.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
     <ClInclude Include="include\Window.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="example\ExampleBase.h">
-      <Filter>ヘッダー ファイル\Example</Filter>
-    </ClInclude>
-    <ClInclude Include="example\ExampleScene2d.h">
-      <Filter>ヘッダー ファイル\Example</Filter>
-    </ClInclude>
-    <ClInclude Include="example\ExampleScene3d.h">
-      <Filter>ヘッダー ファイル\Example</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Png.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneObject.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Ui.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Render.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
   </ItemGroup>

@@ -72,6 +72,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)/GLPA/include/;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)/GLPA/include/;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -165,48 +171,48 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="example\ExampleBase.cpp" />
-    <ClCompile Include="example\ExampleEntry.cpp" />
-    <ClCompile Include="example\ExampleScene2d.cpp" />
-    <ClCompile Include="example\ExampleScene3d.cpp" />
-    <ClCompile Include="Image.cpp" />
-    <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="Png.cpp" />
-    <ClCompile Include="Render.cpp" />
-    <ClCompile Include="SceneObject.cpp" />
-    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="ExampleBase.cpp" />
+    <ClCompile Include="ExampleEntry.cpp" />
+    <ClCompile Include="ExampleScene2d.cpp" />
+    <ClCompile Include="ExampleScene3d.cpp" />
+    <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
+    <ClCompile Include="src\Image.cpp" />
+    <ClCompile Include="src\Matrix.cpp" />
+    <ClCompile Include="src\Png.cpp" />
+    <ClCompile Include="src\Render.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
+    <ClCompile Include="src\SceneObject.cpp" />
+    <ClCompile Include="src\Sound.cpp" />
+    <ClCompile Include="src\Text.cpp" />
+    <ClCompile Include="src\Ui.cpp" />
+    <ClCompile Include="src\Vector.cpp" />
     <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="Text.cpp" />
-    <ClCompile Include="Ui.cpp" />
-    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="example\ExampleBase.h" />
-    <ClInclude Include="example\ExampleScene2d.h" />
-    <ClInclude Include="example\ExampleScene3d.h" />
-    <ClInclude Include="Image.h" />
+    <ClInclude Include="ExampleBase.h" />
+    <ClInclude Include="ExampleScene2d.h" />
+    <ClInclude Include="ExampleScene3d.h" />
+    <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\GlpaBase.h" />
     <ClInclude Include="include\GlpaLib.h" />
+    <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Macro.h" />
+    <ClInclude Include="include\Matrix.h" />
+    <ClInclude Include="include\Png.h" />
+    <ClInclude Include="include\Render.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Scene2d.h" />
     <ClInclude Include="include\Scene3d.h" />
+    <ClInclude Include="include\SceneObject.h" />
+    <ClInclude Include="include\Sound.h" />
+    <ClInclude Include="include\Text.h" />
+    <ClInclude Include="include\Ui.h" />
+    <ClInclude Include="include\Vector.h" />
     <ClInclude Include="include\Window.h" />
-    <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Png.h" />
-    <ClInclude Include="Render.h" />
-    <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="Sound.h" />
-    <ClInclude Include="Text.h" />
-    <ClInclude Include="Ui.h" />
-    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
