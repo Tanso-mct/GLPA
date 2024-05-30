@@ -1,6 +1,6 @@
 #include "GlpaLib.h"
 
-void GlpaLib::newInstance
+void GlpaLib::start
 (
     const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
     const LPSTR arg_lpCmdLine, const int arg_nCmdShow
@@ -8,7 +8,7 @@ void GlpaLib::newInstance
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
 }
 
-void GlpaLib::deleteInstance()
+void GlpaLib::close()
 {
     delete instance;
 }
@@ -152,5 +152,5 @@ void GlpaLib::run()
 
 void GlpaLib::createMsg(GlpaBase *bc)
 {
-    
+    bc->window->createDc();
 }

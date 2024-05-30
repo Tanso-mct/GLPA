@@ -2,7 +2,7 @@
 #define GLPA_SCENE_H_
 
 #include <string>
-
+#include <Windows.h>
 
 namespace Glpa{
 

@@ -23,12 +23,12 @@ private :
     std::unordered_map<HWND, std::string> bcHWnds;
 
 public :
-    static void newInstance
+    static void start
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
         const LPSTR arg_lpCmdLine, const int arg_nCmdShow
     );
-    static void deleteInstance();
+    static void close();
 
     GlpaLib
     (

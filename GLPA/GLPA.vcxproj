@@ -165,21 +165,33 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="example\ExampleBase.cpp" />
     <ClCompile Include="example\ExampleEntry.cpp" />
     <ClCompile Include="example\ExampleScene2d.cpp" />
     <ClCompile Include="example\ExampleScene3d.cpp" />
+    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Png.cpp" />
+    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
     <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Ui.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Color.h" />
     <ClInclude Include="example\ExampleBase.h" />
     <ClInclude Include="example\ExampleScene2d.h" />
     <ClInclude Include="example\ExampleScene3d.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="include\GlpaBase.h" />
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\Macro.h" />
@@ -187,6 +199,14 @@
     <ClInclude Include="include\Scene2d.h" />
     <ClInclude Include="include\Scene3d.h" />
     <ClInclude Include="include\Window.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Png.h" />
+    <ClInclude Include="Render.h" />
+    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="Ui.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

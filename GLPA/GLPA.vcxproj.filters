@@ -98,6 +98,36 @@
     <ClCompile Include="example\ExampleScene3d.cpp">
       <Filter>ソース ファイル\Example</Filter>
     </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Png.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneObject.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Ui.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GlpaBase.h">
@@ -129,6 +159,36 @@
     </ClInclude>
     <ClInclude Include="example\ExampleScene3d.h">
       <Filter>ヘッダー ファイル\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Png.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneObject.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Ui.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
