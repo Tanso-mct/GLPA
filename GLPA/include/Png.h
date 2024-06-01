@@ -1,5 +1,22 @@
-#pragma once
-class Png
+#ifndef GLPA_PNG_H_
+#define GLPA_PNG_H_
+
+#include "File.h"
+
+namespace Glpa
 {
+
+class Png : Glpa::File
+{
+private :
+
+public :
+    ~Png() override;
+
+    void load() override;
 };
+
+}
+
+#endif GLPA_PNG_H_
 

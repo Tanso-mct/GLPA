@@ -8,8 +8,7 @@ class ExampleBase : public GlpaBase
 private :
 
 public :
-    void awake() override;
-    
+    void setup() override;
 };
 
 #endif EXAMPLE_BASE_H_

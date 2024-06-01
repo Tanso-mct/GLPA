@@ -1,14 +1,20 @@
 #ifndef GLPA_SCENE_OBJECT_H_
 #define GLPA_SCENE_OBJECT_H_
 
-namespace Glpa{
+#include <string>
+#include <typeinfo>
+
+namespace Glpa
+{
 
 class SceneObject
 {
-private :
+protected :
+    std::string name;
 
 public :
-    
+    virtual ~SceneObject(){};
+    virtual void load() = 0;
 };
 
 }

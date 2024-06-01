@@ -89,6 +89,29 @@ void Glpa::Window::createDc()
     ReleaseDC(hWnd, hWndDC);
 }
 
+void Glpa::Window::paint()
+{
+    hWndDC = BeginPaint(hWnd, &hPs);
+
+    StretchDIBits(
+        hWndDC,
+        0,
+        0,
+        width,
+        height,
+        0,
+        0,
+        width * dpi,
+        height * dpi, 
+        pixels,
+        &hBufBmpInfo,
+        DIB_RGB_COLORS,
+        SRCCOPY
+    );
+    
+    EndPaint(hWnd, &hPs);
+}
+
 void Glpa::Window::sendPaintMsg()
 {
     InvalidateRect(hWnd, NULL, FALSE);

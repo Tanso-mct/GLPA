@@ -14,8 +14,12 @@ private :
     bool visible = true;
     bool started = false;
 
+    // You must enter the name of the first scene in startScName in the Awake function.
+    std::string startScName;
     std::string nowScName;
-    std::unordered_map<std::string, Glpa::Scene*> pScs;
+    std::string nextScName;
+
+    std::unordered_map<std::string, Glpa::Scene*> ptScs;
     
 public :
     Glpa::Window* window;
@@ -32,7 +36,15 @@ public :
     bool getStarted() const {return started;}
     void setStarted(bool value) {started = value;}
 
-    Glpa::Scene* getNowScenePt(){return pScs[nowScName];}
+    Glpa::Scene* getNowScenePt(){return ptScs[nowScName];}
+
+    void addScene(Glpa::Scene* ptScene);
+    void deleteScene(Glpa::Scene* ptScene);
+
+    void loadScene(Glpa::Scene* ptScene);
+    void releaseScene(Glpa::Scene* ptScene);
+
+    virtual void setup() = 0;
 
     virtual void awake(){};
     virtual void destroy(){};

@@ -5,6 +5,10 @@
 
 class ExampleScene2d : public Glpa::Scene2d
 {
+private :
+
+public :
+    void setup() override;
 };
 
 #endif EXAMPLE_SCENE_2D_H_

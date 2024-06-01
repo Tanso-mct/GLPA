@@ -4,7 +4,8 @@
 #include <Windows.h>
 #include <stdexcept>
 
-namespace Glpa {
+namespace Glpa 
+{
 
 class Window
 {
@@ -38,13 +39,19 @@ public :
     WNDCLASSEX apiClass;
     void createPixels();
     void create(HINSTANCE hInstance);
+
     void createDc();
+    void paint();
 
     void setName(LPCWSTR str) {name = str;}
     void setApiClassName(LPCWSTR str) {apiClassName = str;}
 
+    int getWidth() const {return width;}
     void setWidth(int value) {width = value;}
+
+    int getHeight() const {return height;}
     void setHeight(int value) {height = value;}
+
     void setDpi(int value) {dpi = value;}
 
     void setStyle(UINT value) {style = value;}

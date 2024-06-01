@@ -128,6 +128,9 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
+    <ClCompile Include="src\File.cpp">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExampleBase.h">
@@ -188,6 +191,9 @@
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
     <ClInclude Include="include\Window.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
+    <ClInclude Include="include\File.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
   </ItemGroup>

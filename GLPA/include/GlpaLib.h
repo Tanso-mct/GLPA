@@ -23,12 +23,12 @@ private :
     std::unordered_map<HWND, std::string> bcHWnds;
 
 public :
-    static void start
+    static void Start
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
         const LPSTR arg_lpCmdLine, const int arg_nCmdShow
     );
-    static void close();
+    static void Close();
 
     GlpaLib
     (
@@ -41,9 +41,7 @@ public :
     static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     void minimizeMsg(GlpaBase* bc);
-    void killFocusMsg(GlpaBase* bc);
-    void setFocusMsg(GlpaBase* bc);
-    void editSizeMsg(GlpaBase* bc);
+    void editSizeMsg(GlpaBase* bc, LPARAM lParam);
     void createMsg(GlpaBase* bc);
     void paintMsg(GlpaBase* bc);
     void closeMsg(GlpaBase* bc);
@@ -53,15 +51,18 @@ public :
     void keyUpMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
     void mouseMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
 
-    void addBase(GlpaBase* pBc);
-    void deleteBase(GlpaBase* pBc);
+    static void AddBase(GlpaBase* pBc);
+    static void DeleteBase(GlpaBase* pBc);
 
     static MSG getMsg(){return instance->msg;}
 
-    void createWindow(GlpaBase* pBc);
-    void showWindow(GlpaBase* pBc, int type);
+    static void CreateWindowNotApi(GlpaBase* pBc);
+    static void ShowWindowNotApi(GlpaBase* pBc, int type);
 
-    void run();
+    static void Load(GlpaBase* pBc);
+    static void Release(GlpaBase* pBc);
+
+    static void Run();
     
 
 };

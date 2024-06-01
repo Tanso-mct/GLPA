@@ -3,15 +3,19 @@
 
 #include <string>
 #include <Windows.h>
+#include <unordered_map>
 
-namespace Glpa{
+#include "Image.h"
+
+namespace Glpa
+{
 
 class Scene
 {
-private :
-    std::string name;
-
 protected :
+    std::string name;
+    std::unordered_map<std::string, Glpa::SceneObject*> objs;
+
     std::string keyMsg;
     bool keyMsgUpdated = false;
 
@@ -21,16 +25,24 @@ protected :
 public :
     Scene();
     ~Scene();
+
+    std::string getName() const {return name;}
+    void setName(std::string str) {name = str;}
     
     void getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam);
     void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam);
+
+    virtual void setup() = 0;
 
     virtual void start() = 0;
     virtual void update() = 0;
 
     virtual void awake() = 0;
     virtual void destroy() = 0;
+
+    virtual void load() = 0;
+    virtual void release() = 0;
 
 };
 

@@ -1,6 +1,6 @@
 #include "GlpaLib.h"
 
-void GlpaLib::start
+void GlpaLib::Start
 (
     const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
     const LPSTR arg_lpCmdLine, const int arg_nCmdShow
@@ -8,7 +8,7 @@ void GlpaLib::start
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
 }
 
-void GlpaLib::close()
+void GlpaLib::Close()
 {
     delete instance;
 }
@@ -22,6 +22,11 @@ GlpaLib::GlpaLib(
     nCmdShow = arg_nCmdShow;
 }
 
+GlpaLib::~GlpaLib()
+{
+
+}
+
 LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg){
@@ -31,16 +36,8 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             }
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
-        case WM_KILLFOCUS:
-            GlpaLib::instance->killFocusMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
-            return 0;
-
-        case WM_SETFOCUS:
-            GlpaLib::instance->setFocusMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
-            return 0;
-
         case WM_GETMINMAXINFO:
-            GlpaLib::instance->editSizeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
+            GlpaLib::instance->editSizeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], lParam);
             return 0;
 
         case WM_CREATE:
@@ -87,6 +84,20 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     return 0;
 }
 
+void GlpaLib::minimizeMsg(GlpaBase *bc)
+{
+    GlpaLib::ShowWindowNotApi(bc, SW_MINIMIZE);
+}
+
+void GlpaLib::editSizeMsg(GlpaBase *bc, LPARAM lParam)
+{
+    MINMAXINFO* pMinMaxInfo = (MINMAXINFO*)lParam;
+    pMinMaxInfo->ptMinTrackSize.x = bc->window->getWidth();
+    pMinMaxInfo->ptMinTrackSize.y = bc->window->getHeight();
+    pMinMaxInfo->ptMaxTrackSize.x = bc->window->getWidth();
+    pMinMaxInfo->ptMaxTrackSize.y = bc->window->getHeight();
+}
+
 void GlpaLib::keyDownMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     bc->getNowScenePt()->getKeyDown(msg, wParam, lParam);
@@ -102,42 +113,53 @@ void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
     bc->getNowScenePt()->getMouse(msg, wParam, lParam);
 }
 
-void GlpaLib::addBase(GlpaBase *pBc)
+void GlpaLib::AddBase(GlpaBase *pBc)
 {
-    pBcs.emplace(pBc->getName(), pBc);
+    pBc->setup();
+    GlpaLib::instance->pBcs.emplace(pBc->getName(), pBc);
 }
 
-void GlpaLib::deleteBase(GlpaBase *pBc)
+void GlpaLib::DeleteBase(GlpaBase *pBc)
 {
-    delete pBcs[pBc->getName()];
-    pBcs.erase(pBc->getName());
+    delete GlpaLib::instance->pBcs[pBc->getName()];
+    GlpaLib::instance->pBcs.erase(pBc->getName());
 }
 
-void GlpaLib::createWindow(GlpaBase *pBc)
+void GlpaLib::CreateWindowNotApi(GlpaBase *pBc)
 {
     Glpa::Window* ptWindow = pBc->window;
 
     pBc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
-    ptWindow->create(hInstance);
+    ptWindow->create(GlpaLib::instance->hInstance);
 }
 
-void GlpaLib::showWindow(GlpaBase *pBc, int type)
+void GlpaLib::ShowWindowNotApi(GlpaBase *pBc, int type)
 {
     ShowWindow(pBc->window->hWnd, type);
 }
 
-void GlpaLib::run()
+void GlpaLib::Load(GlpaBase *pBc)
+{
+    
+}
+
+void GlpaLib::Release(GlpaBase *pBc)
+{
+
+}
+
+void GlpaLib::Run()
 {
     while (true) {
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-            if (msg.message == WM_QUIT) {
+        if (PeekMessage(&GlpaLib::instance->msg, NULL, 0, 0, PM_REMOVE)) {
+            if (GlpaLib::instance->msg.message == WM_QUIT) {
                 break;
             }
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            TranslateMessage(&GlpaLib::instance->msg);
+            DispatchMessage(&GlpaLib::instance->msg);
         } 
 
-        for (auto& pBc : pBcs) {
+        for (auto& pBc : GlpaLib::instance->pBcs) {
             if(pBc.second->getVisible() && pBc.second->getStarted())
             {
                 pBc.second->runUpdate();
@@ -153,4 +175,23 @@ void GlpaLib::run()
 void GlpaLib::createMsg(GlpaBase *bc)
 {
     bc->window->createDc();
+}
+
+void GlpaLib::paintMsg(GlpaBase *bc)
+{
+    bc->window->paint();
+}
+
+void GlpaLib::closeMsg(GlpaBase *bc)
+{
+    DestroyWindow(bc->window->hWnd);
+
+    GlpaLib::Release(bc);
+}
+
+void GlpaLib::destroyMsg(GlpaBase *bc)
+{
+    GlpaLib::DeleteBase(bc);
+
+    if (GlpaLib::instance->pBcs.size() == 0) PostQuitMessage(0);
 }

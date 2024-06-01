@@ -3,16 +3,17 @@
 
 #include "Scene.h"
 
-namespace Glpa {
+namespace Glpa 
+{
 
 class Scene3d : public Scene
 {
 private :
-
     
 public :
-    void start() override;
-    void update() override;
+    void load() override;
+    void release() override;
+    
 };
 
 }

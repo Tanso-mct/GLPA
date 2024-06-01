@@ -88,7 +88,11 @@
         "__locale": "cpp",
         "map": "cpp",
         "xtree": "cpp",
-        "__functional_03": "cpp"
+        "__functional_03": "cpp",
+        "set": "cpp",
+        "__tree": "cpp",
+        "__config": "cpp",
+        "memory_resource": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en",

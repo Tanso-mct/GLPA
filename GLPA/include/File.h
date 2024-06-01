@@ -1,0 +1,27 @@
+﻿#ifndef GLPA_FILE_H_
+#define GLPA_FILE_H_
+
+#include <string>
+
+#include "SceneObject.h"
+
+namespace Glpa
+{
+
+class File : Glpa::SceneObject
+{
+protected :
+    std::string fileName;
+    std::string filePath;
+
+public :
+    ~File() override;
+
+    std::string getFilePath() const {return filePath;}
+    void setFilePath(std::string str);
+    
+};
+
+}
+
+#endif GLPA_FILE_H_
