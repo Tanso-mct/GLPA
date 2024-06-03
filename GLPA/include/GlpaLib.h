@@ -38,14 +38,25 @@ private :
 public :
     ~GlpaLib();
 
+    /// @brief When using Glpa lib, this function must be performed first.
+    /// @param arg_hInstance Win main function argument.
+    /// @param arg_hPrevInstance Win main function argument.
+    /// @param arg_lpCmdLine Win main function argument.
+    /// @param arg_nCmdShow Win main function argument.
     static void Start
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
         const LPSTR arg_lpCmdLine, const int arg_nCmdShow
     );
 
-    static void Close();
+    /// @brief Specify as the return value of the Win main function.
+    static int Close();
 
+    /// @brief Windows api window procedure functions. Receive and process messages in each window.
+    /// @param hWnd Window handle.
+    /// @param msg Message to retrieve in Windows API.
+    /// @param wParam Additional information for Windows API messages.
+    /// @param lParam Additional information for Windows API messages.
     static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     void minimizeMsg(GlpaBase* bc);
@@ -61,8 +72,6 @@ public :
 
     static void AddBase(GlpaBase* pBc);
     static void DeleteBase(GlpaBase* pBc);
-
-    static MSG getMsg(){return instance->msg;}
 
     static void CreateWindowNotApi(GlpaBase* pBc);
     static void ShowWindowNotApi(GlpaBase* pBc, int type);

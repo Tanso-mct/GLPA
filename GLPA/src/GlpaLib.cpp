@@ -8,9 +8,12 @@ void GlpaLib::Start
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
 }
 
-void GlpaLib::Close()
+int GlpaLib::Close()
 {
+    MSG rtMsg = instance->msg;
     delete instance;
+
+    return static_cast<int>(rtMsg.wParam);
 }
 
 GlpaLib::GlpaLib(

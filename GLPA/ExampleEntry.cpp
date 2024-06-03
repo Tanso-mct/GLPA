@@ -22,7 +22,5 @@ int WINAPI WinMain
 
     GlpaLib::Run();
 
-    MSG rtMsg = GlpaLib::getMsg();
-    GlpaLib::Close();
-    return (int)rtMsg.wParam;  
+    return GlpaLib::Close();  
 }
