@@ -39,6 +39,7 @@ public :
     void addSceneObject(Glpa::SceneObject* ptObj);
     void deleteSceneObject(Glpa::SceneObject* ptObj);
 
+    /// @brief Add scene objects.
     virtual void setup() = 0;
 
     virtual void start(){};

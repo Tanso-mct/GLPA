@@ -45,6 +45,9 @@ public :
     void loadScene(Glpa::Scene* ptScene);
     void releaseScene(Glpa::Scene* ptScene);
 
+    void setFirstSc(Glpa::Scene* ptScene);
+
+    /// @brief Create scene data and set the name of the first scene.
     virtual void setup() = 0;
 
     virtual void awake(){};

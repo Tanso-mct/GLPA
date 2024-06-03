@@ -37,6 +37,11 @@ void GlpaBase::releaseScene(Glpa::Scene *ptScene)
     ptScene->release();
 }
 
+void GlpaBase::setFirstSc(Glpa::Scene *ptScene)
+{
+    startScName = ptScene->getName();
+}
+
 void GlpaBase::runStart()
 {
     start();
