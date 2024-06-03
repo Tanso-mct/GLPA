@@ -3,6 +3,8 @@
 
 #include "GlpaBase.h"
 
+#include "ExampleScene2d.h"
+
 class ExampleBase : public GlpaBase
 {
 private :

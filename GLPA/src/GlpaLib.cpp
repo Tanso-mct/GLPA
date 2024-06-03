@@ -140,7 +140,7 @@ void GlpaLib::ShowWindowNotApi(GlpaBase *pBc, int type)
 
 void GlpaLib::Load(GlpaBase *pBc)
 {
-    
+    pBc->loadScene();
 }
 
 void GlpaLib::Release(GlpaBase *pBc)

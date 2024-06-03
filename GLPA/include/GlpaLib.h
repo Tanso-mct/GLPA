@@ -11,24 +11,23 @@
 class GlpaLib
 {
 private :
+    /// @brief Global instance for using Glpa library. No other instances can be created.
     static GlpaLib* instance;
 
+    /// @brief Win main function argument.
     HINSTANCE hInstance;
     HINSTANCE hPrevInstance;
     LPSTR lpCmdLine;
     int nCmdShow;
+
+    /// @brief Where to get messages from the Windows API.
     MSG msg;
 
+    /// @brief Stores a pointer to a class that has Glpa base as its base class, one for each window created by the user.
     std::unordered_map<std::string, GlpaBase*> pBcs;
-    std::unordered_map<HWND, std::string> bcHWnds;
 
-public :
-    static void Start
-    (
-        const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
-        const LPSTR arg_lpCmdLine, const int arg_nCmdShow
-    );
-    static void Close();
+    /// @brief Variable to select each class from hwnd.
+    std::unordered_map<HWND, std::string> bcHWnds;
 
     GlpaLib
     (
@@ -36,7 +35,16 @@ public :
         const LPSTR arg_lpCmdLine, const int arg_nCmdShow
     );
 
+public :
     ~GlpaLib();
+
+    static void Start
+    (
+        const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
+        const LPSTR arg_lpCmdLine, const int arg_nCmdShow
+    );
+
+    static void Close();
 
     static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

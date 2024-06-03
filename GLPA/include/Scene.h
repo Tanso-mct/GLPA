@@ -33,13 +33,19 @@ public :
     void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam);
 
+    void getNowKeyMsg();
+    void getNowMouseMsg();
+
+    void addSceneObject(Glpa::SceneObject* ptObj);
+    void deleteSceneObject(Glpa::SceneObject* ptObj);
+
     virtual void setup() = 0;
 
-    virtual void start() = 0;
-    virtual void update() = 0;
+    virtual void start(){};
+    virtual void update(){};
 
-    virtual void awake() = 0;
-    virtual void destroy() = 0;
+    virtual void awake(){};
+    virtual void destroy(){};
 
     virtual void load() = 0;
     virtual void release() = 0;

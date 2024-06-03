@@ -41,6 +41,7 @@ public :
     void addScene(Glpa::Scene* ptScene);
     void deleteScene(Glpa::Scene* ptScene);
 
+    void loadScene();
     void loadScene(Glpa::Scene* ptScene);
     void releaseScene(Glpa::Scene* ptScene);
 
