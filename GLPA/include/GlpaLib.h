@@ -70,6 +70,8 @@ public :
     void keyUpMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
     void mouseMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
 
+    /// @brief 
+    /// @param pBc 
     static void AddBase(GlpaBase* pBc);
     static void DeleteBase(GlpaBase* pBc);
 
