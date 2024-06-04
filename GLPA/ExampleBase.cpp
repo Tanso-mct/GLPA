@@ -2,7 +2,8 @@
 
 void ExampleBase::setup()
 {
-    ExampleScene2d* ptExample2d = new ExampleScene2d();
+    ptExample2d = new ExampleScene2d();
+    AddScene(ptExample2d);
 
-    addScene(ptExample2d);
+    setFirstSc(ptExample2d);
 }

@@ -8,7 +8,7 @@
 namespace Glpa
 {
 
-class File : Glpa::SceneObject
+class File : public Glpa::SceneObject
 {
 protected :
     std::string fileName;

@@ -6,6 +6,7 @@
 class ExampleScene2d : public Glpa::Scene2d
 {
 private :
+    Glpa::Image* ptBackGround;
 
 public :
     void setup() override;

@@ -8,6 +8,7 @@
 class ExampleBase : public GlpaBase
 {
 private :
+    ExampleScene2d* ptExample2d;
 
 public :
     void setup() override;

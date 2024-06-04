@@ -12,7 +12,6 @@ int WINAPI WinMain
     GlpaLib::Start(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
     ExampleBase* pBc = new ExampleBase();
-
     GlpaLib::AddBase(pBc);
 
     GlpaLib::CreateWindowNotApi(pBc);

@@ -92,7 +92,8 @@
         "set": "cpp",
         "__tree": "cpp",
         "__config": "cpp",
-        "memory_resource": "cpp"
+        "memory_resource": "cpp",
+        "*.rh": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en",

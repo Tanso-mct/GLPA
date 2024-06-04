@@ -35,12 +35,12 @@ void Glpa::Scene::getNowMouseMsg()
 
 }
 
-void Glpa::Scene::addSceneObject(Glpa::SceneObject *ptObj)
+void Glpa::Scene::AddSceneObject(Glpa::SceneObject *ptObj)
 {
 
 }
 
-void Glpa::Scene::deleteSceneObject(Glpa::SceneObject *ptObj)
+void Glpa::Scene::DeleteSceneObject(Glpa::SceneObject *ptObj)
 {
     
 }

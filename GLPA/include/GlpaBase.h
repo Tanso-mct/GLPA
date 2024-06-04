@@ -38,12 +38,16 @@ public :
 
     Glpa::Scene* getNowScenePt(){return ptScs[nowScName];}
 
-    void addScene(Glpa::Scene* ptScene);
-    void deleteScene(Glpa::Scene* ptScene);
+    void AddScene(Glpa::Scene* ptScene);
+    void DeleteScene(Glpa::Scene* ptScene);
 
     void loadScene();
     void loadScene(Glpa::Scene* ptScene);
+
+    void releaseScene();
     void releaseScene(Glpa::Scene* ptScene);
+
+    void releaseAllScene();
 
     void setFirstSc(Glpa::Scene* ptScene);
 

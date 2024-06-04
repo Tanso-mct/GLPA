@@ -2,8 +2,7 @@
 
 void ExampleScene2d::setup()
 {
-    objs["A"]->load();
-    if (Glpa::File* example = dynamic_cast<Glpa::File*>(objs["A"])) 
-    {
-    }
+    ptBackGround = new Glpa::Image("back_ground","resource/Assets/Images/console_back_ground.png", Glpa::Vec2d(0, 0));
+
+    AddSceneObject(ptBackGround);
 }

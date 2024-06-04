@@ -2,7 +2,8 @@
 #define GLPA_SCENE_OBJECT_H_
 
 #include <string>
-#include <typeinfo>
+
+#include "Vector.h"
 
 namespace Glpa
 {

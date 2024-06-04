@@ -13,27 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="リソース ファイル\obj">
-      <UniqueIdentifier>{0736bded-8cd1-46c0-a802-13cf7a6d0ee9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\mtl">
-      <UniqueIdentifier>{07aa6d8d-8103-4ceb-94ba-6aed27fbdb09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\bmp">
-      <UniqueIdentifier>{64759888-1138-4685-bbdc-a6c15f568ca5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\scene">
-      <UniqueIdentifier>{0b01cc7d-f482-44d1-8cb6-fbad2b2d3a54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\scene\game_1">
-      <UniqueIdentifier>{de6c66f9-d0c7-47c9-9ee6-ae3a9bc68bc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\scene\game_1\obj">
-      <UniqueIdentifier>{853b33a9-8b61-4679-b732-34208a49f1bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\scene\game_1\mtl">
-      <UniqueIdentifier>{02a87367-dab7-473b-a3e0-35c96724c2c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Example">
       <UniqueIdentifier>{d226778b-7c62-4952-8fc4-799303e8c9cb}</UniqueIdentifier>
     </Filter>
@@ -46,26 +25,30 @@
     <Filter Include="ヘッダー ファイル\Example">
       <UniqueIdentifier>{f31962ac-8fe3-4be1-9fa9-0648f04ed495}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\Assets">
+      <UniqueIdentifier>{95af2b7e-24ed-4e94-b8f5-a672f9ac653c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Scene">
+      <UniqueIdentifier>{17a5a89c-9bbc-4441-9e72-a515bcd2b1f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Assets\Objs">
+      <UniqueIdentifier>{aed9ecc8-3b67-4139-956b-3062c8ba6303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Assets\Mtls">
+      <UniqueIdentifier>{fda34a5a-707f-42c2-8c48-96585f6a39f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Assets\Images">
+      <UniqueIdentifier>{7eb93fcd-2e3d-4a8b-9319-42544738f68d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png">
-      <Filter>リソース ファイル</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\scene\game_1\mtl\temp_cube.mtl">
-      <Filter>リソース ファイル\scene\game_1\mtl</Filter>
-    </None>
-    <None Include="resource\scene\game_1\obj\temp_cube.obj">
-      <Filter>リソース ファイル\scene\game_1\obj</Filter>
-    </None>
-    <None Include="resource\scene\game_1\mtl\temp_field.mtl">
-      <Filter>リソース ファイル\scene\game_1\mtl</Filter>
-    </None>
-    <None Include="resource\scene\game_1\obj\temp_field.obj">
-      <Filter>リソース ファイル\scene\game_1\obj</Filter>
-    </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="resource\Assets\Mtls\temp_cube.mtl">
+      <Filter>リソース ファイル\Assets\Mtls</Filter>
+    </None>
+    <None Include="resource\Assets\Mtls\temp_field.mtl">
+      <Filter>リソース ファイル\Assets\Mtls</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExampleBase.cpp">
@@ -154,7 +137,7 @@
     <ClInclude Include="include\Image.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
-    <ClInclude Include="include\Macro.h">
+    <ClInclude Include="include\Constant.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
     <ClInclude Include="include\Matrix.h">
@@ -196,5 +179,18 @@
     <ClInclude Include="include\File.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resource\Assets\Images\console_back_ground.png">
+      <Filter>リソース ファイル\Assets\Images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resource\Assets\Objs\temp_cube.obj">
+      <Filter>リソース ファイル\Assets\Objs</Filter>
+    </Resource>
+    <Resource Include="resource\Assets\Objs\temp_field.obj">
+      <Filter>リソース ファイル\Assets\Objs</Filter>
+    </Resource>
   </ItemGroup>
 </Project>

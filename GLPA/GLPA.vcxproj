@@ -151,24 +151,9 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Image Include="resource\scene\glpa_console\g1_%40l1\back_ground_%40x0_%40y0_%40l1.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="resource\scene\game_1\mtl\temp_cube.mtl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\scene\game_1\mtl\temp_field.mtl" />
-    <None Include="resource\scene\game_1\obj\temp_cube.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resource\scene\game_1\obj\temp_field.obj">
-      <FileType>Document</FileType>
-    </None>
+    <None Include="resource\Assets\Mtls\temp_cube.mtl" />
+    <None Include="resource\Assets\Mtls\temp_field.mtl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExampleBase.cpp" />
@@ -202,7 +187,7 @@
     <ClInclude Include="include\GlpaBase.h" />
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\Image.h" />
-    <ClInclude Include="include\Macro.h" />
+    <ClInclude Include="include\Constant.h" />
     <ClInclude Include="include\Matrix.h" />
     <ClInclude Include="include\Png.h" />
     <ClInclude Include="include\Render.h" />
@@ -215,6 +200,21 @@
     <ClInclude Include="include\Ui.h" />
     <ClInclude Include="include\Vector.h" />
     <ClInclude Include="include\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resource\Assets\Images\console_back_ground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resource\Assets\Objs\temp_cube.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Resource>
+    <Resource Include="resource\Assets\Objs\temp_field.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Resource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

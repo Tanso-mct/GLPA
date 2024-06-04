@@ -36,8 +36,8 @@ public :
     void getNowKeyMsg();
     void getNowMouseMsg();
 
-    void addSceneObject(Glpa::SceneObject* ptObj);
-    void deleteSceneObject(Glpa::SceneObject* ptObj);
+    void AddSceneObject(Glpa::SceneObject* ptObj);
+    void DeleteSceneObject(Glpa::SceneObject* ptObj);
 
     /// @brief Add scene objects.
     virtual void setup() = 0;

@@ -6,7 +6,7 @@
 namespace Glpa
 {
 
-class Png : Glpa::File
+class Png : public Glpa::File
 {
 private :
 
