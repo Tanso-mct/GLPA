@@ -65,7 +65,6 @@ void Glpa::Window::createDc()
 {
     hWndDC = GetDC(hWnd);
 
-    //bmp buffer dc
     hBufBmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     hBufBmpInfo.bmiHeader.biWidth = +width * dpi;
     hBufBmpInfo.bmiHeader.biHeight = -height * dpi;      

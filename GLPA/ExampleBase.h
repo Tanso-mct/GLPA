@@ -11,6 +11,7 @@ private :
     ExampleScene2d* ptExample2d;
 
 public :
+    ~ExampleBase() override;
     void setup() override;
 };
 

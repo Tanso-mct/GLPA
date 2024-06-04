@@ -8,6 +8,8 @@ class ExampleScene3d : public Glpa::Scene3d
 private :
 
 public :
+    ~ExampleScene3d() override;
+    
     void setup() override;
 };
 

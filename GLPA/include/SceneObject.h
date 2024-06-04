@@ -15,6 +15,7 @@ protected :
 
 public :
     virtual ~SceneObject(){};
+    
     virtual void load() = 0;
 };
 

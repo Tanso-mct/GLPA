@@ -9,6 +9,8 @@ private :
     Glpa::Image* ptBackGround;
 
 public :
+    ~ExampleScene2d() override;
+    
     void setup() override;
 };
 

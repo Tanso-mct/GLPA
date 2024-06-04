@@ -40,7 +40,10 @@ public :
     void createPixels();
     void create(HINSTANCE hInstance);
 
+    /// @brief Create a device context.
     void createDc();
+
+    /// @brief Called when redrawing is required and copies the pixels data to the buffer.
     void paint();
 
     void setName(LPCWSTR str) {name = str;}
@@ -60,6 +63,7 @@ public :
     void setBgColor(int value) {bgColor = value;}
     void setSmallIcon(LPWSTR value) {smallIcon = value;}
 
+    /// @brief Send a redraw message.
     void sendPaintMsg();
 };
 

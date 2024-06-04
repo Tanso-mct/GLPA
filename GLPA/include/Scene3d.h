@@ -11,6 +11,8 @@ class Scene3d : public Scene
 private :
     
 public :
+    ~Scene3d() override;
+
     void load() override;
     void release() override;
     

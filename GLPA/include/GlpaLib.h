@@ -59,6 +59,7 @@ public :
     /// @param lParam Additional information for Windows API messages.
     static LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+
     /// @brief Processing to be performed when a window minimize message is received.
     /// @param bc A class that identifies which glpa base class has the base class from the window handle.
     void minimizeMsg(GlpaBase* bc);
@@ -85,6 +86,7 @@ public :
     /// @param bc A class that identifies which glpa base class has the base class from the window handle.
     void destroyMsg(GlpaBase* bc);
 
+
     /// @brief Take action when a key down message is received.
     /// @param bc A class that identifies which glpa base class has the base class from the window handle.
     void keyDownMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -97,6 +99,7 @@ public :
     /// @param bc A class that identifies which glpa base class has the base class from the window handle.
     void mouseMsg(GlpaBase* bc, UINT msg, WPARAM wParam, LPARAM lParam);
 
+
     /// @brief Add an instance of a class that has the GlpaBase class as its base class. 
     /// This must be done in the user's class or in the WinMain function.
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.
@@ -106,6 +109,7 @@ public :
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.
     static void DeleteBase(GlpaBase* pBc);
 
+
     /// @brief Create a window from an instance of a class that has the Glpa base class as its base class.
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.
     static void CreateWindowNotApi(GlpaBase* pBc);
@@ -114,6 +118,7 @@ public :
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.
     /// @param type Specifies the display format of the window starting with sw in the Windows API.
     static void ShowWindowNotApi(GlpaBase* pBc, int type);
+    
 
     /// @brief Load a class that has the Glpa base class as its base class.
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.

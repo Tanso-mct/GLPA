@@ -11,6 +11,8 @@ class Scene2d : public Scene
 private :
 
 public :
+    ~Scene2d() override;
+    
     void load() override;
     void release() override;
 

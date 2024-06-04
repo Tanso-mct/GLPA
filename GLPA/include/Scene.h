@@ -24,7 +24,7 @@ protected :
 
 public :
     Scene();
-    ~Scene();
+    virtual ~Scene();
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}

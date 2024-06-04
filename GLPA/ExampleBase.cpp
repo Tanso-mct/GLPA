@@ -1,5 +1,9 @@
 #include "ExampleBase.h"
 
+ExampleBase::~ExampleBase()
+{
+}
+
 void ExampleBase::setup()
 {
     ptExample2d = new ExampleScene2d();
