@@ -15,8 +15,12 @@ protected :
 
 public :
     virtual ~SceneObject(){};
+
+    std::string getName() const {return name;}
+    void setName(std::string str) {name = str;}
     
     virtual void load() = 0;
+    virtual void release() = 0;
 };
 
 }

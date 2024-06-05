@@ -126,6 +126,8 @@ void GlpaLib::AddBase(GlpaBase *pBc)
 
 void GlpaLib::DeleteBase(GlpaBase *pBc)
 {
+    pBc->DeleteAllScene();
+
     GlpaLib::instance->pBcs.erase(pBc->getName());
     delete pBc;
 }
@@ -145,12 +147,12 @@ void GlpaLib::ShowWindowNotApi(GlpaBase *pBc, int type)
 
 void GlpaLib::Load(GlpaBase *pBc)
 {
-    pBc->loadScene();
+    pBc->LoadScene();
 }
 
 void GlpaLib::Release(GlpaBase *pBc)
 {
-    pBc->releaseAllScene();
+    pBc->ReleaseAllScene();
 }
 
 void GlpaLib::Run()

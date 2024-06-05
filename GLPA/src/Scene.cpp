@@ -37,10 +37,13 @@ void Glpa::Scene::getNowMouseMsg()
 
 void Glpa::Scene::AddSceneObject(Glpa::SceneObject *ptObj)
 {
-
+    objs.emplace(ptObj->getName(), ptObj);
 }
 
 void Glpa::Scene::DeleteSceneObject(Glpa::SceneObject *ptObj)
 {
-    
+    ptObj->release();
+
+    objs.erase(ptObj->getName());
+    delete ptObj;
 }

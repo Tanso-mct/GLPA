@@ -49,33 +49,39 @@ public :
     /// @brief Add a scene. Use within the setup function.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
     void AddScene(Glpa::Scene* ptScene);
+
+    /// @brief Delete the current scene.
+    void DeleteScene();
     
     /// @brief Delete added scenes.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
     void DeleteScene(Glpa::Scene* ptScene);
 
+    /// @brief Delete all currently loaded scenes.
+    void DeleteAllScene();
+
 
     /// @brief Load the first scene.
-    void loadScene();
+    void LoadScene();
 
     /// @brief Load the specified scene.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
-    void loadScene(Glpa::Scene* ptScene);
+    void LoadScene(Glpa::Scene* ptScene);
 
     /// @brief Release the current scene.
-    void releaseScene();
+    void ReleaseScene();
 
     /// @brief Release the specified scene.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
-    void releaseScene(Glpa::Scene* ptScene);
+    void ReleaseScene(Glpa::Scene* ptScene);
 
     /// @brief Release all currently loaded scenes.
-    void releaseAllScene();
+    void ReleaseAllScene();
 
 
     /// @brief Setting the first scene. This must be done in the setup function.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
-    void setFirstSc(Glpa::Scene* ptScene);
+    void SetFirstSc(Glpa::Scene* ptScene);
 
 
     /// @brief Create scene data and set the name of the first scene.

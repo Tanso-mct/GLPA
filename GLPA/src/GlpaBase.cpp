@@ -23,34 +23,62 @@ void GlpaBase::AddScene(Glpa::Scene *ptScene)
     ptScs.emplace(ptScene->getName(), ptScene);
 }
 
-void GlpaBase::DeleteScene(Glpa::Scene *ptScene)
+void GlpaBase::DeleteScene()
 {
-    delete ptScs[ptScene->getName()];
-    ptScs.erase(ptScene->getName());
+    ReleaseScene();
+
+    std::string scName = ptScs[nowScName]->getName();
+
+    delete ptScs[scName];
+    ptScs.erase(scName);
 }
 
-void GlpaBase::loadScene()
+void GlpaBase::DeleteScene(Glpa::Scene *ptScene)
+{
+    ReleaseScene(ptScene);
+
+    std::string scName = ptScene->getName();
+
+    delete ptScs[scName];
+    ptScs.erase(scName);
+}
+
+void GlpaBase::DeleteAllScene()
+{
+    ReleaseAllScene();
+
+    for (auto& sc : ptScs)
+    {
+        std::string scName = sc.second->getName();
+        
+        delete ptScs[scName];
+    }
+
+    ptScs.clear();
+}
+
+void GlpaBase::LoadScene()
 {
     ptScs[nowScName]->load();
 }
 
-void GlpaBase::loadScene(Glpa::Scene *ptScene)
+void GlpaBase::LoadScene(Glpa::Scene *ptScene)
 {
     nowScName = ptScene->getName();
     ptScene->load();
 }
 
-void GlpaBase::releaseScene()
+void GlpaBase::ReleaseScene()
 {
     ptScs[nowScName]->release();
 }
 
-void GlpaBase::releaseScene(Glpa::Scene *ptScene)
+void GlpaBase::ReleaseScene(Glpa::Scene *ptScene)
 {
     ptScene->release();
 }
 
-void GlpaBase::releaseAllScene()
+void GlpaBase::ReleaseAllScene()
 {
     for (auto& sc : ptScs)
     {
@@ -58,7 +86,7 @@ void GlpaBase::releaseAllScene()
     }
 }
 
-void GlpaBase::setFirstSc(Glpa::Scene *ptScene)
+void GlpaBase::SetFirstSc(Glpa::Scene *ptScene)
 {
     startScName = ptScene->getName();
 }

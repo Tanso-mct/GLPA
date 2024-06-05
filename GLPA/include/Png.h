@@ -14,6 +14,7 @@ public :
     ~Png() override;
 
     void load() override;
+    void release() override;
 };
 
 }
