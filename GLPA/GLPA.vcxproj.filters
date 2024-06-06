@@ -179,6 +179,9 @@
     <ClInclude Include="include\File.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
+    <ClInclude Include="include\stb_image.h">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\Assets\Images\console_back_ground.png">

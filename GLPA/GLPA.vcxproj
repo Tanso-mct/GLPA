@@ -196,6 +196,7 @@
     <ClInclude Include="include\Scene3d.h" />
     <ClInclude Include="include\SceneObject.h" />
     <ClInclude Include="include\Sound.h" />
+    <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\Ui.h" />
     <ClInclude Include="include\Vector.h" />

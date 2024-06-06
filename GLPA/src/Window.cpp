@@ -38,7 +38,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
     LoadIcon(apiClass.hInstance, MAKEINTRESOURCE(smallIcon));
 
     if (!RegisterClassEx(&apiClass)){
-        OutputDebugStringA("ERROR Window.cpp - Class registration failed.\n");
+        OutputDebugStringA("GlpaLib ERROR Window.cpp - Class registration failed.\n");
         throw std::runtime_error("Class registration failed.");
     }
 
@@ -56,7 +56,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
     );
 
     if (!hWnd){
-        OutputDebugStringA("ERROR Window.cpp - Failed to create window.\n");
+        OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create window.\n");
         throw std::runtime_error("Failed to create window.");
     }
 }

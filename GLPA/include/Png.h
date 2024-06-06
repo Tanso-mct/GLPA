@@ -3,12 +3,22 @@
 
 #include "File.h"
 
+#include <Windows.h>
+#include <string>
+#include <tchar.h>
+#include <stdexcept>
+
 namespace Glpa
 {
 
 class Png : public Glpa::File
 {
-private :
+protected :
+    int width = 0;
+    int height = 0;
+    int channels = 0;
+
+    LPDWORD data;
 
 public :
     ~Png() override;
