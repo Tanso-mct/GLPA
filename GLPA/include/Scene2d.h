@@ -13,9 +13,6 @@ private :
 public :
     ~Scene2d() override;
     
-    void load() override;
-    void release() override;
-
 };
 
 }

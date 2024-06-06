@@ -48,8 +48,8 @@ public :
     virtual void awake(){};
     virtual void destroy(){};
 
-    virtual void load() = 0;
-    virtual void release() = 0;
+    void load();
+    void release();
 
 };
 
