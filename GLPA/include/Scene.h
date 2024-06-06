@@ -7,6 +7,7 @@
 #include <cctype>
 
 #include "Image.h"
+#include "Constant.h"
 
 namespace Glpa
 {
@@ -22,6 +23,8 @@ protected :
     bool altToggle = false;
 
     std::string keyMsg;
+    std::string keyDownMsg;
+    std::string keyUpMsg;
     bool keyMsgUpdated = false;
 
     std::string mouseMsg;
@@ -38,7 +41,12 @@ public :
     void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam);
 
-    void GetNowKeyMsg();
+    std::string GetNowKeyMsg();
+    std::string GetNowKeyDownMsg();
+    std::string GetNowKeyUpMsg();
+
+    void updateKeyMsg();
+
     void GetNowMouseMsg();
 
     void AddSceneObject(Glpa::SceneObject* ptObj);
