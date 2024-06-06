@@ -4,6 +4,7 @@
 #include <string>
 #include <Windows.h>
 #include <unordered_map>
+#include <cctype>
 
 #include "Image.h"
 
@@ -15,6 +16,10 @@ class Scene
 protected :
     std::string name;
     std::unordered_map<std::string, Glpa::SceneObject*> objs;
+
+    bool shiftToggle = false;
+    bool ctrlToggle = false;
+    bool altToggle = false;
 
     std::string keyMsg;
     bool keyMsgUpdated = false;
@@ -33,8 +38,8 @@ public :
     void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam);
 
-    void getNowKeyMsg();
-    void getNowMouseMsg();
+    void GetNowKeyMsg();
+    void GetNowMouseMsg();
 
     void AddSceneObject(Glpa::SceneObject* ptObj);
     void DeleteSceneObject(Glpa::SceneObject* ptObj);
