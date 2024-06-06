@@ -559,9 +559,59 @@ void Glpa::Scene::getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam)
     }
 }
 
-void Glpa::Scene::getMouse(UINT msg, WPARAM wParam, LPARAM lParam)
+void Glpa::Scene::getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi)
 {
+    switch (msg)
+    {
+        case WM_RBUTTONDOWN:
+            moouseRDownPos.x = LOWORD(lParam) * dpi;  
+            moouseRDownPos.y = HIWORD(lParam) * dpi;
+            break;
 
+        case WM_RBUTTONUP:
+            moouseRUpPos.x = LOWORD(lParam) * dpi;  
+            moouseRUpPos.y = HIWORD(lParam) * dpi;
+            break;
+
+        case WM_RBUTTONDBLCLK:
+            moouseRDbClickPos.x = LOWORD(lParam) * dpi;  
+            moouseRDbClickPos.y = HIWORD(lParam) * dpi;
+            break;
+
+        case WM_LBUTTONDOWN:
+            moouseLDownPos.x = LOWORD(lParam) * dpi;  
+            moouseLDownPos.y = HIWORD(lParam) * dpi;
+            break;
+
+        case WM_LBUTTONUP:
+            moouseLUpPos.x = LOWORD(lParam) * dpi;  
+            moouseLUpPos.y = HIWORD(lParam) * dpi;
+            break;
+
+        case WM_LBUTTONDBLCLK:
+            moouseLDbClickPos.x = LOWORD(lParam) * dpi;  
+            moouseLDbClickPos.y = HIWORD(lParam) * dpi;
+            break;
+            
+        case WM_MBUTTONDOWN:
+            moouseMDownPos.x = LOWORD(lParam) * dpi;  
+            moouseMDownPos.y = HIWORD(lParam) * dpi;
+            break;
+            
+        case WM_MBUTTONUP:
+            moouseMUpPos.x = LOWORD(lParam) * dpi;  
+            moouseMUpPos.y = HIWORD(lParam) * dpi;
+            break;
+            
+        case WM_MOUSEWHEEL:
+            wheelMoveAmount = GET_WHEEL_DELTA_WPARAM(wParam);
+            break;
+
+        case WM_MOUSEMOVE:
+            mousePos.x = LOWORD(lParam) * dpi;  
+            mousePos.y = HIWORD(lParam) * dpi;
+            break;
+    }
 }
 
 std::string Glpa::Scene::GetNowKeyMsg()

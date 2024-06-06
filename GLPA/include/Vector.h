@@ -9,11 +9,14 @@ namespace Glpa
 class Vector
 {
 private :
+    bool filled = true;
 
 public :
     virtual void toFloatAry(float* ary, int index) = 0;
     virtual void fromFloatAry(float* ary, int index) = 0;
 
+    void empty();
+    bool isEmpty();
 };
 
 class Vec2d : public Vector
@@ -22,13 +25,13 @@ private :
 
 public :
     Vec2d(float valueX, float valueY);
+    Vec2d(){};
 
     float x = 0;
     float y = 0;
 
     void toFloatAry(float* ary, int index) override;
     void fromFloatAry(float* ary, int index) override;
-
 };
 
 class Vec3d : public Vector
@@ -37,6 +40,7 @@ private :
 
 public :
     Vec3d(float valueX, float valueY, float valueZ);
+    Vec3d(){};
 
     float x = 0;
     float y = 0;

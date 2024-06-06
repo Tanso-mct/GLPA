@@ -84,7 +84,7 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             return 0;
             
         default:
-                return DefWindowProc(hWnd, msg, wParam, lParam);
+            return DefWindowProc(hWnd, msg, wParam, lParam);
     }
     return 0;
 }
@@ -115,7 +115,7 @@ void GlpaLib::keyUpMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    bc->getNowScenePt()->getMouse(msg, wParam, lParam);
+    bc->getNowScenePt()->getMouse(msg, wParam, lParam, bc->window->getDpi());
 }
 
 void GlpaLib::AddBase(GlpaBase *pBc)

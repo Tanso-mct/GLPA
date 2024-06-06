@@ -38,3 +38,14 @@ void Glpa::Vec3d::fromFloatAry(float *ary, int index)
     y = ary[index * Glpa::SIZE_VEC3D + Glpa::Y];
     z = ary[index * Glpa::SIZE_VEC3D + Glpa::Z];
 }
+
+void Glpa::Vector::empty()
+{
+    filled = false;
+}
+
+bool Glpa::Vector::isEmpty()
+{
+    if (filled) return false;
+    else return true;
+}
