@@ -28,10 +28,6 @@ int WINAPI WinMain
     // Start of drawing loop. Drawing of the scene begins.
     GlpaLib::Run();
 
-    // Delete the registered instance of the created class. 
-    // Since the delete is also performed here, there is no need to perform the delete yourself within the win main function.
-    GlpaLib::DeleteBase(pBc);
-
     // When using Glpa lib, the return value of the win main function must be as follows.
     return GlpaLib::Close();  
 }

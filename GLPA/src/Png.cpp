@@ -37,9 +37,11 @@ void Glpa::Png::load()
     }
 
     stbi_image_free(pixels);
+    loaded = true;
 }
 
 void Glpa::Png::release()
 {
-    delete(data);
+    delete data;
+    loaded = false;
 }

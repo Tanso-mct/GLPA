@@ -17,6 +17,8 @@ public :
 
     void empty();
     bool isEmpty();
+
+    void fill();
 };
 
 class Vec2d : public Vector

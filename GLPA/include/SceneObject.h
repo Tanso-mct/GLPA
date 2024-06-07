@@ -12,12 +12,15 @@ class SceneObject
 {
 protected :
     std::string name;
+    bool loaded = false;
 
 public :
     virtual ~SceneObject(){};
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
+
+    bool isLoaded() const {return loaded;}
     
     virtual void load() = 0;
     virtual void release() = 0;

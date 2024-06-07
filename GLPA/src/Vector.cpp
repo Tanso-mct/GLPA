@@ -49,3 +49,8 @@ bool Glpa::Vector::isEmpty()
     if (filled) return false;
     else return true;
 }
+
+void Glpa::Vector::fill()
+{
+    filled = true;
+}

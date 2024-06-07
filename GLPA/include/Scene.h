@@ -27,18 +27,19 @@ protected :
     std::string keyUpMsg;
 
     std::string mouseMsg;
+    
     Glpa::Vec2d mousePos;
 
-    Glpa::Vec2d moouseRDownPos;
-    Glpa::Vec2d moouseRDbClickPos;
-    Glpa::Vec2d moouseRUpPos;
+    Glpa::Vec2d mouseRDownPos;
+    Glpa::Vec2d mouseRDbClickPos;
+    Glpa::Vec2d mouseRUpPos;
 
-    Glpa::Vec2d moouseLDownPos;
-    Glpa::Vec2d moouseLDbClickPos;
-    Glpa::Vec2d moouseLUpPos;
+    Glpa::Vec2d mouseLDownPos;
+    Glpa::Vec2d mouseLDbClickPos;
+    Glpa::Vec2d mouseLUpPos;
 
-    Glpa::Vec2d moouseMDownPos;
-    Glpa::Vec2d moouseMUpPos;
+    Glpa::Vec2d mouseMDownPos;
+    Glpa::Vec2d mouseMUpPos;
     short wheelMoveAmount = 0;
 
 public :
@@ -53,13 +54,22 @@ public :
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi);
 
     std::string GetNowKeyMsg();
+    bool GetNowKeyMsg(std::string argMsg);
+
     std::string GetNowKeyDownMsg();
+    bool GetNowKeyDownMsg(std::string argMsg);
+
     std::string GetNowKeyUpMsg();
+    bool GetNowKeyUpMsg(std::string argMsg);
 
     void updateKeyMsg();
-    void updateMouseMsg();
 
-    void GetNowMouseMsg();
+    std::string GetNowMouseMsg();
+    bool GetNowMouseMsg(std::string argMsg);
+    bool GetNowMouseMsg(std::string argMsg, Glpa::Vec2d &target);
+    bool GetNowMouseMsg(std::string argMsg, int &amount);
+
+    void updateMouseMsg();
 
     void AddSceneObject(Glpa::SceneObject* ptObj);
     void DeleteSceneObject(Glpa::SceneObject* ptObj);

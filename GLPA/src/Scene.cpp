@@ -564,52 +564,70 @@ void Glpa::Scene::getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi)
     switch (msg)
     {
         case WM_RBUTTONDOWN:
-            moouseRDownPos.x = LOWORD(lParam) * dpi;  
-            moouseRDownPos.y = HIWORD(lParam) * dpi;
+            mouseRDownPos.x = LOWORD(lParam) * dpi;  
+            mouseRDownPos.y = HIWORD(lParam) * dpi;
+            mouseRDownPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_RBTN_DOWN;
             break;
 
         case WM_RBUTTONUP:
-            moouseRUpPos.x = LOWORD(lParam) * dpi;  
-            moouseRUpPos.y = HIWORD(lParam) * dpi;
+            mouseRUpPos.x = LOWORD(lParam) * dpi;  
+            mouseRUpPos.y = HIWORD(lParam) * dpi;
+            mouseRUpPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_RBTN_UP;
             break;
 
         case WM_RBUTTONDBLCLK:
-            moouseRDbClickPos.x = LOWORD(lParam) * dpi;  
-            moouseRDbClickPos.y = HIWORD(lParam) * dpi;
+            mouseRDbClickPos.x = LOWORD(lParam) * dpi;  
+            mouseRDbClickPos.y = HIWORD(lParam) * dpi;
+            mouseRDbClickPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_RBTN_DBCLICK;
             break;
 
         case WM_LBUTTONDOWN:
-            moouseLDownPos.x = LOWORD(lParam) * dpi;  
-            moouseLDownPos.y = HIWORD(lParam) * dpi;
+            mouseLDownPos.x = LOWORD(lParam) * dpi;  
+            mouseLDownPos.y = HIWORD(lParam) * dpi;
+            mouseLDownPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_LBTN_DOWN;
             break;
 
         case WM_LBUTTONUP:
-            moouseLUpPos.x = LOWORD(lParam) * dpi;  
-            moouseLUpPos.y = HIWORD(lParam) * dpi;
+            mouseLUpPos.x = LOWORD(lParam) * dpi;  
+            mouseLUpPos.y = HIWORD(lParam) * dpi;
+            mouseLUpPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_LBTN_UP;
             break;
 
         case WM_LBUTTONDBLCLK:
-            moouseLDbClickPos.x = LOWORD(lParam) * dpi;  
-            moouseLDbClickPos.y = HIWORD(lParam) * dpi;
+            mouseLDbClickPos.x = LOWORD(lParam) * dpi;  
+            mouseLDbClickPos.y = HIWORD(lParam) * dpi;
+            mouseLDbClickPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_LBTN_DBCLICK;
             break;
             
         case WM_MBUTTONDOWN:
-            moouseMDownPos.x = LOWORD(lParam) * dpi;  
-            moouseMDownPos.y = HIWORD(lParam) * dpi;
+            mouseMDownPos.x = LOWORD(lParam) * dpi;  
+            mouseMDownPos.y = HIWORD(lParam) * dpi;
+            mouseMDownPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_MBTN_DOWN;
             break;
             
         case WM_MBUTTONUP:
-            moouseMUpPos.x = LOWORD(lParam) * dpi;  
-            moouseMUpPos.y = HIWORD(lParam) * dpi;
+            mouseMUpPos.x = LOWORD(lParam) * dpi;  
+            mouseMUpPos.y = HIWORD(lParam) * dpi;
+            mouseMUpPos.fill();
+            mouseMsg = Glpa::CHAR_MOUSE_MBTN_UP;
             break;
             
         case WM_MOUSEWHEEL:
             wheelMoveAmount = GET_WHEEL_DELTA_WPARAM(wParam);
+            mouseMsg = Glpa::CHAR_MOUSE_WHEEL;
             break;
 
         case WM_MOUSEMOVE:
             mousePos.x = LOWORD(lParam) * dpi;  
             mousePos.y = HIWORD(lParam) * dpi;
+            mouseMsg = Glpa::CHAR_MOUSE_MOVE;
             break;
     }
 }
@@ -619,14 +637,32 @@ std::string Glpa::Scene::GetNowKeyMsg()
     return keyMsg;
 }
 
+bool Glpa::Scene::GetNowKeyMsg(std::string argMsg)
+{
+    if (keyMsg == argMsg) return true;
+    else return false;
+}
+
 std::string Glpa::Scene::GetNowKeyDownMsg()
 {
     return keyDownMsg;
 }
 
+bool Glpa::Scene::GetNowKeyDownMsg(std::string argMsg)
+{
+    if (keyDownMsg == argMsg) return true;
+    else return false;
+}
+
 std::string Glpa::Scene::GetNowKeyUpMsg()
 {
     return keyUpMsg;
+}
+
+bool Glpa::Scene::GetNowKeyUpMsg(std::string argMsg)
+{
+    if (keyUpMsg == argMsg) return true;
+    else return false;
 }
 
 void Glpa::Scene::updateKeyMsg()
@@ -635,9 +671,102 @@ void Glpa::Scene::updateKeyMsg()
     keyUpMsg = "";
 }
 
-void Glpa::Scene::GetNowMouseMsg()
+void Glpa::Scene::updateMouseMsg()
 {
+    mouseMsg = "";
+    mouseRDownPos.empty();
+    mouseRDbClickPos.empty();
+    mouseRUpPos.empty();
 
+    mouseLDownPos.empty();
+    mouseLDbClickPos.empty();
+    mouseLUpPos.empty();
+
+    mouseMDownPos.empty();
+    mouseMUpPos.empty();
+
+    wheelMoveAmount = 0;
+}
+
+std::string Glpa::Scene::GetNowMouseMsg()
+{
+    return mouseMsg;
+}
+
+bool Glpa::Scene::GetNowMouseMsg(std::string argMsg)
+{
+    if (mouseMsg == argMsg) return true;
+    else return false;
+}
+
+bool Glpa::Scene::GetNowMouseMsg(std::string argMsg, Glpa::Vec2d &target)
+{
+    if (argMsg != keyMsg) return false;
+
+    if (argMsg == Glpa::CHAR_MOUSE_MOVE)
+    {
+        target = mousePos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_RBTN_DOWN)
+    {
+        target = mouseRDownPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_RBTN_UP)
+    {
+        target = mouseRUpPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_RBTN_DBCLICK)
+    {
+        target = mouseRDbClickPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_LBTN_DOWN)
+    {
+        target = mouseLDownPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_LBTN_UP)
+    {
+        target = mouseLUpPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_LBTN_DBCLICK)
+    {
+        target = mouseLDbClickPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_MBTN_DOWN)
+    {
+        target = mouseMDownPos;
+        return true;
+    }
+    else if (argMsg == Glpa::CHAR_MOUSE_MBTN_UP)
+    {
+        target = mouseMUpPos;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Glpa::Scene::GetNowMouseMsg(std::string argMsg, int &amount)
+{
+    if (argMsg != keyMsg) return false;
+
+    if (argMsg == Glpa::CHAR_MOUSE_WHEEL)
+    {
+        amount = wheelMoveAmount;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Glpa::Scene::AddSceneObject(Glpa::SceneObject *ptObj)
@@ -665,6 +794,6 @@ void Glpa::Scene::release()
 {
     for (auto& obj : objs)
     {
-        obj.second->release();
+        if (obj.second->isLoaded()) obj.second->release();
     }
 }

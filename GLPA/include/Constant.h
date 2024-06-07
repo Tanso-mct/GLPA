@@ -39,6 +39,20 @@ constexpr const char* CHAR_F10 = "f10";
 constexpr const char* CHAR_F11 = "f11";
 constexpr const char* CHAR_F12 = "f12";
 
+constexpr const char* CHAR_MOUSE_MOVE = "mouse_move";
+
+constexpr const char* CHAR_MOUSE_RBTN_DOWN = "mouse_r_button_down";
+constexpr const char* CHAR_MOUSE_RBTN_UP = "mouse_r_button_up";
+constexpr const char* CHAR_MOUSE_RBTN_DBCLICK = "mouse_r_double_click";
+
+constexpr const char* CHAR_MOUSE_LBTN_DOWN = "mouse_l_button_down";
+constexpr const char* CHAR_MOUSE_LBTN_UP = "mouse_l_button_up";
+constexpr const char* CHAR_MOUSE_LBTN_DBCLICK = "mouse_l_double_click";
+
+constexpr const char* CHAR_MOUSE_MBTN_DOWN = "mouse_m_button_down";
+constexpr const char* CHAR_MOUSE_MBTN_UP = "mouse_m_button_up";
+constexpr const char* CHAR_MOUSE_WHEEL = "mouse_wheel";
+
 
 
 }
