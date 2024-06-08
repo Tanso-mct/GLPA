@@ -12,6 +12,8 @@ public :
     ~ExampleScene2d() override;
     
     void setup() override;
+
+    void update() override;
 };
 
 #endif EXAMPLE_SCENE_2D_H_

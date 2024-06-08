@@ -59,6 +59,11 @@ void GlpaBase::DeleteAllScene()
 
 void GlpaBase::LoadScene()
 {
+    if (!getStarted())
+    {
+        nowScName = startScName;
+    }
+
     ptScs[nowScName]->load();
 }
 

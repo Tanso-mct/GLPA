@@ -53,6 +53,10 @@ public :
     void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi);
 
+    bool IsShiftToggle() const {return shiftToggle;}
+    bool IsCtrlToggle() const {return ctrlToggle;}
+    bool IsAltToggle() const {return altToggle;}
+
     std::string GetNowKeyMsg();
     bool GetNowKeyMsg(std::string argMsg);
 

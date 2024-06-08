@@ -62,10 +62,12 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             GlpaLib::instance->destroyMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
             return 0;
 
+        case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
             GlpaLib::instance->keyDownMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
             return 0;
 
+        case WM_SYSKEYUP:
         case WM_KEYUP:
             GlpaLib::instance->keyUpMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
             return 0;

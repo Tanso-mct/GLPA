@@ -12,6 +12,27 @@ Glpa::Scene::~Scene()
 
 void Glpa::Scene::getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    BOOL isRight;
+
+    if (wParam == VK_MENU)
+    {
+        isRight = (lParam & (1 << 24)) != 0;
+        altToggle = true;
+
+        if (isRight)
+        {
+            keyMsg = Glpa::CHAR_RALT;
+            keyDownMsg = Glpa::CHAR_RALT;
+        }
+        else
+        {
+            keyMsg = Glpa::CHAR_LALT;
+            keyDownMsg = Glpa::CHAR_LALT;
+        }
+
+        return;
+    }
+
     switch (wParam)
     {
         case VK_SPACE:
@@ -34,50 +55,40 @@ void Glpa::Scene::getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam)
             keyDownMsg = Glpa::CHAR_BACKSPACE;
             break;
 
-        case VK_LSHIFT:
+        case VK_SHIFT:
+            isRight = (lParam & (1 << 24)) != 0;
             shiftToggle = true;
-            keyMsg = Glpa::CHAR_LSHIFT;
-            keyDownMsg = Glpa::CHAR_LSHIFT;
+
+            if (isRight)
+            {
+                keyMsg = Glpa::CHAR_RSHIFT;
+                keyDownMsg = Glpa::CHAR_RSHIFT;
+            }
+            else
+            {
+                keyMsg = Glpa::CHAR_LSHIFT;
+                keyDownMsg = Glpa::CHAR_LSHIFT;
+            }
             break;
 
-        case VK_LCONTROL:
+        case VK_CONTROL:
+            isRight = (lParam & (1 << 24)) != 0;
             ctrlToggle = true;
-            keyMsg = Glpa::CHAR_LCTRL;
-            keyDownMsg = Glpa::CHAR_LCTRL;
-            break;
 
-        case VK_LMENU:
-            altToggle = true;
-            keyMsg = Glpa::CHAR_LALT;
-            keyDownMsg = Glpa::CHAR_LALT;
+            if (isRight)
+            {
+                keyMsg = Glpa::CHAR_RCTRL;
+                keyDownMsg = Glpa::CHAR_RCTRL;
+            }
+            else
+            {
+                keyMsg = Glpa::CHAR_LCTRL;
+                keyDownMsg = Glpa::CHAR_LCTRL;
+            }
             break;
 
         case VK_LWIN:
-            keyMsg = Glpa::CHAR_LWIN;
-            keyDownMsg = Glpa::CHAR_LWIN;
-            break;
-
-        case VK_RSHIFT:
-            shiftToggle = true;
-            keyMsg = Glpa::CHAR_RSHIFT;
-            keyDownMsg = Glpa::CHAR_RSHIFT;
-            break;
-
-        case VK_RCONTROL:
-            ctrlToggle = true;
-            keyMsg = Glpa::CHAR_RCTRL;
-            keyDownMsg = Glpa::CHAR_RCTRL;
-            break;
-
-        case VK_RMENU:
-            altToggle = true;
-            keyMsg = Glpa::CHAR_RALT;
-            keyDownMsg = Glpa::CHAR_RALT;
-            break;
-
-        case VK_RWIN:
-            keyMsg = Glpa::CHAR_RWIN;
-            keyDownMsg = Glpa::CHAR_RWIN;
+            keyDownMsg = Glpa::CHAR_WIN;
             break;
 
         case VK_F1:
@@ -287,6 +298,20 @@ void Glpa::Scene::getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam)
 
 void Glpa::Scene::getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    BOOL isRight;
+
+    if (wParam == VK_MENU)
+    {
+        isRight = (lParam & (1 << 24)) != 0;
+        altToggle = false;
+        keyMsg = "";
+
+        if (isRight) keyUpMsg = Glpa::CHAR_RALT;
+        else keyUpMsg = Glpa::CHAR_LALT;
+
+        return;
+    }
+
     switch (wParam)
     {
         case VK_SPACE:
@@ -309,50 +334,28 @@ void Glpa::Scene::getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam)
             keyUpMsg = Glpa::CHAR_BACKSPACE;
             break;
 
-        case VK_LSHIFT:
+        case VK_SHIFT:
+            isRight = (lParam & (1 << 24)) != 0;
             shiftToggle = false;
             keyMsg = "";
-            keyUpMsg = Glpa::CHAR_LSHIFT;
+
+            if (isRight) keyUpMsg = Glpa::CHAR_RSHIFT;
+            else keyUpMsg = Glpa::CHAR_LSHIFT;
+
             break;
 
-        case VK_LCONTROL:
+        case VK_CONTROL:
+            isRight = (lParam & (1 << 24)) != 0;
             ctrlToggle = false;
             keyMsg = "";
-            keyUpMsg = Glpa::CHAR_LCTRL;
-            break;
 
-        case VK_LMENU:
-            altToggle = false;
-            keyMsg = "";
-            keyUpMsg = Glpa::CHAR_LALT;
+            if (isRight) keyUpMsg = Glpa::CHAR_RCTRL;
+            else keyUpMsg = Glpa::CHAR_LCTRL;
+
             break;
 
         case VK_LWIN:
-            keyMsg = "";
-            keyUpMsg = Glpa::CHAR_LWIN;
-            break;
-
-        case VK_RSHIFT:
-            shiftToggle = false;
-            keyMsg = "";
-            keyUpMsg = Glpa::CHAR_RSHIFT;
-            break;
-
-        case VK_RCONTROL:
-            ctrlToggle = false;
-            keyMsg = "";
-            keyUpMsg = Glpa::CHAR_RCTRL;
-            break;
-
-        case VK_RMENU:
-            altToggle = false;
-            keyMsg = "";
-            keyUpMsg = Glpa::CHAR_RALT;
-            break;
-
-        case VK_RWIN:
-            keyMsg = "";
-            keyUpMsg = Glpa::CHAR_RWIN;
+            keyUpMsg = Glpa::CHAR_WIN;
             break;
 
         case VK_F1:

@@ -19,12 +19,11 @@ constexpr const char* CHAR_BACKSPACE = "back_space";
 constexpr const char* CHAR_LSHIFT = "left_shift";
 constexpr const char* CHAR_LCTRL = "left_ctrl";
 constexpr const char* CHAR_LALT = "left_alt";
-constexpr const char* CHAR_LWIN = "left_window";
+constexpr const char* CHAR_WIN = "window";
 
 constexpr const char* CHAR_RSHIFT = "right_shift";
 constexpr const char* CHAR_RCTRL = "right_ctrl";
 constexpr const char* CHAR_RALT = "right_alt";
-constexpr const char* CHAR_RWIN = "right_window";
 
 constexpr const char* CHAR_F1 = "f1";
 constexpr const char* CHAR_F2 = "f2";

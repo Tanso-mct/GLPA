@@ -8,7 +8,7 @@ namespace Glpa
 
 class Scene2d : public Scene
 {
-private :
+protected :
 
 public :
     ~Scene2d() override;
