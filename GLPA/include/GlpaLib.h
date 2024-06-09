@@ -26,6 +26,8 @@ private :
     /// @brief Stores a pointer to a class that has Glpa base as its base class, one for each window created by the user.
     std::unordered_map<std::string, GlpaBase*> pBcs;
 
+    std::vector<GlpaBase*> pBcs;
+
     /// @brief Variable to select each class from hwnd.
     std::unordered_map<HWND, std::string> bcHWnds;
 
