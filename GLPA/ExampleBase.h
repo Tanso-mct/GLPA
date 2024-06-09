@@ -1,17 +1,30 @@
 #ifndef EXAMPLE_BASE_H_
 #define EXAMPLE_BASE_H_
 
+#include "GlpaLib.h"
+
 #include "GlpaBase.h"
 
 #include "ExampleScene2d.h"
+#include "ExampleScene3d.h"
 
-class ExampleBase : public GlpaBase
+class ExampleBaseA : public GlpaBase
 {
 private :
     ExampleScene2d* ptExample2d;
 
 public :
-    ~ExampleBase() override;
+    ~ExampleBaseA() override;
+    void setup() override;
+};
+
+class ExampleBaseB : public GlpaBase
+{
+private :
+    ExampleScene3d* ptExample3d;
+
+public :
+    ~ExampleBaseB() override;
     void setup() override;
 };
 

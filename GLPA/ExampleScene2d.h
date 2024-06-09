@@ -6,10 +6,13 @@
 class ExampleScene2d : public Glpa::Scene2d
 {
 private :
+    bool opened = false;
     Glpa::Image* ptBackGround;
 
 public :
     ~ExampleScene2d() override;
+
+    void openExample3d();
     
     void setup() override;
 

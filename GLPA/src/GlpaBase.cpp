@@ -2,6 +2,8 @@
 
 GlpaBase::GlpaBase()
 {
+    window = new Glpa::Window();
+    
     awake();
 }
 
@@ -103,6 +105,8 @@ void GlpaBase::runStart()
     started = true;
 
     ptScs[nowScName]->updateKeyMsg();
+    ptScs[nowScName]->updateMouseMsg();
+
 
     window->sendPaintMsg();
 }
@@ -113,6 +117,7 @@ void GlpaBase::runUpdate()
     ptScs[nowScName]->update();
 
     ptScs[nowScName]->updateKeyMsg();
+    ptScs[nowScName]->updateMouseMsg();
 
     window->sendPaintMsg();
 }

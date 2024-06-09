@@ -50,6 +50,7 @@ constexpr const char* CHAR_MOUSE_LBTN_DBCLICK = "mouse_l_double_click";
 
 constexpr const char* CHAR_MOUSE_MBTN_DOWN = "mouse_m_button_down";
 constexpr const char* CHAR_MOUSE_MBTN_UP = "mouse_m_button_up";
+
 constexpr const char* CHAR_MOUSE_WHEEL = "mouse_wheel";
 
 

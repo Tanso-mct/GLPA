@@ -1,8 +1,6 @@
 #include "GlpaLib.h"
 
 #include "ExampleBase.h"
-#include "ExampleScene3d.h"
-#include "ExampleScene2d.h"
 
 int WINAPI WinMain
 (
@@ -13,17 +11,20 @@ int WINAPI WinMain
     GlpaLib::Start(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
     // Create an instance of a class that has the Glpa base class as its base class. Create windows and scenes in this class.
-    ExampleBase* pBc = new ExampleBase();
+    ExampleBaseA* pBcA = new ExampleBaseA();
+    pBcA->window->setName(L"Example Base A");
+    pBcA->window->setApiClassName(L"example_base_a");
+
     // Register the instance of the created class in glpa lib. This allows you to create windows and draw scenes.
-    GlpaLib::AddBase(pBc);
+    GlpaLib::AddBase(pBcA);
 
     // Create a window from the information set in the function of the created class instance.
-    GlpaLib::CreateWindowNotApi(pBc);
+    GlpaLib::CreateWindowNotApi(pBcA);
     // Display the created window. You can also change the display format.
-    GlpaLib::ShowWindowNotApi(pBc, SW_SHOWDEFAULT);
+    GlpaLib::ShowWindowNotApi(pBcA, SW_SHOWDEFAULT);
 
     // Load the first scene you set.
-    GlpaLib::Load(pBc);
+    GlpaLib::Load(pBcA);
 
     // Start of drawing loop. Drawing of the scene begins.
     GlpaLib::Run();

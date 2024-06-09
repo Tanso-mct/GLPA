@@ -136,8 +136,6 @@ void GlpaLib::DeleteBase(GlpaBase *pBc)
 
 void GlpaLib::CreateWindowNotApi(GlpaBase *pBc)
 {
-    pBc->window = new Glpa::Window();
-
     pBc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
     pBc->window->create(GlpaLib::instance->hInstance);
 }

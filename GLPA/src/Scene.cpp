@@ -621,7 +621,7 @@ void Glpa::Scene::getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi)
             mouseMUpPos.fill();
             mouseMsg = Glpa::CHAR_MOUSE_MBTN_UP;
             break;
-            
+
         case WM_MOUSEWHEEL:
             wheelMoveAmount = GET_WHEEL_DELTA_WPARAM(wParam);
             mouseMsg = Glpa::CHAR_MOUSE_WHEEL;
@@ -704,7 +704,7 @@ bool Glpa::Scene::GetNowMouseMsg(std::string argMsg)
 
 bool Glpa::Scene::GetNowMouseMsg(std::string argMsg, Glpa::Vec2d &target)
 {
-    if (argMsg != keyMsg) return false;
+    if (argMsg != mouseMsg) return false;
 
     if (argMsg == Glpa::CHAR_MOUSE_MOVE)
     {

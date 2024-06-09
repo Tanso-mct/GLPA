@@ -17,7 +17,7 @@ private :
     int height = 800;
     int dpi = 1;
 
-    UINT style = CS_HREDRAW | CS_VREDRAW;
+    UINT style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
     LPWSTR loadIcon = IDI_APPLICATION;
     LPWSTR loadCursor = IDC_ARROW;
     int bgColor = WHITE_BRUSH;
