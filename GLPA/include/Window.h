@@ -23,7 +23,7 @@ private :
     int bgColor = WHITE_BRUSH;
     LPWSTR smallIcon = IDI_APPLICATION;
 
-    DWORD viewStyle = WS_SYSMENU;
+    DWORD viewStyle = WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
     HDC hWndDC = nullptr;
     PAINTSTRUCT hPs;
@@ -35,7 +35,7 @@ private :
     LPDWORD pixels;
 
 public :
-    HWND hWnd;
+    HWND hWnd = nullptr;
     WNDCLASSEX apiClass;
     void createPixels();
     void create(HINSTANCE hInstance);
@@ -58,7 +58,10 @@ public :
     int getDpi() const {return dpi;}
     void setDpi(int value) {dpi = value;}
 
-    void setStyle(UINT value) {style = value;}
+    void setViewStyle(UINT value);
+    void addViewStyle(UINT value);
+    void deleteViewStyle(UINT value);
+
     void setLoadIcon(LPWSTR value) {loadIcon = value;}
     void setLoadCursor(LPWSTR value) {loadCursor = value;}
     void setBgColor(int value) {bgColor = value;}

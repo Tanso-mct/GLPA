@@ -11,6 +11,8 @@ public :
     ~ExampleScene3d() override;
     
     void setup() override;
+
+    void start() override;
 };
 
 #endif EXAMPLE_SCENE_3D_H_

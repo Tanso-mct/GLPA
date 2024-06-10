@@ -111,6 +111,45 @@ void Glpa::Window::paint()
     EndPaint(hWnd, &hPs);
 }
 
+void Glpa::Window::setViewStyle(UINT value)
+{
+    if (hWnd == nullptr)
+    {
+        viewStyle = value;
+    }
+    else
+    {
+        viewStyle = value;
+        SetWindowLongPtr(hWnd, GWL_STYLE, viewStyle);
+    }
+}
+
+void Glpa::Window::addViewStyle(UINT value)
+{
+    if (hWnd == nullptr)
+    {
+        viewStyle |= value;
+    }
+    else
+    {
+        viewStyle |= value;
+        SetWindowLongPtr(hWnd, GWL_STYLE, viewStyle);
+    }
+}
+
+void Glpa::Window::deleteViewStyle(UINT value)
+{
+    if (hWnd == nullptr)
+    {
+        viewStyle &= ~value;
+    }
+    else
+    {
+        viewStyle &= ~value;
+        SetWindowLongPtr(hWnd, GWL_STYLE, viewStyle);
+    }
+}
+
 void Glpa::Window::sendPaintMsg()
 {
     InvalidateRect(hWnd, NULL, FALSE);

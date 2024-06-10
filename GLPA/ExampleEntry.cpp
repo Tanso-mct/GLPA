@@ -14,6 +14,7 @@ int WINAPI WinMain
     ExampleBaseA* pBcA = new ExampleBaseA();
     pBcA->window->setName(L"Example Base A");
     pBcA->window->setApiClassName(L"example_base_a");
+    pBcA->window->deleteViewStyle(WS_MAXIMIZEBOX);
 
     // Register the instance of the created class in glpa lib. This allows you to create windows and draw scenes.
     GlpaLib::AddBase(pBcA);
