@@ -2,6 +2,7 @@
 #define GLPA_SCENE_2D_H_
 
 #include "Scene.h"
+#include <algorithm>
 
 namespace Glpa 
 {
@@ -16,6 +17,8 @@ public :
     ~Scene2d() override;
 
     void setDrawOrder();
+    void addDrawOrder(Glpa::SceneObject* obj);
+    void deleteDrawOrder(Glpa::SceneObject* obj);
     
 };
 
