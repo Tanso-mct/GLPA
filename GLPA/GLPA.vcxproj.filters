@@ -81,9 +81,6 @@
     <ClCompile Include="src\Png.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
-    <ClCompile Include="src\Render.cpp">
-      <Filter>ソース ファイル\Glpa</Filter>
-    </ClCompile>
     <ClCompile Include="src\Scene.cpp">
       <Filter>ソース ファイル\Glpa</Filter>
     </ClCompile>
@@ -146,9 +143,6 @@
     <ClInclude Include="include\Png.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
-    <ClInclude Include="include\Render.h">
-      <Filter>ヘッダー ファイル\Glpa</Filter>
-    </ClInclude>
     <ClInclude Include="include\Scene.h">
       <Filter>ヘッダー ファイル\Glpa</Filter>
     </ClInclude>
@@ -195,5 +189,13 @@
     <Resource Include="resource\Assets\Objs\temp_field.obj">
       <Filter>リソース ファイル\Assets\Objs</Filter>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="include\Render.cuh">
+      <Filter>ヘッダー ファイル\Glpa</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Render.cu">
+      <Filter>ソース ファイル\Glpa</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

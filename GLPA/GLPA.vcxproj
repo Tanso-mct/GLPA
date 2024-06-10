@@ -167,7 +167,11 @@
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Png.cpp" />
-    <ClCompile Include="src\Render.cpp" />
+    <CudaCompile Include="src\Render.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </CudaCompile>
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
@@ -190,7 +194,10 @@
     <ClInclude Include="include\Constant.h" />
     <ClInclude Include="include\Matrix.h" />
     <ClInclude Include="include\Png.h" />
-    <ClInclude Include="include\Render.h" />
+    <CudaCompile Include="include\Render.cuh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </CudaCompile>
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Scene2d.h" />
     <ClInclude Include="include\Scene3d.h" />
