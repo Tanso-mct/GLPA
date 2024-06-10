@@ -37,39 +37,95 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     switch (msg){
         case WM_SYSCOMMAND:
             if (wParam == SC_MINIMIZE) {
-                GlpaLib::instance->minimizeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
+                GlpaLib::instance->minimizeMsg(GlpaLib::instance->pBcs
+                [
+                    std::distance
+                    (
+                        GlpaLib::instance->bcsHWnds.begin(), 
+                        std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    )
+                ]);
             }
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
         case WM_GETMINMAXINFO:
-            GlpaLib::instance->editSizeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], lParam);
+            GlpaLib::instance->editSizeMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ], lParam);
             return 0;
 
         case WM_CREATE:
-            GlpaLib::instance->createMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
+            GlpaLib::instance->createMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
             return 0;
 
         case WM_PAINT:
-            GlpaLib::instance->paintMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
+            GlpaLib::instance->paintMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
             return 0;
 
         case WM_CLOSE:
-            GlpaLib::instance->closeMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
+            GlpaLib::instance->closeMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
             return 0;
                 
 
         case WM_DESTROY:
-            GlpaLib::instance->destroyMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]]);
+            GlpaLib::instance->destroyMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
             return 0;
 
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
-            GlpaLib::instance->keyDownMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
+            GlpaLib::instance->keyDownMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ], msg, wParam, lParam);
             return 0;
 
         case WM_SYSKEYUP:
         case WM_KEYUP:
-            GlpaLib::instance->keyUpMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
+            GlpaLib::instance->keyUpMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ], msg, wParam, lParam);
             return 0;
 
         case WM_LBUTTONDOWN:
@@ -82,7 +138,14 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         case WM_MBUTTONUP:
         case WM_MOUSEWHEEL:
         case WM_MOUSEMOVE:
-            GlpaLib::instance->mouseMsg(GlpaLib::instance->pBcs[GlpaLib::instance->bcHWnds[hWnd]], msg, wParam, lParam);
+            GlpaLib::instance->mouseMsg(GlpaLib::instance->pBcs
+            [
+                std::distance
+                (
+                    GlpaLib::instance->bcsHWnds.begin(), 
+                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                )
+            ], msg, wParam, lParam);
             return 0;
             
         default:
@@ -123,14 +186,30 @@ void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 void GlpaLib::AddBase(GlpaBase *pBc)
 {
     pBc->setup();
-    GlpaLib::instance->pBcs.emplace(pBc->getName(), pBc);
+    GlpaLib::instance->pBcs.push_back(pBc);
 }
 
 void GlpaLib::DeleteBase(GlpaBase *pBc)
 {
     pBc->DeleteAllScene();
 
-    GlpaLib::instance->pBcs.erase(pBc->getName());
+    GlpaLib::instance->bcsHWnds.erase
+    (
+        GlpaLib::instance->bcsHWnds.begin() + std::distance
+        (
+            GlpaLib::instance->pBcs.begin(), 
+            std::find(GlpaLib::instance->pBcs.begin(), GlpaLib::instance->pBcs.end(), pBc)
+        )
+    );
+
+    GlpaLib::instance->pBcs.erase
+    (
+        GlpaLib::instance->pBcs.begin() + std::distance
+        (
+            GlpaLib::instance->pBcs.begin(), 
+            std::find(GlpaLib::instance->pBcs.begin(), GlpaLib::instance->pBcs.end(), pBc)
+        )
+    );
     delete pBc;
 }
 
@@ -138,6 +217,7 @@ void GlpaLib::CreateWindowNotApi(GlpaBase *pBc)
 {
     pBc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
     pBc->window->create(GlpaLib::instance->hInstance);
+    GlpaLib::instance->bcsHWnds.push_back(pBc->window->hWnd);
 }
 
 void GlpaLib::ShowWindowNotApi(GlpaBase *pBc, int type)
@@ -166,14 +246,14 @@ void GlpaLib::Run()
             DispatchMessage(&GlpaLib::instance->msg);
         } 
 
-        for (auto& pBc : GlpaLib::instance->pBcs) {
-            if(pBc.second->getVisible() && pBc.second->getStarted())
+        for (int i = 0; i < GlpaLib::instance->pBcs.size(); i++) {
+            if(GlpaLib::instance->pBcs[i]->getVisible() && GlpaLib::instance->pBcs[i]->getStarted())
             {
-                pBc.second->runUpdate();
+                GlpaLib::instance->pBcs[i]->runUpdate();
             }
-            else if(pBc.second->getVisible() && !pBc.second->getStarted())
+            else if(GlpaLib::instance->pBcs[i]->getVisible() && !GlpaLib::instance->pBcs[i]->getStarted())
             {
-                pBc.second->runStart();
+                GlpaLib::instance->pBcs[i]->runStart();
             }
         }
     }

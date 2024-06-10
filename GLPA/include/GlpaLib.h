@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 
 #include "Constant.h"
 #include "GlpaBase.h"
@@ -24,12 +25,13 @@ private :
     MSG msg;
 
     /// @brief Stores a pointer to a class that has Glpa base as its base class, one for each window created by the user.
-    std::unordered_map<std::string, GlpaBase*> pBcs;
+    // std::unordered_map<std::string, GlpaBase*> pBcs;
 
     std::vector<GlpaBase*> pBcs;
+    std::vector<HWND> bcsHWnds;
 
     /// @brief Variable to select each class from hwnd.
-    std::unordered_map<HWND, std::string> bcHWnds;
+    // std::unordered_map<HWND, std::string> bcHWnds;
 
     GlpaLib
     (
