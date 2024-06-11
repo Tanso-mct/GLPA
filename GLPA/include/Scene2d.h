@@ -9,6 +9,9 @@ namespace Glpa
 
 class Scene2d : public Scene
 {
+private :
+    Glpa::Render2d rend;
+
 protected :
     /// @brief The name of the object is placed in the key value of the drawing order.
     std::unordered_map<int, std::vector<std::string>> drawOrder;
@@ -20,8 +23,10 @@ public :
     void addDrawOrder(Glpa::SceneObject* obj);
     void deleteDrawOrder(Glpa::SceneObject* obj);
 
-    void load();
-    void release();
+    void load() override;
+    void release() override;
+
+    void rendering(HDC dc,LPDWORD buf) override;
     
 };
 

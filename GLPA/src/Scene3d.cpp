@@ -19,3 +19,8 @@ void Glpa::Scene3d::release()
         if (obj.second->isLoaded()) obj.second->release();
     }
 }
+
+void Glpa::Scene3d::rendering(HDC dc, LPDWORD buf)
+{
+    rend.run(objs, dc, buf);
+}

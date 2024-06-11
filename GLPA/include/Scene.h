@@ -8,6 +8,7 @@
 
 #include "Image.h"
 #include "Constant.h"
+#include "Render.cuh"
 
 namespace Glpa
 {
@@ -89,6 +90,8 @@ public :
 
     virtual void load() = 0;
     virtual void release() = 0;
+
+    virtual void rendering(HDC dc,LPDWORD buf) = 0;
 
 };
 

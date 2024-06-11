@@ -8,6 +8,9 @@ namespace Glpa
 
 class Scene3d : public Scene
 {
+private :
+    Glpa::Render3d rend;
+
 protected :
     
 public :
@@ -15,6 +18,8 @@ public :
 
     void load() override;
     void release() override;
+
+    void rendering(HDC dc,LPDWORD buf) override;
 
 };
 

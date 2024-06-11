@@ -44,7 +44,7 @@ void Glpa::Scene2d::load()
         if (!obj.second->isLoaded()) 
         {
             obj.second->load();
-            // addDrawOrder(obj.second);
+            addDrawOrder(obj.second);
         }
     }
 }
@@ -56,7 +56,12 @@ void Glpa::Scene2d::release()
         if (obj.second->isLoaded()) 
         {
             obj.second->release();
-            // deleteDrawOrder(obj.second);
+            deleteDrawOrder(obj.second);
         }
     }
+}
+
+void Glpa::Scene2d::rendering(HDC dc, LPDWORD buf)
+{
+    rend.run(objs, drawOrder, dc, buf);
 }

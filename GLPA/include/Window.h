@@ -28,17 +28,18 @@ private :
     HDC hWndDC = nullptr;
     PAINTSTRUCT hPs;
 
-    HDC hBufDC = nullptr;
     HBITMAP hBufBmp = nullptr;
     BITMAPINFO hBufBmpInfo;
-
-    LPDWORD pixels;
 
 public :
     ~Window();
     
     HWND hWnd = nullptr;
     WNDCLASSEX apiClass;
+
+    HDC hBufDC = nullptr;
+    LPDWORD pixels;
+    
     void createPixels();
     void create(HINSTANCE hInstance);
 
