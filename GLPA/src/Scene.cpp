@@ -784,19 +784,3 @@ void Glpa::Scene::DeleteSceneObject(Glpa::SceneObject *ptObj)
     objs.erase(ptObj->getName());
     delete ptObj;
 }
-
-void Glpa::Scene::load()
-{
-    for (auto& obj : objs)
-    {
-        obj.second->load();
-    }
-}
-
-void Glpa::Scene::release()
-{
-    for (auto& obj : objs)
-    {
-        if (obj.second->isLoaded()) obj.second->release();
-    }
-}

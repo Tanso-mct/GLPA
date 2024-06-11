@@ -13,6 +13,9 @@ protected :
 public :
     ~Scene3d() override;
 
+    void load() override;
+    void release() override;
+
 };
 
 }

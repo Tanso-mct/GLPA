@@ -35,6 +35,8 @@ private :
     LPDWORD pixels;
 
 public :
+    ~Window();
+    
     HWND hWnd = nullptr;
     WNDCLASSEX apiClass;
     void createPixels();

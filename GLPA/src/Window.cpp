@@ -1,5 +1,14 @@
 #include "Window.h"
 
+Glpa::Window::~Window()
+{
+    if (hBufBmp != NULL) 
+    {
+        DeleteObject(hBufBmp);
+        hBufBmp = NULL;
+    }
+}
+
 void Glpa::Window::createPixels()
 {
     pixels = (LPDWORD)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, width * height * 4 * dpi);

@@ -19,6 +19,9 @@ public :
     void setDrawOrder();
     void addDrawOrder(Glpa::SceneObject* obj);
     void deleteDrawOrder(Glpa::SceneObject* obj);
+
+    void load();
+    void release();
     
 };
 
