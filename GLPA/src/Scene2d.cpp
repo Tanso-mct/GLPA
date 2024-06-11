@@ -10,6 +10,7 @@ void Glpa::Scene2d::setDrawOrder()
 
     for (auto& obj : objs)
     {
+        // TODO: Add processing with Text.
         if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj.second))
         {
             drawOrder[img->getDrawOrder()].push_back(img->getName());
@@ -19,6 +20,7 @@ void Glpa::Scene2d::setDrawOrder()
 
 void Glpa::Scene2d::addDrawOrder(Glpa::SceneObject *obj)
 {
+    // TODO: Add processing with Text.
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
         drawOrder[img->getDrawOrder()].push_back(img->getName());
@@ -27,6 +29,7 @@ void Glpa::Scene2d::addDrawOrder(Glpa::SceneObject *obj)
 
 void Glpa::Scene2d::deleteDrawOrder(Glpa::SceneObject *obj)
 {
+    // TODO: Add processing with Text.
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
         auto& order = drawOrder[img->getDrawOrder()];
@@ -63,5 +66,5 @@ void Glpa::Scene2d::release()
 
 void Glpa::Scene2d::rendering(HDC dc, LPDWORD buf)
 {
-    rend.run(objs, drawOrder, dc, buf);
+    if (edited) rend.run(objs, drawOrder, dc, buf);
 }

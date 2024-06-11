@@ -10,6 +10,8 @@ namespace Glpa
 class Scene2d : public Scene
 {
 private :
+    bool edited = true;
+
     Glpa::Render2d rend;
 
 protected :
@@ -27,6 +29,9 @@ public :
     void release() override;
 
     void rendering(HDC dc,LPDWORD buf) override;
+
+    bool getEdited() const {return edited;}
+    void setEdited(bool symbol) {edited = symbol;}
     
 };
 

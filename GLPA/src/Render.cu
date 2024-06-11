@@ -14,7 +14,10 @@ void Glpa::Render2d::run
     std::unordered_map<int, std::vector<std::string>> order,
     HDC dc, LPDWORD buf
 ){
+    // i = image amount
+    // j = this image width x height
 
+    // Separate processing depending on image or text.
 }
 
 Glpa::Render3d::Render3d()
@@ -27,5 +30,5 @@ Glpa::Render3d::~Render3d()
 
 void Glpa::Render3d::run(std::unordered_map<std::string, Glpa::SceneObject*> objs, HDC dc, LPDWORD buf)
 {
-    
+
 }

@@ -15,10 +15,7 @@ namespace Glpa
 
 class Scene
 {
-protected :
-    std::string name;
-    std::unordered_map<std::string, Glpa::SceneObject*> objs;
-
+private :
     bool shiftToggle = false;
     bool ctrlToggle = false;
     bool altToggle = false;
@@ -43,13 +40,18 @@ protected :
     Glpa::Vec2d mouseMUpPos;
     short wheelMoveAmount = 0;
 
+protected :
+    std::string name;
+    std::unordered_map<std::string, Glpa::SceneObject*> objs;
+
 public :
     Scene();
     virtual ~Scene();
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
-    
+
+    /// @brief Handle keydown messages in a window procedure function.
     void getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam);
     void getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam);
     void getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi);
