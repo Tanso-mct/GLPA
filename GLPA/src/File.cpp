@@ -1,5 +1,10 @@
 ﻿#include "File.h"
 
+Glpa::File::File()
+{
+    type = Glpa::CLASS_FILE;
+}
+
 Glpa::File::~File()
 {
 }

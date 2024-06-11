@@ -2,7 +2,9 @@
 #define GLPA_SCENE_2D_H_
 
 #include "Scene.h"
+
 #include <algorithm>
+#include <map>
 
 namespace Glpa 
 {
@@ -10,13 +12,16 @@ namespace Glpa
 class Scene2d : public Scene
 {
 private :
+    int imgAmount = 0;
+    int textAmount = 0;
+
     bool edited = true;
 
     Glpa::Render2d rend;
 
 protected :
     /// @brief The name of the object is placed in the key value of the drawing order.
-    std::unordered_map<int, std::vector<std::string>> drawOrder;
+    std::map<int, std::vector<std::string>> drawOrder;
 
 public :
     ~Scene2d() override;

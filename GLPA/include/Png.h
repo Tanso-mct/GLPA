@@ -21,7 +21,16 @@ protected :
     LPDWORD data;
 
 public :
+    Png();
     ~Png() override;
+
+    int getWidth() const {return width;}
+    void setWidth(int val) {width = val;}
+
+    int getHeight() const {return height;}
+    void setHeight(int val) {height = val;}
+
+    LPDWORD getData() const {return data;}
 
     void load() override;
     void release() override;

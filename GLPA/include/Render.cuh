@@ -6,7 +6,10 @@
 
 #include "SceneObject.h"
 
+#include "Image.h"
+
 #include <unordered_map>
+#include <map>
 #include <Window.h>
 
 namespace Glpa
@@ -23,7 +26,7 @@ public :
     void run
     (
         std::unordered_map<std::string, Glpa::SceneObject*> objs,
-        std::unordered_map<int, std::vector<std::string>> order,
+        std::map<int, std::vector<std::string>> drawOrder,
         HDC dc, LPDWORD buf
     );
 };

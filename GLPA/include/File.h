@@ -15,6 +15,7 @@ protected :
     std::string filePath;
 
 public :
+    File();
     ~File() override;
 
     std::string getFilePath() const {return filePath;}

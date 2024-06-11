@@ -11,14 +11,19 @@ namespace Glpa
 class SceneObject
 {
 protected :
+    std::string type;
     std::string name;
     bool loaded = false;
 
 public :
+    SceneObject();
     virtual ~SceneObject(){};
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
+
+    std::string getType() const {return type;}
+    void setType(std::string str) {type = str;}
 
     bool isLoaded() const {return loaded;}
     

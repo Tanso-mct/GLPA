@@ -3,6 +3,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+Glpa::Png::Png()
+{
+    type = Glpa::CLASS_PNG;
+}
+
 Glpa::Png::~Png()
 {
 }

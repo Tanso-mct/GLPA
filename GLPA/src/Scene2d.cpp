@@ -7,6 +7,8 @@ Glpa::Scene2d::~Scene2d()
 void Glpa::Scene2d::setDrawOrder()
 {
     drawOrder.clear();
+    imgAmount = 0;
+    textAmount = 0;
 
     for (auto& obj : objs)
     {
@@ -14,6 +16,7 @@ void Glpa::Scene2d::setDrawOrder()
         if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj.second))
         {
             drawOrder[img->getDrawOrder()].push_back(img->getName());
+            imgAmount++;
         }
     }
 }
@@ -24,6 +27,7 @@ void Glpa::Scene2d::addDrawOrder(Glpa::SceneObject *obj)
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
         drawOrder[img->getDrawOrder()].push_back(img->getName());
+        imgAmount++;
     }
 }
 
@@ -32,10 +36,11 @@ void Glpa::Scene2d::deleteDrawOrder(Glpa::SceneObject *obj)
     // TODO: Add processing with Text.
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
-        auto& order = drawOrder[img->getDrawOrder()];
+        std::vector<std::string>& order = drawOrder[img->getDrawOrder()];
         auto it = std::find(order.begin(), order.end(), obj->getName());
         if (it != order.end()) {
             order.erase(it);
+            imgAmount--;
         }
     }
 }
