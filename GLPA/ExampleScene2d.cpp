@@ -11,6 +11,32 @@ void ExampleScene2d::setup()
     AddSceneObject(ptBackGround);
 }
 
+void ExampleScene2d::start()
+{
+    // std::wstring ‚É•ÏŠ·
+    std::wstring wideText = L"Visual Studio Code Glpa ŠJ‚­";
+
+    // TTS API‚Ì‰Šú‰»
+    CComPtr<ISpVoice> pVoice;
+    if (FAILED(::CoInitialize(NULL))) {
+        OutputDebugStringA("COM‰Šú‰»‚É¸”s‚µ‚Ü‚µ‚½\n");
+        return;
+    }
+
+    HRESULT hr = pVoice.CoCreateInstance(CLSID_SpVoice);
+    if (SUCCEEDED(hr)) {
+        // ‰¹ºo—Í
+        hr = pVoice->Speak(wideText.c_str(), SPF_DEFAULT, NULL);
+        if (FAILED(hr)) {
+            OutputDebugStringA("‰¹ºo—Í‚É¸”s‚µ‚Ü‚µ‚½\n");
+        }
+    } else {
+        OutputDebugStringA("ISpVoice‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½\n");
+    }
+
+    ::CoUninitialize();
+}
+
 void ExampleScene2d::update()
 {
     // if (!GetNowKeyDownMsg().empty())
