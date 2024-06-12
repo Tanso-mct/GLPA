@@ -27,7 +27,7 @@ public :
     (
         std::unordered_map<std::string, Glpa::SceneObject*> objs,
         std::map<int, std::vector<std::string>> drawOrder,
-        HDC dc, LPDWORD buf
+        HDC dc, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
     );
 };
 

@@ -44,6 +44,8 @@ protected :
     std::string name;
     std::unordered_map<std::string, Glpa::SceneObject*> objs;
 
+    std::string backgroundColor = Glpa::BACKGROUND_BLACK;
+
 public :
     Scene();
     virtual ~Scene();
@@ -81,6 +83,9 @@ public :
     void AddSceneObject(Glpa::SceneObject* ptObj);
     void DeleteSceneObject(Glpa::SceneObject* ptObj);
 
+    std::string GetName() const {return backgroundColor;}
+    void SetName(std::string str) {backgroundColor = str;}
+
     /// @brief Add scene objects.
     virtual void setup() = 0;
 
@@ -93,7 +98,7 @@ public :
     virtual void load() = 0;
     virtual void release() = 0;
 
-    virtual void rendering(HDC dc,LPDWORD buf) = 0;
+    virtual void rendering(HDC dc,LPDWORD buf, int bufWidth, int bufHeight, int bufDpi) = 0;
 
 };
 

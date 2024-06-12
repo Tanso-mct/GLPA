@@ -58,6 +58,8 @@ constexpr const char* CLASS_FILE = "class_file";
 constexpr const char* CLASS_PNG = "class_png";
 constexpr const char* CLASS_IMAGE = "class_image";
 
+constexpr const char* BACKGROUND_BLACK = "background_black";
+
 
 
 
