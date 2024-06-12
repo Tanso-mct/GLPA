@@ -49,14 +49,14 @@ public :
     /// @brief Called when redrawing is required and copies the pixels data to the buffer.
     void paint();
 
-    void setName(LPCWSTR str) {name = str;}
-    void setApiClassName(LPCWSTR str) {apiClassName = str;}
+    void SetName(LPCWSTR str) {name = str;}
+    void SetApiClassName(LPCWSTR str) {apiClassName = str;}
 
-    int getWidth() const {return width;}
-    void setWidth(int value) {width = value;}
+    int GetWidth() const {return width;}
+    void SetWidth(int value) {width = value;}
 
-    int getHeight() const {return height;}
-    void setHeight(int value) {height = value;}
+    int GetHeight() const {return height;}
+    void SetHeight(int value) {height = value;}
 
     int getDpi() const {return dpi;}
     void setDpi(int value) {dpi = value;}

@@ -162,10 +162,10 @@ void GlpaLib::minimizeMsg(GlpaBase *bc)
 void GlpaLib::editSizeMsg(GlpaBase *bc, LPARAM lParam)
 {
     MINMAXINFO* pMinMaxInfo = (MINMAXINFO*)lParam;
-    pMinMaxInfo->ptMinTrackSize.x = bc->window->getWidth();
-    pMinMaxInfo->ptMinTrackSize.y = bc->window->getHeight();
-    pMinMaxInfo->ptMaxTrackSize.x = bc->window->getWidth();
-    pMinMaxInfo->ptMaxTrackSize.y = bc->window->getHeight();
+    pMinMaxInfo->ptMinTrackSize.x = bc->window->GetWidth();
+    pMinMaxInfo->ptMinTrackSize.y = bc->window->GetHeight();
+    pMinMaxInfo->ptMaxTrackSize.x = bc->window->GetWidth();
+    pMinMaxInfo->ptMaxTrackSize.y = bc->window->GetHeight();
 }
 
 void GlpaLib::keyDownMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)

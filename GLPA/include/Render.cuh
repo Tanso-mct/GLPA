@@ -15,6 +15,16 @@
 namespace Glpa
 {
 
+__global__ void GpuDrawBufBackground(
+    double* world_vs,
+    double* near_z,
+    double* far_z,
+    double* near_screen_size,
+    double* screen_pixel_size,
+    double* result_vs,
+    int world_vs_amount
+);
+
 class Render2d
 {
 private :

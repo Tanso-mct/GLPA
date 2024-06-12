@@ -68,6 +68,8 @@ void Glpa::Render2d::run
         int* dBufHeight;
         int* dBufDpi;
 
+        DWORD backgroundColor;
+
         cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
         cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
 
@@ -117,6 +119,8 @@ void Glpa::Render2d::run
         int* dBufWidth;
         int* dBufHeight;
         int* dBufDpi;
+
+        DWORD backgroundColor;
 
         cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
         cudaMemcpy(dBuf, buf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);

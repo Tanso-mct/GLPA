@@ -4,11 +4,11 @@
 void ExampleScene2d::openExample3d()
 {
     ExampleBaseB* pBcB = new ExampleBaseB();
-    pBcB->window->setName(L"Example Base B");
-    pBcB->window->setApiClassName(L"example_base_b");
+    pBcB->window->SetName(L"Example Base B");
+    pBcB->window->SetApiClassName(L"example_base_b");
 
-    pBcB->window->setWidth(1920);
-    pBcB->window->setHeight(1080);
+    pBcB->window->SetWidth(1920);
+    pBcB->window->SetHeight(1080);
 
     GlpaLib::AddBase(pBcB);
 
