@@ -104,7 +104,7 @@ void GlpaBase::runStart()
     ptScs[nowScName]->start();
     started = true;
 
-    // ptScs[nowScName]->rendering(window->hBufDC, window->pixels);
+    ptScs[nowScName]->rendering(window->hBufDC, window->pixels, window->GetWidth(), window->GetHeight(), window->GetDpi());
 
     ptScs[nowScName]->updateKeyMsg();
     ptScs[nowScName]->updateMouseMsg();
@@ -117,7 +117,7 @@ void GlpaBase::runUpdate()
     update();
     ptScs[nowScName]->update();
 
-    // ptScs[nowScName]->rendering(window->hBufDC, window->pixels);
+    ptScs[nowScName]->rendering(window->hBufDC, window->pixels, window->GetWidth(), window->GetHeight(), window->GetDpi());
 
     ptScs[nowScName]->updateKeyMsg();
     ptScs[nowScName]->updateMouseMsg();

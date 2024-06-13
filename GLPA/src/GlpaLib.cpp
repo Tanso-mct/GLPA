@@ -180,7 +180,7 @@ void GlpaLib::keyUpMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    bc->getNowScenePt()->getMouse(msg, wParam, lParam, bc->window->getDpi());
+    bc->getNowScenePt()->getMouse(msg, wParam, lParam, bc->window->GetDpi());
 }
 
 void GlpaLib::AddBase(GlpaBase *pBc)

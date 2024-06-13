@@ -7,6 +7,7 @@
 #include "SceneObject.h"
 
 #include "Image.h"
+#include "Color.h"
 
 #include <unordered_map>
 #include <map>
@@ -15,14 +16,28 @@
 namespace Glpa
 {
 
-__global__ void GpuDrawBufBackground(
-    double* world_vs,
-    double* near_z,
-    double* far_z,
-    double* near_screen_size,
-    double* screen_pixel_size,
-    double* result_vs,
-    int world_vs_amount
+__global__ void Gpu2dDraw
+(
+    int* imgPosX,
+    int* imgPosY,
+    int* imgWidth,
+    int* imgHeight,
+    LPDWORD* imgData,
+    int imgAmount,
+    LPDWORD buf,
+    int bufWidth,
+    int bufHeight,
+    int bufDpi,
+    DWORD background
+);
+
+__global__ void Gpu2dDrawBackground
+(
+    LPDWORD buf,
+    int bufWidth,
+    int bufHeight,
+    int bufDpi,
+    DWORD background
 );
 
 class Render2d

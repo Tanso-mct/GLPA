@@ -24,7 +24,8 @@ void Glpa::Render2d::run
 
     std::vector<int> hImgPosX;
     std::vector<int> hImgPosY;
-    std::vector<int> hImgSize;
+    std::vector<int> hImgWidth;
+    std::vector<int> hImgHeight;
     std::vector<LPDWORD> hImgData;
 
     int maxImgWidth = 0;
@@ -41,7 +42,8 @@ void Glpa::Render2d::run
                     Vec2d imgPos = img->getPos();
                     hImgPosX.push_back(imgPos.x);
                     hImgPosY.push_back(imgPos.y);
-                    hImgSize.push_back(img->getWidth() * img->getHeight());
+                    hImgWidth.push_back(img->getWidth());
+                    hImgHeight.push_back(img->getHeight());
 
                     maxImgWidth = (maxImgWidth < img->getWidth()) ? img->getWidth() : maxImgWidth;
                     maxImgHeight = (maxImgHeight < img->getHeight()) ? img->getHeight() : maxImgHeight;
@@ -60,15 +62,22 @@ void Glpa::Render2d::run
     {
         int* dImgPosX;
         int* dImgPosY;
-        int* dImgSize;
+        int* dImgWidth;
+        int* dImgHeight;
         LPDWORD* dImgData;
         LPDWORD dBuf;
 
-        int* dBufWidth;
-        int* dBufHeight;
-        int* dBufDpi;
-
         DWORD backgroundColor;
+        if (bgColor == Glpa::BACKGROUND_BLACK)
+        {
+            Glpa::Color instColor(255, 255, 255, 1);
+            backgroundColor = instColor.GetDword();
+        }
+        else
+        {
+            Glpa::Color instColor(255, 255, 255, 1);
+            backgroundColor = instColor.GetDword();
+        }
 
         cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
         cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
@@ -76,8 +85,11 @@ void Glpa::Render2d::run
         cudaMalloc(&dImgPosY, hImgPosY.size() * sizeof(int));
         cudaMemcpy(dImgPosY, hImgPosY.data(), hImgPosY.size() * sizeof(int), cudaMemcpyHostToDevice);
 
-        cudaMalloc(&dImgSize, hImgSize.size() * sizeof(int));
-        cudaMemcpy(dImgSize, hImgSize.data(), hImgSize.size() * sizeof(int), cudaMemcpyHostToDevice);
+        cudaMalloc(&dImgWidth, hImgWidth.size() * sizeof(int));
+        cudaMemcpy(dImgWidth, hImgWidth.data(), hImgWidth.size() * sizeof(int), cudaMemcpyHostToDevice);
+
+        cudaMalloc(&dImgHeight, hImgHeight.size() * sizeof(int));
+        cudaMemcpy(dImgHeight, hImgHeight.data(), hImgHeight.size() * sizeof(int), cudaMemcpyHostToDevice);
 
         cudaMalloc(&dImgData, hImgData.size() * sizeof(DWORD*));
         cudaMemcpy(dImgData, hImgData.data(), hImgData.size() * sizeof(DWORD*), cudaMemcpyHostToDevice);
@@ -85,20 +97,11 @@ void Glpa::Render2d::run
         cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
         cudaMemcpy(dBuf, buf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
 
-        cudaMalloc(&dBufWidth, sizeof(int));
-        cudaMemcpy(dBufWidth, &bufWidth, sizeof(int), cudaMemcpyHostToDevice);
-
-        cudaMalloc(&dBufHeight, sizeof(int));
-        cudaMemcpy(dBufHeight, &bufHeight, sizeof(int), cudaMemcpyHostToDevice);
-
-        cudaMalloc(&dBufDpi, sizeof(int));
-        cudaMemcpy(dBufDpi, &bufDpi, sizeof(int), cudaMemcpyHostToDevice);
-
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
 
-        int dataSizeY = maxImgWidth;
-        int dataSizeX = maxImgHeight;
+        int dataSizeY = hImgData.size();
+        int dataSizeX = maxImgWidth * maxImgHeight;
 
         int desiredThreadsPerBlockX = 16;
         int desiredThreadsPerBlockY = 16;
@@ -111,34 +114,49 @@ void Glpa::Render2d::run
 
         dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
         dim3 dimGrid(blocksX, blocksY);
+
+        Gpu2dDraw<<<dimGrid, dimBlock>>>
+        (
+            dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, hImgData.size(), 
+            dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
+        );
+        cudaError_t error = cudaGetLastError();
+        if (error != 0){
+            OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
+            throw std::runtime_error("Processing with Cuda failed.");
+        }
+
+        cudaFree(dImgPosX);
+        cudaFree(dImgPosY);
+        cudaFree(dImgWidth);
+        cudaFree(dImgHeight);
+        cudaFree(dImgData);
+        cudaFree(dBuf);
     }
     else
     {
         LPDWORD dBuf;
 
-        int* dBufWidth;
-        int* dBufHeight;
-        int* dBufDpi;
-
         DWORD backgroundColor;
+        if (bgColor == Glpa::BACKGROUND_BLACK)
+        {
+            Glpa::Color instColor(255, 255, 255, 1);
+            backgroundColor = instColor.GetDword();
+        }
+        else
+        {
+            Glpa::Color instColor(255, 255, 255, 1);
+            backgroundColor = instColor.GetDword();
+        }
 
         cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
         cudaMemcpy(dBuf, buf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
 
-        cudaMalloc(&dBufWidth, sizeof(int));
-        cudaMemcpy(dBufWidth, &bufWidth, sizeof(int), cudaMemcpyHostToDevice);
-
-        cudaMalloc(&dBufHeight, sizeof(int));
-        cudaMemcpy(dBufHeight, &bufHeight, sizeof(int), cudaMemcpyHostToDevice);
-
-        cudaMalloc(&dBufDpi, sizeof(int));
-        cudaMemcpy(dBufDpi, &bufDpi, sizeof(int), cudaMemcpyHostToDevice);
-
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
 
-        int dataSizeY = maxImgWidth;
-        int dataSizeX = maxImgHeight;
+        int dataSizeY = bufWidth;
+        int dataSizeX = bufHeight;
 
         int desiredThreadsPerBlockX = 16;
         int desiredThreadsPerBlockY = 16;
@@ -151,6 +169,17 @@ void Glpa::Render2d::run
 
         dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
         dim3 dimGrid(blocksX, blocksY);
+
+        Gpu2dDrawBackground<<<dimGrid, dimBlock>>>(dBuf, bufWidth, bufHeight, bufDpi, backgroundColor);
+        cudaError_t error = cudaGetLastError();
+        if (error != 0){
+            OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
+            throw std::runtime_error("Processing with Cuda failed.");
+        }
+
+
+        cudaFree(dBuf);
+
     }
 
 }
@@ -166,4 +195,35 @@ Glpa::Render3d::~Render3d()
 void Glpa::Render3d::run(std::unordered_map<std::string, Glpa::SceneObject*> objs, HDC dc, LPDWORD buf)
 {
 
+}
+
+__global__ void Glpa::Gpu2dDraw
+(
+    int *imgPosX, int *imgPosY, int* imgWidth, int* imgHeight, LPDWORD *imgData, int imgAmount,
+    LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background
+){
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < imgAmount)
+    {
+        if (j < imgWidth[i] * imgHeight[i])
+        {
+            /* 
+            size = width * height
+
+            point = x + y * width
+            
+             */
+
+            int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth;
+            buf[drawPoint + (j % )];
+        }
+    }
+}
+
+__global__ void Glpa::Gpu2dDrawBackground(LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background)
+{
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
 }

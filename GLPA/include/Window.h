@@ -58,7 +58,7 @@ public :
     int GetHeight() const {return height;}
     void SetHeight(int value) {height = value;}
 
-    int getDpi() const {return dpi;}
+    int GetDpi() const {return dpi;}
     void setDpi(int value) {dpi = value;}
 
     void setViewStyle(UINT value);

@@ -10,10 +10,21 @@ namespace Glpa
 class Color
 {
 private :
-    BYTE sourceR, sourceG, sourceB, sourceA;
-    BYTE nowR, nowG, nowB, nowA;
+    BYTE sourceR = 0;
+    BYTE sourceG = 0;
+    BYTE sourceB = 0;
+    BYTE sourceA = 0;
 
+    BYTE nowR = 0;
+    BYTE nowG = 0;
+    BYTE nowB = 0;
+    BYTE nowA = 0;
+    
 public :
+    Color(BYTE r, BYTE g, BYTE b, BYTE a);
+    Color(DWORD buf);
+    Color(){}
+
     BYTE GetSourceR() const {return sourceR;}
     BYTE GetSourceG() const {return sourceG;}
     BYTE GetSourceB() const {return sourceB;}
@@ -24,7 +35,9 @@ public :
     BYTE GetNowB() const {return nowB;}
     BYTE GetNowA() const {return nowA;}
 
-    void SetRbga(DWORD buf);
+    void SetRgba(DWORD buf);
+
+    DWORD GetDword();
 
     void AlphaBlend(Glpa::Color bg);
     
