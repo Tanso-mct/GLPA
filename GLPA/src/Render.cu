@@ -94,6 +94,7 @@ void Glpa::Render2d::run
         cudaMalloc(&dImgData, hImgData.size() * sizeof(DWORD*));
         cudaMemcpy(dImgData, hImgData.data(), hImgData.size() * sizeof(DWORD*), cudaMemcpyHostToDevice);
 
+        std::memset(buf, 0, sizeof(bufWidth * bufHeight * bufDpi));
         cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
         cudaMemcpy(dBuf, buf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
 
@@ -211,13 +212,29 @@ __global__ void Glpa::Gpu2dDraw
         {
             /* 
             size = width * height
+            point = posX + posY * width * dpi
+            buf = point + jX + jY * width * dpi
 
-            point = x + y * width
-            
+            0(0,0) 1(1,0) 2(2,0) 3(3,0) 4(4,0)
+            5(0,1) 6(1,1) 7(2,1) 8(3,1) 9(4,1)
+
+            i % width -> x coordinate
+            i / width -> y coordinate
              */
 
-            int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth;
-            buf[drawPoint + (j % )];
+            int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth * bufDpi;
+            int xCoord = j % bufWidth;
+            int yCoord = j / bufWidth;
+
+            // If initialization is required
+            buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] 
+            = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == 0) 
+            ? background : // AlphaBlend Dword;
+
+            // If the update hasn't happened yet
+            buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi]
+            = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == background)
+            ? imgData[imgPosX[i] + imgPosY[i] * imgWidth[i]] : // AlphaBlend Dword;
         }
     }
 }
@@ -226,4 +243,12 @@ __global__ void Glpa::Gpu2dDrawBackground(LPDWORD buf, int bufWidth, int bufHeig
 {
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < bufWidth)
+    {
+        if (j < bufHeight)
+        {
+            buf[i + j * bufWidth * bufDpi] = background;
+        }
+    }
 }
