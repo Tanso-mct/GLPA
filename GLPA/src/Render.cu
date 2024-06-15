@@ -226,15 +226,39 @@ __global__ void Glpa::Gpu2dDraw
             int xCoord = j % bufWidth;
             int yCoord = j / bufWidth;
 
+            int alphaBlendIF = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == 0) ? FALSE : TRUE;
+            alphaBlendIF = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == background) ? FALSE : TRUE;
+
             // If initialization is required
             buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] 
             = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == 0) 
-            ? background : // AlphaBlend Dword;
+            ? background : buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi];
 
             // If the update hasn't happened yet
             buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi]
             = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == background)
-            ? imgData[imgPosX[i] + imgPosY[i] * imgWidth[i]] : // AlphaBlend Dword;
+            ? imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] : buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi];
+
+            for (int fI = 0; fI < alphaBlendIF; fI++)
+            {
+                BYTE bufA = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
+                BYTE bufR = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
+                BYTE bufG = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
+                BYTE bufB = buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
+
+                BYTE imgA = (imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] >> 24) & 0xFF;
+                BYTE imgR = (imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] >> 16) & 0xFF;
+                BYTE imgG = (imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] >> 8) & 0xFF;
+                BYTE imgB = imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] & 0xFF;
+
+                float alpha = static_cast<float>(imgA) / 255.0f;
+                float invAlpha = 1.0f - alpha;
+
+                bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
+                bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
+                bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
+                bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+            }
         }
     }
 }
