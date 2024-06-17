@@ -48,6 +48,8 @@ public :
     Render2d();
     ~Render2d();
 
+    void setBackground(std::string color, DWORD& bg);
+
     void run
     (
         std::unordered_map<std::string, Glpa::SceneObject*> objs,

@@ -44,7 +44,7 @@ protected :
     std::string name;
     std::unordered_map<std::string, Glpa::SceneObject*> objs;
 
-    std::string backgroundColor = Glpa::BACKGROUND_BLACK;
+    std::string backgroundColor = Glpa::COLOR_BLACK;
 
 public :
     Scene();
@@ -83,8 +83,8 @@ public :
     void AddSceneObject(Glpa::SceneObject* ptObj);
     void DeleteSceneObject(Glpa::SceneObject* ptObj);
 
-    std::string GetName() const {return backgroundColor;}
-    void SetName(std::string str) {backgroundColor = str;}
+    std::string GetBgColor() const {return backgroundColor;}
+    void SetBgColor(std::string str) {backgroundColor = str;}
 
     /// @brief Add scene objects.
     virtual void setup() = 0;

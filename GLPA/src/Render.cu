@@ -8,6 +8,25 @@ Glpa::Render2d::~Render2d()
 {
 }
 
+void Glpa::Render2d::setBackground(std::string color, DWORD& bg)
+{
+    if (color == Glpa::COLOR_BLACK)
+    {
+        Glpa::Color instColor(0, 0, 0, 1);
+        bg = instColor.GetDword();
+    }
+    else if (color == Glpa::COLOR_GREEN)
+    {
+        Glpa::Color instColor(0, 200, 0, 1);
+        bg = instColor.GetDword();
+    }
+    else
+    {
+        Glpa::Color instColor(0, 200, 0, 1);
+        bg = instColor.GetDword();
+    }
+}
+
 void Glpa::Render2d::run
 (
     std::unordered_map<std::string, Glpa::SceneObject*> objs,
@@ -18,9 +37,6 @@ void Glpa::Render2d::run
     // j = this image width x height
 
     // Separate processing depending on image or text.
-
-    int totalImg = 0;
-    int totalText = 0;
 
     std::vector<int> hImgPosX;
     std::vector<int> hImgPosY;
@@ -68,16 +84,7 @@ void Glpa::Render2d::run
         LPDWORD dBuf;
 
         DWORD backgroundColor;
-        if (bgColor == Glpa::BACKGROUND_BLACK)
-        {
-            Glpa::Color instColor(0, 200, 0, 1);
-            backgroundColor = instColor.GetDword();
-        }
-        else
-        {
-            Glpa::Color instColor(0, 200, 0, 1);
-            backgroundColor = instColor.GetDword();
-        }
+        setBackground(bgColor, backgroundColor);
 
         cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
         cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
@@ -101,8 +108,8 @@ void Glpa::Render2d::run
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
 
-        int dataSizeY = hImgData.size();
-        int dataSizeX = maxImgWidth * maxImgHeight;
+        int dataSizeY = bufWidth;
+        int dataSizeX = bufHeight;
 
         int desiredThreadsPerBlockX = 16;
         int desiredThreadsPerBlockY = 16;
@@ -116,13 +123,35 @@ void Glpa::Render2d::run
         dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
         dim3 dimGrid(blocksX, blocksY);
 
-        Gpu2dDraw<<<dimGrid, dimBlock>>>
+        Gpu2dDrawBackground<<<dimGrid, dimBlock>>>(dBuf, bufWidth, bufHeight, bufDpi, backgroundColor);
+        cudaError_t error = cudaGetLastError();
+        if (error != 0){
+            OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
+            throw std::runtime_error("Processing with Cuda failed.");
+        }
+
+        dataSizeY = hImgData.size();
+        dataSizeX = maxImgWidth * maxImgHeight;
+
+        desiredThreadsPerBlockX = 16;
+        desiredThreadsPerBlockY = 16;
+
+        blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+        blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+        threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+        threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+        dim3 dimBlock2(threadsPerBlockX, threadsPerBlockY);
+        dim3 dimGrid2(blocksX, blocksY);
+
+        Gpu2dDraw<<<dimGrid2, dimBlock2>>>
         (
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, hImgData.size(), 
             dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
         );
-        cudaError_t error = cudaGetLastError();
-        if (error != 0){
+        cudaError_t error2 = cudaGetLastError();
+        if (error2 != 0){
             OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
             throw std::runtime_error("Processing with Cuda failed.");
         }
@@ -152,16 +181,7 @@ void Glpa::Render2d::run
         LPDWORD dBuf;
 
         DWORD backgroundColor;
-        if (bgColor == Glpa::BACKGROUND_BLACK)
-        {
-            Glpa::Color instColor(0, 0, 0, 1);
-            backgroundColor = instColor.GetDword();
-        }
-        else
-        {
-            Glpa::Color instColor(0, 200, 0, 1);
-            backgroundColor = instColor.GetDword();
-        }
+        setBackground(bgColor, backgroundColor);
 
         cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 
@@ -235,44 +255,49 @@ __global__ void Glpa::Gpu2dDraw
             i / width -> y coordinate
              */
 
-            int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth * bufDpi;
-            int xCoord = j % imgWidth[i];
-            int yCoord = j / imgWidth[i];
+            // int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth * bufDpi;
+            int xCoordImg = j % imgWidth[i];
+            int yCoordImg = j / imgWidth[i];
 
-            int alphaBlendIF = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == 0) ? FALSE : TRUE;
-            alphaBlendIF = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == background) ? FALSE : TRUE;
+            int xCoord = imgPosX[i] + xCoordImg;
+            int yCoord = imgPosY[i] + yCoordImg;
 
-            // If initialization is required
-            buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] 
-            = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == 0) 
-            ? background : buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi];
+            int xWriteIF = (xCoord >= 0 && xCoord < bufWidth) ? TRUE : FALSE;
+            int yWriteIF = (yCoord >= 0 && yCoord < bufHeight) ? TRUE : FALSE;
 
-            // If the update hasn't happened yet
-            buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi]
-            = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] == background)
-            ? imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] : buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi];
+            int writeIF = (xWriteIF == TRUE && yWriteIF == TRUE) ? TRUE : FALSE;
 
-            for (int fI = 0; fI < alphaBlendIF; fI++)
+            for (int cb1 = 0; cb1 < writeIF; cb1++)
             {
-                BYTE bufA = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
-                BYTE bufR = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
-                BYTE bufG = (buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
-                BYTE bufB = buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
+                int alphaBlendIF = (buf[xCoord + yCoord * bufWidth * bufDpi] == background) ? FALSE : TRUE;
 
-                BYTE imgA = (imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] >> 24) & 0xFF;
-                BYTE imgR = (imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] >> 16) & 0xFF;
-                BYTE imgG = (imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] >> 8) & 0xFF;
-                BYTE imgB = imgData[i][imgPosX[i] + imgPosY[i] * imgWidth[i]] & 0xFF;
+                // If the update hasn't happened yet
+                buf[xCoord + yCoord * bufWidth * bufDpi]
+                = (buf[xCoord + yCoord * bufWidth * bufDpi] == background)
+                ? imgData[i][xCoordImg + yCoordImg * imgWidth[i]] : buf[xCoord + yCoord * bufWidth * bufDpi];
 
-                float alpha = static_cast<float>(imgA) / 255.0f;
-                float invAlpha = 1.0f - alpha;
+                for (int cb2 = 0; cb2 < alphaBlendIF; cb2++)
+                {
+                    BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
+                    BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
+                    BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
+                    BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
 
-                bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
-                bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
-                bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
-                bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+                    BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
+                    BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
+                    BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
+                    BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
 
-                buf[drawPoint + xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+                    float alpha = static_cast<float>(imgA) / 255.0f;
+                    float invAlpha = 1.0f - alpha;
+
+                    bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
+                    bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
+                    bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
+                    bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+
+                    buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+                }
             }
         }
     }
