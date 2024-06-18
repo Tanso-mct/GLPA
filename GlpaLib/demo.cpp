@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include <d2d1.h>
 
+#include "Render.cuh"
+
 #include <atlcomcli.h>
 
 #pragma comment(lib, "d2d1")
