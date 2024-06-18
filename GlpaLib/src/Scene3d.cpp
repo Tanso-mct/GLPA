@@ -20,7 +20,7 @@ void Glpa::Scene3d::release()
     }
 }
 
-void Glpa::Scene3d::rendering(HDC dc, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
+void Glpa::Scene3d::rendering(LPDWORD& buf, int& bufWidth, int& bufHeight, int& bufDpi)
 {
     rend.run(objs, dc, buf);
 }

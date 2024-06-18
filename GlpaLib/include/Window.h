@@ -28,11 +28,7 @@ private :
 
     DWORD viewStyle = WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
-    HDC hWndDC = nullptr;
     PAINTSTRUCT hPs;
-
-    HBITMAP hBufBmp = nullptr;
-    BITMAPINFO hBufBmpInfo;
 
     ID2D1Factory* pFactory = NULL;
     ID2D1HwndRenderTarget* pRenderTarget = NULL;
@@ -44,14 +40,15 @@ public :
     HWND hWnd = nullptr;
     WNDCLASSEX apiClass;
 
-    HDC hBufDC = nullptr;
     LPDWORD pixels;
     
     void createPixels();
     void create(HINSTANCE hInstance);
 
-    /// @brief Create a device context.
-    void createDc();
+    /// @brief Create a D2D.
+    void initD2D();
+
+    void releaseD2D();
 
     /// @brief Called when redrawing is required and copies the pixels data to the buffer.
     void paint();

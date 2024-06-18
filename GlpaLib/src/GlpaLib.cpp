@@ -261,7 +261,7 @@ void GlpaLib::Run()
 
 void GlpaLib::createMsg(GlpaBase *bc)
 {
-    bc->window->createDc();
+    bc->window->initD2D();
 }
 
 void GlpaLib::paintMsg(GlpaBase *bc)

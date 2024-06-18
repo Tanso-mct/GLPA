@@ -2,11 +2,7 @@
 
 Glpa::Window::~Window()
 {
-    if (hBufBmp != NULL) 
-    {
-        DeleteObject(hBufBmp);
-        hBufBmp = NULL;
-    }
+    releaseD2D();
 }
 
 void Glpa::Window::createPixels()
@@ -70,54 +66,42 @@ void Glpa::Window::create(HINSTANCE hInstance)
     }
 }
 
-void Glpa::Window::createDc()
+void Glpa::Window::initD2D()
 {
-    hWndDC = GetDC(hWnd);
+    HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pFactory);
+    if (SUCCEEDED(hr))
+    {
+        RECT rc;
+        GetClientRect(hWnd, &rc);
 
-    hBufBmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    hBufBmpInfo.bmiHeader.biWidth = +width * dpi;
-    hBufBmpInfo.bmiHeader.biHeight = -height * dpi;      
-    hBufBmpInfo.bmiHeader.biPlanes = 1;
-    hBufBmpInfo.bmiHeader.biBitCount = 32;
-    hBufBmpInfo.bmiHeader.biCompression = BI_RGB;
-    
-    hBufDC = CreateCompatibleDC(hWndDC);
-    
-    hBufBmp = CreateDIBSection
-    (
-        NULL, 
-        &hBufBmpInfo, 
-        DIB_RGB_COLORS, 
-        (LPVOID*)&pixels, 
-        NULL, 
-        0
-    );
-    SelectObject(hBufDC, hBufBmp);
+        hr = pFactory->CreateHwndRenderTarget(
+            D2D1::RenderTargetProperties(),
+            D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
+            &pRenderTarget
+        );
+    }
+}
 
-    ReleaseDC(hWnd, hWndDC);
+void Glpa::Window::releaseD2D()
+{
+    if (pBitmap) pBitmap->Release();
+    if (pRenderTarget) pRenderTarget->Release();
+    if (pFactory) pFactory->Release();
 }
 
 void Glpa::Window::paint()
 {
-    hWndDC = BeginPaint(hWnd, &hPs);
-
-    StretchDIBits(
-        hWndDC,
-        0,
-        0,
-        width,
-        height,
-        0,
-        0,
-        width * dpi,
-        height * dpi, 
-        pixels,
-        &hBufBmpInfo,
-        DIB_RGB_COLORS,
-        SRCCOPY
-    );
+    BeginPaint(hWnd, &hPs);
+    pRenderTarget->BeginDraw();
     
+    pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+
+    D2D1_SIZE_F size = pBitmap->GetSize();
+    pRenderTarget->DrawBitmap(pBitmap, D2D1::RectF(0.0f, 0.0f, size.width, size.height));
+    
+    pRenderTarget->EndDraw();
     EndPaint(hWnd, &hPs);
+
 }
 
 void Glpa::Window::setViewStyle(UINT value)

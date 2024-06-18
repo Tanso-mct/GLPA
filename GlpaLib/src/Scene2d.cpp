@@ -69,7 +69,7 @@ void Glpa::Scene2d::release()
     }
 }
 
-void Glpa::Scene2d::rendering(HDC dc, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
+void Glpa::Scene2d::rendering(LPDWORD& buf, int& bufWidth, int& bufHeight, int& bufDpi)
 {
     if (edited) rend.run(objs, drawOrder, dc, buf, bufWidth, bufHeight, bufDpi, backgroundColor);
 }

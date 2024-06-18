@@ -33,7 +33,7 @@ public :
     void load() override;
     void release() override;
 
-    void rendering(HDC dc,LPDWORD buf, int bufWidth, int bufHeight, int bufDpi) override;
+    void rendering(LPDWORD& buf, int& bufWidth, int& bufHeight, int& bufDpi) override;
 
     bool getEdited() const {return edited;}
     void setEdited(bool symbol) {edited = symbol;}
