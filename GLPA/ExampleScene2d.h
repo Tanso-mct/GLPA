@@ -17,6 +17,10 @@ private :
     bool opened = false;
     Glpa::Image* ptBackGround;
 
+    Glpa::Vec2d beforeImgPos;
+    Glpa::Vec2d mouseLDownPos;
+    bool isImgMoving = false;
+
 public :
     ~ExampleScene2d() override;
 

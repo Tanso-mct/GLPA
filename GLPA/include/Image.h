@@ -24,8 +24,8 @@ public :
     int getDrawOrder() const {return drawOrder;}
     void setDrawOrder(int value) {drawOrder = value;}
 
-    Glpa::Vec2d getPos() const {return pos;}
-    void setPos(Glpa::Vec2d value) {pos = value;}
+    Glpa::Vec2d GetPos() const {return pos;}
+    void SetPos(Glpa::Vec2d value) {pos = value;}
 
 };
 

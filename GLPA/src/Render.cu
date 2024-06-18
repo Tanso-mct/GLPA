@@ -33,11 +33,6 @@ void Glpa::Render2d::run
     std::map<int, std::vector<std::string>> drawOrder,
     HDC dc, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
-    // i = image amount
-    // j = this image width x height
-
-    // Separate processing depending on image or text.
-
     std::vector<int> hImgPosX;
     std::vector<int> hImgPosY;
     std::vector<int> hImgWidth;
@@ -55,7 +50,7 @@ void Glpa::Render2d::run
             {
                 if (img->getVisible())
                 {
-                    Vec2d imgPos = img->getPos();
+                    Vec2d imgPos = img->GetPos();
                     hImgPosX.push_back(imgPos.x);
                     hImgPosY.push_back(imgPos.y);
                     hImgWidth.push_back(img->getWidth());
@@ -74,6 +69,38 @@ void Glpa::Render2d::run
         }
     }
 
+    LPDWORD dBuf;
+
+    DWORD backgroundColor;
+    setBackground(bgColor, backgroundColor);
+
+    cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
+
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSizeY = bufWidth;
+    int dataSizeX = bufHeight;
+
+    int desiredThreadsPerBlockX = 16;
+    int desiredThreadsPerBlockY = 16;
+
+    int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+    int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+    int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+    int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+    dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+    dim3 dimGrid(blocksX, blocksY);
+
+    Gpu2dDrawBackground<<<dimGrid, dimBlock>>>(dBuf, bufWidth, bufHeight, bufDpi, backgroundColor);
+    cudaError_t error = cudaGetLastError();
+    if (error != 0){
+        OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
+        throw std::runtime_error("Processing with Cuda failed.");
+    }
+
     if (hImgData.size() != 0)
     {
         int* dImgPosX;
@@ -81,10 +108,6 @@ void Glpa::Render2d::run
         int* dImgWidth;
         int* dImgHeight;
         LPDWORD* dImgData;
-        LPDWORD dBuf;
-
-        DWORD backgroundColor;
-        setBackground(bgColor, backgroundColor);
 
         cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
         cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
@@ -100,35 +123,6 @@ void Glpa::Render2d::run
 
         cudaMalloc(&dImgData, hImgData.size() * sizeof(DWORD*));
         cudaMemcpy(dImgData, hImgData.data(), hImgData.size() * sizeof(DWORD*), cudaMemcpyHostToDevice);
-
-        std::memset(buf, 0, sizeof(bufWidth * bufHeight * bufDpi));
-        cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
-        cudaMemcpy(dBuf, buf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
-
-        cudaDeviceProp deviceProp;
-        cudaGetDeviceProperties(&deviceProp, 0);
-
-        int dataSizeY = bufWidth;
-        int dataSizeX = bufHeight;
-
-        int desiredThreadsPerBlockX = 16;
-        int desiredThreadsPerBlockY = 16;
-
-        int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
-        int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
-
-        int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
-        int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
-
-        dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
-        dim3 dimGrid(blocksX, blocksY);
-
-        Gpu2dDrawBackground<<<dimGrid, dimBlock>>>(dBuf, bufWidth, bufHeight, bufDpi, backgroundColor);
-        cudaError_t error = cudaGetLastError();
-        if (error != 0){
-            OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
-            throw std::runtime_error("Processing with Cuda failed.");
-        }
 
         dataSizeY = hImgData.size();
         dataSizeX = maxImgWidth * maxImgHeight;
@@ -173,49 +167,13 @@ void Glpa::Render2d::run
         }
 
         cudaFree(dImgData);
-
-        cudaFree(dBuf);
     }
     else
     {
-        LPDWORD dBuf;
-
-        DWORD backgroundColor;
-        setBackground(bgColor, backgroundColor);
-
-        cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
-
-        cudaDeviceProp deviceProp;
-        cudaGetDeviceProperties(&deviceProp, 0);
-
-        int dataSizeY = bufWidth;
-        int dataSizeX = bufHeight;
-
-        int desiredThreadsPerBlockX = 16;
-        int desiredThreadsPerBlockY = 16;
-
-        int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
-        int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
-
-        int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
-        int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
-
-        dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
-        dim3 dimGrid(blocksX, blocksY);
-
-        Gpu2dDrawBackground<<<dimGrid, dimBlock>>>(dBuf, bufWidth, bufHeight, bufDpi, backgroundColor);
-        cudaError_t error = cudaGetLastError();
-        if (error != 0){
-            OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
-            throw std::runtime_error("Processing with Cuda failed.");
-        }
-
         cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
-
-        cudaFree(dBuf);
-
     }
 
+    cudaFree(dBuf);
 }
 
 Glpa::Render3d::Render3d()

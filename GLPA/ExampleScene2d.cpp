@@ -86,17 +86,24 @@ void ExampleScene2d::update()
     //     OutputDebugStringA("\n");
     // }
 
-    // Glpa::Vec2d pos;
-    // if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MBTN_DOWN, pos))
-    // {
-    //     OutputDebugStringA("Mouse ");
-    //     OutputDebugStringA(GetNowMouseMsg().c_str());
-    //     OutputDebugStringA(" X : ");
-    //     OutputDebugStringA(std::to_string(pos.x).c_str());
-    //     OutputDebugStringA(" Y : ");
-    //     OutputDebugStringA(std::to_string(pos.y).c_str());
-    //     OutputDebugStringA("\n");
-    // }
+    Glpa::Vec2d pos;
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_DOWN, pos) && !isImgMoving)
+    {
+        mouseLDownPos = pos;
+        beforeImgPos = ptBackGround->GetPos();
+        isImgMoving = true;
+    }
+
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isImgMoving)
+    {
+        Glpa::Vec2d moveCoord(beforeImgPos.x + pos.x - mouseLDownPos.x, beforeImgPos.y + pos.y - mouseLDownPos.y);
+        ptBackGround->SetPos(moveCoord);
+    }
+
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_UP) && isImgMoving)
+    {
+        isImgMoving = false;
+    }
 
     if (GetNowKeyDownMsg("g")) 
     {
