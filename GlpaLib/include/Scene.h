@@ -101,7 +101,7 @@ public :
     virtual void load() = 0;
     virtual void release() = 0;
 
-    virtual void rendering(ID2D1HwndRenderTarget*& pRenderTarget, ID2D1Bitmap*& pBitMap, LPDWORD buf, int& bufWidth, int& bufHeight, int& bufDpi) = 0;
+    virtual void rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi) = 0;
 
 };
 

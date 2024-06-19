@@ -3,11 +3,7 @@
 Glpa::Window::~Window()
 {
     releaseD2D();
-}
-
-void Glpa::Window::createPixels()
-{
-    pixels = (LPDWORD)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, width * height * 4 * dpi);
+    delete pixels;
 }
 
 void Glpa::Window::create(HINSTANCE hInstance)
@@ -64,6 +60,10 @@ void Glpa::Window::create(HINSTANCE hInstance)
         OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create window.\n");
         throw std::runtime_error("Failed to create window.");
     }
+
+    pixels = new DWORD[width * height * dpi];
+
+    initD2D();
 }
 
 void Glpa::Window::initD2D()
@@ -79,14 +79,27 @@ void Glpa::Window::initD2D()
             D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top)),
             &pRenderTarget
         );
+
+        if (FAILED(hr))
+        {
+            OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create direct2d render target.\n");
+            throw std::runtime_error("Failed to create direct2d render target.");
+            return;
+        }
+    }
+    else
+    {
+        OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create direct2d factory.\n");
+        throw std::runtime_error("Failed to create direct2d factory.");
+        return;
     }
 }
 
 void Glpa::Window::releaseD2D()
 {
-    if (pBitmap) pBitmap->Release();
-    if (pRenderTarget) pRenderTarget->Release();
-    if (pFactory) pFactory->Release();
+    if (pBitmap != nullptr) pBitmap->Release();
+    if (pRenderTarget != nullptr) pRenderTarget->Release();
+    if (pFactory != nullptr) pFactory->Release();
 }
 
 void Glpa::Window::paint()
@@ -94,7 +107,7 @@ void Glpa::Window::paint()
     BeginPaint(hWnd, &hPs);
     pRenderTarget->BeginDraw();
     
-    pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+    // pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
     D2D1_SIZE_F size = pBitmap->GetSize();
     pRenderTarget->DrawBitmap(pBitmap, D2D1::RectF(0.0f, 0.0f, size.width, size.height));
@@ -102,6 +115,27 @@ void Glpa::Window::paint()
     pRenderTarget->EndDraw();
     EndPaint(hWnd, &hPs);
 
+}
+
+void Glpa::Window::SetWidth(int value)
+{
+    width = value;
+    delete pixels;
+    pixels = new DWORD[width * height * dpi];
+}
+
+void Glpa::Window::SetHeight(int value)
+{
+    height = value;
+    delete pixels;
+    pixels = new DWORD[width * height * dpi];
+}
+
+void Glpa::Window::SetDpi(int value)
+{
+    dpi = value;
+    delete pixels;
+    pixels = new DWORD[width * height * dpi];
 }
 
 void Glpa::Window::setViewStyle(UINT value)

@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <map>
 
+#pragma comment(lib, "d2d1")
+
 namespace Glpa 
 {
 
@@ -14,8 +16,6 @@ class Scene2d : public Scene
 private :
     int imgAmount = 0;
     int textAmount = 0;
-
-    bool edited = true;
 
     Glpa::Render2d rend;
 
@@ -33,11 +33,8 @@ public :
     void load() override;
     void release() override;
 
-    void rendering(LPDWORD& buf, int& bufWidth, int& bufHeight, int& bufDpi) override;
+    void rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi) override;
 
-    bool getEdited() const {return edited;}
-    void setEdited(bool symbol) {edited = symbol;}
-    
 };
 
 }

@@ -31,7 +31,7 @@ void Glpa::Render2d::run
 (
     std::unordered_map<std::string, Glpa::SceneObject*> objs,
     std::map<int, std::vector<std::string>> drawOrder,
-    HDC dc, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
+    LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
     std::vector<int> hImgPosX;
     std::vector<int> hImgPosY;
@@ -184,8 +184,9 @@ Glpa::Render3d::~Render3d()
 {
 }
 
-void Glpa::Render3d::run(std::unordered_map<std::string, Glpa::SceneObject*> objs, HDC dc, LPDWORD buf)
-{
+void Glpa::Render3d::run(
+    std::unordered_map<std::string, Glpa::SceneObject*> objs, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
+){
 
 }
 

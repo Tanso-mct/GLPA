@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <stdexcept>
 
+#include <string>
+
 #include <d2d1.h>
 #pragma comment(lib, "d2d1")
 
@@ -30,19 +32,19 @@ private :
 
     PAINTSTRUCT hPs;
 
-    ID2D1Factory* pFactory = NULL;
-    ID2D1HwndRenderTarget* pRenderTarget = NULL;
-    ID2D1Bitmap* pBitmap = NULL;
+    ID2D1Factory* pFactory = nullptr;
 
 public :
     ~Window();
+
+    ID2D1HwndRenderTarget* pRenderTarget = nullptr;
+    ID2D1Bitmap* pBitmap = nullptr;
     
     HWND hWnd = nullptr;
     WNDCLASSEX apiClass;
 
     LPDWORD pixels;
     
-    void createPixels();
     void create(HINSTANCE hInstance);
 
     /// @brief Create a D2D.
@@ -57,13 +59,13 @@ public :
     void SetApiClassName(LPCWSTR str) {apiClassName = str;}
 
     int GetWidth() const {return width;}
-    void SetWidth(int value) {width = value;}
+    void SetWidth(int value);
 
     int GetHeight() const {return height;}
-    void SetHeight(int value) {height = value;}
+    void SetHeight(int value);
 
     int GetDpi() const {return dpi;}
-    void setDpi(int value) {dpi = value;}
+    void SetDpi(int value);
 
     void setViewStyle(UINT value);
     void addViewStyle(UINT value);

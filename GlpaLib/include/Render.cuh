@@ -54,7 +54,7 @@ public :
     (
         std::unordered_map<std::string, Glpa::SceneObject*> objs,
         std::map<int, std::vector<std::string>> drawOrder,
-        HDC dc, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
+        LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
     );
 };
 
@@ -66,7 +66,10 @@ public :
     Render3d();
     ~Render3d();
 
-    void run(std::unordered_map<std::string, Glpa::SceneObject*> objs, HDC dc, LPDWORD buf);
+    void run
+    (
+        std::unordered_map<std::string, Glpa::SceneObject*> objs, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
+    );
 };
 
 }

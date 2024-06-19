@@ -69,7 +69,16 @@ void Glpa::Scene2d::release()
     }
 }
 
-void Glpa::Scene2d::rendering(LPDWORD& buf, int& bufWidth, int& bufHeight, int& bufDpi)
+void Glpa::Scene2d::rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
 {
-    if (edited) rend.run(objs, drawOrder, dc, buf, bufWidth, bufHeight, bufDpi, backgroundColor);
+    rend.run(objs, drawOrder, buf, bufWidth, bufHeight, bufDpi, backgroundColor);
+
+    D2D1_BITMAP_PROPERTIES bitmapProperties;
+    bitmapProperties.pixelFormat = pRenderTarget->GetPixelFormat();
+    bitmapProperties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    bitmapProperties.dpiX = 96.0f * bufDpi;
+    bitmapProperties.dpiY = 96.0f * bufDpi;
+
+    D2D1_SIZE_U size = D2D1::SizeU(bufWidth, bufHeight);
+    HRESULT hr = pRenderTarget->CreateBitmap(size, buf, bufWidth * sizeof(DWORD), &bitmapProperties, pBitMap);
 }
