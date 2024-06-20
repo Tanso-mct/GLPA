@@ -65,6 +65,8 @@ void Glpa::Scene2d::release()
         {
             obj.second->release();
             deleteDrawOrder(obj.second);
+
+            rend.dRelease();
         }
     }
 }
@@ -75,7 +77,7 @@ void Glpa::Scene2d::rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap*
 
     D2D1_BITMAP_PROPERTIES bitmapProperties;
     bitmapProperties.pixelFormat = pRenderTarget->GetPixelFormat();
-    bitmapProperties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    // bitmapProperties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
     bitmapProperties.dpiX = 96.0f * bufDpi;
     bitmapProperties.dpiY = 96.0f * bufDpi;
 

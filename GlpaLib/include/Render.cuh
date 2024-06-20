@@ -43,12 +43,36 @@ __global__ void Gpu2dDrawBackground
 class Render2d
 {
 private :
+    bool malloced = false;
+
+    LPDWORD dBuf = nullptr;
+
+    int* dImgPosX;
+    int* dImgPosY;
+    int* dImgWidth;
+    int* dImgHeight;
+    LPDWORD* dImgData;
+
+    int imgAmount = 0;
+
+    int maxImgWidth = 0;
+    int maxImgHeight = 0;
+
+    DWORD backgroundColor;
 
 public :
     Render2d();
     ~Render2d();
 
     void setBackground(std::string color, DWORD& bg);
+
+    void dMalloc
+    (
+        std::unordered_map<std::string, Glpa::SceneObject*> objs,
+        std::map<int, std::vector<std::string>> drawOrder,
+        int bufWidth, int bufHeight, int bufDpi, std::string bgColor
+    );
+    void dRelease();
 
     void run
     (
