@@ -1,5 +1,10 @@
 #include "Scene3d.h"
 
+Glpa::Scene3d::Scene3d()
+{
+    setType(3);
+}
+
 Glpa::Scene3d::~Scene3d()
 {
 }

@@ -24,9 +24,12 @@ protected :
     std::map<int, std::vector<std::string>> drawOrder;
 
 public :
+    Scene2d();
     ~Scene2d() override;
 
-    void setDrawOrder();
+    void editPos(Glpa::Image* img, Glpa::Vec2d newPos);
+    void EditDrawOrder(Glpa::SceneObject *obj, int newDrawOrder);
+
     void addDrawOrder(Glpa::SceneObject* obj);
     void deleteDrawOrder(Glpa::SceneObject* obj);
 

@@ -43,6 +43,8 @@ private :
     Glpa::Vec2d mouseMUpPos;
     short wheelMoveAmount = 0;
 
+    int type = 0;
+
 protected :
     std::string name;
     std::unordered_map<std::string, Glpa::SceneObject*> objs;
@@ -52,6 +54,9 @@ protected :
 public :
     Scene();
     virtual ~Scene();
+
+    int getType() const {return type;}
+    void setType(int val) {type = val;}
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}

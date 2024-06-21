@@ -21,8 +21,8 @@ public :
     bool getVisible() const {return visible;}
     void setVisible(bool symbol) {visible = symbol;}
 
-    int getDrawOrder() const {return drawOrder;}
-    void setDrawOrder(int value) {drawOrder = value;}
+    int GetDrawOrder() const {return drawOrder;}
+    void SetDrawOrder(int value) {drawOrder = value;}
 
     Glpa::Vec2d GetPos() const {return pos;}
     void SetPos(Glpa::Vec2d value) {pos = value;}

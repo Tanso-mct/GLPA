@@ -26,7 +26,7 @@ public :
     void setType(std::string str) {type = str;}
 
     bool isLoaded() const {return loaded;}
-    
+
     virtual void load() = 0;
     virtual void release() = 0;
 };

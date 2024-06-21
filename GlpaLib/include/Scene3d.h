@@ -3,6 +3,7 @@
 
 #include "Scene.h"
 
+
 namespace Glpa 
 {
 
@@ -14,6 +15,7 @@ private :
 protected :
     
 public :
+    Scene3d();
     ~Scene3d() override;
 
     void load() override;

@@ -72,6 +72,13 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "__nullptr": "cpp",
-        "__mutex_base": "cpp"
-    }
+        "__mutex_base": "cpp",
+        "__bit_reference": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "string_view": "cpp"
+    },
+    "commentTranslate.hover.enabled": true,
+    "commentTranslate.targetLanguage": "en"
 }

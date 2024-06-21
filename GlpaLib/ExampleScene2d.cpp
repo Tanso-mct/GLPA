@@ -97,7 +97,9 @@ void ExampleScene2d::update()
     if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isImgMoving)
     {
         Glpa::Vec2d moveCoord(beforeImgPos.x + pos.x - mouseLDownPos.x, beforeImgPos.y + pos.y - mouseLDownPos.y);
-        ptBackGround->SetPos(moveCoord);
+
+        editPos(ptBackGround, moveCoord);
+        // ptBackGround->SetPos(moveCoord);
     }
 
     if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_UP) && isImgMoving)

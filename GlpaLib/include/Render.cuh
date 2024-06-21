@@ -13,6 +13,8 @@
 #include <map>
 #include <Window.h>
 
+#include <algorithm>
+
 namespace Glpa
 {
 
@@ -45,6 +47,14 @@ class Render2d
 private :
     bool malloced = false;
 
+    std::vector<std::string> imgNames;
+    std::vector<int> hImgPosX;
+    std::vector<int> hImgPosY;
+    std::vector<int> hImgWidth;
+    std::vector<int> hImgHeight;
+    std::vector<LPDWORD> hImgData;
+
+    LPDWORD hBuf = nullptr;
     LPDWORD dBuf = nullptr;
 
     int* dImgPosX;
@@ -66,18 +76,21 @@ public :
 
     void setBackground(std::string color, DWORD& bg);
 
+    void editObjsPos(Glpa::Image *img);
+    void editBufSize(int bufWidth, int bufHeight, int bufDpi);
+
     void dMalloc
     (
-        std::unordered_map<std::string, Glpa::SceneObject*> objs,
-        std::map<int, std::vector<std::string>> drawOrder,
+        std::unordered_map<std::string, Glpa::SceneObject*>& objs,
+        std::map<int, std::vector<std::string>>& drawOrder,
         int bufWidth, int bufHeight, int bufDpi, std::string bgColor
     );
     void dRelease();
 
     void run
     (
-        std::unordered_map<std::string, Glpa::SceneObject*> objs,
-        std::map<int, std::vector<std::string>> drawOrder,
+        std::unordered_map<std::string, Glpa::SceneObject*>& objs,
+        std::map<int, std::vector<std::string>>& drawOrder,
         LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
     );
 };

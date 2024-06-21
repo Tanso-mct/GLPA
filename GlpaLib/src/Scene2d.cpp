@@ -1,23 +1,36 @@
 #include "Scene2d.h"
 
+Glpa::Scene2d::Scene2d()
+{
+    setType(2);
+}
+
 Glpa::Scene2d::~Scene2d()
 {
 }
 
-void Glpa::Scene2d::setDrawOrder()
+void Glpa::Scene2d::editPos(Glpa::Image *img, Glpa::Vec2d newPos)
 {
-    drawOrder.clear();
-    imgAmount = 0;
-    textAmount = 0;
+    img->SetPos(newPos);
 
-    for (auto& obj : objs)
+    rend.editObjsPos(img);
+}
+
+void Glpa::Scene2d::EditDrawOrder(Glpa::SceneObject *obj, int newDrawOrder)
+{
+    // TODO: Add processing with Text.
+    if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
-        // TODO: Add processing with Text.
-        if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj.second))
-        {
-            drawOrder[img->getDrawOrder()].push_back(img->getName());
-            imgAmount++;
-        }
+        drawOrder[img->GetDrawOrder()].push_back(img->getName());
+
+        drawOrder[img->GetDrawOrder()].erase
+        (
+            std::find(drawOrder[img->GetDrawOrder()].begin(), drawOrder[img->GetDrawOrder()].end(), img->getName())
+        );
+
+        img->SetDrawOrder(newDrawOrder);
+
+        addDrawOrder(obj);
     }
 }
 
@@ -26,7 +39,7 @@ void Glpa::Scene2d::addDrawOrder(Glpa::SceneObject *obj)
     // TODO: Add processing with Text.
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
-        drawOrder[img->getDrawOrder()].push_back(img->getName());
+        drawOrder[img->GetDrawOrder()].push_back(img->getName());
         imgAmount++;
     }
 }
@@ -36,7 +49,7 @@ void Glpa::Scene2d::deleteDrawOrder(Glpa::SceneObject *obj)
     // TODO: Add processing with Text.
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
-        std::vector<std::string>& order = drawOrder[img->getDrawOrder()];
+        std::vector<std::string>& order = drawOrder[img->GetDrawOrder()];
         auto it = std::find(order.begin(), order.end(), obj->getName());
         if (it != order.end()) {
             order.erase(it);
@@ -77,7 +90,6 @@ void Glpa::Scene2d::rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap*
 
     D2D1_BITMAP_PROPERTIES bitmapProperties;
     bitmapProperties.pixelFormat = pRenderTarget->GetPixelFormat();
-    // bitmapProperties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
     bitmapProperties.dpiX = 96.0f * bufDpi;
     bitmapProperties.dpiY = 96.0f * bufDpi;
 

@@ -27,19 +27,50 @@ void Glpa::Render2d::setBackground(std::string color, DWORD& bg)
     }
 }
 
+void Glpa::Render2d::editObjsPos(Glpa::Image *img){
+    if (!malloc) return;
+
+    cudaFree(dImgPosX);
+    cudaFree(dImgPosY);
+
+    int index = std::distance(imgNames.begin(), std::find(imgNames.begin(), imgNames.end(), img->getName()));
+
+    Vec2d imgPos = img->GetPos();
+    hImgPosX[index] = imgPos.x;
+    hImgPosY[index] = imgPos.y;
+
+    cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
+    cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
+
+    cudaMalloc(&dImgPosY, hImgPosY.size() * sizeof(int));
+    cudaMemcpy(dImgPosY, hImgPosY.data(), hImgPosY.size() * sizeof(int), cudaMemcpyHostToDevice);
+
+}
+
+void Glpa::Render2d::editBufSize(int bufWidth, int bufHeight, int bufDpi)
+{
+    delete hBuf;
+    cudaFree(dBuf);
+
+    hBuf = new DWORD[bufWidth * bufHeight * bufDpi];
+    std::fill(hBuf, hBuf + bufWidth * bufHeight * bufDpi, backgroundColor);
+
+    cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
+}
+
 void Glpa::Render2d::dMalloc
 (
-    std::unordered_map<std::string, Glpa::SceneObject*> objs,
-    std::map<int, std::vector<std::string>> drawOrder,
+    std::unordered_map<std::string, Glpa::SceneObject*>& objs,
+    std::map<int, std::vector<std::string>>& drawOrder,
     int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
     if (malloced) return;
     
-    std::vector<int> hImgPosX;
-    std::vector<int> hImgPosY;
-    std::vector<int> hImgWidth;
-    std::vector<int> hImgHeight;
-    std::vector<LPDWORD> hImgData;
+    hImgPosX.clear();
+    hImgPosY.clear();
+    hImgWidth.clear();
+    hImgHeight.clear();
+    hImgData.clear();
 
     for (auto& pair : drawOrder)
     {
@@ -54,6 +85,8 @@ void Glpa::Render2d::dMalloc
                     hImgPosY.push_back(imgPos.y);
                     hImgWidth.push_back(img->getWidth());
                     hImgHeight.push_back(img->getHeight());
+
+                    imgNames.push_back(img->getName());
 
                     maxImgWidth = (maxImgWidth < img->getWidth()) ? img->getWidth() : maxImgWidth;
                     maxImgHeight = (maxImgHeight < img->getHeight()) ? img->getHeight() : maxImgHeight;
@@ -71,6 +104,9 @@ void Glpa::Render2d::dMalloc
     imgAmount = hImgData.size();
 
     setBackground(bgColor, backgroundColor);
+
+    hBuf = new DWORD[bufWidth * bufHeight * bufDpi];
+    std::fill(hBuf, hBuf + bufWidth * bufHeight * bufDpi, backgroundColor);
 
     cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 
@@ -108,6 +144,7 @@ void Glpa::Render2d::dRelease()
     if (!malloced) return;
 
     cudaFree(dBuf);
+    delete hBuf;
 
     cudaFree(dImgPosX);
     cudaFree(dImgPosY);
@@ -121,13 +158,16 @@ void Glpa::Render2d::dRelease()
 
 void Glpa::Render2d::run
 (
-        std::unordered_map<std::string, Glpa::SceneObject*> objs,
-        std::map<int, std::vector<std::string>> drawOrder,
+        std::unordered_map<std::string, Glpa::SceneObject*>& objs,
+        std::map<int, std::vector<std::string>>& drawOrder,
         LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
-    if (!malloced) dMalloc();
+    if (!malloced) dMalloc(objs, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
+
     if (imgAmount != 0)
     {
+        cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
+
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
 
