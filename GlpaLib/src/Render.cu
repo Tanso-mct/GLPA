@@ -166,7 +166,7 @@ void Glpa::Render2d::run
 
     if (imgAmount != 0)
     {
-        cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
+        // cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
 
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
@@ -191,7 +191,7 @@ void Glpa::Render2d::run
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
             dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
         );
-        cudaError_t error = cudaGetLastError();
+        cudaError_t error = cudaDeviceSynchronize();
         if (error != 0){
             OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
             throw std::runtime_error("Processing with Cuda failed.");

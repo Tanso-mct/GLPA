@@ -104,15 +104,17 @@ void Glpa::Window::releaseD2D()
 
 void Glpa::Window::paint()
 {
+    OutputDebugStringA("PAINT\n");
+
     BeginPaint(hWnd, &hPs);
     pRenderTarget->BeginDraw();
     
-    pRenderTarget->SetTarget(pBitmap); // ビットマップをターゲットに設定
-    pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White)); // ビットマップを白でクリア
-    pRenderTarget->SetTarget(nullptr); // レンダリングターゲットをデフォルトに戻す
+    // pRenderTarget->SetTarget(pBitmap); // ビットマップをターゲットに設定
+    // pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White)); // ビットマップを白でクリア
+    // pRenderTarget->SetTarget(nullptr); // レンダリングターゲットをデフォルトに戻す
 
     
-    pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
+    // pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
     D2D1_SIZE_F size = pBitmap->GetSize();
     pRenderTarget->DrawBitmap(pBitmap, D2D1::RectF(0.0f, 0.0f, size.width, size.height));
