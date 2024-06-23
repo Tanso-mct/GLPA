@@ -166,7 +166,7 @@ void Glpa::Render2d::run
 
     if (imgAmount != 0)
     {
-        // cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
+        cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
 
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);

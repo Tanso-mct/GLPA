@@ -6,7 +6,8 @@ ExampleScene2d::~ExampleScene2d()
 
 void ExampleScene2d::setup()
 {
-    ptBackGround = new Glpa::Image("back_ground","resource/Assets/Images/console_back_ground.png", Glpa::Vec2d(0, 0));
+    std::string file = "console_back_ground.png";
+    ptBackGround = new Glpa::Image("back_ground","resource/Assets/Images/" + file, Glpa::Vec2d(0, 0));
 
     AddSceneObject(ptBackGround);
 
@@ -17,12 +18,12 @@ void ExampleScene2d::start()
 {
     // audio output
     // // Convert to std::wstring
-    // std::wstring wideText = L"Visual Studio Code Glpa ŠJ‚­";
+    // std::wstring wideText = L"Visual Studio Code Glpa ï¿½Jï¿½ï¿½";
 
     // // Initializing TTS API
     // CComPtr<ISpVoice> pVoice;
     // if (FAILED(::CoInitialize(NULL))) {
-    //     OutputDebugStringA("COM‰Šú‰»‚É¸”s‚µ‚Ü‚µ‚½\n");
+    //     OutputDebugStringA("COMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½\n");
     //     return;
     // }
 
@@ -31,10 +32,10 @@ void ExampleScene2d::start()
     //     // audio output
     //     hr = pVoice->Speak(wideText.c_str(), SPF_DEFAULT, NULL);
     //     if (FAILED(hr)) {
-    //         OutputDebugStringA("‰¹ºo—Í‚É¸”s‚µ‚Ü‚µ‚½\n");
+    //         OutputDebugStringA("ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Í‚Éï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½\n");
     //     }
     // } else {
-    //     OutputDebugStringA("ISpVoice‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½\n");
+    //     OutputDebugStringA("ISpVoiceï¿½Ìì¬ï¿½Éï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½\n");
     // }
 
     // ::CoUninitialize();
