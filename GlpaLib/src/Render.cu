@@ -183,6 +183,9 @@ void Glpa::Render2d::run
         int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
         int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
 
+        blocksX = min(blocksX, deviceProp.maxGridSize[0]);
+        blocksY = min(blocksY, deviceProp.maxGridSize[1]);
+
         int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
         int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
 
@@ -265,33 +268,36 @@ __global__ void Glpa::Gpu2dDraw
             for (int cb1 = 0; cb1 < writeIF; cb1++)
             {
                 int alphaBlendIF = (buf[xCoord + yCoord * bufWidth * bufDpi] == background) ? FALSE : TRUE;
+                int notAlphaBlendIF = (buf[xCoord + yCoord * bufWidth * bufDpi] == background) ? TRUE : FALSE;
 
-                // If the update hasn't happened yet
-                buf[xCoord + yCoord * bufWidth * bufDpi] = (alphaBlendIF)
-                ? buf[xCoord + yCoord * bufWidth * bufDpi] : imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
-
-                for (int cb2 = 0; cb2 < alphaBlendIF; cb2++)
+                for (int cb2 = 0; cb2 < notAlphaBlendIF; cb2++)
                 {
-                    BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
-                    BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
-                    BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
-                    BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
-
-                    BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
-                    BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
-                    BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
-                    BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
-
-                    float alpha = static_cast<float>(imgA) / 255.0f;
-                    float invAlpha = 1.0f - alpha;
-
-                    bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
-                    bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
-                    bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
-                    bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
-
-                    buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+                    buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][0]; // An error is occurring when accessing imgData
                 }
+
+
+                // for (int cb2 = 0; cb2 < alphaBlendIF; cb2++)
+                // {
+                //     BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
+                //     BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
+                //     BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
+                //     BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
+
+                //     BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
+                //     BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
+                //     BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
+                //     BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
+
+                //     float alpha = static_cast<float>(imgA) / 255.0f;
+                //     float invAlpha = 1.0f - alpha;
+
+                //     bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
+                //     bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
+                //     bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
+                //     bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+
+                //     buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+                // }
             }
         }
     }
