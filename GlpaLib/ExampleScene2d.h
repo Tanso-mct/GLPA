@@ -7,9 +7,6 @@
 
 #include <string>
 #include <Windows.h>
-#include <sapi.h>
-#include <atlbase.h>
-#include <sphelper.h> 
 
 class ExampleScene2d : public Glpa::Scene2d
 {

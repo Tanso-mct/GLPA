@@ -6,7 +6,7 @@ ExampleScene2d::~ExampleScene2d()
 
 void ExampleScene2d::setup()
 {
-    std::string file = "console_back_ground.png";
+    std::string file = "console_back_groundB.png";
     ptBackGround = new Glpa::Image("back_ground","resource/Assets/Images/" + file, Glpa::Vec2d(0, 0));
 
     AddSceneObject(ptBackGround);
@@ -16,29 +16,7 @@ void ExampleScene2d::setup()
 
 void ExampleScene2d::start()
 {
-    // audio output
-    // // Convert to std::wstring
-    // std::wstring wideText = L"Visual Studio Code Glpa �J��";
-
-    // // Initializing TTS API
-    // CComPtr<ISpVoice> pVoice;
-    // if (FAILED(::CoInitialize(NULL))) {
-    //     OutputDebugStringA("COM�������Ɏ��s���܂���\n");
-    //     return;
-    // }
-
-    // HRESULT hr = pVoice.CoCreateInstance(CLSID_SpVoice);
-    // if (SUCCEEDED(hr)) {
-    //     // audio output
-    //     hr = pVoice->Speak(wideText.c_str(), SPF_DEFAULT, NULL);
-    //     if (FAILED(hr)) {
-    //         OutputDebugStringA("�����o�͂Ɏ��s���܂���\n");
-    //     }
-    // } else {
-    //     OutputDebugStringA("ISpVoice�̍쐬�Ɏ��s���܂���\n");
-    // }
-
-    // ::CoUninitialize();
+    
 }
 
 void ExampleScene2d::update()

@@ -65,6 +65,9 @@ void Glpa::Render2d::dMalloc
     int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
     if (malloced) return;
+
+    maxImgWidth = 0;
+    maxImgHeight = 0;
     
     hImgPosX.clear();
     hImgPosY.clear();
@@ -186,6 +189,10 @@ void Glpa::Render2d::run
         dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
         dim3 dimGrid(blocksX, blocksY);
 
+        double debug1 = deviceProp.maxThreadsDim[0];
+        double debug2 = deviceProp.maxThreadsDim[1];
+        double debug3 = deviceProp.maxThreadsPerBlock;
+
         Gpu2dDraw<<<dimGrid, dimBlock>>>
         (
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
@@ -260,9 +267,8 @@ __global__ void Glpa::Gpu2dDraw
                 int alphaBlendIF = (buf[xCoord + yCoord * bufWidth * bufDpi] == background) ? FALSE : TRUE;
 
                 // If the update hasn't happened yet
-                buf[xCoord + yCoord * bufWidth * bufDpi]
-                = (buf[xCoord + yCoord * bufWidth * bufDpi] == background)
-                ? imgData[i][xCoordImg + yCoordImg * imgWidth[i]] : buf[xCoord + yCoord * bufWidth * bufDpi];
+                buf[xCoord + yCoord * bufWidth * bufDpi] = (alphaBlendIF)
+                ? buf[xCoord + yCoord * bufWidth * bufDpi] : imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
 
                 for (int cb2 = 0; cb2 < alphaBlendIF; cb2++)
                 {
