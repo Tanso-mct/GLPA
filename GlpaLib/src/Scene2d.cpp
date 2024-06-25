@@ -29,7 +29,6 @@ void Glpa::Scene2d::EditDrawOrder(Glpa::SceneObject *obj, int newDrawOrder)
         );
 
         img->SetDrawOrder(newDrawOrder);
-        rend.editDrawOrder(img);
 
         addDrawOrder(obj);
     }

@@ -24,10 +24,9 @@ __global__ void Gpu2dDraw
     int* imgPosY,
     int* imgWidth,
     int* imgHeight,
-    int* imgDrawOrder,
     LPDWORD* imgData,
     int imgAmount,
-    int* drawOrderBuf,
+    int* frag,
     LPDWORD buf,
     int bufWidth,
     int bufHeight,
@@ -45,11 +44,10 @@ private :
     std::vector<int> hImgPosY;
     std::vector<int> hImgWidth;
     std::vector<int> hImgHeight;
-    std::vector<int> hImgDrawOrder;
     std::vector<LPDWORD> hImgData;
 
-    int* hDrawOrderBuf = nullptr;
-    int* dDrawOrderBuf = nullptr;
+    int hFlag = 0;
+    int* dFlag;
 
     LPDWORD hBuf = nullptr;
     LPDWORD dBuf = nullptr;
@@ -76,7 +74,6 @@ public :
 
     void editObjsPos(Glpa::Image *img);
     void editBufSize(int bufWidth, int bufHeight, int bufDpi);
-    void editDrawOrder(Glpa::Image* img);
 
     void dMalloc
     (
