@@ -78,7 +78,8 @@
         "__split_buffer": "cpp",
         "__tree": "cpp",
         "string_view": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "memory_resource": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en"

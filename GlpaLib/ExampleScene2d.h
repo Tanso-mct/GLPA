@@ -11,12 +11,17 @@
 class ExampleScene2d : public Glpa::Scene2d
 {
 private :
-    bool opened = false;
-    Glpa::Image* ptBackGround;
+    Glpa::Vec2d lastMouseLDownPos;
 
-    Glpa::Vec2d beforeImgPos;
-    Glpa::Vec2d mouseLDownPos;
-    bool isImgMoving = false;
+    bool opened = false;
+
+    Glpa::Image* pBackground;
+    bool isBackgroundMoving = false;
+    Glpa::Vec2d lastBackgroundPos;
+
+    Glpa::Image* pRect;
+    bool isRectMoving = false;
+    Glpa::Vec2d lastRectPos;
 
 public :
     ~ExampleScene2d() override;
@@ -24,10 +29,11 @@ public :
     void openExample3d();
     
     void setup() override;
-
     void start() override;
-
     void update() override;
+
+    void moveImgByLBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving);
+    void moveImgByRBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving);
 };
 
 #endif EXAMPLE_SCENE_2D_H_

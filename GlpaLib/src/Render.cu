@@ -73,7 +73,12 @@ void Glpa::Render2d::dMalloc
     hImgPosY.clear();
     hImgWidth.clear();
     hImgHeight.clear();
+
     hImgData.clear();
+    for (int i = 0; i < hImgData.size(); i++)
+    {
+        cudaFree(hImgData[i]);
+    }
 
     for (auto& pair : drawOrder)
     {
@@ -94,8 +99,8 @@ void Glpa::Render2d::dMalloc
                     maxImgWidth = (maxImgWidth < img->getWidth()) ? img->getWidth() : maxImgWidth;
                     maxImgHeight = (maxImgHeight < img->getHeight()) ? img->getHeight() : maxImgHeight;
 
-                    DWORD* dData;
-                    size_t dataSize = img->getWidth() * img->getHeight() * sizeof(DWORD);
+                    LPDWORD dData;
+                    int dataSize = img->getWidth() * img->getHeight() * sizeof(DWORD);
                     cudaMalloc(&dData, dataSize);
                     cudaMemcpy(dData, img->getData(), dataSize, cudaMemcpyHostToDevice);
                     hImgData.push_back(dData);
@@ -128,16 +133,6 @@ void Glpa::Render2d::dMalloc
     cudaMalloc(&dImgData, hImgData.size() * sizeof(DWORD*));
     cudaMemcpy(dImgData, hImgData.data(), hImgData.size() * sizeof(DWORD*), cudaMemcpyHostToDevice);
 
-
-    for (int i = 0; i < hImgData.size(); i++)
-    {
-        DWORD* ptDeviceData;
-    
-        cudaMemcpy(&ptDeviceData, &dImgData[i], sizeof(DWORD*), cudaMemcpyDeviceToHost);
-
-        cudaFree(ptDeviceData);
-    }
-
     malloced = true;
 
 }
@@ -153,6 +148,14 @@ void Glpa::Render2d::dRelease()
     cudaFree(dImgPosY);
     cudaFree(dImgWidth);
     cudaFree(dImgHeight);
+
+    for (int i = 0; i < hImgData.size(); i++)
+    {
+        LPDWORD ptDeviceData;
+    
+        cudaMemcpy(&ptDeviceData, &dImgData[i], sizeof(LPDWORD), cudaMemcpyDeviceToHost);
+        cudaFree(ptDeviceData);
+    }
 
     cudaFree(dImgData);
 
@@ -272,32 +275,32 @@ __global__ void Glpa::Gpu2dDraw
 
                 for (int cb2 = 0; cb2 < notAlphaBlendIF; cb2++)
                 {
-                    buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][0]; // An error is occurring when accessing imgData
+                    buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
                 }
 
 
-                // for (int cb2 = 0; cb2 < alphaBlendIF; cb2++)
-                // {
-                //     BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
-                //     BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
-                //     BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
-                //     BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
+                for (int cb2 = 0; cb2 < alphaBlendIF; cb2++)
+                {
+                    BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
+                    BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
+                    BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
+                    BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
 
-                //     BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
-                //     BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
-                //     BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
-                //     BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
+                    BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
+                    BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
+                    BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
+                    BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
 
-                //     float alpha = static_cast<float>(imgA) / 255.0f;
-                //     float invAlpha = 1.0f - alpha;
+                    float alpha = static_cast<float>(imgA) / 255.0f;
+                    float invAlpha = 1.0f - alpha;
 
-                //     bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
-                //     bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
-                //     bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
-                //     bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+                    bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
+                    bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
+                    bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
+                    bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
 
-                //     buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
-                // }
+                    buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+                }
             }
         }
     }

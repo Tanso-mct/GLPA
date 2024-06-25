@@ -6,10 +6,13 @@ ExampleScene2d::~ExampleScene2d()
 
 void ExampleScene2d::setup()
 {
-    std::string file = "console_back_groundB.png";
-    ptBackGround = new Glpa::Image("back_ground","resource/Assets/Images/" + file, Glpa::Vec2d(0, 0));
+    std::string folderPath = "resource/Assets/Images/";
+    pBackground = new Glpa::Image("back_ground",folderPath + "console_back_ground.png", Glpa::Vec2d(0, 0));
+    pBackground->SetDrawOrder(1);
+    AddSceneObject(pBackground);
 
-    AddSceneObject(ptBackGround);
+    pRect = new Glpa::Image("rect",folderPath + "rect.png", Glpa::Vec2d(0, 0));
+    AddSceneObject(pRect);
 
     SetBgColor(Glpa::COLOR_GREEN);
 }
@@ -65,26 +68,8 @@ void ExampleScene2d::update()
     //     OutputDebugStringA("\n");
     // }
 
-    Glpa::Vec2d pos;
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_DOWN, pos) && !isImgMoving)
-    {
-        mouseLDownPos = pos;
-        beforeImgPos = ptBackGround->GetPos();
-        isImgMoving = true;
-    }
-
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isImgMoving)
-    {
-        Glpa::Vec2d moveCoord(beforeImgPos.x + pos.x - mouseLDownPos.x, beforeImgPos.y + pos.y - mouseLDownPos.y);
-
-        editPos(ptBackGround, moveCoord);
-        // ptBackGround->SetPos(moveCoord);
-    }
-
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_UP) && isImgMoving)
-    {
-        isImgMoving = false;
-    }
+    moveImgByLBtn(pRect, lastRectPos, isRectMoving);
+    moveImgByRBtn(pBackground, lastBackgroundPos, isBackgroundMoving);
 
     if (GetNowKeyDownMsg("g")) 
     {
@@ -93,5 +78,49 @@ void ExampleScene2d::update()
             OutputDebugStringA("Open example 3d\n");
             openExample3d();
         }
+    }
+}
+
+void ExampleScene2d::moveImgByLBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving)
+{
+    Glpa::Vec2d pos;
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_DOWN, pos) && !isMoving)
+    {
+        lastMouseLDownPos = pos;
+        lastPos = target->GetPos();
+        isMoving = true;
+    }
+
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isMoving)
+    {
+        Glpa::Vec2d moveCoord(lastPos.x + pos.x - lastMouseLDownPos.x, lastPos.y + pos.y - lastMouseLDownPos.y);
+        editPos(target, moveCoord);
+    }
+
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_UP) && isMoving)
+    {
+        isMoving = false;
+    }
+}
+
+void ExampleScene2d::moveImgByRBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving)
+{
+    Glpa::Vec2d pos;
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_RBTN_DOWN, pos) && !isMoving)
+    {
+        lastMouseLDownPos = pos;
+        lastPos = target->GetPos();
+        isMoving = true;
+    }
+
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isMoving)
+    {
+        Glpa::Vec2d moveCoord(lastPos.x + pos.x - lastMouseLDownPos.x, lastPos.y + pos.y - lastMouseLDownPos.y);
+        editPos(target, moveCoord);
+    }
+
+    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_RBTN_UP) && isMoving)
+    {
+        isMoving = false;
     }
 }
