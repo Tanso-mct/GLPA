@@ -8,10 +8,10 @@ void ExampleScene2d::setup()
 {
     std::string folderPath = "resource/Assets/Images/";
     pBackground = new Glpa::Image("back_ground",folderPath + "console_back_ground.png", Glpa::Vec2d(0, 0));
-    pBackground->SetDrawOrder(1);
     AddSceneObject(pBackground);
 
     pRect = new Glpa::Image("rect",folderPath + "rect.png", Glpa::Vec2d(0, 0));
+    pRect->SetDrawOrder(1);
     AddSceneObject(pRect);
 
     SetBgColor(Glpa::COLOR_GREEN);
