@@ -203,10 +203,6 @@ void Glpa::Render2d::run
         dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
         dim3 dimGrid(blocksX, blocksY);
 
-        double debug1 = deviceProp.maxThreadsDim[0];
-        double debug2 = deviceProp.maxThreadsDim[1];
-        double debug3 = deviceProp.maxThreadsPerBlock;
-
         Gpu2dDraw<<<dimGrid, dimBlock>>>
         (
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
