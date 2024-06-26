@@ -57,6 +57,15 @@ void Glpa::Render2d::editBufSize(int bufWidth, int bufHeight, int bufDpi)
     hBuf = new DWORD[bufWidth * bufHeight * bufDpi];
     std::fill(hBuf, hBuf + bufWidth * bufHeight * bufDpi, backgroundColor);
 
+    delete hDOBuff;
+    cudaFree(dDOBuff);
+
+    hDOBuff = new int[bufWidth * bufHeight * bufDpi];
+    std::fill(hDOBuff, hDOBuff + bufWidth * bufHeight * bufDpi, -1);
+
+    cudaMalloc(&dDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int));
+    cudaMemcpy(dDOBuff, &hDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int), cudaMemcpyHostToDevice);
+
     cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 }
 
@@ -120,8 +129,11 @@ void Glpa::Render2d::dMalloc
 
     cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 
-    cudaMalloc(&dFlag, sizeof(int));
-    cudaMemcpy(dFlag, &hFlag, sizeof(int), cudaMemcpyHostToDevice);
+    hDOBuff = new int[bufWidth * bufHeight * bufDpi];
+    std::fill(hDOBuff, hDOBuff + bufWidth * bufHeight * bufDpi, -1);
+
+    cudaMalloc(&dDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int));
+    cudaMemcpy(dDOBuff, hDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int), cudaMemcpyHostToDevice);
 
     cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
     cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
@@ -154,7 +166,8 @@ void Glpa::Render2d::dRelease()
     cudaFree(dImgWidth);
     cudaFree(dImgHeight);
 
-    cudaFree(dFlag);
+    delete hDOBuff;
+    cudaFree(dDOBuff);
 
     for (int i = 0; i < hImgData.size(); i++)
     {
@@ -180,7 +193,7 @@ void Glpa::Render2d::run
     if (imgAmount != 0)
     {
         cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
-        cudaMemcpy(dFlag, &hFlag, sizeof(int), cudaMemcpyHostToDevice);
+        cudaMemcpy(dDOBuff, hDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int), cudaMemcpyHostToDevice);
 
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
@@ -206,7 +219,7 @@ void Glpa::Render2d::run
         Gpu2dDraw<<<dimGrid, dimBlock>>>
         (
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
-            dFlag, dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
+            dDOBuff, dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
         );
         cudaError_t error = cudaDeviceSynchronize();
         if (error != 0){
@@ -239,7 +252,7 @@ void Glpa::Render3d::run(
 __global__ void Glpa::Gpu2dDraw
 (
     int *imgPosX, int *imgPosY, int* imgWidth, int* imgHeight, LPDWORD *imgData, int imgAmount,
-    int* flag, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background
+    int* drawOrderBuf, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background
 ){
     int i = blockIdx.y * blockDim.y + threadIdx.y;
     int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -274,14 +287,21 @@ __global__ void Glpa::Gpu2dDraw
 
             for (int cb1 = 0; cb1 < writeIF; cb1++)
             {
-                while (atomicAdd(flag, 0) == i);
-                int isNotBackgroundIF = (buf[xCoord + yCoord * bufWidth * bufDpi] != background) ? TRUE : FALSE;
-                int isBackgroundIF = (buf[xCoord + yCoord * bufWidth * bufDpi] == background) ? TRUE : FALSE;
+                int isBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] == -1) ? TRUE : FALSE;
+                int isNotBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] != -1) ? TRUE : FALSE;
 
                 for (int cb2 = 0; cb2 < isNotBackgroundIF; cb2++)
                 {
-                    
-                    buf[xCoord + yCoord * bufWidth * bufDpi] = 0x0000FF;
+                    int isOverwriteIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] < i) ? TRUE : FALSE;
+
+                    for (int cb3 = 0; cb3 < isOverwriteIF; cb3++)
+                    {
+                        atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
+                        atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)0x0000FF);
+
+                        // buf[xCoord + yCoord * bufWidth * bufDpi] = 0x0000FF;
+                    }
+
                     // buf[xCoord + yCoord * bufWidth * bufDpi] = 0;
                     // BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
                     // BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
@@ -306,13 +326,15 @@ __global__ void Glpa::Gpu2dDraw
 
                 for (int cb2 = 0; cb2 < isBackgroundIF; cb2++)
                 {
+                    atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
+                    atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)imgData[i][xCoordImg + yCoordImg * imgWidth[i]]);
                     // buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
-                    buf[xCoord + yCoord * bufWidth * bufDpi] = 0xFFFFFF;
+                    // drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] = i;
+                    // buf[xCoord + yCoord * bufWidth * bufDpi] = 0xFFFFFF;
                 }
                 
             }
 
-            atomicExch(flag, i + 1);
         }
     }
 }
