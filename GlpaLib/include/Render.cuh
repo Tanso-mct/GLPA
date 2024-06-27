@@ -26,7 +26,6 @@ __global__ void Gpu2dDraw
     int* imgHeight,
     LPDWORD* imgData,
     int imgAmount,
-    int* drawOrderBuf,
     LPDWORD buf,
     int bufWidth,
     int bufHeight,
@@ -46,10 +45,6 @@ private :
     std::vector<int> hImgHeight;
     std::vector<LPDWORD> hImgData;
 
-    int* hDOBuff = nullptr;
-    int* dDOBuff = nullptr;
-
-    LPDWORD hBuf = nullptr;
     LPDWORD dBuf = nullptr;
 
     int* dImgPosX;

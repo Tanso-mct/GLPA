@@ -51,20 +51,7 @@ void Glpa::Render2d::editBufSize(int bufWidth, int bufHeight, int bufDpi)
 {
     if (!malloc) return;
 
-    delete hBuf;
     cudaFree(dBuf);
-
-    hBuf = new DWORD[bufWidth * bufHeight * bufDpi];
-    std::fill(hBuf, hBuf + bufWidth * bufHeight * bufDpi, backgroundColor);
-
-    delete hDOBuff;
-    cudaFree(dDOBuff);
-
-    hDOBuff = new int[bufWidth * bufHeight * bufDpi];
-    std::fill(hDOBuff, hDOBuff + bufWidth * bufHeight * bufDpi, -1);
-
-    cudaMalloc(&dDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int));
-    cudaMemcpy(dDOBuff, &hDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int), cudaMemcpyHostToDevice);
 
     cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 }
@@ -124,16 +111,7 @@ void Glpa::Render2d::dMalloc
 
     setBackground(bgColor, backgroundColor);
 
-    hBuf = new DWORD[bufWidth * bufHeight * bufDpi];
-    std::fill(hBuf, hBuf + bufWidth * bufHeight * bufDpi, backgroundColor);
-
     cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
-
-    hDOBuff = new int[bufWidth * bufHeight * bufDpi];
-    std::fill(hDOBuff, hDOBuff + bufWidth * bufHeight * bufDpi, -1);
-
-    cudaMalloc(&dDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int));
-    cudaMemcpy(dDOBuff, hDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int), cudaMemcpyHostToDevice);
 
     cudaMalloc(&dImgPosX, hImgPosX.size() * sizeof(int));
     cudaMemcpy(dImgPosX, hImgPosX.data(), hImgPosX.size() * sizeof(int), cudaMemcpyHostToDevice);
@@ -159,15 +137,11 @@ void Glpa::Render2d::dRelease()
     if (!malloced) return;
 
     cudaFree(dBuf);
-    delete hBuf;
 
     cudaFree(dImgPosX);
     cudaFree(dImgPosY);
     cudaFree(dImgWidth);
     cudaFree(dImgHeight);
-
-    delete hDOBuff;
-    cudaFree(dDOBuff);
 
     for (int i = 0; i < hImgData.size(); i++)
     {
@@ -192,14 +166,11 @@ void Glpa::Render2d::run
 
     if (imgAmount != 0)
     {
-        cudaMemcpy(dBuf, hBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyHostToDevice);
-        cudaMemcpy(dDOBuff, hDOBuff, bufWidth * bufHeight * bufDpi * sizeof(int), cudaMemcpyHostToDevice);
-
         cudaDeviceProp deviceProp;
         cudaGetDeviceProperties(&deviceProp, 0);
 
-        int dataSizeY = imgAmount;
-        int dataSizeX = maxImgWidth * maxImgHeight;
+        int dataSizeY = bufWidth;
+        int dataSizeX = bufHeight;
 
         int desiredThreadsPerBlockX = 16;
         int desiredThreadsPerBlockY = 16;
@@ -219,7 +190,7 @@ void Glpa::Render2d::run
         Gpu2dDraw<<<dimGrid, dimBlock>>>
         (
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
-            dDOBuff, dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
+            dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
         );
         cudaError_t error = cudaDeviceSynchronize();
         if (error != 0){
@@ -252,88 +223,107 @@ void Glpa::Render3d::run(
 __global__ void Glpa::Gpu2dDraw
 (
     int *imgPosX, int *imgPosY, int* imgWidth, int* imgHeight, LPDWORD *imgData, int imgAmount,
-    int* drawOrderBuf, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background
+    LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background
 ){
-    int i = blockIdx.y * blockDim.y + threadIdx.y;
-    int j = blockIdx.x * blockDim.x + threadIdx.x;
+    int x = blockIdx.y * blockDim.y + threadIdx.y;
+    int y = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < imgAmount)
+    if (x < bufWidth)
     {
-        if (j < imgWidth[i] * imgHeight[i])
+        if (y < bufHeight)
         {
-            /* 
-            size = width * height
-            point = posX + posY * width * dpi
-            buf = point + jX + jY * width * dpi
+            atomicExch((unsigned int*)&buf[x + y * bufWidth * bufDpi], (unsigned int)background);
 
-            0(0,0) 1(1,0) 2(2,0) 3(3,0) 4(4,0)
-            5(0,1) 6(1,1) 7(2,1) 8(3,1) 9(4,1)
-
-            i % width -> x coordinate
-            i / width -> y coordinate
-             */
-
-            // int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth * bufDpi;
-            int xCoordImg = j % imgWidth[i];
-            int yCoordImg = j / imgWidth[i];
-
-            int xCoord = imgPosX[i] + xCoordImg;
-            int yCoord = imgPosY[i] + yCoordImg;
-
-            int xWriteIF = (xCoord >= 0 && xCoord < bufWidth) ? TRUE : FALSE;
-            int yWriteIF = (yCoord >= 0 && yCoord < bufHeight) ? TRUE : FALSE;
-
-            int writeIF = (xWriteIF == TRUE && yWriteIF == TRUE) ? TRUE : FALSE;
-
-            for (int cb1 = 0; cb1 < writeIF; cb1++)
+            int isBackgroundIF = TRUE;
+            int isNotBackgroundIF = FALSE;
+            for (int i = 0; i < imgAmount; i++)
             {
-                int isBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] == -1) ? TRUE : FALSE;
-                int isNotBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] != -1) ? TRUE : FALSE;
+                int xInImgIF = (x >= imgPosX[i] && x < imgPosX[i] + imgWidth[i]) ? TRUE : FALSE;
+                int yInImgIF = (y >= imgPosY[i] && y < imgPosY[i] + imgHeight[i]) ? TRUE : FALSE;
 
-                for (int cb2 = 0; cb2 < isNotBackgroundIF; cb2++)
+                int writeIF = (xInImgIF == TRUE && yInImgIF == TRUE) ? TRUE : FALSE;
+
+                for (int cb1 = 0; cb1 < writeIF; cb1++)
                 {
-                    int isOverwriteIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] < i) ? TRUE : FALSE;
+                    int imgX = x - imgPosX[i];
+                    int imgY = y - imgPosY[i];
 
-                    for (int cb3 = 0; cb3 < isOverwriteIF; cb3++)
+                    for (int cb2 = 0; cb2 < isNotBackgroundIF; cb2++)
                     {
-                        atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
-                        atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)0x0000FF);
-
-                        // buf[xCoord + yCoord * bufWidth * bufDpi] = 0x0000FF;
+                        atomicExch((unsigned int*)&buf[x + y * bufWidth * bufDpi], (unsigned int)imgData[i][imgX + imgY * imgWidth[i]]);
                     }
 
-                    // buf[xCoord + yCoord * bufWidth * bufDpi] = 0;
-                    // BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
-                    // BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
-                    // BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
-                    // BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
+                    for (int cb2 = 0; cb2 < isBackgroundIF; cb2++)
+                    {
+                        atomicExch((unsigned int*)&buf[x + y * bufWidth * bufDpi], (unsigned int)imgData[i][imgX + imgY * imgWidth[i]]);
+                        isBackgroundIF = FALSE;
+                        isNotBackgroundIF = TRUE;
+                    }
 
-                    // BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
-                    // BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
-                    // BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
-                    // BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
-
-                    // float alpha = static_cast<float>(imgA) / 255.0f;
-                    // float invAlpha = 1.0f - alpha;
-
-                    // bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
-                    // bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
-                    // bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
-                    // bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
-
-                    // buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
                 }
-
-                for (int cb2 = 0; cb2 < isBackgroundIF; cb2++)
-                {
-                    atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
-                    atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)imgData[i][xCoordImg + yCoordImg * imgWidth[i]]);
-                    // buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
-                    // drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] = i;
-                    // buf[xCoord + yCoord * bufWidth * bufDpi] = 0xFFFFFF;
-                }
-                
             }
+
+            // // int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth * bufDpi;
+            // int xCoordImg = j % imgWidth[i];
+            // int yCoordImg = j / imgWidth[i];
+
+            // int xCoord = imgPosX[i] + xCoordImg;
+            // int yCoord = imgPosY[i] + yCoordImg;
+
+            // int xWriteIF = (xCoord >= 0 && xCoord < bufWidth) ? TRUE : FALSE;
+            // int yWriteIF = (yCoord >= 0 && yCoord < bufHeight) ? TRUE : FALSE;
+
+            // int writeIF = (xWriteIF == TRUE && yWriteIF == TRUE) ? TRUE : FALSE;
+
+            // for (int cb1 = 0; cb1 < writeIF; cb1++)
+            // {
+            //     int isBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] == -1) ? TRUE : FALSE;
+            //     int isNotBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] != -1) ? TRUE : FALSE;
+
+            //     for (int cb2 = 0; cb2 < isNotBackgroundIF; cb2++)
+            //     {
+            //         int isOverwriteIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] < i) ? TRUE : FALSE;
+
+            //         for (int cb3 = 0; cb3 < isOverwriteIF; cb3++)
+            //         {
+            //             atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
+            //             atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)0x0000FF);
+
+            //             // buf[xCoord + yCoord * bufWidth * bufDpi] = 0x0000FF;
+            //         }
+
+            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = 0;
+            //         // BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
+            //         // BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
+            //         // BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
+            //         // BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
+
+            //         // BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
+            //         // BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
+            //         // BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
+            //         // BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
+
+            //         // float alpha = static_cast<float>(imgA) / 255.0f;
+            //         // float invAlpha = 1.0f - alpha;
+
+            //         // bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
+            //         // bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
+            //         // bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
+            //         // bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+
+            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+            //     }
+
+            //     for (int cb2 = 0; cb2 < isBackgroundIF; cb2++)
+            //     {
+            //         atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
+            //         atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)imgData[i][xCoordImg + yCoordImg * imgWidth[i]]);
+            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
+            //         // drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] = i;
+            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = 0xFFFFFF;
+            //     }
+                
+            // }
 
         }
     }
