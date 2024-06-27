@@ -281,69 +281,6 @@ __global__ void Glpa::Gpu2dDraw
 
                 }
             }
-
-            // // int drawPoint = imgPosX[i] + imgPosY[i] * bufWidth * bufDpi;
-            // int xCoordImg = j % imgWidth[i];
-            // int yCoordImg = j / imgWidth[i];
-
-            // int xCoord = imgPosX[i] + xCoordImg;
-            // int yCoord = imgPosY[i] + yCoordImg;
-
-            // int xWriteIF = (xCoord >= 0 && xCoord < bufWidth) ? TRUE : FALSE;
-            // int yWriteIF = (yCoord >= 0 && yCoord < bufHeight) ? TRUE : FALSE;
-
-            // int writeIF = (xWriteIF == TRUE && yWriteIF == TRUE) ? TRUE : FALSE;
-
-            // for (int cb1 = 0; cb1 < writeIF; cb1++)
-            // {
-            //     int isBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] == -1) ? TRUE : FALSE;
-            //     int isNotBackgroundIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] != -1) ? TRUE : FALSE;
-
-            //     for (int cb2 = 0; cb2 < isNotBackgroundIF; cb2++)
-            //     {
-            //         int isOverwriteIF = (drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] < i) ? TRUE : FALSE;
-
-            //         for (int cb3 = 0; cb3 < isOverwriteIF; cb3++)
-            //         {
-            //             atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
-            //             atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)0x0000FF);
-
-            //             // buf[xCoord + yCoord * bufWidth * bufDpi] = 0x0000FF;
-            //         }
-
-            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = 0;
-            //         // BYTE bufA = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 24) & 0xFF;
-            //         // BYTE bufR = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 16) & 0xFF;
-            //         // BYTE bufG = (buf[xCoord + yCoord * bufWidth * bufDpi] >> 8) & 0xFF;
-            //         // BYTE bufB = buf[xCoord + yCoord * bufWidth * bufDpi] & 0xFF;
-
-            //         // BYTE imgA = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 24) & 0xFF;
-            //         // BYTE imgR = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 16) & 0xFF;
-            //         // BYTE imgG = (imgData[i][xCoordImg + yCoordImg * imgWidth[i]] >> 8) & 0xFF;
-            //         // BYTE imgB = imgData[i][xCoordImg + yCoordImg * imgWidth[i]] & 0xFF;
-
-            //         // float alpha = static_cast<float>(imgA) / 255.0f;
-            //         // float invAlpha = 1.0f - alpha;
-
-            //         // bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
-            //         // bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
-            //         // bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
-            //         // bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
-
-            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
-            //     }
-
-            //     for (int cb2 = 0; cb2 < isBackgroundIF; cb2++)
-            //     {
-            //         atomicExch((unsigned int*)&drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)i);
-            //         atomicExch((unsigned int*)&buf[xCoord + yCoord * bufWidth * bufDpi], (unsigned int)imgData[i][xCoordImg + yCoordImg * imgWidth[i]]);
-            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = imgData[i][xCoordImg + yCoordImg * imgWidth[i]];
-            //         // drawOrderBuf[xCoord + yCoord * bufWidth * bufDpi] = i;
-            //         // buf[xCoord + yCoord * bufWidth * bufDpi] = 0xFFFFFF;
-            //     }
-                
-            // }
-
         }
     }
 }

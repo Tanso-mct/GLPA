@@ -237,31 +237,14 @@ void GlpaLib::Release(GlpaBase *pBc)
 
 void GlpaLib::Run()
 {
-    // while (true) {
-    //     if (PeekMessage(&GlpaLib::instance->msg, NULL, 0, 0, PM_REMOVE)) {
-    //         if (GlpaLib::instance->msg.message == WM_QUIT) {
-    //             break;
-    //         }
-    //         TranslateMessage(&GlpaLib::instance->msg);
-    //         DispatchMessage(&GlpaLib::instance->msg);
-    //     } 
-
-    //     for (int i = 0; i < GlpaLib::instance->pBcs.size(); i++) {
-    //         if(GlpaLib::instance->pBcs[i]->getVisible() && GlpaLib::instance->pBcs[i]->getStarted())
-    //         {
-    //             GlpaLib::instance->pBcs[i]->runUpdate();
-    //         }
-    //         else if(GlpaLib::instance->pBcs[i]->getVisible() && !GlpaLib::instance->pBcs[i]->getStarted())
-    //         {
-    //             GlpaLib::instance->pBcs[i]->runStart();
-    //         }
-    //     }
-    // }
-
     while (true) {
         for (int i = 0; i < GlpaLib::instance->pBcs.size(); i++) {
             // Process paint messages first if there are any
-            if (PeekMessage(&GlpaLib::instance->msg, NULL, WM_PAINT, WM_PAINT, PM_REMOVE) && GlpaLib::instance->pBcs[i]->getVisible() && GlpaLib::instance->pBcs[i]->getStarted()) {
+            if 
+            (
+                PeekMessage(&GlpaLib::instance->msg, NULL, WM_PAINT, WM_PAINT, PM_REMOVE) && 
+                GlpaLib::instance->pBcs[i]->getVisible() && GlpaLib::instance->pBcs[i]->getStarted()
+            ){
                 TranslateMessage(&GlpaLib::instance->msg);
                 DispatchMessage(&GlpaLib::instance->msg);
                 continue; // Skip the rest of the loop iteration to prioritize paint messages
