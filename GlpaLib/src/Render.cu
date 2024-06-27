@@ -250,7 +250,26 @@ __global__ void Glpa::Gpu2dDraw
 
                     for (int cb2 = 0; cb2 < isNotBackgroundIF; cb2++)
                     {
-                        atomicExch((unsigned int*)&buf[x + y * bufWidth * bufDpi], (unsigned int)imgData[i][imgX + imgY * imgWidth[i]]);
+                        BYTE bufA = (buf[x + y * bufWidth * bufDpi] >> 24) & 0xFF;
+                        BYTE bufR = (buf[x + y * bufWidth * bufDpi] >> 16) & 0xFF;
+                        BYTE bufG = (buf[x + y * bufWidth * bufDpi] >> 8) & 0xFF;
+                        BYTE bufB = buf[x + y * bufWidth * bufDpi] & 0xFF;
+
+                        BYTE imgA = (imgData[i][imgX + imgY * imgWidth[i]] >> 24) & 0xFF;
+                        BYTE imgR = (imgData[i][imgX + imgY * imgWidth[i]] >> 16) & 0xFF;
+                        BYTE imgG = (imgData[i][imgX + imgY * imgWidth[i]] >> 8) & 0xFF;
+                        BYTE imgB = imgData[i][imgX + imgY * imgWidth[i]] & 0xFF;
+
+                        float alpha = static_cast<float>(imgA) / 255.0f;
+                        float invAlpha = 1.0f - alpha;
+
+                        bufA = static_cast<unsigned char>(imgA + invAlpha * bufA);
+                        bufR = static_cast<unsigned char>(alpha * imgR + invAlpha * bufR);
+                        bufG = static_cast<unsigned char>(alpha * imgG + invAlpha * bufG);
+                        bufB = static_cast<unsigned char>(alpha * imgB + invAlpha * bufB);
+
+                        DWORD newColor = (bufA << 24) | (bufR << 16) | (bufG << 8) | bufB;
+                        atomicExch((unsigned int*)&buf[x + y * bufWidth * bufDpi], (unsigned int)newColor);
                     }
 
                     for (int cb2 = 0; cb2 < isBackgroundIF; cb2++)
