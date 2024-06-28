@@ -7,6 +7,8 @@
 #include <algorithm>
 
 #include "Constant.h"
+#include "FileDataManager.h"
+
 #include "GlpaBase.h"
 
 class GlpaLib
@@ -26,20 +28,20 @@ private :
 
     /// @brief Stores a pointer to a class that has Glpa base as its base class, one for each window created by the user.
     // std::unordered_map<std::string, GlpaBase*> pBcs;
-
     std::vector<GlpaBase*> pBcs;
-    std::vector<HWND> bcsHWnds;
 
     /// @brief Variable to select each class from hwnd.
-    // std::unordered_map<HWND, std::string> bcHWnds;
+    std::vector<HWND> bcsHWnds;
 
+    Glpa::FileDataManager fileDataManager;
+
+
+public :
     GlpaLib
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
         const LPSTR arg_lpCmdLine, const int arg_nCmdShow
     );
-
-public :
     ~GlpaLib();
 
     /// @brief When using Glpa lib, this function must be performed first.

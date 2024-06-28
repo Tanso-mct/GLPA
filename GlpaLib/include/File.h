@@ -4,6 +4,7 @@
 #include <string>
 
 #include "SceneObject.h"
+#include "FileDataManager.h"
 
 namespace Glpa
 {
@@ -11,8 +12,9 @@ namespace Glpa
 class File : public Glpa::SceneObject
 {
 protected :
-    std::string fileName;
-    std::string filePath;
+    Glpa::FileDataManager& dataManager;
+    // std::string fileName;
+    // std::string filePath;
 
 public :
     File();
