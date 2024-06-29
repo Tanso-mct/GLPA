@@ -39,8 +39,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
     LoadIcon(apiClass.hInstance, MAKEINTRESOURCE(smallIcon));
 
     if (!RegisterClassEx(&apiClass)){
-        OutputDebugStringA("GlpaLib ERROR Window.cpp - Class registration failed.\n");
-        throw std::runtime_error("Class registration failed.");
+        Glpa::runTimeError("Window.cpp", "Class registration failed.");
     }
 
 
@@ -57,8 +56,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
     );
 
     if (!hWnd){
-        OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create window.\n");
-        throw std::runtime_error("Failed to create window.");
+        Glpa::runTimeError("Window.cpp", "Failed to create window.");
     }
 
     pixels = new DWORD[width * height * dpi];
@@ -82,15 +80,13 @@ void Glpa::Window::initD2D()
 
         if (FAILED(hr))
         {
-            OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create direct2d render target.\n");
-            throw std::runtime_error("Failed to create direct2d render target.");
+            Glpa::runTimeError("Window.cpp", "Failed to create direct2d render target.");
             return;
         }
     }
     else
     {
-        OutputDebugStringA("GlpaLib ERROR Window.cpp - Failed to create direct2d factory.\n");
-        throw std::runtime_error("Failed to create direct2d factory.");
+        Glpa::runTimeError("Window.cpp", "Failed to create direct2d factory");
         return;
     }
 }
@@ -104,8 +100,6 @@ void Glpa::Window::releaseD2D()
 
 void Glpa::Window::paint()
 {
-    OutputDebugStringA("PAINT\n");
-
     BeginPaint(hWnd, &hPs);
     pRenderTarget->BeginDraw();
     

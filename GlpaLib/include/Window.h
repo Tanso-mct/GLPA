@@ -2,12 +2,12 @@
 #define GLPA_WINDOW_H_
 
 #include <Windows.h>
-#include <stdexcept>
-
 #include <string>
 
 #include <d2d1.h>
 #pragma comment(lib, "d2d1")
+
+#include "ErrorHandler.h"
 
 namespace Glpa 
 {

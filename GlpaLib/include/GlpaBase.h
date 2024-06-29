@@ -6,6 +6,7 @@
 
 #include "Window.h"
 #include "Scene.h"
+#include "FileDataManager.h"
 
 class GlpaBase
 {
@@ -26,6 +27,8 @@ private :
 
     /// @brief Save scene data.
     std::unordered_map<std::string, Glpa::Scene*> ptScs;
+
+    Glpa::FileDataManager* fileDataManager;
     
 public :
     Glpa::Window* window;
@@ -41,6 +44,8 @@ public :
 
     bool getStarted() const {return started;}
     void setStarted(bool value) {started = value;}
+
+    void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
 
     /// @brief Get the pointer to the currently loaded scene.
     /// @return Pointer type for the currently loaded scene.

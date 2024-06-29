@@ -72,9 +72,23 @@ void ExampleScene2d::update()
     //     OutputDebugStringA("\n");
     // }
 
-    moveImgByLBtn(pRect, lastRectPos, isRectMoving);
-    moveImgByRBtn(pBackground, lastBackgroundPos, isBackgroundMoving);
-    moveImgByMBtn(pRect2, lastRect2Pos, isRect2Moving);
+    imgMoveByMouse
+    (
+        Glpa::CHAR_MOUSE_LBTN_DOWN, Glpa::CHAR_MOUSE_MOVE, Glpa::CHAR_MOUSE_LBTN_UP,
+        pBackground, lastBackgroundPos, isBackgroundMoving
+    );
+
+    imgMoveByMouse
+    (
+        Glpa::CHAR_MOUSE_LBTN_DOWN, Glpa::CHAR_MOUSE_MOVE, Glpa::CHAR_MOUSE_LBTN_UP,
+        pRect, lastRectPos, isRectMoving
+    );
+
+    imgMoveByMouse
+    (
+        Glpa::CHAR_MOUSE_LBTN_DOWN, Glpa::CHAR_MOUSE_MOVE, Glpa::CHAR_MOUSE_LBTN_UP,
+        pRect2, lastRect2Pos, isRect2Moving
+    );
 
     if (GetNowKeyDownMsg("g")) 
     {
@@ -86,68 +100,65 @@ void ExampleScene2d::update()
     }
 }
 
-void ExampleScene2d::moveImgByLBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving)
-{
+void ExampleScene2d::imgMoveByMouse
+(
+    std::string startMsg, std::string processMsg, std::string endMsg,
+    Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving
+){
     Glpa::Vec2d pos;
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_DOWN, pos) && !isMoving)
+    if (GetNowMouseMsg(startMsg, pos))
     {
         lastMouseLDownPos = pos;
-        lastPos = target->GetPos();
-        isMoving = true;
+        std::string imageUnderMouse = GetNowImageAtPos(pos);
+        if (imageUnderMouse == target->getName())
+        {
+            imgMoveStart(target, lastPos, isMoving);
+        }
     }
 
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isMoving)
+    if (GetNowMouseMsg(processMsg, pos))
     {
-        Glpa::Vec2d moveCoord(lastPos.x + pos.x - lastMouseLDownPos.x, lastPos.y + pos.y - lastMouseLDownPos.y);
-        editPos(target, moveCoord);
+        std::string imageUnderMouse = GetNowImageAtPos(pos);
+        if (imageUnderMouse == target->getName())
+        {
+            imgMoving(target, lastPos, isMoving, pos);
+        }
     }
 
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_LBTN_UP) && isMoving)
+    if (GetNowMouseMsg(endMsg, pos))
     {
-        isMoving = false;
+        std::string imageUnderMouse = GetNowImageAtPos(pos);
+        if (imageUnderMouse == target->getName())
+        {
+            imgMoveStop(isMoving);
+        }
     }
 }
 
-void ExampleScene2d::moveImgByRBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving)
+void ExampleScene2d::imgMoveStart(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving)
 {
-    Glpa::Vec2d pos;
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_RBTN_DOWN, pos) && !isMoving)
+    if (!isMoving && !anyImgMoving)
     {
-        lastMouseLDownPos = pos;
         lastPos = target->GetPos();
         isMoving = true;
-    }
-
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isMoving)
-    {
-        Glpa::Vec2d moveCoord(lastPos.x + pos.x - lastMouseLDownPos.x, lastPos.y + pos.y - lastMouseLDownPos.y);
-        editPos(target, moveCoord);
-    }
-
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_RBTN_UP) && isMoving)
-    {
-        isMoving = false;
+        anyImgMoving = true;
     }
 }
 
-void ExampleScene2d::moveImgByMBtn(Glpa::Image *target, Glpa::Vec2d &lastPos, bool &isMoving)
+void ExampleScene2d::imgMoving(Glpa::Image *target, Glpa::Vec2d &lastPos, bool &isMoving, Glpa::Vec2d &pos)
 {
-    Glpa::Vec2d pos;
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MBTN_DOWN, pos) && !isMoving)
-    {
-        lastMouseLDownPos = pos;
-        lastPos = target->GetPos();
-        isMoving = true;
-    }
-
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MOVE, pos) && isMoving)
+    if (isMoving && anyImgMoving)
     {
         Glpa::Vec2d moveCoord(lastPos.x + pos.x - lastMouseLDownPos.x, lastPos.y + pos.y - lastMouseLDownPos.y);
         editPos(target, moveCoord);
     }
+}
 
-    if (GetNowMouseMsg(Glpa::CHAR_MOUSE_MBTN_UP) && isMoving)
+void ExampleScene2d::imgMoveStop(bool &isMoving)
+{
+    if (isMoving && anyImgMoving)
     {
         isMoving = false;
+        anyImgMoving = false;
     }
 }

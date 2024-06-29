@@ -21,6 +21,7 @@ GlpaBase::~GlpaBase()
 
 void GlpaBase::AddScene(Glpa::Scene *ptScene)
 {
+    ptScene->setManager(fileDataManager);
     ptScene->setup();
     ptScs.emplace(ptScene->getName(), ptScene);
 }

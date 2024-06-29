@@ -774,6 +774,7 @@ bool Glpa::Scene::GetNowMouseMsg(std::string argMsg, int &amount)
 
 void Glpa::Scene::AddSceneObject(Glpa::SceneObject *ptObj)
 {
+    ptObj->setManager(fileDataManager);
     objs.emplace(ptObj->getName(), ptObj);
 }
 

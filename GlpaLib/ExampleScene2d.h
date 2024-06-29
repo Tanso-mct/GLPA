@@ -27,6 +27,8 @@ private :
     bool isRect2Moving = false;
     Glpa::Vec2d lastRect2Pos;
 
+    bool anyImgMoving = false;
+
 public :
     ~ExampleScene2d() override;
 
@@ -36,9 +38,15 @@ public :
     void start() override;
     void update() override;
 
-    void moveImgByLBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving);
-    void moveImgByRBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving);
-    void moveImgByMBtn(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving);
+    void imgMoveByMouse
+    (
+        std::string startMsg, std::string processMsg, std::string endMsg,
+        Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving
+    );
+
+    void imgMoveStart(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving);
+    void imgMoving(Glpa::Image *target, Glpa::Vec2d& lastPos, bool &isMoving, Glpa::Vec2d &pos);
+    void imgMoveStop(bool &isMoving);
 };
 
 #endif EXAMPLE_SCENE_2D_H_

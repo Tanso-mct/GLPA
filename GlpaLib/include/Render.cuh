@@ -73,7 +73,7 @@ public :
     void dMalloc
     (
         std::unordered_map<std::string, Glpa::SceneObject*>& objs,
-        std::map<int, std::vector<std::string>>& drawOrder,
+        std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
         int bufWidth, int bufHeight, int bufDpi, std::string bgColor
     );
     void dRelease();
@@ -81,7 +81,7 @@ public :
     void run
     (
         std::unordered_map<std::string, Glpa::SceneObject*>& objs,
-        std::map<int, std::vector<std::string>>& drawOrder,
+        std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
         LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
     );
 };

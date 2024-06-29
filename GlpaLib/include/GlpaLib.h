@@ -33,7 +33,7 @@ private :
     /// @brief Variable to select each class from hwnd.
     std::vector<HWND> bcsHWnds;
 
-    Glpa::FileDataManager fileDataManager;
+    Glpa::FileDataManager* fileDataManager;
 
 
 public :

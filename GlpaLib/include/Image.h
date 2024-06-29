@@ -1,22 +1,28 @@
 #ifndef GLPA_IMAGE_H_
 #define GLPA_IMAGE_H_
 
-#include "Png.h"
+#include "SceneObject.h"
 
 namespace Glpa
 {
 
-class Image : public Glpa::Png
+class Image : public Glpa::SceneObject
 {
 private :
     bool visible = true;
     int drawOrder = 0;
-
     Glpa::Vec2d pos;
 
 public :
-    Image(std::string argName, std::string filePath, Glpa::Vec2d defPos);
+    Image(std::string argName, std::string argFilePath, Glpa::Vec2d defPos);
     ~Image() override;
+
+    void load() override;
+    void release() override;
+
+    int getWidth(){return fileDataManager->getWidth(filePath);}
+    int getHeight(){return fileDataManager->getHeight(filePath);}
+    LPDWORD getData(){return fileDataManager->getData(filePath);}
 
     bool getVisible() const {return visible;}
     void setVisible(bool symbol) {visible = symbol;}

@@ -12,6 +12,8 @@ void GlpaLib::Start
 
 int GlpaLib::Close()
 {
+    delete instance->fileDataManager;
+
     MSG rtMsg = instance->msg;
     delete instance;
 
@@ -25,6 +27,8 @@ GlpaLib::GlpaLib(
     hPrevInstance = arg_hInstance;
     lpCmdLine = arg_lpCmdLine;
     nCmdShow = arg_nCmdShow;
+
+    fileDataManager = new Glpa::FileDataManager();
 }
 
 GlpaLib::~GlpaLib()
@@ -185,6 +189,7 @@ void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void GlpaLib::AddBase(GlpaBase *pBc)
 {
+    pBc->setManager(instance->fileDataManager);
     pBc->setup();
     GlpaLib::instance->pBcs.push_back(pBc);
 }

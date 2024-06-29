@@ -147,13 +147,11 @@
     <ClCompile Include="ExampleScene2d.cpp" />
     <ClCompile Include="ExampleScene3d.cpp" />
     <ClCompile Include="src\Color.cpp" />
-    <ClCompile Include="src\File.cpp" />
     <ClCompile Include="src\FileDataManager.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
-    <ClCompile Include="src\Png.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
@@ -170,13 +168,11 @@
     <ClInclude Include="ExampleScene3d.h" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Constant.h" />
-    <ClInclude Include="include\File.h" />
     <ClInclude Include="include\FileDataManager.h" />
     <ClInclude Include="include\GlpaBase.h" />
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Matrix.h" />
-    <ClInclude Include="include\Png.h" />
     <CudaCompile Include="include\Render.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

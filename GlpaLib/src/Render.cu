@@ -59,7 +59,7 @@ void Glpa::Render2d::editBufSize(int bufWidth, int bufHeight, int bufDpi)
 void Glpa::Render2d::dMalloc
 (
     std::unordered_map<std::string, Glpa::SceneObject*>& objs,
-    std::map<int, std::vector<std::string>>& drawOrder,
+    std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
     int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
     if (malloced) return;
@@ -72,13 +72,16 @@ void Glpa::Render2d::dMalloc
     hImgWidth.clear();
     hImgHeight.clear();
 
+    imgNames.clear();
+    drawOrder.clear();
+
     hImgData.clear();
     for (int i = 0; i < hImgData.size(); i++)
     {
         cudaFree(hImgData[i]);
     }
 
-    for (auto& pair : drawOrder)
+    for (auto& pair : drawOrderMap)
     {
         for (int i = 0; i < pair.second.size(); i++)
         {
@@ -93,6 +96,7 @@ void Glpa::Render2d::dMalloc
                     hImgHeight.push_back(img->getHeight());
 
                     imgNames.push_back(img->getName());
+                    drawOrder.push_back(img->getName());
 
                     maxImgWidth = (maxImgWidth < img->getWidth()) ? img->getWidth() : maxImgWidth;
                     maxImgHeight = (maxImgHeight < img->getHeight()) ? img->getHeight() : maxImgHeight;
@@ -159,10 +163,10 @@ void Glpa::Render2d::dRelease()
 void Glpa::Render2d::run
 (
         std::unordered_map<std::string, Glpa::SceneObject*>& objs,
-        std::map<int, std::vector<std::string>>& drawOrder,
+        std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
         LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
-    if (!malloced) dMalloc(objs, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
+    if (!malloced) dMalloc(objs, drawOrderMap, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
 
     if (imgAmount != 0)
     {

@@ -19,9 +19,10 @@ private :
 
     Glpa::Render2d rend;
 
-protected :
     /// @brief The name of the object is placed in the key value of the drawing order.
-    std::map<int, std::vector<std::string>> drawOrder;
+    std::map<int, std::vector<std::string>> drawOrderMap;
+
+    std::vector<std::string> drawOrder;
 
 public :
     Scene2d();
@@ -35,6 +36,8 @@ public :
 
     void load() override;
     void release() override;
+
+    std::string GetNowImageAtPos(Glpa::Vec2d pos);
 
     void rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi) override;
 

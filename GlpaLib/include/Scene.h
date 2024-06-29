@@ -49,11 +49,15 @@ protected :
     std::string name;
     std::unordered_map<std::string, Glpa::SceneObject*> objs;
 
+    Glpa::FileDataManager* fileDataManager;
+
     std::string backgroundColor = Glpa::COLOR_BLACK;
 
 public :
     Scene();
     virtual ~Scene();
+
+    void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
 
     int getType() const {return type;}
     void setType(int val) {type = val;}

@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Vector.h"
+#include "FileDataManager.h"
 
 namespace Glpa
 {
@@ -13,11 +14,16 @@ class SceneObject
 protected :
     std::string type;
     std::string name;
+    std::string filePath;
     bool loaded = false;
+
+    Glpa::FileDataManager* fileDataManager = nullptr;
 
 public :
     SceneObject();
     virtual ~SceneObject(){};
+
+    void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
