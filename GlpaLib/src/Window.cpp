@@ -104,7 +104,11 @@ void Glpa::Window::paint()
     pRenderTarget->BeginDraw();
     
     D2D1_SIZE_F size = pBitmap->GetSize();
-    pRenderTarget->DrawBitmap(pBitmap, D2D1::RectF(0.0f, 0.0f, size.width, size.height));
+    D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, size.width, size.height);
+
+    pRenderTarget->DrawBitmap(pBitmap, layoutRect);
+
+    //TODO: Add Text drawing processing here.
     
     pRenderTarget->EndDraw();
     EndPaint(hWnd, &hPs);
