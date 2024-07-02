@@ -1,4 +1,4 @@
-﻿#ifndef GLPA_FILE_DATA_MANAGER_H_
+#ifndef GLPA_FILE_DATA_MANAGER_H_
 #define GLPA_FILE_DATA_MANAGER_H_
 
 #include <string>
