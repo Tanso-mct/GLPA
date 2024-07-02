@@ -1,4 +1,4 @@
-﻿#ifndef GLPA_ERROR_HANDLER_H_
+#ifndef GLPA_ERROR_HANDLER_H_
 #define GLPA_ERROR_HANDLER_H_
 
 #include <string>
