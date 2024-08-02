@@ -6,6 +6,7 @@
 #include <d2d1.h>
 #include <dwrite.h>
 #pragma comment(lib, "d2d1")
+#pragma comment(lib, "dwrite")
 
 namespace Glpa
 {
@@ -38,7 +39,7 @@ public :
     void EditFontName(std::string argFontName);
     void EditFontWeight(DWRITE_FONT_WEIGHT argFontWeight){fontWeight = argFontWeight;}
     void EditFontStyle(DWRITE_FONT_STYLE argFontStyle){fontStyle = argFontStyle;}
-    void EditFontStrtch(DWRITE_FONT_STRETCH argFontStretch){fontStretch = argFontStretch;}
+    void EditFontStretch(DWRITE_FONT_STRETCH argFontStretch){fontStretch = argFontStretch;}
     void EditFontSize(float argFontSize){fontSize = argFontSize;}
     void EditLocaleName(std::string argLocaleName);
 
@@ -49,7 +50,7 @@ public :
     std::string GetFontName();
     DWRITE_FONT_WEIGHT GetFontWeight(){return fontWeight;}
     DWRITE_FONT_STYLE GetFontStyle(){return fontStyle;}
-    DWRITE_FONT_STRETCH GetFontStrtch(){return fontStretch;}
+    DWRITE_FONT_STRETCH GetFontStretch(){return fontStretch;}
     float GetFontSize(){return fontSize;}
     std::string GetLocaleName();
 

@@ -10,6 +10,8 @@
 #include "Constant.h"
 #include "Render.cuh"
 
+#include "Window.h"
+
 #include <d2d1.h>
 #pragma comment(lib, "d2d1")
 
@@ -29,6 +31,7 @@ private :
 
     std::string mouseMsg;
     
+    Glpa::Vec2d lastMousePos;
     Glpa::Vec2d mousePos;
 
     Glpa::Vec2d mouseRDownPos;
@@ -50,6 +53,7 @@ protected :
     std::unordered_map<std::string, Glpa::SceneObject*> objs;
 
     Glpa::FileDataManager* fileDataManager;
+    Glpa::Window* window;
 
     std::string backgroundColor = Glpa::COLOR_BLACK;
 
@@ -58,6 +62,7 @@ public :
     virtual ~Scene();
 
     void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
+    void setWindow(Glpa::Window* argWindow){window = argWindow;}
 
     int getType() const {return type;}
     void setType(int val) {type = val;}

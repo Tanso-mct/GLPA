@@ -3,6 +3,8 @@
 
 #include "Constant.h"
 
+#include <initializer_list>
+
 namespace Glpa
 {
 
@@ -34,6 +36,70 @@ public :
 
     void toFloatAry(float* ary, int index) override;
     void fromFloatAry(float* ary, int index) override;
+
+    Vec2d operator+(const Vec2d& other) const 
+    {
+        return Vec2d(x + other.x, y + other.y);
+    }
+
+    Vec2d operator-(const Vec2d& other) const 
+    {
+        return Vec2d(x - other.x, y - other.y);
+    }
+
+    Vec2d operator*(float scalar) const 
+    {
+        return Vec2d(x * scalar, y * scalar);
+    }
+
+    Vec2d operator/(float scalar) const 
+    {
+        return Vec2d(x / scalar, y / scalar);
+    }
+
+    bool operator==(const Vec2d& other) const 
+    {
+        return x == other.x && y == other.y;
+    }
+
+    bool operator!=(const Vec2d& other) const 
+    {
+        return !(*this == other);
+    }
+
+    void operator+=(const Vec2d& other)
+    {
+        x += other.x;
+        y += other.y;
+    }
+
+    void operator-=(const Vec2d& other)
+    {
+        x -= other.x;
+        y -= other.y;
+    }
+
+    void operator*=(float scalar)
+    {
+        x *= scalar;
+        y *= scalar;
+    }
+
+    void operator/=(float scalar)
+    {
+        x /= scalar;
+        y /= scalar;
+    }
+
+    Glpa::Vec2d operator=(const std::initializer_list<float>& values)
+    {
+        if (values.size() == 2) {
+            auto it = values.begin();
+            x = *it;
+            y = *(it + 1);
+        }
+        return *this;
+    }
 };
 
 class Vec3d : public Vector

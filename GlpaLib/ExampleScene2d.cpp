@@ -8,10 +8,11 @@ void ExampleScene2d::setup()
 {
     std::string folderPath = "resource/Assets/Images/";
     pBackground = new Glpa::Image("back_ground",folderPath + "console_back_ground.png", Glpa::Vec2d(0, 0));
+    pBackground->SetDrawOrder(1);
     AddSceneObject(pBackground);
 
     pRect = new Glpa::Image("rect",folderPath + "rect.png", Glpa::Vec2d(0, 0));
-    pRect->SetDrawOrder(1);
+    pRect->SetDrawOrder(0);
     AddSceneObject(pRect);
 
     pRect2 = new Glpa::Image("rect2",folderPath + "rect2.png", Glpa::Vec2d(0, 0));
@@ -65,11 +66,8 @@ void ExampleScene2d::update()
     // else if (GetNowKeyDownMsg("1")) OutputDebugStringA("Key Down 1\n");
     // else if (GetNowKeyDownMsg("#")) OutputDebugStringA("Key Down #\n");
 
-    // if (!GetNowMouseMsg().empty() && GetNowMouseMsg() != Glpa::CHAR_MOUSE_MOVE)
+    // if (!GetNowMouseMsg().empty() && GetNowMouseMsg() == Glpa::CHAR_MOUSE_MOVE)
     // {
-    //     OutputDebugStringA("Mouse ");
-    //     OutputDebugStringA(GetNowMouseMsg().c_str());
-    //     OutputDebugStringA("\n");
     // }
 
     imgMoveByMouse
@@ -118,20 +116,12 @@ void ExampleScene2d::imgMoveByMouse
 
     if (GetNowMouseMsg(processMsg, pos))
     {
-        std::string imageUnderMouse = GetNowImageAtPos(pos);
-        if (imageUnderMouse == target->getName())
-        {
-            imgMoving(target, lastPos, isMoving, pos);
-        }
+        imgMoving(target, lastPos, isMoving, pos);
     }
 
     if (GetNowMouseMsg(endMsg, pos))
     {
-        std::string imageUnderMouse = GetNowImageAtPos(pos);
-        if (imageUnderMouse == target->getName())
-        {
-            imgMoveStop(isMoving);
-        }
+        imgMoveStop(isMoving);
     }
 }
 
@@ -143,11 +133,16 @@ void ExampleScene2d::imgMoveStart(Glpa::Image *target, Glpa::Vec2d& lastPos, boo
         isMoving = true;
         anyImgMoving = true;
     }
+    else if (isMoving)
+    {
+        isMoving = false;
+        anyImgMoving = false;
+    }
 }
 
 void ExampleScene2d::imgMoving(Glpa::Image *target, Glpa::Vec2d &lastPos, bool &isMoving, Glpa::Vec2d &pos)
 {
-    if (isMoving && anyImgMoving)
+    if (isMoving)
     {
         Glpa::Vec2d moveCoord(lastPos.x + pos.x - lastMouseLDownPos.x, lastPos.y + pos.y - lastMouseLDownPos.y);
         editPos(target, moveCoord);
@@ -156,7 +151,7 @@ void ExampleScene2d::imgMoving(Glpa::Image *target, Glpa::Vec2d &lastPos, bool &
 
 void ExampleScene2d::imgMoveStop(bool &isMoving)
 {
-    if (isMoving && anyImgMoving)
+    if (isMoving)
     {
         isMoving = false;
         anyImgMoving = false;

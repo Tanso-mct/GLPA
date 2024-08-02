@@ -106,6 +106,31 @@ std::string Glpa::Scene2d::GetNowImageAtPos(Glpa::Vec2d pos)
     return "";
 }
 
+bool Glpa::Scene2d::GetIsImageAtPos(Glpa::Vec2d pos, std::string imgName)
+{
+    if (drawOrder.empty()) return "";
+
+    for (int i = drawOrder.size() - 1; i >= 0; i--)
+    {
+        if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(objs[drawOrder[i]]))
+        {
+            Glpa::Vec2d imgPos = img->GetPos();
+            int imgWidth = img->getWidth();
+            int imgHeight = img->getHeight();
+
+            if (pos.x >= imgPos.x && pos.y >= imgPos.y && pos.x < imgPos.x + imgWidth && pos.y < imgPos.y + imgHeight)
+            {
+                if (img->getName() == imgName)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
 void Glpa::Scene2d::rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
 {
     rend.run(objs, drawOrderMap, drawOrder, buf, bufWidth, bufHeight, bufDpi, backgroundColor);
