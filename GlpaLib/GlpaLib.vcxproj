@@ -138,8 +138,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GlpaConsole.cpp" />
-    <ClCompile Include="GlpaDebug.cpp" />
     <ClCompile Include="demo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -151,6 +149,8 @@
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\FileDataManager.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
+    <ClCompile Include="src\GlpaConsole.cpp" />
+    <ClCompile Include="src\GlpaDebug.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
@@ -165,8 +165,6 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GlpaConsole.h" />
-    <ClInclude Include="GlpaDebug.h" />
     <ClInclude Include="ExampleBase.h" />
     <ClInclude Include="ExampleScene2d.h" />
     <ClInclude Include="ExampleScene3d.h" />
@@ -174,6 +172,8 @@
     <ClInclude Include="include\Constant.h" />
     <ClInclude Include="include\FileDataManager.h" />
     <ClInclude Include="include\GlpaBase.h" />
+    <ClInclude Include="include\GlpaConsole.h" />
+    <ClInclude Include="include\GlpaDebug.h" />
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Matrix.h" />

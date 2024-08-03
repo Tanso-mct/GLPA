@@ -99,11 +99,11 @@
     <ClCompile Include="src\FileDataManager.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
-    <ClCompile Include="GlpaDebug.cpp">
+    <ClCompile Include="src\GlpaConsole.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
-    <ClCompile Include="GlpaConsole.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\GlpaDebug.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,11 +167,11 @@
     <ClInclude Include="include\FileDataManager.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
-    <ClInclude Include="GlpaDebug.h">
+    <ClInclude Include="include\GlpaConsole.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
-    <ClInclude Include="GlpaConsole.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="include\GlpaDebug.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
