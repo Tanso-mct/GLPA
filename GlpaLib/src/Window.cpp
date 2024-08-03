@@ -98,21 +98,6 @@ void Glpa::Window::releaseD2D()
     if (pFactory != nullptr) pFactory->Release();
 }
 
-void Glpa::Window::paint()
-{
-    pRenderTarget->BeginDraw();
-    
-    D2D1_SIZE_F size = pBitmap->GetSize();
-    D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, size.width, size.height);
-
-    pRenderTarget->DrawBitmap(pBitmap, layoutRect);
-
-    //TODO: Add Text drawing processing here.
-    
-    pRenderTarget->EndDraw();
-
-}
-
 void Glpa::Window::SetWidth(int value)
 {
     width = value;

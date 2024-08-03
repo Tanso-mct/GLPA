@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GlpaConsole.cpp" />
+    <ClCompile Include="GlpaDebug.cpp" />
     <ClCompile Include="demo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -163,6 +165,8 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GlpaConsole.h" />
+    <ClInclude Include="GlpaDebug.h" />
     <ClInclude Include="ExampleBase.h" />
     <ClInclude Include="ExampleScene2d.h" />
     <ClInclude Include="ExampleScene3d.h" />

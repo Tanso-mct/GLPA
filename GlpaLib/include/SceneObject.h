@@ -2,6 +2,8 @@
 #define GLPA_SCENE_OBJECT_H_
 
 #include <string>
+#include <locale>
+#include <codecvt>
 
 #include "Vector.h"
 #include "FileDataManager.h"
@@ -16,6 +18,7 @@ protected :
     std::string name;
     std::string filePath;
     bool loaded = false;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> strConverter;
 
     Glpa::FileDataManager* fileDataManager = nullptr;
 

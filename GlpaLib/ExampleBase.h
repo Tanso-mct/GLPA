@@ -2,7 +2,6 @@
 #define EXAMPLE_BASE_H_
 
 #include "GlpaLib.h"
-
 #include "GlpaBase.h"
 
 #include "ExampleScene2d.h"

@@ -30,8 +30,6 @@ private :
 
     DWORD viewStyle = WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 
-    PAINTSTRUCT hPs;
-
     ID2D1Factory* pFactory = nullptr;
 
 public :
@@ -41,6 +39,7 @@ public :
     ID2D1Bitmap* pBitmap = nullptr;
     
     HWND hWnd = nullptr;
+    PAINTSTRUCT hPs;
     WNDCLASSEX apiClass;
 
     LPDWORD pixels;
@@ -51,9 +50,6 @@ public :
     void initD2D();
 
     void releaseD2D();
-
-    /// @brief Called when redrawing is required and copies the pixels data to the buffer.
-    void paint();
 
     void SetName(LPCWSTR str) {name = str;}
     void SetApiClassName(LPCWSTR str) {apiClassName = str;}

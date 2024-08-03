@@ -1,8 +1,6 @@
 #ifndef EXAMPLE_SCENE_2D_H_
 #define EXAMPLE_SCENE_2D_H_
 
-#pragma warning(disable : 4996)
-
 #include "Scene2d.h"
 
 #include <string>

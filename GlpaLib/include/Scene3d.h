@@ -21,7 +21,11 @@ public :
     void load() override;
     void release() override;
 
-    void rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi) override;
+    void rendering
+    (
+        ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, HWND hWnd, PAINTSTRUCT ps,
+        LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
+    ) override;
 
 };
 

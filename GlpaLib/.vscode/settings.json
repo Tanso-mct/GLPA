@@ -79,7 +79,8 @@
         "__tree": "cpp",
         "string_view": "cpp",
         "__locale": "cpp",
-        "memory_resource": "cpp"
+        "memory_resource": "cpp",
+        "codecvt": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en"

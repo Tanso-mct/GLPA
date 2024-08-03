@@ -110,14 +110,12 @@ void GlpaBase::runStart()
 
     ptScs[nowScName]->rendering
     (
-        window->pRenderTarget, &window->pBitmap, 
+        window->pRenderTarget, &window->pBitmap, window->hWnd, window->hPs,
         window->pixels, window->GetWidth(), window->GetHeight(), window->GetDpi()
     );
 
     ptScs[nowScName]->updateKeyMsg();
     ptScs[nowScName]->updateMouseMsg();
-
-    window->paint();
 }
 
 void GlpaBase::runUpdate()
@@ -129,12 +127,10 @@ void GlpaBase::runUpdate()
 
     ptScs[nowScName]->rendering
     (
-        window->pRenderTarget, &window->pBitmap, 
+        window->pRenderTarget, &window->pBitmap, window->hWnd, window->hPs,
         window->pixels, window->GetWidth(), window->GetHeight(), window->GetDpi()
     );
 
     ptScs[nowScName]->updateKeyMsg();
     ptScs[nowScName]->updateMouseMsg();
-
-    window->paint();
 }

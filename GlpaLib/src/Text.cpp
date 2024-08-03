@@ -1,7 +1,41 @@
 #include "Text.h"
 
+Glpa::Text::Text()
+{
+}
+
 Glpa::Text::~Text()
 {
+}
+
+void Glpa::Text::EditFontName(std::string argFontName)
+{
+    fontName = strConverter.from_bytes(argFontName);
+}
+
+void Glpa::Text::EditLocaleName(std::string argLocaleName)
+{
+    localeName = strConverter.from_bytes(argLocaleName);
+}
+
+void Glpa::Text::EditWords(std::string argWords)
+{
+    words = strConverter.from_bytes(argWords);
+}
+
+std::string Glpa::Text::GetFontName()
+{
+    return strConverter.to_bytes(fontName);
+}
+
+std::string Glpa::Text::GetLocaleName()
+{
+    return strConverter.to_bytes(localeName);
+}
+
+std::string Glpa::Text::GetWords()
+{
+    return strConverter.to_bytes(words);
 }
 
 void Glpa::Text::load()

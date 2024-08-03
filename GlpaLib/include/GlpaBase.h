@@ -54,6 +54,7 @@ public :
     /// @brief Add a scene. Use within the setup function.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
     void AddScene(Glpa::Scene* ptScene);
+    
 
     /// @brief Delete the current scene.
     void DeleteScene();
@@ -72,6 +73,8 @@ public :
     /// @brief Load the specified scene.
     /// @param ptScene A pointer to a class whose base class is the Scene class.
     void LoadScene(Glpa::Scene* ptScene);
+
+
 
     /// @brief Release the current scene.
     void ReleaseScene();

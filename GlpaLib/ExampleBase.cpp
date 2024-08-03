@@ -1,5 +1,4 @@
 #include "ExampleBase.h"
-#include "ExampleScene2d.h"
 
 void ExampleScene2d::openExample3d()
 {

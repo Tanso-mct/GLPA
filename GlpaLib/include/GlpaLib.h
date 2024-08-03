@@ -35,13 +35,13 @@ private :
 
     Glpa::FileDataManager* fileDataManager;
 
-
-public :
     GlpaLib
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
         const LPSTR arg_lpCmdLine, const int arg_nCmdShow
     );
+
+public :
     ~GlpaLib();
 
     /// @brief When using Glpa lib, this function must be performed first.
@@ -113,7 +113,7 @@ public :
 
     /// @brief Delete instances of classes whose base class is the already added GlpaBase class.
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.
-    static void DeleteBase(GlpaBase* pBc);
+    static void deleteBase(GlpaBase* pBc);
 
 
     /// @brief Create a window from an instance of a class that has the Glpa base class as its base class.
@@ -132,7 +132,7 @@ public :
 
     /// @brief Release loaded classes whose base class is the already loaded glpa base class.
     /// @param pBc A pointer to a class instance whose base class is the Glpa base class.
-    static void Release(GlpaBase* pBc);
+    static void release(GlpaBase* pBc);
 
     /// @brief Starts the message loop and begins graphics processing.
     static void Run();

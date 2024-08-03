@@ -15,7 +15,7 @@ class Text : public Glpa::SceneObject
 {
 private :
     bool visible = true;
-    Glpa::Vec2d pos;
+    Glpa::Vec2d pos = {0, 0};
 
     std::wstring fontName = L"Arial";
     DWRITE_FONT_WEIGHT fontWeight = DWRITE_FONT_WEIGHT_NORMAL;
@@ -33,6 +33,7 @@ private :
     D2D1::ColorF brushColor = D2D1::ColorF::Black;
 
 public :
+    Text();
     ~Text() override;
 
     void EditPos(Glpa::Vec2d argPos){pos = argPos;}
@@ -56,7 +57,6 @@ public :
 
     std::string GetWords();
     D2D1::ColorF GetColor(){return brushColor;}
-
 
     void load() override;
     void release() override;

@@ -131,7 +131,11 @@ bool Glpa::Scene2d::GetIsImageAtPos(Glpa::Vec2d pos, std::string imgName)
     return false;
 }
 
-void Glpa::Scene2d::rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
+void Glpa::Scene2d::rendering
+(
+    ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, HWND hWnd, PAINTSTRUCT ps,
+    LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
+)
 {
     rend.run(objs, drawOrderMap, drawOrder, buf, bufWidth, bufHeight, bufDpi, backgroundColor);
 
@@ -142,4 +146,19 @@ void Glpa::Scene2d::rendering(ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap*
 
     D2D1_SIZE_U size = D2D1::SizeU(bufWidth, bufHeight);
     HRESULT hr = pRenderTarget->CreateBitmap(size, buf, bufWidth * sizeof(DWORD), &bitmapProperties, pBitMap);
+    
+    ID2D1Bitmap* bitMap = *pBitMap;
+
+    BeginPaint(hWnd, &ps);
+    pRenderTarget->BeginDraw();
+    
+    D2D1_SIZE_F bitMapSize = bitMap->GetSize();
+    D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, bitMapSize.width, bitMapSize.height);
+
+    pRenderTarget->DrawBitmap(bitMap, layoutRect);
+
+    //TODO: Add Text drawing processing here.
+    
+    pRenderTarget->EndDraw();
+    EndPaint(hWnd, &ps);
 }

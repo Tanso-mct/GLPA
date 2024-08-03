@@ -1,5 +1,6 @@
 #include "GlpaLib.h"
 
+
 GlpaLib* GlpaLib::instance = nullptr;
 
 void GlpaLib::Start
@@ -8,6 +9,7 @@ void GlpaLib::Start
     const LPSTR arg_lpCmdLine, const int arg_nCmdShow
 ){
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
+
 }
 
 int GlpaLib::Close()
@@ -194,7 +196,7 @@ void GlpaLib::AddBase(GlpaBase *pBc)
     GlpaLib::instance->pBcs.push_back(pBc);
 }
 
-void GlpaLib::DeleteBase(GlpaBase *pBc)
+void GlpaLib::deleteBase(GlpaBase *pBc)
 {
     pBc->DeleteAllScene();
 
@@ -235,7 +237,7 @@ void GlpaLib::Load(GlpaBase *pBc)
     pBc->LoadScene();
 }
 
-void GlpaLib::Release(GlpaBase *pBc)
+void GlpaLib::release(GlpaBase *pBc)
 {
     pBc->ReleaseAllScene();
 }
@@ -273,17 +275,16 @@ void GlpaLib::createMsg(GlpaBase *bc)
 
 void GlpaLib::paintMsg(GlpaBase *bc)
 {
-    
 }
 
 void GlpaLib::closeMsg(GlpaBase *bc)
 {
-    GlpaLib::Release(bc);
+    GlpaLib::release(bc);
     DestroyWindow(bc->window->hWnd);
 }
 
 void GlpaLib::destroyMsg(GlpaBase *bc)
 {
-    GlpaLib::DeleteBase(bc);
+    GlpaLib::deleteBase(bc);
     if (GlpaLib::instance->pBcs.size() == 0) PostQuitMessage(0);
 }
