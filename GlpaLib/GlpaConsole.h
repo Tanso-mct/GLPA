@@ -12,6 +12,9 @@ class Console : public Glpa::Scene2d
 private :
     Glpa::Text* pTexts;
 public :
+    static std::string consoleText;
+
+    Console();
     ~Console() override;
 
     void setup() override;

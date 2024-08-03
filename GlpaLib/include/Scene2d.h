@@ -2,6 +2,7 @@
 #define GLPA_SCENE_2D_H_
 
 #include "Scene.h"
+#include "Text.h"
 
 #include <algorithm>
 #include <map>

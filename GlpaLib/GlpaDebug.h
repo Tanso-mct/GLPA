@@ -11,10 +11,15 @@ namespace Glpa
 
 class Debug : public GlpaBase
 {
-public :
+private :
+    static Debug* instance;
     Debug();
+
+public :
     ~Debug() override;
     void setup() override;
+
+    static void CreateDebugConsole();
 };
 
 }

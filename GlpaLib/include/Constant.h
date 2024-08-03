@@ -62,9 +62,6 @@ constexpr const char* COLOR_BLACK = "color_black";
 constexpr const char* COLOR_GREEN = "color_green";
 
 
-
-
-
 }
 
 #endif GLPA_CONSTANT_H_

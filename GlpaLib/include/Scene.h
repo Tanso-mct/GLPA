@@ -103,6 +103,10 @@ public :
     std::string GetBgColor() const {return backgroundColor;}
     void SetBgColor(std::string str) {backgroundColor = str;}
 
+    float GetWindowWidth() const {return window->GetWidth();};
+    float GetWindowHeight() const {return window->GetHeight();};
+    float GetWindowDpi() const {return window->GetDpi();};
+
     /// @brief Add scene objects.
     virtual void setup() = 0;
 

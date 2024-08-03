@@ -42,15 +42,29 @@ void Glpa::Text::load()
 {
     DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
 
-    pDWriteFactory->CreateTextFormat
+    HRESULT hr = pDWriteFactory->CreateTextFormat
     (
         fontName.c_str(), nullptr, fontWeight, fontStyle, fontStretch, fontSize, localeName.c_str(), &pTextFormat
     );
+
+    pTextFormat->SetReadingDirection(readingDirect);
+    pTextFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, lineSpacing, baselineOffSet);
 }
 
 void Glpa::Text::release()
 {
     pTextFormat->Release();
-    pBrush->Release();
     pDWriteFactory->Release();
+}
+
+void Glpa::Text::drawText(ID2D1HwndRenderTarget *pRenderTarget)
+{
+    pRenderTarget->CreateSolidColorBrush(brushColor, &pBrush);
+
+    pRenderTarget->DrawText
+    (
+        words.c_str(), words.size(), pTextFormat, D2D1::RectF(size.x, size.y, pos.x, pos.y), pBrush
+    );
+
+    pBrush->Release();
 }
