@@ -100,7 +100,6 @@ void Glpa::Window::releaseD2D()
 
 void Glpa::Window::paint()
 {
-    BeginPaint(hWnd, &hPs);
     pRenderTarget->BeginDraw();
     
     D2D1_SIZE_F size = pBitmap->GetSize();
@@ -111,7 +110,6 @@ void Glpa::Window::paint()
     //TODO: Add Text drawing processing here.
     
     pRenderTarget->EndDraw();
-    EndPaint(hWnd, &hPs);
 
 }
 

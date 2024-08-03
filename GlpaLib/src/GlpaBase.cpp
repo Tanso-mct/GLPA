@@ -117,7 +117,7 @@ void GlpaBase::runStart()
     ptScs[nowScName]->updateKeyMsg();
     ptScs[nowScName]->updateMouseMsg();
 
-    window->sendPaintMsg();
+    window->paint();
 }
 
 void GlpaBase::runUpdate()
@@ -136,5 +136,5 @@ void GlpaBase::runUpdate()
     ptScs[nowScName]->updateKeyMsg();
     ptScs[nowScName]->updateMouseMsg();
 
-    window->sendPaintMsg();
+    window->paint();
 }
