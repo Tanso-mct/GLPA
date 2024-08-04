@@ -2,6 +2,7 @@
 #define EXAMPLE_SCENE_2D_H_
 
 #include "Scene2d.h"
+#include "GlpaConsole.h"
 
 #include <string>
 #include <Windows.h>

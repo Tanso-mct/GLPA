@@ -24,7 +24,7 @@ void ExampleScene2d::setup()
 
 void ExampleScene2d::start()
 {
-    
+    Glpa::Console::Log(__FILE__, __LINE__, {"ExampleScene2d start"});
 }
 
 void ExampleScene2d::update()
@@ -92,6 +92,7 @@ void ExampleScene2d::update()
     {
         if (!opened)
         {
+            Glpa::Console::Log(__FILE__, __LINE__, {"ExampleScene3d open"});
             OutputDebugStringA("Open example 3d\n");
             openExample3d();
         }

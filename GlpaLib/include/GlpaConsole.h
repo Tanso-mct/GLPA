@@ -1,57 +1,63 @@
-#ifndef GLPA_CONSOLE_H_
-#define GLPA_CONSOLE_H_
+#ifndef GLPA_DEBUG_H_
+#define GLPA_DEBUG_H_
 
-#include "Scene2d.h"
-#include "Text.h"
+#include <initializer_list>
 
-#include <chrono>
+#include "GlpaLib.h"
+#include "GlpaBase.h"
+#include "GlpaEvent.h"
+
+#include "ConsoleScene.h"
 
 namespace Glpa
 {
 
-class ConsoleScene : public Glpa::Scene2d
+class CmdHelp : public Glpa::Event
+{
+public :
+    CmdHelp() : Glpa::Event("help"){};
+    void onEvent() override;
+};
+
+class CmdLog : public Glpa::Event
+{
+public :
+    CmdLog() : Glpa::Event("log"){};
+    void onEvent() override;
+};
+
+class Console : public GlpaBase
 {
 private :
-    Glpa::Image* pBackground = nullptr;
-    Glpa::Text* pCommandText = nullptr;
-    Glpa::Text* pLogText = nullptr;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> strConverter;
 
-    bool isTyping = false;
-    bool isTypingAnimRestart = false;
-    bool isTypingAnimOn = false;
-    float elapsedTime = 0;
+    std::string windowName = "Glpa Console";
+    std::string windowApiName = "glpa_console";
+    float windowWidth = 1200;
+    float windowHeight = 800;
 
-    std::chrono::high_resolution_clock::time_point startTime;
-    std::chrono::high_resolution_clock::time_point currentTime;
-    float deltaTime = 0;
-    std::chrono::high_resolution_clock::time_point lastTime;
+    static Console* instance;
+    static Glpa::ConsoleScene* ptConsole;
 
-    float fontSize = 18;
-    float baseLineOffSet = 20;
-    float lineSpacing = 25;
-
-    Vec2d textBasePos = Vec2d(10, 5);
-
-    std::string commandText = "";
-    std::string logText = "";
-
-    int commandTextSize = 0;
-    int logTextSize = 0;
+    Console();
 
 public :
-    ConsoleScene();
-    ~ConsoleScene() override;
-
+    ~Console() override;
     void setup() override;
-    void start() override;
-    void update() override;
 
-    void typeWord();
-    void typeAnim();
+    static void Create();
+
+    static void Log(std::string str);
+    static void CmdOutput(std::string str);
+
+    static void Log(const char* file, int line, std::initializer_list<std::string> linesStr);
+    static void Log(std::initializer_list<std::string> linesStr);
+    static void CmdOutput(std::initializer_list<std::string> linesStr);
+
+    static void AddEvent(Glpa::Event* event);
 };
 
 }
 
 
-#endif GLPA_CONSOLE_H_
-
+#endif GLPA_DEBUG_H_

@@ -1,6 +1,7 @@
 #include "GlpaLib.h"
+#include "GlpaConsole.h"
+
 #include "ExampleBase.h"
-#include "GlpaDebug.h"
 
 int WINAPI WinMain
 (
@@ -10,7 +11,7 @@ int WINAPI WinMain
     // Always do this first when using Glpa lib. Specify the argument of the win main function as the argument.
     GlpaLib::Start(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
-    // Create debug console
+    // Create console
     Glpa::Console::Create();
 
     // Create an instance of a class that has the Glpa base class as its base class. Create windows and scenes in this class.

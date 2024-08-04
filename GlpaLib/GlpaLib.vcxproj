@@ -149,8 +149,9 @@
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\FileDataManager.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
+    <ClCompile Include="src\ConsoleScene.cpp" />
     <ClCompile Include="src\GlpaConsole.cpp" />
-    <ClCompile Include="src\GlpaDebug.cpp" />
+    <ClCompile Include="src\GlpaEvent.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
@@ -172,8 +173,9 @@
     <ClInclude Include="include\Constant.h" />
     <ClInclude Include="include\FileDataManager.h" />
     <ClInclude Include="include\GlpaBase.h" />
+    <ClInclude Include="include\ConsoleScene.h" />
     <ClInclude Include="include\GlpaConsole.h" />
-    <ClInclude Include="include\GlpaDebug.h" />
+    <ClInclude Include="include\GlpaEvent.h" />
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Matrix.h" />

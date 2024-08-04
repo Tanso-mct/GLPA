@@ -1,0 +1,73 @@
+#ifndef GLPA_CONSOLE_H_
+#define GLPA_CONSOLE_H_
+
+#include "Scene2d.h"
+#include "Text.h"
+#include "GlpaEvent.h"
+
+#include <chrono>
+#include <initializer_list>
+
+namespace Glpa
+{
+
+class ConsoleScene : public Glpa::Scene2d
+{
+private :
+    Glpa::Image* pBackground = nullptr;
+    Glpa::Text* pCommandText = nullptr;
+    Glpa::Text* pLogText = nullptr;
+
+    bool isTyping = false;
+    bool isTypingAnimRestart = false;
+    bool isTypingAnimOn = false;
+    float elapsedTime = 0;
+
+    std::chrono::high_resolution_clock::time_point startTime;
+    std::chrono::high_resolution_clock::time_point currentTime;
+    float deltaTime = 0;
+    std::chrono::high_resolution_clock::time_point lastTime;
+
+    float fontSize = 18;
+    float baseLineOffSet = 20;
+    float lineSpacing = 25;
+
+    Vec2d textBasePos = Vec2d(10, 5);
+
+    std::string commandText 
+    = "Graphic Loop Painter [Version 1.0.0]\nType 'help' for more information.\n\n>";
+    
+    std::string logText 
+    = "Program log output field.\nType 'log' for more information.\n\n";
+
+    int commandTextSize = 0;
+    int logTextSize = 0;
+
+    std::unordered_map<std::string, Glpa::Event*> events;
+
+public :
+    ConsoleScene();
+    ~ConsoleScene() override;
+
+    void setup() override;
+    void start() override;
+    void update() override;
+
+    void typeWord();
+    void typeAnim();
+
+    void writeLog(std::string str);
+    void writeCmdLog(std::string str);
+
+    void writeLog(std::initializer_list<std::string> strLines);
+    void writeCmdLog(std::initializer_list<std::string> strLines);
+
+    void addEvent(Glpa::Event* event);
+    void executeCommand(std::string str);
+};
+
+}
+
+
+#endif GLPA_CONSOLE_H_
+
