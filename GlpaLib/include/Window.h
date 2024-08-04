@@ -43,6 +43,8 @@ public :
     WNDCLASSEX apiClass;
 
     LPDWORD pixels;
+
+    bool isFocusing = false;
     
     void create(HINSTANCE hInstance);
 

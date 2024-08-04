@@ -74,6 +74,10 @@ public :
     /// @param bc A class that identifies which glpa base class has the base class from the window handle.
     void editSizeMsg(GlpaBase* bc, LPARAM lParam);
 
+    void focusMsg(GlpaBase* bc);
+
+    void killFocusMsg(GlpaBase* bc);
+
     /// @brief A create message may be received after the window is created. Create a DC.
     /// @param bc A class that identifies which glpa base class has the base class from the window handle.
     void createMsg(GlpaBase* bc);

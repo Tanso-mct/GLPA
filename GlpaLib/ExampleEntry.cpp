@@ -11,7 +11,7 @@ int WINAPI WinMain
     GlpaLib::Start(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 
     // Create debug console
-    Glpa::Debug::CreateDebugConsole();
+    Glpa::Console::Create();
 
     // Create an instance of a class that has the Glpa base class as its base class. Create windows and scenes in this class.
     ExampleBaseA* pBcA = new ExampleBaseA();

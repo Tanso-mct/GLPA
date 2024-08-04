@@ -79,13 +79,15 @@ public :
     bool IsCtrlToggle() const {return ctrlToggle;}
     bool IsAltToggle() const {return altToggle;}
 
-    std::string GetNowKeyMsg();
+    bool IsWord(std::string argMsg);
+
+    std::string GetNowKeyMsg() const {return keyMsg;}
     bool GetNowKeyMsg(std::string argMsg);
 
-    std::string GetNowKeyDownMsg();
+    std::string GetNowKeyDownMsg() const {return keyDownMsg;}
     bool GetNowKeyDownMsg(std::string argMsg);
 
-    std::string GetNowKeyUpMsg();
+    std::string GetNowKeyUpMsg() const {return keyUpMsg;}
     bool GetNowKeyUpMsg(std::string argMsg);
 
     void updateKeyMsg();

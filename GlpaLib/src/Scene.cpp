@@ -35,6 +35,11 @@ void Glpa::Scene::getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (wParam)
     {
+        case VK_RETURN:
+            keyMsg =  Glpa::CHAR_ENTER;
+            keyDownMsg = Glpa::CHAR_ENTER;
+            break;
+
         case VK_SPACE:
             keyMsg = Glpa::CHAR_SPACE;
             keyDownMsg = Glpa::CHAR_SPACE;
@@ -314,6 +319,11 @@ void Glpa::Scene::getKeyUp(UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (wParam)
     {
+        case VK_RETURN:
+            keyMsg = "";
+            keyUpMsg = Glpa::CHAR_ENTER;
+            break;
+
         case VK_SPACE:
             keyMsg = "";
             keyUpMsg = Glpa::CHAR_SPACE;
@@ -635,9 +645,44 @@ void Glpa::Scene::getMouse(UINT msg, WPARAM wParam, LPARAM lParam, int dpi)
     }
 }
 
-std::string Glpa::Scene::GetNowKeyMsg()
+bool Glpa::Scene::IsWord(std::string argMsg)
 {
-    return keyMsg;
+    if
+    (
+        argMsg != Glpa::CHAR_ENTER &&
+        argMsg != Glpa::CHAR_SPACE &&
+        argMsg != Glpa::CHAR_ESCAPE &&
+        argMsg != Glpa::CHAR_TAB &&
+        argMsg != Glpa::CHAR_BACKSPACE &&
+
+        argMsg != Glpa::CHAR_LSHIFT &&
+        argMsg != Glpa::CHAR_LCTRL &&
+        argMsg != Glpa::CHAR_LALT &&
+        argMsg != Glpa::CHAR_WIN &&
+
+        argMsg != Glpa::CHAR_RSHIFT &&
+        argMsg != Glpa::CHAR_RCTRL &&
+        argMsg != Glpa::CHAR_RALT &&
+
+        argMsg != Glpa::CHAR_F1 &&
+        argMsg != Glpa::CHAR_F2 &&
+        argMsg != Glpa::CHAR_F3 &&
+        argMsg != Glpa::CHAR_F4 &&
+        argMsg != Glpa::CHAR_F5 &&
+        argMsg != Glpa::CHAR_F6 &&
+        argMsg != Glpa::CHAR_F7 &&
+        argMsg != Glpa::CHAR_F8 &&
+        argMsg != Glpa::CHAR_F9 &&
+        argMsg != Glpa::CHAR_F10 &&
+        argMsg != Glpa::CHAR_F11 &&
+        argMsg != Glpa::CHAR_F12
+    ){
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool Glpa::Scene::GetNowKeyMsg(std::string argMsg)
@@ -646,20 +691,10 @@ bool Glpa::Scene::GetNowKeyMsg(std::string argMsg)
     else return false;
 }
 
-std::string Glpa::Scene::GetNowKeyDownMsg()
-{
-    return keyDownMsg;
-}
-
 bool Glpa::Scene::GetNowKeyDownMsg(std::string argMsg)
 {
     if (keyDownMsg == argMsg) return true;
     else return false;
-}
-
-std::string Glpa::Scene::GetNowKeyUpMsg()
-{
-    return keyUpMsg;
 }
 
 bool Glpa::Scene::GetNowKeyUpMsg(std::string argMsg)

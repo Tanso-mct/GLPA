@@ -9,17 +9,26 @@
 namespace Glpa
 {
 
-class Debug : public GlpaBase
+class Console : public GlpaBase
 {
 private :
-    static Debug* instance;
-    Debug();
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> strConverter;
+
+    std::string windowName = "Glpa Console";
+    std::string windowApiName = "glpa_console";
+    float windowWidth = 1200;
+    float windowHeight = 800;
+
+    static Console* instance;
+    static Glpa::ConsoleScene* ptConsole;
+
+    Console();
 
 public :
-    ~Debug() override;
+    ~Console() override;
     void setup() override;
 
-    static void CreateDebugConsole();
+    static void Create();
 };
 
 }

@@ -68,22 +68,27 @@ void GlpaBase::LoadScene()
         nowScName = startScName;
     }
 
+    loadingSceneCount++;
     ptScs[nowScName]->load();
 }
 
 void GlpaBase::LoadScene(Glpa::Scene *ptScene)
 {
     nowScName = ptScene->getName();
+
+    loadingSceneCount++;
     ptScene->load();
 }
 
 void GlpaBase::ReleaseScene()
 {
+    loadingSceneCount--;
     ptScs[nowScName]->release();
 }
 
 void GlpaBase::ReleaseScene(Glpa::Scene *ptScene)
 {
+    loadingSceneCount--;
     ptScene->release();
 }
 
@@ -93,6 +98,8 @@ void GlpaBase::ReleaseAllScene()
     {
         sc.second->release();
     }
+
+    loadingSceneCount = 0;
 }
 
 void GlpaBase::SetFirstSc(Glpa::Scene *ptScene)

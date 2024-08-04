@@ -37,7 +37,7 @@ private :
     D2D1::ColorF brushColor = D2D1::ColorF::White;
 
 public :
-    Text();
+    Text(std::string argName);
     ~Text() override;
 
     void EditPos(Glpa::Vec2d argPos){pos = argPos;}

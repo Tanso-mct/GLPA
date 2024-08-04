@@ -1,7 +1,9 @@
 #include "Text.h"
 
-Glpa::Text::Text()
+Glpa::Text::Text(std::string argName)
 {
+    name = argName;
+    type = Glpa::CLASS_TEXT;
 }
 
 Glpa::Text::~Text()

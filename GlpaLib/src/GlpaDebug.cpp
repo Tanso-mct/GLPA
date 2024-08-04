@@ -1,29 +1,35 @@
 #include "GlpaDebug.h"
 
-Glpa::Debug* Glpa::Debug::instance = nullptr;
+Glpa::Console* Glpa::Console::instance = nullptr;
+Glpa::ConsoleScene* Glpa::Console::ptConsole = nullptr;
 
-Glpa::Debug::Debug()
+Glpa::Console::Console()
 {
 }
 
-Glpa::Debug::~Debug()
+Glpa::Console::~Console()
 {
 }
 
-void Glpa::Debug::setup()
+void Glpa::Console::setup()
 {
-    Glpa::Console* ptConsole = new Glpa::Console();
-    ptConsole->setName("example 2d");
+    ptConsole = new Glpa::ConsoleScene();
+    ptConsole->setName("console_scene");
     
     AddScene(ptConsole);
     SetFirstSc(ptConsole);
 }
 
-void Glpa::Debug::CreateDebugConsole()
+void Glpa::Console::Create()
 {
-    instance = new Glpa::Debug();
-    instance->window->SetName(L"Debug Console");
-    instance->window->SetApiClassName(L"debug_console");
+    instance = new Glpa::Console();
+    std::wstring wWindowName = instance->strConverter.from_bytes(instance->windowName);
+    std::wstring wWindowApiName = instance->strConverter.from_bytes(instance->windowApiName);
+    instance->window->SetName(wWindowName.c_str());
+    instance->window->SetApiClassName(wWindowApiName.c_str());
+    instance->window->SetWidth(instance->windowWidth);
+    instance->window->SetHeight(instance->windowHeight);
+
     GlpaLib::AddBase(instance);
     GlpaLib::CreateWindowNotApi(instance);
     GlpaLib::ShowWindowNotApi(instance, SW_SHOWDEFAULT);

@@ -11,6 +11,7 @@ constexpr int Z = 2;
 constexpr int SIZE_VEC2D = 2;
 constexpr int SIZE_VEC3D = 3;
 
+constexpr const char* CHAR_ENTER = "enter";
 constexpr const char* CHAR_SPACE = "space";
 constexpr const char* CHAR_ESCAPE = "escape";
 constexpr const char* CHAR_TAB = "tab";
@@ -57,6 +58,7 @@ constexpr const char* CLASS_SCENE_OBJECT = "class_scene_object";
 constexpr const char* CLASS_FILE = "class_file";
 constexpr const char* CLASS_PNG = "class_png";
 constexpr const char* CLASS_IMAGE = "class_image";
+constexpr const char* CLASS_TEXT = "class_txt";
 
 constexpr const char* COLOR_BLACK = "color_black";
 constexpr const char* COLOR_GREEN = "color_green";

@@ -43,93 +43,126 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     switch (msg){
         case WM_SYSCOMMAND:
             if (wParam == SC_MINIMIZE) {
-                GlpaLib::instance->minimizeMsg(GlpaLib::instance->pBcs
+                instance->minimizeMsg(instance->pBcs
                 [
                     std::distance
                     (
-                        GlpaLib::instance->bcsHWnds.begin(), 
-                        std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                        instance->bcsHWnds.begin(), 
+                        std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                     )
                 ]);
             }
             return DefWindowProc(hWnd, msg, wParam, lParam);
 
         case WM_GETMINMAXINFO:
-            GlpaLib::instance->editSizeMsg(GlpaLib::instance->pBcs
+            instance->editSizeMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ], lParam);
             return 0;
 
-        case WM_CREATE:
-            GlpaLib::instance->createMsg(GlpaLib::instance->pBcs
+        case WM_SETFOCUS:
+            instance->focusMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
+            return 0;
+
+        case WM_KILLFOCUS:
+            instance->killFocusMsg(instance->pBcs
+            [
+                std::distance
+                (
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
+            return 0;
+
+        case WM_CREATE:
+            instance->createMsg(instance->pBcs
+            [
+                std::distance
+                (
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ]);
             return 0;
 
         case WM_PAINT:
-            GlpaLib::instance->paintMsg(GlpaLib::instance->pBcs
+            instance->paintMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
+                )
+            ]);
+            return 0;
+
+        case WM_MOVE:
+            instance->paintMsg(instance->pBcs
+            [
+                std::distance
+                (
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ]);
             return 0;
 
         case WM_CLOSE:
-            GlpaLib::instance->closeMsg(GlpaLib::instance->pBcs
+            instance->closeMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ]);
             return 0;
                 
 
         case WM_DESTROY:
-            GlpaLib::instance->destroyMsg(GlpaLib::instance->pBcs
+            instance->destroyMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ]);
             return 0;
 
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
-            GlpaLib::instance->keyDownMsg(GlpaLib::instance->pBcs
+            instance->keyDownMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ], msg, wParam, lParam);
             return 0;
 
         case WM_SYSKEYUP:
         case WM_KEYUP:
-            GlpaLib::instance->keyUpMsg(GlpaLib::instance->pBcs
+            instance->keyUpMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ], msg, wParam, lParam);
             return 0;
@@ -144,12 +177,12 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         case WM_MBUTTONUP:
         case WM_MOUSEWHEEL:
         case WM_MOUSEMOVE:
-            GlpaLib::instance->mouseMsg(GlpaLib::instance->pBcs
+            instance->mouseMsg(instance->pBcs
             [
                 std::distance
                 (
-                    GlpaLib::instance->bcsHWnds.begin(), 
-                    std::find(GlpaLib::instance->bcsHWnds.begin(), GlpaLib::instance->bcsHWnds.end(), hWnd)
+                    instance->bcsHWnds.begin(), 
+                    std::find(instance->bcsHWnds.begin(), instance->bcsHWnds.end(), hWnd)
                 )
             ], msg, wParam, lParam);
             return 0;
@@ -163,6 +196,16 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 void GlpaLib::minimizeMsg(GlpaBase *bc)
 {
     GlpaLib::ShowWindowNotApi(bc, SW_MINIMIZE);
+}
+
+void GlpaLib::focusMsg(GlpaBase *bc)
+{
+    bc->setFocusing(true);
+}
+
+void GlpaLib::killFocusMsg(GlpaBase *bc)
+{
+    bc->setFocusing(false);
 }
 
 void GlpaLib::editSizeMsg(GlpaBase *bc, LPARAM lParam)
@@ -193,28 +236,28 @@ void GlpaLib::AddBase(GlpaBase *pBc)
 {
     pBc->setManager(instance->fileDataManager);
     pBc->setup();
-    GlpaLib::instance->pBcs.push_back(pBc);
+    instance->pBcs.push_back(pBc);
 }
 
 void GlpaLib::deleteBase(GlpaBase *pBc)
 {
     pBc->DeleteAllScene();
 
-    GlpaLib::instance->bcsHWnds.erase
+    instance->bcsHWnds.erase
     (
-        GlpaLib::instance->bcsHWnds.begin() + std::distance
+        instance->bcsHWnds.begin() + std::distance
         (
-            GlpaLib::instance->pBcs.begin(), 
-            std::find(GlpaLib::instance->pBcs.begin(), GlpaLib::instance->pBcs.end(), pBc)
+            instance->pBcs.begin(), 
+            std::find(instance->pBcs.begin(), instance->pBcs.end(), pBc)
         )
     );
 
-    GlpaLib::instance->pBcs.erase
+    instance->pBcs.erase
     (
-        GlpaLib::instance->pBcs.begin() + std::distance
+        instance->pBcs.begin() + std::distance
         (
-            GlpaLib::instance->pBcs.begin(), 
-            std::find(GlpaLib::instance->pBcs.begin(), GlpaLib::instance->pBcs.end(), pBc)
+            instance->pBcs.begin(), 
+            std::find(instance->pBcs.begin(), instance->pBcs.end(), pBc)
         )
     );
     delete pBc;
@@ -223,8 +266,8 @@ void GlpaLib::deleteBase(GlpaBase *pBc)
 void GlpaLib::CreateWindowNotApi(GlpaBase *pBc)
 {
     pBc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
-    pBc->window->create(GlpaLib::instance->hInstance);
-    GlpaLib::instance->bcsHWnds.push_back(pBc->window->hWnd);
+    pBc->window->create(instance->hInstance);
+    instance->bcsHWnds.push_back(pBc->window->hWnd);
 }
 
 void GlpaLib::ShowWindowNotApi(GlpaBase *pBc, int type)
@@ -245,25 +288,31 @@ void GlpaLib::release(GlpaBase *pBc)
 void GlpaLib::Run()
 {
     while (true) {
+        for (int i = 0; i < instance->pBcs.size(); i++) {
+            // Process paint messages first if there are any
+            if 
+            (
+                PeekMessage(&instance->msg, NULL, WM_PAINT, WM_PAINT, PM_REMOVE) && 
+                instance->pBcs[i]->getVisible() && instance->pBcs[i]->getStarted()
+            ){
+                TranslateMessage(&instance->msg);
+                DispatchMessage(&instance->msg);
+                continue; // Skip the rest of the loop iteration to prioritize paint messages
+            }
+        }
+        
         // Process other messages
-        if (PeekMessage(&GlpaLib::instance->msg, NULL, 0, 0, PM_REMOVE)) {
-            if (GlpaLib::instance->msg.message == WM_QUIT) {
+        if (PeekMessage(&instance->msg, NULL, 0, 0, PM_REMOVE)) {
+            if (instance->msg.message == WM_QUIT) {
                 break;
             }
-            TranslateMessage(&GlpaLib::instance->msg);
-            DispatchMessage(&GlpaLib::instance->msg);
+            TranslateMessage(&instance->msg);
+            DispatchMessage(&instance->msg);
         }
 
         // Process your custom updates here
-        for (int i = 0; i < GlpaLib::instance->pBcs.size(); i++) {
-            if(GlpaLib::instance->pBcs[i]->getVisible() && GlpaLib::instance->pBcs[i]->getStarted())
-            {
-                GlpaLib::instance->pBcs[i]->runUpdate();
-            }
-            else if(GlpaLib::instance->pBcs[i]->getVisible() && !GlpaLib::instance->pBcs[i]->getStarted())
-            {
-                GlpaLib::instance->pBcs[i]->runStart();
-            }
+        for (int i = 0; i < instance->pBcs.size(); i++) {
+            instance->paintMsg(instance->pBcs[i]);
         }
     }
 }
@@ -275,6 +324,14 @@ void GlpaLib::createMsg(GlpaBase *bc)
 
 void GlpaLib::paintMsg(GlpaBase *bc)
 {
+    if(bc->getVisible() && bc->getStarted() && bc->IsAnySceneLoaded())
+    {
+        bc->runUpdate();
+    }
+    else if(bc->getVisible() && !bc->getStarted() && bc->IsAnySceneLoaded())
+    {
+        bc->runStart();
+    }
 }
 
 void GlpaLib::closeMsg(GlpaBase *bc)
@@ -286,5 +343,5 @@ void GlpaLib::closeMsg(GlpaBase *bc)
 void GlpaLib::destroyMsg(GlpaBase *bc)
 {
     GlpaLib::deleteBase(bc);
-    if (GlpaLib::instance->pBcs.size() == 0) PostQuitMessage(0);
+    if (instance->pBcs.size() == 0) PostQuitMessage(0);
 }

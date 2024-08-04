@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <chrono>
 
 #include "Window.h"
 #include "Scene.h"
@@ -18,6 +19,8 @@ private :
 
     /// @brief Indicates whether the drawing loop has started. true if it has started;
     bool started = false;
+
+    int loadingSceneCount = 0;
 
     /// @brief You must enter the name of the first scene in startScName in the Awake function.
     std::string startScName;
@@ -44,6 +47,11 @@ public :
 
     bool getStarted() const {return started;}
     void setStarted(bool value) {started = value;}
+
+    bool getFocusing() const {return window->isFocusing;}
+    void setFocusing(bool value) {window->isFocusing = value;}
+
+    bool IsAnySceneLoaded() const {return loadingSceneCount > 0 ? true : false;}
 
     void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
 
