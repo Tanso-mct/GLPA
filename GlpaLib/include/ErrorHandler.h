@@ -8,16 +8,18 @@
 namespace Glpa
 {
 
-inline void runTimeError(std::string place, std::string errorMsg) 
+inline void runTimeError(const char* file, int line, std::string errorMsg) 
 {
-    std::string outputStr = "GlpaLib ERROR " + place + " - " + errorMsg + "\n";
+    std::string outputStr 
+    = "[" + std::string(file) + ":" + std::to_string(line) + "]" + "GlpaLib ERROR " + " - " + errorMsg + "\n";
     OutputDebugStringA(outputStr.c_str());
     throw std::runtime_error(errorMsg.c_str());
 }
 
-inline void outputErrorLog(std::string place, std::string errorMsg)
+inline void outputErrorLog(const char* file, int line,std::string errorMsg)
 {
-    std::string outputStr = "GlpaLib ERROR " + place + " - " + errorMsg + "\n";
+    std::string outputStr 
+    = "[" + std::string(file) + ":" + std::to_string(line) + "]" + "GlpaLib ERROR " + " - " + errorMsg + "\n";
     OutputDebugStringA(outputStr.c_str());
 }
 

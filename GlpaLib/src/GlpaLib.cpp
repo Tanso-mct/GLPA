@@ -8,12 +8,13 @@ void GlpaLib::Start
     const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
     const LPSTR arg_lpCmdLine, const int arg_nCmdShow
 ){
+    Glpa::EventManager::Create();
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
-
 }
 
 int GlpaLib::Close()
 {
+    Glpa::EventManager::Release();
     delete instance->fileDataManager;
 
     MSG rtMsg = instance->msg;

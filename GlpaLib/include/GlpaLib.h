@@ -10,6 +10,7 @@
 #include "FileDataManager.h"
 
 #include "GlpaBase.h"
+#include "GlpaEvent.h"
 
 class GlpaLib
 {

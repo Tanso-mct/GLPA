@@ -39,7 +39,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
     LoadIcon(apiClass.hInstance, MAKEINTRESOURCE(smallIcon));
 
     if (!RegisterClassEx(&apiClass)){
-        Glpa::runTimeError("Window.cpp", "Class registration failed.");
+        Glpa::runTimeError(__FILE__, __LINE__, "Class registration failed.");
     }
 
 
@@ -56,7 +56,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
     );
 
     if (!hWnd){
-        Glpa::runTimeError("Window.cpp", "Failed to create window.");
+        Glpa::runTimeError(__FILE__, __LINE__, "Failed to create window.");
     }
 
     pixels = new DWORD[width * height * dpi];
@@ -80,13 +80,13 @@ void Glpa::Window::initD2D()
 
         if (FAILED(hr))
         {
-            Glpa::runTimeError("Window.cpp", "Failed to create direct2d render target.");
+            Glpa::runTimeError(__FILE__, __LINE__, "Failed to create direct2d render target.");
             return;
         }
     }
     else
     {
-        Glpa::runTimeError("Window.cpp", "Failed to create direct2d factory");
+        Glpa::runTimeError(__FILE__, __LINE__, "Failed to create direct2d factory");
         return;
     }
 }

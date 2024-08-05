@@ -40,7 +40,7 @@ void Glpa::FileDataManager::newFile(std::string path)
     }
     else
     {
-        Glpa::runTimeError("FileDataManager.cpp", "File format is not supported.");
+        Glpa::runTimeError(__FILE__, __LINE__, "File format is not supported.");
     }
 
     file->data->filePath = path;
@@ -55,7 +55,7 @@ void Glpa::FileDataManager::deleteFile(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     files[path]->data->release();
@@ -70,7 +70,7 @@ void Glpa::FileDataManager::load(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     files[path]->data->load();
@@ -80,7 +80,7 @@ void Glpa::FileDataManager::release(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     files[path]->data->release();
@@ -90,7 +90,7 @@ std::string Glpa::FileDataManager::getFileName(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     return files[path]->data->fileName;
@@ -100,7 +100,7 @@ int Glpa::FileDataManager::getWidth(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     if (Glpa::PngData* png = dynamic_cast<Glpa::PngData*>(files[path]->data))
@@ -111,7 +111,7 @@ int Glpa::FileDataManager::getWidth(std::string path)
     {
         Glpa::runTimeError
         (
-            "int Glpa::FileDataManager::getWidth(std::string path)", 
+            __FILE__, __LINE__,
             "It is not a file whose width can be obtained."
         );
     }
@@ -121,7 +121,7 @@ int Glpa::FileDataManager::getHeight(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     if (Glpa::PngData* png = dynamic_cast<Glpa::PngData*>(files[path]->data))
@@ -132,7 +132,7 @@ int Glpa::FileDataManager::getHeight(std::string path)
     {
         Glpa::runTimeError
         (
-            "int Glpa::FileDataManager::getHeight(std::string path)", 
+            __FILE__, __LINE__,
             "It is not a file whose height can be obtained."
         );
     }
@@ -142,7 +142,7 @@ int Glpa::FileDataManager::getChannels(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     if (Glpa::PngData* png = dynamic_cast<Glpa::PngData*>(files[path]->data))
@@ -153,7 +153,7 @@ int Glpa::FileDataManager::getChannels(std::string path)
     {
         Glpa::runTimeError
         (
-            "int Glpa::FileDataManager::getChannels(std::string path)", 
+            __FILE__, __LINE__,
             "It is not a file whose channels can be obtained."
         );
     }
@@ -163,7 +163,7 @@ LPDWORD Glpa::FileDataManager::getData(std::string path)
 {
     if (files.find(path) == files.end())
     {
-        Glpa::runTimeError("FileDataManager.cpp", "This applies to files that have not been added.");
+        Glpa::runTimeError(__FILE__, __LINE__, "This applies to files that have not been added.");
     }
 
     if (Glpa::PngData* png = dynamic_cast<Glpa::PngData*>(files[path]->data))
@@ -174,7 +174,7 @@ LPDWORD Glpa::FileDataManager::getData(std::string path)
     {
         Glpa::runTimeError
         (
-            "LPDWORD &Glpa::FileDataManager::getData(std::string path)", 
+            __FILE__, __LINE__,
             "It is not a file whose data can be obtained."
         );
     }
@@ -185,7 +185,7 @@ void Glpa::PngData::load()
     stbi_uc* pixels = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
     if (!pixels) {
-        Glpa::runTimeError("FileDataManager.cpp", "Failed to load PNG image.");
+        Glpa::runTimeError(__FILE__, __LINE__, "Failed to load PNG image.");
     }
 
     data = new DWORD[width * height];
