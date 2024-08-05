@@ -35,8 +35,8 @@ void Glpa::Console::Create()
     GlpaLib::ShowWindowNotApi(instance, SW_SHOWDEFAULT);
     GlpaLib::Load(instance);
 
-    instance->AddEvent(new Glpa::CmdHelp());
-    instance->AddEvent(new Glpa::CmdLog());
+    Glpa::EventManager::AddEvent(new Glpa::CmdHelp());
+    Glpa::EventManager::AddEvent(new Glpa::CmdLog());
 }
 
 void Glpa::Console::Log(std::string str)
@@ -70,12 +70,6 @@ void Glpa::Console::CmdOutput(std::initializer_list<std::string> linesStr)
 {
     if (instance == nullptr) return;
     instance->ptConsole->writeCmdLog(linesStr);
-}
-
-void Glpa::Console::AddEvent(Glpa::Event *event)
-{
-    if (instance == nullptr) return;
-    instance->ptConsole->addEvent(event);
 }
 
 void Glpa::CmdHelp::onEvent()

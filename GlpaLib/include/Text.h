@@ -31,7 +31,11 @@ private :
     std::wstring words = L"New text";
 
     IDWriteFactory* pDWriteFactory = nullptr;
+    IDWriteTextLayout* pTextLayout = nullptr;
     IDWriteTextFormat* pTextFormat = nullptr;
+
+    UINT32 lineCount = 0;
+    std::vector<DWRITE_LINE_METRICS> lineMetrics;
 
     ID2D1SolidColorBrush* pBrush = nullptr;
     D2D1::ColorF brushColor = D2D1::ColorF::White;

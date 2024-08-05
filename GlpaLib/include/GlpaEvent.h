@@ -13,8 +13,11 @@ class Event
 private :
     std::string name = "";
 public :
-    Event(std::string argName) : name(argName){};
+    Event(std::string argName,const char* fileChar, int lineNum) : name(argName), file(fileChar), line(lineNum){};
     virtual ~Event(){};
+
+    std::string file;
+    int line;
 
     std::string getName() const {return name;}
     virtual void onEvent() = 0;

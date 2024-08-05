@@ -12,6 +12,8 @@
 #include "GlpaBase.h"
 #include "GlpaEvent.h"
 
+#include "GlpaLog.h"
+
 class GlpaLib
 {
 private :
@@ -53,7 +55,7 @@ public :
     static void Start
     (
         const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
-        const LPSTR arg_lpCmdLine, const int arg_nCmdShow
+        const LPSTR arg_lpCmdLine, const int arg_nCmdShow, bool isCreateConsole
     );
 
     /// @brief Specify as the return value of the Win main function.

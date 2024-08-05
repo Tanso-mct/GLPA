@@ -9,10 +9,7 @@ int WINAPI WinMain
     const LPSTR lpCmdLine, const int nCmdShow
 ){
     // Always do this first when using Glpa lib. Specify the argument of the win main function as the argument.
-    GlpaLib::Start(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
-
-    // Create console
-    Glpa::Console::Create();
+    GlpaLib::Start(hInstance, hPrevInstance, lpCmdLine, nCmdShow, true);
 
     // Create an instance of a class that has the Glpa base class as its base class. Create windows and scenes in this class.
     ExampleBaseA* pBcA = new ExampleBaseA();

@@ -14,7 +14,13 @@ void Glpa::EventManager::AddEvent(Glpa::Event *event)
 {
     if (instance->events.find(event->getName()) != instance->events.end())
     {
-        Glpa::runTimeError(__FILE__, __LINE__, "Event already exists.");
+        Glpa::runTimeError
+        (
+            __FILE__, __LINE__, 
+            {"Event already exists.",
+            "Event name: " + event->getName()
+            }
+        );
     }
 
     instance->events[event->getName()] = event;

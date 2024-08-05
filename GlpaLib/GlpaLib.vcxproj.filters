@@ -179,6 +179,9 @@
     <ClInclude Include="include\GlpaEvent.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
+    <ClInclude Include="include\GlpaLog.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">

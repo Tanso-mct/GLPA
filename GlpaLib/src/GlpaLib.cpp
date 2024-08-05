@@ -1,15 +1,24 @@
 #include "GlpaLib.h"
-
+#include "GlpaConsole.h"
 
 GlpaLib* GlpaLib::instance = nullptr;
 
 void GlpaLib::Start
 (
     const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
-    const LPSTR arg_lpCmdLine, const int arg_nCmdShow
+    const LPSTR arg_lpCmdLine, const int arg_nCmdShow, bool isCreateConsole
 ){
     Glpa::EventManager::Create();
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
+
+    if (isCreateConsole)
+    {
+        Glpa::Console::Create();
+        Glpa::Console::Log(__FILE__, __LINE__, {"GlpaLib started."});
+    }
+
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib started.");
+
 }
 
 int GlpaLib::Close()

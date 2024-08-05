@@ -23,6 +23,26 @@ void Glpa::Text::EditLocaleName(std::string argLocaleName)
 void Glpa::Text::EditWords(std::string argWords)
 {
     words = strConverter.from_bytes(argWords);
+
+    pDWriteFactory->CreateTextLayout(
+        words.c_str(),
+        (UINT32)words.length(),
+        pTextFormat,
+        size.x, size.y,
+        &pTextLayout
+    );
+
+    UINT32 lineCount = 0;
+    pTextLayout->GetLineMetrics(nullptr, 0, &lineCount);
+    lineMetrics.clear();
+    lineMetrics.resize(lineCount);
+    pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
+
+    // Calculate the position of the last character
+    float totalHeight = 0.0f;
+    for (UINT32 i = 0; i < lineCount - 1; ++i) {
+        totalHeight += lineMetrics[i].height;
+    }
 }
 
 std::string Glpa::Text::GetFontName()
@@ -51,6 +71,25 @@ void Glpa::Text::load()
 
     pTextFormat->SetReadingDirection(readingDirect);
     pTextFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, lineSpacing, baselineOffSet);
+
+    pDWriteFactory->CreateTextLayout(
+        words.c_str(),
+        (UINT32)words.length(),
+        pTextFormat,
+        size.x, size.y,
+        &pTextLayout
+    );
+
+    UINT32 lineCount = 0;
+    pTextLayout->GetLineMetrics(nullptr, 0, &lineCount);
+    lineMetrics.resize(lineCount);
+    pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
+
+    // Calculate the position of the last character
+    float totalHeight = 0.0f;
+    for (UINT32 i = 0; i < lineCount - 1; ++i) {
+        totalHeight += lineMetrics[i].height;
+    }
 }
 
 void Glpa::Text::release()

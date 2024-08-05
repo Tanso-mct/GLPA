@@ -15,14 +15,14 @@ namespace Glpa
 class CmdHelp : public Glpa::Event
 {
 public :
-    CmdHelp() : Glpa::Event("help"){};
+    CmdHelp() : Glpa::Event("help", __FILE__, __LINE__){};
     void onEvent() override;
 };
 
 class CmdLog : public Glpa::Event
 {
 public :
-    CmdLog() : Glpa::Event("log"){};
+    CmdLog() : Glpa::Event("log", __FILE__, __LINE__){};
     void onEvent() override;
 };
 
@@ -53,8 +53,6 @@ public :
     static void Log(const char* file, int line, std::initializer_list<std::string> linesStr);
     static void Log(std::initializer_list<std::string> linesStr);
     static void CmdOutput(std::initializer_list<std::string> linesStr);
-
-    static void AddEvent(Glpa::Event* event);
 };
 
 }

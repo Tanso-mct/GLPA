@@ -177,6 +177,7 @@
     <ClInclude Include="include\GlpaConsole.h" />
     <ClInclude Include="include\GlpaEvent.h" />
     <ClInclude Include="include\GlpaLib.h" />
+    <ClInclude Include="include\GlpaLog.h" />
     <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Matrix.h" />
     <CudaCompile Include="include\Render.cuh">

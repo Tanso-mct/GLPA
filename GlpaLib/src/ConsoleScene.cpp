@@ -6,10 +6,7 @@ Glpa::ConsoleScene::ConsoleScene()
 
 Glpa::ConsoleScene::~ConsoleScene()
 {
-    for (auto it = events.begin(); it != events.end(); it++)
-    {
-        delete it->second;
-    }
+    
 }
 
 void Glpa::ConsoleScene::setup()
@@ -105,7 +102,14 @@ void Glpa::ConsoleScene::typeWord()
             = commandText.substr(commandTextSize, commandText.size() - commandTextSize);
 
             commandText += "\n";
-            executeCommand(strCommand);
+            if (!Glpa::EventManager::ExecuteEvent(strCommand))
+            {
+                writeCmdLog
+                ({
+                    "'" + strCommand + "' is not recognized as an command",
+                    "A list of executable commands can be found with 'help'."
+                });
+            }
 
             commandText += "\n>";
             pCommandText->EditWords(commandText);
@@ -209,27 +213,3 @@ void Glpa::ConsoleScene::writeCmdLog(std::initializer_list<std::string> strLines
     pCommandText->EditWords(commandText);
     commandTextSize = commandText.size();
 }
-
-void Glpa::ConsoleScene::addEvent(Glpa::Event *event)
-{
-    events[event->getName()] = event;
-}
-
-void Glpa::ConsoleScene::executeCommand(std::string str)
-{
-    for (auto it = events.begin(); it != events.end(); it++)
-    {
-        if (it->first == str)
-        {
-            it->second->onEvent();
-            return;
-        }
-    }
-
-    writeCmdLog
-    ({
-        "'" + str + "' is not recognized as an command",
-        "A list of executable commands can be found with 'help'."
-    });
-}
-

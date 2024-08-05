@@ -43,8 +43,6 @@ private :
     int commandTextSize = 0;
     int logTextSize = 0;
 
-    std::unordered_map<std::string, Glpa::Event*> events;
-
 public :
     ConsoleScene();
     ~ConsoleScene() override;
@@ -61,9 +59,6 @@ public :
 
     void writeLog(std::initializer_list<std::string> strLines);
     void writeCmdLog(std::initializer_list<std::string> strLines);
-
-    void addEvent(Glpa::Event* event);
-    void executeCommand(std::string str);
 };
 
 }
