@@ -213,3 +213,8 @@ void Glpa::ConsoleScene::writeCmdLog(std::initializer_list<std::string> strLines
     pCommandText->EditWords(commandText);
     commandTextSize = commandText.size();
 }
+
+void Glpa::CmdTextLastCharPos::onEvent()
+{
+    
+}

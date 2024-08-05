@@ -8,12 +8,21 @@
 #include <chrono>
 #include <initializer_list>
 
+#include "GlpaEvent.h"
+
 namespace Glpa
 {
 
 class ConsoleScene : public Glpa::Scene2d
 {
 private :
+    class CmdTextLastCharPos : public Glpa::Event
+    {
+    public :
+        CmdTextLastCharPos() : Glpa::Event("text last_char pos", __FILE__, __LINE__){};
+        void onEvent() override;
+    };
+    
     Glpa::Image* pBackground = nullptr;
     Glpa::Text* pCommandText = nullptr;
     Glpa::Text* pLogText = nullptr;

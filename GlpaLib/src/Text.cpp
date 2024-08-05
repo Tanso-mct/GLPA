@@ -38,8 +38,7 @@ void Glpa::Text::EditWords(std::string argWords)
     lineMetrics.resize(lineCount);
     pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
 
-    // Calculate the position of the last character
-    float totalHeight = 0.0f;
+    totalHeight = 0.0f;
     for (UINT32 i = 0; i < lineCount - 1; ++i) {
         totalHeight += lineMetrics[i].height;
     }
@@ -58,6 +57,17 @@ std::string Glpa::Text::GetLocaleName()
 std::string Glpa::Text::GetWords()
 {
     return strConverter.to_bytes(words);
+}
+
+Glpa::Vec2d Glpa::Text::GetLastCharPos()
+{
+    DWRITE_HIT_TEST_METRICS hitTestMetrics;
+    pTextLayout->HitTestTextPosition((UINT32)words.length() - 1, FALSE, nullptr, nullptr, &hitTestMetrics);
+
+    Glpa::Vec2d lastCharPosition;
+    lastCharPosition.x = hitTestMetrics.left + hitTestMetrics.width;
+    lastCharPosition.y = totalHeight + hitTestMetrics.height;
+    return Glpa::Vec2d();
 }
 
 void Glpa::Text::load()
@@ -85,8 +95,7 @@ void Glpa::Text::load()
     lineMetrics.resize(lineCount);
     pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
 
-    // Calculate the position of the last character
-    float totalHeight = 0.0f;
+    totalHeight = 0.0f;
     for (UINT32 i = 0; i < lineCount - 1; ++i) {
         totalHeight += lineMetrics[i].height;
     }
