@@ -12,6 +12,8 @@
 namespace Glpa
 {
 
+class CmdsHelp
+
 class CmdHelp : public Glpa::Event
 {
 public :

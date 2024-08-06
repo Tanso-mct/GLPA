@@ -23,25 +23,6 @@ void Glpa::Text::EditLocaleName(std::string argLocaleName)
 void Glpa::Text::EditWords(std::string argWords)
 {
     words = strConverter.from_bytes(argWords);
-
-    pDWriteFactory->CreateTextLayout(
-        words.c_str(),
-        (UINT32)words.length(),
-        pTextFormat,
-        size.x, size.y,
-        &pTextLayout
-    );
-
-    UINT32 lineCount = 0;
-    pTextLayout->GetLineMetrics(nullptr, 0, &lineCount);
-    lineMetrics.clear();
-    lineMetrics.resize(lineCount);
-    pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
-
-    totalHeight = 0.0f;
-    for (UINT32 i = 0; i < lineCount - 1; ++i) {
-        totalHeight += lineMetrics[i].height;
-    }
 }
 
 std::string Glpa::Text::GetFontName()
@@ -59,15 +40,50 @@ std::string Glpa::Text::GetWords()
     return strConverter.to_bytes(words);
 }
 
-Glpa::Vec2d Glpa::Text::GetLastCharPos()
+int Glpa::Text::GetLineTextCount(int line)
 {
-    DWRITE_HIT_TEST_METRICS hitTestMetrics;
-    pTextLayout->HitTestTextPosition((UINT32)words.length() - 1, FALSE, nullptr, nullptr, &hitTestMetrics);
+    if (pTextLayout != nullptr) {
+        pTextLayout->Release();
+    }
 
-    Glpa::Vec2d lastCharPosition;
-    lastCharPosition.x = hitTestMetrics.left + hitTestMetrics.width;
-    lastCharPosition.y = totalHeight + hitTestMetrics.height;
-    return Glpa::Vec2d();
+    pDWriteFactory->CreateTextLayout(
+        words.c_str(),
+        (UINT32)words.length(),
+        pTextFormat,
+        size.x, size.y,
+        &pTextLayout
+    );
+
+    UINT32 lineCount = 0;
+    pTextLayout->GetLineMetrics(nullptr, 0, &lineCount);
+    lineMetrics.clear();
+    lineMetrics.resize(lineCount);
+    pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
+
+    return lineMetrics[line].length;
+}
+
+int Glpa::Text::GetLineCount()
+{
+    if (pTextLayout != nullptr) {
+        pTextLayout->Release();
+    }
+
+    pDWriteFactory->CreateTextLayout(
+        words.c_str(),
+        (UINT32)words.length(),
+        pTextFormat,
+        size.x, size.y,
+        &pTextLayout
+    );
+
+    UINT32 lineCount = 0;
+    pTextLayout->GetLineMetrics(nullptr, 0, &lineCount);
+    lineMetrics.clear();
+    lineMetrics.resize(lineCount);
+    pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
+
+    return lineCount;
 }
 
 void Glpa::Text::load()
@@ -82,6 +98,10 @@ void Glpa::Text::load()
     pTextFormat->SetReadingDirection(readingDirect);
     pTextFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, lineSpacing, baselineOffSet);
 
+    if (pTextLayout != nullptr) {
+        pTextLayout->Release();
+    }
+
     pDWriteFactory->CreateTextLayout(
         words.c_str(),
         (UINT32)words.length(),
@@ -94,11 +114,6 @@ void Glpa::Text::load()
     pTextLayout->GetLineMetrics(nullptr, 0, &lineCount);
     lineMetrics.resize(lineCount);
     pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
-
-    totalHeight = 0.0f;
-    for (UINT32 i = 0; i < lineCount - 1; ++i) {
-        totalHeight += lineMetrics[i].height;
-    }
 }
 
 void Glpa::Text::release()

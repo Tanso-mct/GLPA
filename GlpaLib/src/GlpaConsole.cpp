@@ -42,28 +42,28 @@ void Glpa::Console::Create()
 void Glpa::Console::Log(std::string str)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeLog(str);
+    instance->ptConsole->writeLog({str});
 }
 
 void Glpa::Console::CmdOutput(std::string str)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeCmdLog(str);
+    instance->ptConsole->writeCmdLog({str});
 }
 
 void Glpa::Console::Log(const char *file, int line, std::initializer_list<std::string> linesStr)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeLog("[" + std::string(file) + ":" + std::to_string(line) + "]\n");
-    instance->ptConsole->writeLog(linesStr);
-    instance->ptConsole->writeLog("\n");
+    instance->ptConsole->writeLog({"[" + std::string(file) + ":" + std::to_string(line) + "]\n"});
+    instance->ptConsole->writeLog({linesStr});
+    instance->ptConsole->writeLog({"\n"});
 }
 
 void Glpa::Console::Log(std::initializer_list<std::string> linesStr)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeLog(linesStr);
-    instance->ptConsole->writeLog("\n");
+    instance->ptConsole->writeLog({linesStr});
+    instance->ptConsole->writeLog({"\n"});
 }
 
 void Glpa::Console::CmdOutput(std::initializer_list<std::string> linesStr)

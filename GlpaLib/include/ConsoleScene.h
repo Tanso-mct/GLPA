@@ -16,13 +16,6 @@ namespace Glpa
 class ConsoleScene : public Glpa::Scene2d
 {
 private :
-    class CmdTextLastCharPos : public Glpa::Event
-    {
-    public :
-        CmdTextLastCharPos() : Glpa::Event("text last_char pos", __FILE__, __LINE__){};
-        void onEvent() override;
-    };
-    
     Glpa::Image* pBackground = nullptr;
     Glpa::Text* pCommandText = nullptr;
     Glpa::Text* pLogText = nullptr;
@@ -63,11 +56,20 @@ public :
     void typeWord();
     void typeAnim();
 
-    void writeLog(std::string str);
-    void writeCmdLog(std::string str);
-
     void writeLog(std::initializer_list<std::string> strLines);
     void writeCmdLog(std::initializer_list<std::string> strLines);
+
+private :
+    class CmdTextLastCharPos : public Glpa::Event
+    {
+    private :
+        Glpa::ConsoleScene* parent;
+    public :
+        CmdTextLastCharPos(Glpa::ConsoleScene* argParent);
+        void onEvent() override;
+    };
+
+    CmdTextLastCharPos* pCmdTextLastCharPos = nullptr;
 };
 
 }

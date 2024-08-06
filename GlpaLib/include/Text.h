@@ -35,7 +35,6 @@ private :
     IDWriteTextFormat* pTextFormat = nullptr;
 
     UINT32 lineCount = 0;
-    float totalHeight = 0;
     std::vector<DWRITE_LINE_METRICS> lineMetrics;
 
     ID2D1SolidColorBrush* pBrush = nullptr;
@@ -75,7 +74,8 @@ public :
     std::string GetWords();
     D2D1::ColorF GetColor() const {return brushColor;}
 
-    Glpa::Vec2d GetLastCharPos();
+    int GetLineTextCount(int line);
+    int GetLineCount();
 
     void load() override;
     void release() override;

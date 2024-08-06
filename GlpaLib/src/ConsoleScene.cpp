@@ -11,6 +11,9 @@ Glpa::ConsoleScene::~ConsoleScene()
 
 void Glpa::ConsoleScene::setup()
 {
+    pCmdTextLastCharPos = new CmdTextLastCharPos(this);
+    Glpa::EventManager::AddEvent(pCmdTextLastCharPos);
+
     SetBgColor(Glpa::COLOR_BLACK);
 
     std::string folderPath = "resource/Assets/Images/";
@@ -96,6 +99,7 @@ void Glpa::ConsoleScene::typeWord()
             if (commandText.back() == '|')
             {
                 commandText.pop_back();
+                pCommandText->EditWords(commandText);
             }
 
             std::string strCommand 
@@ -180,20 +184,6 @@ void Glpa::ConsoleScene::typeAnim()
     }
 }
 
-void Glpa::ConsoleScene::writeLog(std::string str)
-{
-    logText += str;
-    pLogText->EditWords(logText);
-    logTextSize = logText.size();
-}
-
-void Glpa::ConsoleScene::writeCmdLog(std::string str)
-{
-    commandText += str;
-    pCommandText->EditWords(commandText);
-    commandTextSize = commandText.size();
-}
-
 void Glpa::ConsoleScene::writeLog(std::initializer_list<std::string> strLines)
 {
     for (std::string line : strLines)
@@ -214,7 +204,19 @@ void Glpa::ConsoleScene::writeCmdLog(std::initializer_list<std::string> strLines
     commandTextSize = commandText.size();
 }
 
-void Glpa::CmdTextLastCharPos::onEvent()
+Glpa::ConsoleScene::CmdTextLastCharPos::CmdTextLastCharPos(Glpa::ConsoleScene* argParent) 
+: Glpa::Event("text last_char pos", __FILE__, __LINE__)
 {
-    
+    parent = argParent;
+};
+
+void Glpa::ConsoleScene::CmdTextLastCharPos::onEvent()
+{
+    int lineCount = parent->pCommandText->GetLineCount();
+    int lastLineWordsCount = parent->pCommandText->GetLineTextCount(lineCount - 1);
+    parent->writeCmdLog
+    ({
+        "Line count: " + std::to_string(lineCount),
+        "Last line words count: " + std::to_string(lastLineWordsCount)
+    });
 }
