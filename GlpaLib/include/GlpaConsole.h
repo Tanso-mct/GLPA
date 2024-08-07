@@ -12,21 +12,19 @@
 namespace Glpa
 {
 
-class CmdsHelp
+// class CmdHelp : public Glpa::Event
+// {
+// public :
+//     CmdHelp() : Glpa::Event("help", __FILE__, __LINE__){};
+//     void onEvent() override;
+// };
 
-class CmdHelp : public Glpa::Event
-{
-public :
-    CmdHelp() : Glpa::Event("help", __FILE__, __LINE__){};
-    void onEvent() override;
-};
-
-class CmdLog : public Glpa::Event
-{
-public :
-    CmdLog() : Glpa::Event("log", __FILE__, __LINE__){};
-    void onEvent() override;
-};
+// class CmdLog : public Glpa::Event
+// {
+// public :
+//     CmdLog() : Glpa::Event("log", __FILE__, __LINE__){};
+//     void onEvent() override;
+// };
 
 class Console : public GlpaBase
 {
@@ -50,10 +48,10 @@ public :
     static void Create();
 
     static void Log(std::string str);
-    static void CmdOutput(std::string str);
-
     static void Log(const char* file, int line, std::initializer_list<std::string> linesStr);
     static void Log(std::initializer_list<std::string> linesStr);
+
+    static void CmdOutput(std::string str);
     static void CmdOutput(std::initializer_list<std::string> linesStr);
 };
 

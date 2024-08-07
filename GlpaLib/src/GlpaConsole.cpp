@@ -34,15 +34,12 @@ void Glpa::Console::Create()
     GlpaLib::CreateWindowNotApi(instance);
     GlpaLib::ShowWindowNotApi(instance, SW_SHOWDEFAULT);
     GlpaLib::Load(instance);
-
-    Glpa::EventManager::AddEvent(new Glpa::CmdHelp());
-    Glpa::EventManager::AddEvent(new Glpa::CmdLog());
 }
 
 void Glpa::Console::Log(std::string str)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeLog({str});
+    instance->ptConsole->writeLog({str}, true);
 }
 
 void Glpa::Console::CmdOutput(std::string str)
@@ -54,16 +51,14 @@ void Glpa::Console::CmdOutput(std::string str)
 void Glpa::Console::Log(const char *file, int line, std::initializer_list<std::string> linesStr)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeLog({"[" + std::string(file) + ":" + std::to_string(line) + "]\n"});
-    instance->ptConsole->writeLog({linesStr});
-    instance->ptConsole->writeLog({"\n"});
+    instance->ptConsole->writeLog({"[" + std::string(file) + ":" + std::to_string(line) + "]"}, false);
+    instance->ptConsole->writeLog({linesStr}, true);
 }
 
 void Glpa::Console::Log(std::initializer_list<std::string> linesStr)
 {
     if (instance == nullptr) return;
-    instance->ptConsole->writeLog({linesStr});
-    instance->ptConsole->writeLog({"\n"});
+    instance->ptConsole->writeLog({linesStr}, true);
 }
 
 void Glpa::Console::CmdOutput(std::initializer_list<std::string> linesStr)
@@ -72,21 +67,21 @@ void Glpa::Console::CmdOutput(std::initializer_list<std::string> linesStr)
     instance->ptConsole->writeCmdLog(linesStr);
 }
 
-void Glpa::CmdHelp::onEvent()
-{
-    Glpa::Console::CmdOutput
-    ({
-        "Available commands:",
-        "help - Display this message.",
-        "log - Display detailed information about Log.",
-    });
-}
+// void Glpa::CmdHelp::onEvent()
+// {
+//     Glpa::Console::CmdOutput
+//     ({
+//         "Available commands:",
+//         "help - Display this message.",
+//         "log - Display detailed information about Log.",
+//     });
+// }
 
-void Glpa::CmdLog::onEvent()
-{
-    Glpa::Console::CmdOutput
-    ({
-        "Log command is not yet implemented.",
-        "This command will display detailed information about the program log.",
-    });
-}
+// void Glpa::CmdLog::onEvent()
+// {
+//     Glpa::Console::CmdOutput
+//     ({
+//         "Log command is not yet implemented.",
+//         "This command will display detailed information about the program log.",
+//     });
+// }

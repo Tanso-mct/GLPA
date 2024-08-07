@@ -15,15 +15,13 @@ class Event
 {
 private :
     std::string name = "";
-    std::vector<std::string> argTypes;
-    std::vector<std::string> args;
+    std::vector<std::vector<std::string>> argCds; // Argument Candidates
 
 public :
     Event
     (
-        std::string argName,const char* fileChar, int lineNum, 
-        std::initializer_list<std::string> typeList,
-        std::initializer_list<std::string> argList
+        std::string argName, const char* fileChar, int lineNum,
+        std::initializer_list<std::vector<std::string>> argCdsList
     );
     virtual ~Event(){};
 
@@ -31,7 +29,9 @@ public :
     int line;
 
     std::string getName() const {return name;}
-    virtual void onEvent(std::vector<std::string> args) = 0;
+    virtual bool onEvent(std::vector<std::string> args) = 0;
+
+    bool argFilter(std::vector<std::string> args);
 };
 
 class EventList
@@ -47,7 +47,7 @@ public :
     void AddEvent(Glpa::Event* event);
 
     std::string getTag() const {return tag;}
-    void execute(std::string eventName, std::string args);
+    bool execute(std::string eventName, std::string args);
 
     void release();
 };
@@ -63,7 +63,7 @@ public :
     ~EventManager(){};
 
     static void Create();
-    static void AddEvent(Glpa::EventList* eventList);
+    static void AddEventList(Glpa::EventList* eventList);
     static bool ExecuteEvent(std::string eventListStr);
 
     static void Release();

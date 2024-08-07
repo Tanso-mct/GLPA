@@ -11,8 +11,8 @@ Glpa::ConsoleScene::~ConsoleScene()
 
 void Glpa::ConsoleScene::setup()
 {
-    pCmdTextLastCharPos = new CmdTextLastCharPos(this);
-    Glpa::EventManager::AddEvent(pCmdTextLastCharPos);
+    CmdText* pCmdText = new CmdText(this);
+    Glpa::EventManager::AddEventList(pCmdText);
 
     SetBgColor(Glpa::COLOR_BLACK);
 
@@ -184,12 +184,18 @@ void Glpa::ConsoleScene::typeAnim()
     }
 }
 
-void Glpa::ConsoleScene::writeLog(std::initializer_list<std::string> strLines)
+void Glpa::ConsoleScene::writeLog(std::initializer_list<std::string> strLines, bool isLastNewLine)
 {
     for (std::string line : strLines)
     {
         logText += line + "\n";
     }
+
+    if (!isLastNewLine)
+    {
+        logText.pop_back();
+    }
+
     pLogText->EditWords(logText);
     logTextSize = logText.size();
 }
@@ -204,19 +210,92 @@ void Glpa::ConsoleScene::writeCmdLog(std::initializer_list<std::string> strLines
     commandTextSize = commandText.size();
 }
 
-Glpa::ConsoleScene::CmdTextLastCharPos::CmdTextLastCharPos(Glpa::ConsoleScene* argParent) 
-: Glpa::Event("text last_char pos", __FILE__, __LINE__)
-{
-    parent = argParent;
-};
 
-void Glpa::ConsoleScene::CmdTextLastCharPos::onEvent()
+Glpa::ConsoleScene::CmdText::CmdCount::CmdCount(Glpa::ConsoleScene *argBase)
+: Glpa::Event("count", __FILE__, __LINE__, {{"line", "word"}, {"cmd", "log"}, {}})
 {
-    int lineCount = parent->pCommandText->GetLineCount();
-    int lastLineWordsCount = parent->pCommandText->GetLineTextCount(lineCount - 1);
-    parent->writeCmdLog
-    ({
-        "Line count: " + std::to_string(lineCount),
-        "Last line words count: " + std::to_string(lastLineWordsCount)
-    });
+    base = argBase;
+
+    typeCds.push_back("line");
+    typeCds.push_back("word");
+
+    textCds.push_back("cmd");
+    textCds.push_back("log");
+}
+
+bool Glpa::ConsoleScene::CmdText::CmdCount::onEvent(std::vector<std::string> args)
+{
+    std::string thisType = args[static_cast<int>(eArgs::type)];
+    std::string thisText = args[static_cast<int>(eArgs::text)];
+
+    int line = -1;
+    if (args.size() == 3)
+    {
+        line = std::stoi(args[static_cast<int>(eArgs::line)]);
+    }
+
+    if (thisType == typeCds[0])
+    {
+        GetLineCount(thisText);
+        return true;
+    }
+    else if (thisType == typeCds[1] && line != -1)
+    {
+        GetWordCount(thisText, line);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+void Glpa::ConsoleScene::CmdText::CmdCount::GetLineCount(std::string thisText)
+{
+    if (thisText == textCds[0])
+    {
+        int lineCount = base->pCommandText->GetLineCount();
+        int lastLineWordsCount = base->pCommandText->GetLineTextCount(lineCount - 1);
+        base->writeCmdLog
+        ({
+            "Cmd line count: " + std::to_string(lineCount),
+            "Cmd last line words count: " + std::to_string(lastLineWordsCount)
+        });
+    }
+    else if (thisText == textCds[1])
+    {
+        int lineCount = base->pLogText->GetLineCount();
+        int lastLineWordsCount = base->pLogText->GetLineTextCount(lineCount - 1);
+        base->writeCmdLog
+        ({
+            "Log line count: " + std::to_string(lineCount),
+            "Log last line words count: " + std::to_string(lastLineWordsCount)
+        });
+    }
+}
+
+void Glpa::ConsoleScene::CmdText::CmdCount::GetWordCount(std::string thisText, int line)
+{
+    if (thisText == textCds[0])
+    {
+        int wordsCount = base->pCommandText->GetLineTextCount(line);
+        base->writeCmdLog
+        ({
+            "Cmd line " + std::to_string(line) + " words count : " + std::to_string(wordsCount)
+        });
+    }
+    else if (thisText == textCds[1])
+    {
+        int wordsCount = base->pLogText->GetLineTextCount(line);
+        base->writeCmdLog
+        ({
+            "Log line " + std::to_string(line) + " words count : " + std::to_string(wordsCount)
+        });
+    }
+}
+
+Glpa::ConsoleScene::CmdText::CmdText(Glpa::ConsoleScene *argBase)  : Glpa::EventList("text")
+{
+    AddEvent(new CmdCount(argBase));
 }

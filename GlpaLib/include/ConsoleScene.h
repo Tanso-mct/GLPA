@@ -7,6 +7,7 @@
 
 #include <chrono>
 #include <initializer_list>
+#include <vector>
 
 #include "GlpaEvent.h"
 
@@ -56,20 +57,39 @@ public :
     void typeWord();
     void typeAnim();
 
-    void writeLog(std::initializer_list<std::string> strLines);
+    void writeLog(std::initializer_list<std::string> strLines, bool isLastNewLine);
     void writeCmdLog(std::initializer_list<std::string> strLines);
 
 private :
-    class CmdTextLastCharPos : public Glpa::Event
+    class CmdText : public Glpa::EventList
     {
-    private :
-        Glpa::ConsoleScene* parent;
     public :
-        CmdTextLastCharPos(Glpa::ConsoleScene* argParent);
-        void onEvent() override;
-    };
+        CmdText(Glpa::ConsoleScene* argBase);
 
-    CmdTextLastCharPos* pCmdTextLastCharPos = nullptr;
+    private :
+        class CmdCount : public Glpa::Event
+        {
+        private :
+            Glpa::ConsoleScene* base;
+
+            enum class eArgs
+            {
+                type, // string
+                text, // string
+                line // int
+            };
+
+            std::vector<std::string> typeCds;
+            std::vector<std::string> textCds;
+
+        public :
+            CmdCount(Glpa::ConsoleScene* argBase);
+            bool onEvent(std::vector<std::string> args) override;
+
+            void GetLineCount(std::string thisText);
+            void GetWordCount(std::string thisText, int line);
+        };
+    };
 };
 
 }

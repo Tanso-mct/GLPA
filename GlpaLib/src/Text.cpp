@@ -60,7 +60,8 @@ int Glpa::Text::GetLineTextCount(int line)
     lineMetrics.resize(lineCount);
     pTextLayout->GetLineMetrics(lineMetrics.data(), lineCount, &lineCount);
 
-    return lineMetrics[line].length;
+    if (lineMetrics.size() > line) return lineMetrics[line].length;;
+    return -1;
 }
 
 int Glpa::Text::GetLineCount()

@@ -14,7 +14,7 @@ void GlpaLib::Start
     if (isCreateConsole)
     {
         Glpa::Console::Create();
-        Glpa::Console::Log(__FILE__, __LINE__, {"GlpaLib started."});
+        Glpa::Console::Log(__FILE__, __LINE__, {"GlpaLib started.\n"});
     }
 
     Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib started.");
