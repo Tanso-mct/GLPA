@@ -8,6 +8,7 @@
 #include "GlpaEvent.h"
 
 #include "ConsoleScene.h"
+#include "ExampleBase.h"
 
 namespace Glpa
 {
@@ -53,6 +54,33 @@ public :
 
     static void CmdOutput(std::string str);
     static void CmdOutput(std::initializer_list<std::string> linesStr);
+
+private :
+    // class CmdBase : public Glpa::EventList
+    // {
+    // public :
+    //     CmdBase();
+
+    // private :
+    //     class CmdCreate : public Glpa::Event
+    //     {
+    //     private :
+    //         ExampleBaseA* baseA;
+    //         ExampleBaseB* baseB;
+
+    //         enum class eArgs
+    //         {
+    //             type, // string
+    //         };
+
+    //         std::vector<std::string> typeCds;
+
+    //     public :
+    //         CmdCreate(ExampleBaseA* argBaseA, ExampleBaseB* argBaseB);
+    //         bool onEvent(std::vector<std::string> args) override;
+    //     };
+    // };
+
 };
 
 }

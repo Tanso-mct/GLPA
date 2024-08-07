@@ -1,4 +1,6 @@
 #include "ExampleScene2d.h"
+#include "GlpaConsole.h"
+
 
 ExampleScene2d::~ExampleScene2d()
 {
