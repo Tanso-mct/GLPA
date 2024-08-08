@@ -53,6 +53,7 @@ constexpr const char* CHAR_MOUSE_MBTN_DOWN = "mouse_m_button_down";
 constexpr const char* CHAR_MOUSE_MBTN_UP = "mouse_m_button_up";
 
 constexpr const char* CHAR_MOUSE_WHEEL = "mouse_wheel";
+constexpr const int INT_MOUSE_WHEEL_MOVE = 120;
 
 constexpr const char* CLASS_SCENE_OBJECT = "class_scene_object";
 constexpr const char* CLASS_FILE = "class_file";

@@ -92,6 +92,7 @@ public :
 
     void updateKeyMsg();
 
+    Glpa::Vec2d GetNowMousePos() const {return mousePos;}
     std::string GetNowMouseMsg();
     bool GetNowMouseMsg(std::string argMsg);
     bool GetNowMouseMsg(std::string argMsg, Glpa::Vec2d &target);

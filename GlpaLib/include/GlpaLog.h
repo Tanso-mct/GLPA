@@ -14,10 +14,11 @@ constexpr bool OUTPUT_ERROR_LOG = true;
 constexpr bool OUTPUT_TAG_FILTER = true;
 
 constexpr const char* OUTPUT_TAG_GLPA_LIB = "tag_glpa_lib";
+constexpr const char* OUTPUT_TAG_CONSOLE = "tag_console";
 
 constexpr const char* OUTPUT_TAG_ENABLE_FILTERS[] 
 = {
-    OUTPUT_TAG_GLPA_LIB
+    OUTPUT_TAG_CONSOLE
 };
 
 inline void OutputLog(const char* file, int line, std::string tag, std::string logMsg)

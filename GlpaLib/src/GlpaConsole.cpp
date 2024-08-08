@@ -15,7 +15,7 @@ void Glpa::Console::setup()
 {
     ptConsole = new Glpa::ConsoleScene();
     ptConsole->setName("console_scene");
-    
+
     AddScene(ptConsole);
     SetFirstSc(ptConsole);
 }

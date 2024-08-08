@@ -35,7 +35,8 @@ private :
     float baseLineOffSet = 20;
     float lineSpacing = 25;
 
-    Vec2d textBasePos = Vec2d(10, 5);
+    Glpa::Vec2d cmdTextBasePos = Vec2d(10, 5);
+    Glpa::Vec2d logTextBasePos;
 
     std::string commandText 
     = "Graphic Loop Painter [Version 1.0.0]\nType 'help' for more information.\n\n>";
@@ -45,6 +46,9 @@ private :
 
     int commandTextSize = 0;
     int logTextSize = 0;
+
+    int scrollWithAltSpeed = 5;
+    int margin = 1;
 
 public :
     ConsoleScene();
@@ -56,6 +60,11 @@ public :
 
     void typeWord();
     void typeAnim();
+
+    void autoScrollCmdText();
+    void autoScrollLogText();
+
+    void scrollWindow();
 
     void writeLog(std::initializer_list<std::string> strLines, bool isLastNewLine);
     void writeCmdLog(std::initializer_list<std::string> strLines);

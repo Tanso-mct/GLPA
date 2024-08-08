@@ -1,4 +1,5 @@
 #include "ConsoleScene.h"
+#include "GlpaLog.h"
 
 Glpa::ConsoleScene::ConsoleScene()
 {
@@ -28,19 +29,21 @@ void Glpa::ConsoleScene::setup()
     pCommandText->EditFontSize(fontSize);
     pCommandText->EditBaselineOffSet(baseLineOffSet);
     pCommandText->EditLineSpacing(lineSpacing);
-    pCommandText->EditPos(textBasePos);
+    pCommandText->EditPos(cmdTextBasePos);
     pCommandText->EditSize(Glpa::Vec2d(GetWindowWidth() / 2, GetWindowHeight()));
     AddSceneObject(pCommandText);
 
     pLogText = new Glpa::Text("log_text");
     logTextSize = logText.size();
 
+    logTextBasePos = Glpa::Vec2d(GetWindowWidth() / 2 + cmdTextBasePos.x, cmdTextBasePos.y);
+
     pLogText->EditWords(logText);
     pLogText->EditFontName("Cascadia Mono");
     pLogText->EditFontSize(fontSize);
     pLogText->EditBaselineOffSet(baseLineOffSet);
     pLogText->EditLineSpacing(lineSpacing);
-    pLogText->EditPos(Glpa::Vec2d(GetWindowWidth() / 2 + textBasePos.x, textBasePos.y));
+    pLogText->EditPos(Glpa::Vec2d(logTextBasePos.x, logTextBasePos.y));
     pLogText->EditSize(Glpa::Vec2d(GetWindowWidth(), GetWindowHeight()));
     AddSceneObject(pLogText);
 }
@@ -73,6 +76,8 @@ void Glpa::ConsoleScene::update()
     }
 
     lastTime = currentTime;
+
+    scrollWindow();
 }
 
 void Glpa::ConsoleScene::typeWord()
@@ -119,6 +124,9 @@ void Glpa::ConsoleScene::typeWord()
             pCommandText->EditWords(commandText);
             commandTextSize = commandText.size();
             isTypingAnimRestart = true;
+
+            autoScrollCmdText();
+            autoScrollLogText();
         }
         else if (key == Glpa::CHAR_SPACE)
         {
@@ -184,6 +192,127 @@ void Glpa::ConsoleScene::typeAnim()
     }
 }
 
+void Glpa::ConsoleScene::autoScrollCmdText()
+{
+    int lineCount = pCommandText->GetLineCount() + 2 + margin;
+    int couldLineCount = GetWindowHeight() / lineSpacing;
+
+    int scrollCount = lineCount - couldLineCount;
+
+    if (scrollCount > 0)
+    {
+        pCommandText->EditPos(Glpa::Vec2d(cmdTextBasePos.x, cmdTextBasePos.y - lineSpacing * scrollCount));
+    }
+    else
+    {
+        pCommandText->EditPos(cmdTextBasePos);
+    }
+}
+
+void Glpa::ConsoleScene::autoScrollLogText()
+{
+    int lineCount = pLogText->GetLineCount() + 2 + margin;
+    int couldLineCount = GetWindowHeight() / lineSpacing;
+
+    int scrollCount = lineCount - couldLineCount;
+
+    if (scrollCount > 0)
+    {
+        pLogText->EditPos(Glpa::Vec2d(logTextBasePos.x, logTextBasePos.y - lineSpacing * scrollCount));
+    }
+    else
+    {
+        pLogText->EditPos(Glpa::Vec2d(logTextBasePos.x, logTextBasePos.y));
+    }
+}
+
+void Glpa::ConsoleScene::scrollWindow()
+{
+    if (window->isFocusing)
+    {
+        int moveAmount = 0;
+        if (GetNowMouseMsg(Glpa::CHAR_MOUSE_WHEEL, moveAmount))
+        {
+            moveAmount /= Glpa::INT_MOUSE_WHEEL_MOVE * -1;
+            Glpa::Vec2d nowMousePos = GetNowMousePos();
+            if (nowMousePos.x < logTextBasePos.x)
+            {
+                if (GetNowKeyMsg(Glpa::CHAR_LALT)) moveAmount *= scrollWithAltSpeed;
+                int scrollCmdCount = moveAmount;
+
+                int lineCount = pCommandText->GetLineCount() + 2 + margin;
+                int couldLineCount = GetWindowHeight() / lineSpacing;
+                if (lineCount >= scrollCmdCount + couldLineCount)
+                {
+                    Glpa::Vec2d pos = pCommandText->GetPos();
+                    float maxY = cmdTextBasePos.y - lineSpacing * (lineCount - couldLineCount);
+
+                    if 
+                    (
+                        pos.y - lineSpacing * scrollCmdCount >= maxY && 
+                        pos.y - lineSpacing * scrollCmdCount <= cmdTextBasePos.y
+                    ){
+                        pCommandText->EditPos(Glpa::Vec2d(pos.x, pos.y - lineSpacing * scrollCmdCount));
+                    }
+                    else if (pos.y - lineSpacing * scrollCmdCount < maxY)
+                    {
+                        pCommandText->EditPos(Glpa::Vec2d(pos.x, maxY));
+                        writeLog({"Enable cmd scroll count : " + std::to_string(scrollCmdCount)}, true);
+                    }
+                    else if (pos.y - lineSpacing * scrollCmdCount > cmdTextBasePos.y)
+                    {
+                        pCommandText->EditPos(cmdTextBasePos);
+                    }
+                }
+            }
+            else
+            {
+                if (GetNowKeyMsg(Glpa::CHAR_LALT)) moveAmount *= scrollWithAltSpeed;
+                int scrollLogCount = moveAmount;
+
+                int lineCount = pLogText->GetLineCount() + 2 + margin;
+                int couldLineCount = GetWindowHeight() / lineSpacing;
+                if (lineCount >= scrollLogCount + couldLineCount)
+                {
+                    Glpa::Vec2d pos = pLogText->GetPos();
+                    float maxY = logTextBasePos.y - lineSpacing * (lineCount - couldLineCount);
+
+                    if 
+                    (
+                        pos.y - lineSpacing * scrollLogCount >= maxY && 
+                        pos.y - lineSpacing * scrollLogCount <= logTextBasePos.y
+                    ){
+                        pLogText->EditPos(Glpa::Vec2d(pos.x, pos.y - lineSpacing * scrollLogCount));
+                        Glpa::OutputLog
+                        (
+                            __FILE__, __LINE__, Glpa::OUTPUT_TAG_CONSOLE,
+                            "Enable log scroll count : " + std::to_string(scrollLogCount)
+                        );
+                    }
+                    else if (pos.y - lineSpacing * scrollLogCount < maxY)
+                    {
+                        pLogText->EditPos(Glpa::Vec2d(pos.x, maxY));
+                        Glpa::OutputLog
+                        (
+                            __FILE__, __LINE__, Glpa::OUTPUT_TAG_CONSOLE,
+                            "Under log scroll count : " + std::to_string(scrollLogCount)
+                        );
+                    }
+                    else if (pos.y - lineSpacing * scrollLogCount > logTextBasePos.y)
+                    {
+                        pLogText->EditPos(logTextBasePos);
+                        Glpa::OutputLog
+                        (
+                            __FILE__, __LINE__, Glpa::OUTPUT_TAG_CONSOLE,
+                            "Top log scroll count : " + std::to_string(scrollLogCount)
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
 void Glpa::ConsoleScene::writeLog(std::initializer_list<std::string> strLines, bool isLastNewLine)
 {
     for (std::string line : strLines)
@@ -198,6 +327,8 @@ void Glpa::ConsoleScene::writeLog(std::initializer_list<std::string> strLines, b
 
     pLogText->EditWords(logText);
     logTextSize = logText.size();
+
+    autoScrollLogText();
 }
 
 void Glpa::ConsoleScene::writeCmdLog(std::initializer_list<std::string> strLines)
@@ -208,6 +339,8 @@ void Glpa::ConsoleScene::writeCmdLog(std::initializer_list<std::string> strLines
     }
     pCommandText->EditWords(commandText);
     commandTextSize = commandText.size();
+
+    autoScrollCmdText();
 }
 
 

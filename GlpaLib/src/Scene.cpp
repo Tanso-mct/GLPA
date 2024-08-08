@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "GlpaConsole.h"
 
 Glpa::Scene::Scene()
 {
@@ -794,7 +795,7 @@ bool Glpa::Scene::GetNowMouseMsg(std::string argMsg, Glpa::Vec2d &target)
 
 bool Glpa::Scene::GetNowMouseMsg(std::string argMsg, int &amount)
 {
-    if (argMsg != keyMsg) return false;
+    if (argMsg != mouseMsg) return false;
 
     if (argMsg == Glpa::CHAR_MOUSE_WHEEL)
     {
