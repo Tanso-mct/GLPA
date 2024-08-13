@@ -8,21 +8,16 @@ void GlpaLib::Start
     const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, 
     const LPSTR arg_lpCmdLine, const int arg_nCmdShow, bool isCreateConsole
 ){
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Start");
     Glpa::EventManager::Create();
     instance = new GlpaLib(arg_hInstance, arg_hPrevInstance, arg_lpCmdLine, arg_nCmdShow);
 
-    if (isCreateConsole)
-    {
-        Glpa::Console::Create();
-        Glpa::Console::Log(__FILE__, __LINE__, {"GlpaLib started.\n"});
-    }
-
-    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib started.");
-
+    if (isCreateConsole) Glpa::Console::Create();
 }
 
 int GlpaLib::Close()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Close");
     Glpa::EventManager::Release();
     delete instance->fileDataManager;
 
@@ -35,6 +30,7 @@ int GlpaLib::Close()
 GlpaLib::GlpaLib(
     const HINSTANCE arg_hInstance, const HINSTANCE arg_hPrevInstance, const LPSTR arg_lpCmdLine, const int arg_nCmdShow)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Constructor");
     hInstance = arg_hInstance;
     hPrevInstance = arg_hInstance;
     lpCmdLine = arg_lpCmdLine;
@@ -45,14 +41,14 @@ GlpaLib::GlpaLib(
 
 GlpaLib::~GlpaLib()
 {
-
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Destructor");
 }
 
 LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg){
         case WM_SYSCOMMAND:
-            if (wParam == SC_MINIMIZE) {
+            if (wParam == SC_MINIMIZE){
                 instance->minimizeMsg(instance->pBcs
                 [
                     std::distance
@@ -205,16 +201,19 @@ LRESULT CALLBACK GlpaLib::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 
 void GlpaLib::minimizeMsg(GlpaBase *bc)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Window minimize");
     GlpaLib::ShowWindowNotApi(bc, SW_MINIMIZE);
 }
 
 void GlpaLib::focusMsg(GlpaBase *bc)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Focus window");
     bc->setFocusing(true);
 }
 
 void GlpaLib::killFocusMsg(GlpaBase *bc)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Kill focus window");
     bc->setFocusing(false);
 }
 
@@ -242,23 +241,25 @@ void GlpaLib::mouseMsg(GlpaBase *bc, UINT msg, WPARAM wParam, LPARAM lParam)
     bc->getNowScenePt()->getMouse(msg, wParam, lParam, bc->window->GetDpi());
 }
 
-void GlpaLib::AddBase(GlpaBase *pBc)
+void GlpaLib::AddBase(GlpaBase *bc)
 {
-    pBc->setManager(instance->fileDataManager);
-    pBc->setup();
-    instance->pBcs.push_back(pBc);
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] AddBase");
+    bc->setManager(instance->fileDataManager);
+    bc->setup();
+    instance->pBcs.push_back(bc);
 }
 
-void GlpaLib::deleteBase(GlpaBase *pBc)
+void GlpaLib::deleteBase(GlpaBase *bc)
 {
-    pBc->DeleteAllScene();
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] DeleteBase");
+    bc->DeleteAllScene();
 
     instance->bcsHWnds.erase
     (
         instance->bcsHWnds.begin() + std::distance
         (
             instance->pBcs.begin(), 
-            std::find(instance->pBcs.begin(), instance->pBcs.end(), pBc)
+            std::find(instance->pBcs.begin(), instance->pBcs.end(), bc)
         )
     );
 
@@ -267,32 +268,37 @@ void GlpaLib::deleteBase(GlpaBase *pBc)
         instance->pBcs.begin() + std::distance
         (
             instance->pBcs.begin(), 
-            std::find(instance->pBcs.begin(), instance->pBcs.end(), pBc)
+            std::find(instance->pBcs.begin(), instance->pBcs.end(), bc)
         )
     );
-    delete pBc;
+    delete bc;
+    bc = nullptr;
 }
 
-void GlpaLib::CreateWindowNotApi(GlpaBase *pBc)
+void GlpaLib::CreateWindowNotApi(GlpaBase *bc)
 {
-    pBc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
-    pBc->window->create(instance->hInstance);
-    instance->bcsHWnds.push_back(pBc->window->hWnd);
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Create window");
+    bc->window->apiClass.lpfnWndProc = *GlpaLib::WindowProc;
+    bc->window->create(instance->hInstance);
+    instance->bcsHWnds.push_back(bc->window->hWnd);
 }
 
-void GlpaLib::ShowWindowNotApi(GlpaBase *pBc, int type)
+void GlpaLib::ShowWindowNotApi(GlpaBase *bc, int type)
 {
-    ShowWindow(pBc->window->hWnd, type);
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Show window");
+    ShowWindow(bc->window->hWnd, type);
 }
 
-void GlpaLib::Load(GlpaBase *pBc)
+void GlpaLib::Load(GlpaBase *bc)
 {
-    pBc->LoadScene();
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Load");
+    bc->LoadScene();
 }
 
-void GlpaLib::release(GlpaBase *pBc)
+void GlpaLib::release(GlpaBase *bc)
 {
-    pBc->ReleaseAllScene();
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Release");
+    bc->ReleaseAllScene();
 }
 
 void GlpaLib::Run()
@@ -329,11 +335,12 @@ void GlpaLib::Run()
 
 void GlpaLib::createMsg(GlpaBase *bc)
 {
-    
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Msg create");
 }
 
 void GlpaLib::paintMsg(GlpaBase *bc)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB_FRAME, "GlpaLib Base[" + bc->GetName() + "] Msg paint");
     if(bc->getVisible() && bc->getStarted() && bc->IsAnySceneLoaded())
     {
         bc->runUpdate();
@@ -346,12 +353,14 @@ void GlpaLib::paintMsg(GlpaBase *bc)
 
 void GlpaLib::closeMsg(GlpaBase *bc)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Close window");
     GlpaLib::release(bc);
     DestroyWindow(bc->window->hWnd);
 }
 
 void GlpaLib::destroyMsg(GlpaBase *bc)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "GlpaLib Base[" + bc->GetName() + "] Destroy window");
     GlpaLib::deleteBase(bc);
     if (instance->pBcs.size() == 0) PostQuitMessage(0);
 }

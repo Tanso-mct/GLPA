@@ -1,24 +1,14 @@
 #include "ExampleBase.h"
-
-void ExampleScene2d::openExample3d()
-{
-    ExampleBaseB* pBcB = new ExampleBaseB();
-    pBcB->window->SetName(L"Example Base B");
-    pBcB->window->SetApiClassName(L"example_base_b");
-
-    pBcB->window->SetWidth(1920);
-    pBcB->window->SetHeight(1080);
-
-    GlpaLib::AddBase(pBcB);
-
-    GlpaLib::CreateWindowNotApi(pBcB);
-    GlpaLib::ShowWindowNotApi(pBcB, SW_SHOWDEFAULT);
-
-    GlpaLib::Load(pBcB);
-}
+#include "GlpaConsole.h"
 
 ExampleBaseA::~ExampleBaseA()
 {
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleBaseA Destructor\n"});
+}
+
+ExampleBaseA::ExampleBaseA()
+{
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleBaseA Constructor\n"});
 }
 
 void ExampleBaseA::setup()
@@ -27,12 +17,17 @@ void ExampleBaseA::setup()
     ptExample2d->setName("example 2d");
     
     AddScene(ptExample2d);
-
     SetFirstSc(ptExample2d);
+}
+
+ExampleBaseB::ExampleBaseB()
+{
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleBaseB Constructor\n"});
 }
 
 ExampleBaseB::~ExampleBaseB()
 {
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleBaseB Destructor\n"});
 }
 
 void ExampleBaseB::setup()
@@ -41,6 +36,5 @@ void ExampleBaseB::setup()
     ptExample3d->setName("example 2d");
     
     AddScene(ptExample3d);
-
     SetFirstSc(ptExample3d);
 }

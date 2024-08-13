@@ -257,7 +257,6 @@ void Glpa::ConsoleScene::scrollWindow()
                     else if (pos.y - lineSpacing * scrollCmdCount < maxY)
                     {
                         pCommandText->EditPos(Glpa::Vec2d(pos.x, maxY));
-                        writeLog({"Enable cmd scroll count : " + std::to_string(scrollCmdCount)}, true);
                     }
                     else if (pos.y - lineSpacing * scrollCmdCount > cmdTextBasePos.y)
                     {
@@ -283,29 +282,14 @@ void Glpa::ConsoleScene::scrollWindow()
                         pos.y - lineSpacing * scrollLogCount <= logTextBasePos.y
                     ){
                         pLogText->EditPos(Glpa::Vec2d(pos.x, pos.y - lineSpacing * scrollLogCount));
-                        Glpa::OutputLog
-                        (
-                            __FILE__, __LINE__, Glpa::OUTPUT_TAG_CONSOLE,
-                            "Enable log scroll count : " + std::to_string(scrollLogCount)
-                        );
                     }
                     else if (pos.y - lineSpacing * scrollLogCount < maxY)
                     {
                         pLogText->EditPos(Glpa::Vec2d(pos.x, maxY));
-                        Glpa::OutputLog
-                        (
-                            __FILE__, __LINE__, Glpa::OUTPUT_TAG_CONSOLE,
-                            "Under log scroll count : " + std::to_string(scrollLogCount)
-                        );
                     }
                     else if (pos.y - lineSpacing * scrollLogCount > logTextBasePos.y)
                     {
                         pLogText->EditPos(logTextBasePos);
-                        Glpa::OutputLog
-                        (
-                            __FILE__, __LINE__, Glpa::OUTPUT_TAG_CONSOLE,
-                            "Top log scroll count : " + std::to_string(scrollLogCount)
-                        );
                     }
                 }
             }
@@ -354,6 +338,10 @@ Glpa::ConsoleScene::CmdText::CmdCount::CmdCount(Glpa::ConsoleScene *argBase)
 
     textCds.push_back("cmd");
     textCds.push_back("log");
+}
+
+Glpa::ConsoleScene::CmdText::CmdCount::~CmdCount()
+{
 }
 
 bool Glpa::ConsoleScene::CmdText::CmdCount::onEvent(std::vector<std::string> args)
@@ -431,4 +419,9 @@ void Glpa::ConsoleScene::CmdText::CmdCount::GetWordCount(std::string thisText, i
 Glpa::ConsoleScene::CmdText::CmdText(Glpa::ConsoleScene *argBase)  : Glpa::EventList("text")
 {
     AddEvent(new CmdCount(argBase));
+}
+
+Glpa::ConsoleScene::CmdText::~CmdText()
+{
+
 }

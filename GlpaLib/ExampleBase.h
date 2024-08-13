@@ -1,7 +1,6 @@
 #ifndef EXAMPLE_BASE_H_
 #define EXAMPLE_BASE_H_
 
-#include "GlpaLib.h"
 #include "GlpaBase.h"
 
 #include "ExampleScene2d.h"
@@ -13,6 +12,7 @@ private :
     ExampleScene2d* ptExample2d;
 
 public :
+    ExampleBaseA();
     ~ExampleBaseA() override;
     void setup() override;
 };
@@ -23,6 +23,7 @@ private :
     ExampleScene3d* ptExample3d;
 
 public :
+    ExampleBaseB();
     ~ExampleBaseB() override;
     void setup() override;
 };

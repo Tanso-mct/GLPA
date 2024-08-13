@@ -10,5 +10,5 @@ void ExampleScene3d::setup()
 
 void ExampleScene3d::start()
 {
-    OutputDebugStringA("Example 3d start\n");
+    Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_EXAMPLE, "ExampleScene3d::start()");
 }

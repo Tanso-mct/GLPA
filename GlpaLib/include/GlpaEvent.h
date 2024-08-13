@@ -42,7 +42,7 @@ private :
 
 public :
     EventList(std::string argTag) : tag(argTag){};
-    ~EventList(){};
+    virtual ~EventList(){};
 
     void AddEvent(Glpa::Event* event);
 

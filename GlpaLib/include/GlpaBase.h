@@ -39,8 +39,8 @@ public :
     GlpaBase();
     virtual ~GlpaBase();
     
-    std::string getName() const {return name;}
-    void setName(std::string str) {name = str;}
+    std::string GetName() const {return name;}
+    void SetName(std::string str) {name = str;}
 
     bool getVisible() const {return visible;}
     void setVisible(bool value) {visible = value;}

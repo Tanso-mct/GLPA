@@ -74,6 +74,7 @@ private :
     {
     public :
         CmdText(Glpa::ConsoleScene* argBase);
+        ~CmdText() override;
 
     private :
         class CmdCount : public Glpa::Event
@@ -93,6 +94,8 @@ private :
 
         public :
             CmdCount(Glpa::ConsoleScene* argBase);
+            ~CmdCount() override;
+            
             bool onEvent(std::vector<std::string> args) override;
 
             void GetLineCount(std::string thisText);

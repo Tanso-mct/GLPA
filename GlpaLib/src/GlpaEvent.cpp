@@ -1,4 +1,5 @@
 #include "GlpaEvent.h"
+#include "GlpaLog.h"
 
 Glpa::EventManager* Glpa::EventManager::instance = nullptr;
 
@@ -6,6 +7,7 @@ void Glpa::EventManager::Create()
 {
     if (instance == nullptr)
     {
+        Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventManager Manager created");
         instance = new Glpa::EventManager();
     }
 }
@@ -77,6 +79,7 @@ void Glpa::EventManager::Release()
     {
         for (auto it = instance->eventLists.begin(); it != instance->eventLists.end(); it++)
         {
+            (*it).second->release();
             delete it->second;
             it->second = nullptr;
         }

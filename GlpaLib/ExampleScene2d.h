@@ -11,8 +11,6 @@ class ExampleScene2d : public Glpa::Scene2d
 private :
     Glpa::Vec2d lastMouseLDownPos;
 
-    bool opened = false;
-
     Glpa::Image* pBackground;
     bool isBackgroundMoving = false;
     Glpa::Vec2d lastBackgroundPos;
@@ -28,10 +26,9 @@ private :
     bool anyImgMoving = false;
 
 public :
+    ExampleScene2d();
     ~ExampleScene2d() override;
 
-    void openExample3d();
-    
     void setup() override;
     void start() override;
     void update() override;

@@ -4,6 +4,12 @@
 
 ExampleScene2d::~ExampleScene2d()
 {
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleScene2d Destructor\n"});
+}
+
+ExampleScene2d::ExampleScene2d()
+{
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleScene2d Constructor\n"});
 }
 
 void ExampleScene2d::setup()
@@ -26,7 +32,7 @@ void ExampleScene2d::setup()
 
 void ExampleScene2d::start()
 {
-    Glpa::Console::Log(__FILE__, __LINE__, {"ExampleScene2d start"});
+    Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE, __FILE__, __LINE__, {"ExampleScene2d Start\n"});
 }
 
 void ExampleScene2d::update()
@@ -89,16 +95,6 @@ void ExampleScene2d::update()
         Glpa::CHAR_MOUSE_LBTN_DOWN, Glpa::CHAR_MOUSE_MOVE, Glpa::CHAR_MOUSE_LBTN_UP,
         pRect2, lastRect2Pos, isRect2Moving
     );
-
-    if (GetNowKeyDownMsg("g")) 
-    {
-        if (!opened)
-        {
-            Glpa::Console::Log(__FILE__, __LINE__, {"ExampleScene3d open"});
-            OutputDebugStringA("Open example 3d\n");
-            openExample3d();
-        }
-    }
 }
 
 void ExampleScene2d::imgMoveByMouse
