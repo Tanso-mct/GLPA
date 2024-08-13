@@ -23,7 +23,14 @@ public :
         std::string argName, const char* fileChar, int lineNum,
         std::initializer_list<std::vector<std::string>> argCdsList
     );
-    virtual ~Event(){};
+
+    virtual ~Event()
+    {
+        Glpa::OutputLog
+        (
+            __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor[" + name + "]"
+        );
+    };
 
     std::string file;
     int line;
@@ -41,8 +48,21 @@ private :
     std::unordered_map<std::string, Glpa::Event*> events;
 
 public :
-    EventList(std::string argTag) : tag(argTag){};
-    virtual ~EventList(){};
+    EventList(std::string argTag) : tag(argTag)
+    {
+        Glpa::OutputLog
+        (
+            __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor[" + tag + "]"
+        );
+    };
+
+    virtual ~EventList()
+    {
+        Glpa::OutputLog
+        (
+            __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor[" + tag + "]"
+        );
+    };
 
     void AddEvent(Glpa::Event* event);
 
@@ -57,10 +77,16 @@ class EventManager
 private :
     static Glpa::EventManager* instance;
     std::unordered_map<std::string, Glpa::EventList*> eventLists;
-    EventManager(){};
+    EventManager()
+    {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
+    };
 
 public :
-    ~EventManager(){};
+    ~EventManager()
+    {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
+    };
 
     static void Create();
     static void AddEventList(Glpa::EventList* eventList);

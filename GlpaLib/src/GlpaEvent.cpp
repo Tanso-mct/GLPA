@@ -7,7 +7,7 @@ void Glpa::EventManager::Create()
 {
     if (instance == nullptr)
     {
-        Glpa::OutputLog(__FILE__, __LINE__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventManager Manager created");
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
         instance = new Glpa::EventManager();
     }
 }
@@ -25,11 +25,13 @@ void Glpa::EventManager::AddEventList(Glpa::EventList *eventList)
         );
     }
 
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + eventList->getTag() + "]");
     instance->eventLists[eventList->getTag()] = eventList;
 }
 
 bool Glpa::EventManager::ExecuteEvent(std::string eventListStr)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, eventListStr);
     bool hasFunc = false;
     if (eventListStr.find_first_of(' ') != std::string::npos) hasFunc = true;
 
@@ -53,6 +55,7 @@ bool Glpa::EventManager::ExecuteEvent(std::string eventListStr)
         // If there is no function in the event string, execute the event without function.
         if (!hasFunc)
         {
+            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + eventTag + "]");
             return instance->eventLists[eventTag]->execute("", "");
         }
         
@@ -61,12 +64,14 @@ bool Glpa::EventManager::ExecuteEvent(std::string eventListStr)
         {
             std::string eventName = eventStr;
             std::string argStr = "";
+            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + eventTag + "] Name[" + eventName + "]");
             return instance->eventLists[eventTag]->execute(eventName, argStr);
         }
 
         // If there is a function which has arguments in the event string, execute the event with arguments.
         std::string eventName = eventStr.substr(0, eventStr.find_first_of(' '));
         std::string argStr = eventStr.substr(eventStr.find_first_of(' ') + 1, eventStr.size() - eventStr.find_first_of(' '));
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + eventTag + "] Name[" + eventName + "] Arg[" + argStr + "]");
         return instance->eventLists[eventTag]->execute(eventName, argStr);
     }
 
@@ -77,13 +82,17 @@ void Glpa::EventManager::Release()
 {
     if (instance != nullptr)
     {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
         for (auto it = instance->eventLists.begin(); it != instance->eventLists.end(); it++)
         {
             (*it).second->release();
+
+            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Delete event list[" + it->first + "]");
             delete it->second;
             it->second = nullptr;
         }
         
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Delete manager instance");
         delete instance;
         instance = nullptr;
     }
@@ -94,6 +103,7 @@ Glpa::Event::Event
     std::string argName, const char *fileChar, int lineNum,
     std::initializer_list<std::vector<std::string>> argCdsList
 ){
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor[" + argName + "]");
     name = argName;
     file = fileChar;
     line = lineNum;
@@ -111,6 +121,7 @@ Glpa::Event::Event
 
 bool Glpa::Event::argFilter(std::vector<std::string> args)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Event Name[" + name + "] arg filter : " + name);
     bool isSameSize = (args.size() == argCds.size());
     bool isOneMinSize = false;
     if (argCds[argCds.size() - 1].size() == 0 && args.size() == argCds.size() - 1)
@@ -127,6 +138,7 @@ bool Glpa::Event::argFilter(std::vector<std::string> args)
             if (argCds[i].size() == 0) continue;
             if (std::find(argCds[i].begin(), argCds[i].end(), args[i]) == argCds[i].end())
             {
+                Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Event Name[" + name + "] arg filter failed : " + name);
                 return false;
             }
         }
@@ -139,11 +151,13 @@ bool Glpa::Event::argFilter(std::vector<std::string> args)
             if (argCds[i].size() == 0) continue;
             if (std::find(argCds[i].begin(), argCds[i].end(), args[i]) == argCds[i].end())
             {
+                Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Event Name[" + name + "] arg filter failed : " + name);
                 return false;
             }
         }
     }
 
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Event Name[" + name + "] arg filter success : " + name);
     return true;
 }
 
@@ -155,17 +169,19 @@ void Glpa::EventList::AddEvent(Glpa::Event *event)
         (
             __FILE__, __LINE__, 
             {"Event already exists.",
-            "Tag : " + tag,
+            "EventList : " + tag,
             "Event name : " + event->getName()
             }
         );
     }
 
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + tag + "] add : " + event->getName());
     events[event->getName()] = event;
 }
 
 bool Glpa::EventList::execute(std::string eventName, std::string args)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + tag + "] execute : " + eventName);
     if (events.find(eventName) == events.end())
     {
         return false;
@@ -198,8 +214,10 @@ bool Glpa::EventList::execute(std::string eventName, std::string args)
 
 void Glpa::EventList::release()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "EventList[" + tag + "]");
     for (auto it = events.begin(); it != events.end(); it++)
     {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Delete event[" + it->first + "]");
         delete it->second;
         it->second = nullptr;
     }
