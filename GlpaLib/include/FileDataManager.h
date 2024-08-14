@@ -52,6 +52,7 @@ private :
     std::unordered_map<std::string, Glpa::FileData*> files;
 
 public :
+    FileDataManager();
     ~FileDataManager();
     void newFile(std::string path);
     void deleteFile(std::string path);

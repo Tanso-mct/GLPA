@@ -1,19 +1,30 @@
 #include "FileDataManager.h"
+#include "GlpaLog.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+Glpa::FileDataManager::FileDataManager()
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
+}
+
 Glpa::FileDataManager::~FileDataManager()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
     for (auto& file : files)
     {
         files[file.first]->data->release();
+
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Delete[" + file.first + "] data");
         delete files[file.first]->data;
         files[file.first]->data = nullptr;
 
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Delete[" + file.first + "]");
         delete file.second;
     }
 
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Clear files");
     files.clear();
 }
 
