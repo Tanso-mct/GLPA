@@ -1,16 +1,20 @@
 #include "Scene3d.h"
+#include "GlpaLog.h"
 
 Glpa::Scene3d::Scene3d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
     setType(3);
 }
 
 Glpa::Scene3d::~Scene3d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
 void Glpa::Scene3d::load()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_3D, "");
     for (auto& obj : objs)
     {
         obj.second->load();
@@ -19,6 +23,7 @@ void Glpa::Scene3d::load()
 
 void Glpa::Scene3d::release()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_3D, "");
     for (auto& obj : objs)
     {
         if (obj.second->isLoaded()) obj.second->release();

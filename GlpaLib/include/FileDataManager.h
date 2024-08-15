@@ -22,12 +22,16 @@ public :
 
 class PngData : public Glpa::Data
 {
+private :
+    LPDWORD data = nullptr;
+
 public :
     int width = 0;
     int height = 0;
     int channels = 0;
-    LPDWORD data = nullptr;
 
+    LPDWORD getData(){return data;};
+    
     void load() override;
     void release() override;
 };

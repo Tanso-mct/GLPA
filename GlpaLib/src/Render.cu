@@ -1,15 +1,19 @@
 #include "Render.cuh"
+#include "GlpaLog.h"
 
 Glpa::Render2d::Render2d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
 }
 
 Glpa::Render2d::~Render2d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
 void Glpa::Render2d::setBackground(std::string color, DWORD& bg)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, color.c_str());
     if (color == Glpa::COLOR_BLACK)
     {
         Glpa::Color instColor(0, 0, 0, 1);
@@ -30,6 +34,7 @@ void Glpa::Render2d::setBackground(std::string color, DWORD& bg)
 void Glpa::Render2d::editObjsPos(Glpa::Image *img){
     if (!malloc) return;
 
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, img->getName().c_str());
     cudaFree(dImgPosX);
     cudaFree(dImgPosY);
 
@@ -51,8 +56,8 @@ void Glpa::Render2d::editBufSize(int bufWidth, int bufHeight, int bufDpi)
 {
     if (!malloc) return;
 
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "");
     cudaFree(dBuf);
-
     cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 }
 
@@ -63,6 +68,8 @@ void Glpa::Render2d::dMalloc
     int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
     if (malloced) return;
+
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "");
 
     maxImgWidth = 0;
     maxImgHeight = 0;
@@ -140,8 +147,9 @@ void Glpa::Render2d::dRelease()
 {
     if (!malloced) return;
 
-    cudaFree(dBuf);
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "");
 
+    cudaFree(dBuf);
     cudaFree(dImgPosX);
     cudaFree(dImgPosY);
     cudaFree(dImgWidth);
@@ -166,7 +174,7 @@ void Glpa::Render2d::run
         std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
         LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
 ){
-    if (!malloced) dMalloc(objs, drawOrderMap, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
+    dMalloc(objs, drawOrderMap, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
 
     if (imgAmount != 0)
     {
@@ -212,10 +220,12 @@ void Glpa::Render2d::run
 
 Glpa::Render3d::Render3d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
 }
 
 Glpa::Render3d::~Render3d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
 void Glpa::Render3d::run(

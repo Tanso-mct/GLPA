@@ -1,16 +1,20 @@
 #include "Scene2d.h"
+#include "GlpaLog.h"
 
 Glpa::Scene2d::Scene2d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
     setType(2);
 }
 
 Glpa::Scene2d::~Scene2d()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
 void Glpa::Scene2d::editPos(Glpa::Image *img, Glpa::Vec2d newPos)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Image[" + img->getName() + "]");
     img->SetPos(newPos);
 
     rend.editObjsPos(img);
@@ -18,9 +22,10 @@ void Glpa::Scene2d::editPos(Glpa::Image *img, Glpa::Vec2d newPos)
 
 void Glpa::Scene2d::EditDrawOrder(Glpa::SceneObject *obj, int newDrawOrder)
 {
-    // TODO: Add processing with Text.
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Object[" + obj->getName() + "]");
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Image[" + img->getName() + "]");
         drawOrderMap[img->GetDrawOrder()].push_back(img->getName());
 
         drawOrderMap[img->GetDrawOrder()].erase
@@ -36,9 +41,10 @@ void Glpa::Scene2d::EditDrawOrder(Glpa::SceneObject *obj, int newDrawOrder)
 
 void Glpa::Scene2d::addDrawOrder(Glpa::SceneObject *obj)
 {
-    // TODO: Add processing with Text.
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Object[" + obj->getName() + "]");
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Image[" + img->getName() + "]");
         drawOrderMap[img->GetDrawOrder()].push_back(img->getName());
         imgAmount++;
     }
@@ -46,9 +52,10 @@ void Glpa::Scene2d::addDrawOrder(Glpa::SceneObject *obj)
 
 void Glpa::Scene2d::deleteDrawOrder(Glpa::SceneObject *obj)
 {
-    // TODO: Add processing with Text.
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Object[" + obj->getName() + "]");
     if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(obj))
     {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Image[" + img->getName() + "]");
         std::vector<std::string>& order = drawOrderMap[img->GetDrawOrder()];
         auto it = std::find(order.begin(), order.end(), obj->getName());
         if (it != order.end()) {
@@ -60,6 +67,7 @@ void Glpa::Scene2d::deleteDrawOrder(Glpa::SceneObject *obj)
 
 void Glpa::Scene2d::load()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "");
     for (auto& obj : objs)
     {
         if (!obj.second->isLoaded()) 
@@ -72,6 +80,7 @@ void Glpa::Scene2d::load()
 
 void Glpa::Scene2d::release()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "");
     for (auto& obj : objs)
     {
         if (obj.second->isLoaded()) 
@@ -86,6 +95,7 @@ void Glpa::Scene2d::release()
 
 std::string Glpa::Scene2d::GetNowImageAtPos(Glpa::Vec2d pos)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "");
     if (drawOrder.empty()) return "";
 
     for (int i = drawOrder.size() - 1; i >= 0; i--)
@@ -98,6 +108,7 @@ std::string Glpa::Scene2d::GetNowImageAtPos(Glpa::Vec2d pos)
 
             if (pos.x >= imgPos.x && pos.y >= imgPos.y && pos.x < imgPos.x + imgWidth && pos.y < imgPos.y + imgHeight)
             {
+                Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Image[" + img->getName() + "]");
                 return img->getName();
             }
         }
@@ -108,6 +119,7 @@ std::string Glpa::Scene2d::GetNowImageAtPos(Glpa::Vec2d pos)
 
 bool Glpa::Scene2d::GetIsImageAtPos(Glpa::Vec2d pos, std::string imgName)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "Image[" + imgName + "]");
     if (drawOrder.empty()) return "";
 
     for (int i = drawOrder.size() - 1; i >= 0; i--)
@@ -122,6 +134,7 @@ bool Glpa::Scene2d::GetIsImageAtPos(Glpa::Vec2d pos, std::string imgName)
             {
                 if (img->getName() == imgName)
                 {
+                    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_SCENE_2D, "True");
                     return true;
                 }
             }

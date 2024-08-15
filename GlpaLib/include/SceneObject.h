@@ -24,7 +24,7 @@ protected :
 
 public :
     SceneObject();
-    virtual ~SceneObject(){};
+    virtual ~SceneObject();
 
     void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
 

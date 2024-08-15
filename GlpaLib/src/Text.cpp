@@ -1,13 +1,16 @@
 #include "Text.h"
+#include "GlpaLog.h"
 
 Glpa::Text::Text(std::string argName)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
     name = argName;
     type = Glpa::CLASS_TEXT;
 }
 
 Glpa::Text::~Text()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
 void Glpa::Text::EditFontName(std::string argFontName)
@@ -89,6 +92,9 @@ int Glpa::Text::GetLineCount()
 
 void Glpa::Text::load()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Text[" + name + "]");
+    loaded = true;
+    
     DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
 
     HRESULT hr = pDWriteFactory->CreateTextFormat
@@ -119,6 +125,9 @@ void Glpa::Text::load()
 
 void Glpa::Text::release()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Text[" + name + "]");
+    loaded = false;
+
     pTextFormat->Release();
     pDWriteFactory->Release();
 }
