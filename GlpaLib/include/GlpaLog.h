@@ -25,6 +25,8 @@ constexpr const char* OUTPUT_TAG_GLPA_SCENE = "tag_glpa_scene";
 constexpr const char* OUTPUT_TAG_GLPA_SCENE_2D = "tag_glpa_scene_2d";
 constexpr const char* OUTPUT_TAG_GLPA_SCENE_3D = "tag_glpa_scene_3d";
 constexpr const char* OUTPUT_TAG_GLPA_RENDER = "tag_glpa_render";
+constexpr const char* OUTPUT_TAG_GLPA_WINDOW = "tag_glpa_window";
+constexpr const char* OUTPUT_TAG_GLPA_COLOR = "tag_glpa_color";
 
 constexpr const char* OUTPUT_TAG_CONSOLE = "tag_console";
 constexpr const char* OUTPUT_TAG_EXAMPLE = "tag_example";
@@ -32,8 +34,7 @@ constexpr const char* OUTPUT_TAG_EXAMPLE = "tag_example";
 constexpr const char* OUTPUT_TAG_ENABLE_FILTERS[] 
 = {
     OUTPUT_TAG_GLPA_LIB,
-    OUTPUT_TAG_GLPA_RENDER,
-    // OUTPUT_TAG_GLPA_LIB_FRAME
+    OUTPUT_TAG_GLPA_COLOR,
 };
 
 

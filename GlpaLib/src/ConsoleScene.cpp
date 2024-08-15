@@ -7,7 +7,6 @@ Glpa::ConsoleScene::ConsoleScene()
 
 Glpa::ConsoleScene::~ConsoleScene()
 {
-    
 }
 
 void Glpa::ConsoleScene::setup()

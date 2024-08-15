@@ -3,6 +3,8 @@
 
 #include <Windows.h>
 #include <string>
+#include <locale>
+#include <codecvt>
 
 #include <d2d1.h>
 #pragma comment(lib, "d2d1")
@@ -32,7 +34,10 @@ private :
 
     ID2D1Factory* pFactory = nullptr;
 
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> strConverter;
+
 public :
+    Window();
     ~Window();
 
     ID2D1HwndRenderTarget* pRenderTarget = nullptr;

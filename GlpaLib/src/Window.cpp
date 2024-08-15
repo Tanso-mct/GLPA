@@ -1,13 +1,22 @@
 #include "Window.h"
+#include "GlpaLog.h"
+
+Glpa::Window::Window()
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
+}
 
 Glpa::Window::~Window()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor Window[" + strConverter.to_bytes(name) + "]");
     releaseD2D();
     delete pixels;
 }
 
 void Glpa::Window::create(HINSTANCE hInstance)
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Window[" + strConverter.to_bytes(name) + "]");
+
     apiClass.cbSize = sizeof(apiClass);
     apiClass.style = style;
     apiClass.cbClsExtra = NULL;
@@ -66,6 +75,7 @@ void Glpa::Window::create(HINSTANCE hInstance)
 
 void Glpa::Window::initD2D()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Window[" + strConverter.to_bytes(name) + "]");
     HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pFactory);
     if (SUCCEEDED(hr))
     {
@@ -93,6 +103,7 @@ void Glpa::Window::initD2D()
 
 void Glpa::Window::releaseD2D()
 {
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Window[" + strConverter.to_bytes(name) + "]");
     if (pBitmap != nullptr) pBitmap->Release();
     if (pRenderTarget != nullptr) pRenderTarget->Release();
     if (pFactory != nullptr) pFactory->Release();
@@ -100,6 +111,12 @@ void Glpa::Window::releaseD2D()
 
 void Glpa::Window::SetWidth(int value)
 {
+    Glpa::OutputLog
+    (
+        __FILE__, __LINE__, __FUNCSIG__, 
+        Glpa::OUTPUT_TAG_GLPA_WINDOW, "Window[" + strConverter.to_bytes(name) + "] width : " + std::to_string(value)
+    );
+
     width = value;
     delete pixels;
     pixels = new DWORD[width * height * dpi];
@@ -107,6 +124,12 @@ void Glpa::Window::SetWidth(int value)
 
 void Glpa::Window::SetHeight(int value)
 {
+    Glpa::OutputLog
+    (
+        __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_WINDOW, 
+        "Window[" + strConverter.to_bytes(name) + "] height : " + std::to_string(value)
+    );
+
     height = value;
     delete pixels;
     pixels = new DWORD[width * height * dpi];
@@ -114,6 +137,12 @@ void Glpa::Window::SetHeight(int value)
 
 void Glpa::Window::SetDpi(int value)
 {
+    Glpa::OutputLog
+    (
+        __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_WINDOW, 
+        "Window[" + strConverter.to_bytes(name) + "] dpi : " + std::to_string(value)
+    );
+
     dpi = value;
     delete pixels;
     pixels = new DWORD[width * height * dpi];
@@ -121,6 +150,12 @@ void Glpa::Window::SetDpi(int value)
 
 void Glpa::Window::setViewStyle(UINT value)
 {
+    Glpa::OutputLog
+    (
+        __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_WINDOW, 
+        "Window[" + strConverter.to_bytes(name) + "] viewStyle : " + std::to_string(value)
+    );
+
     if (hWnd == nullptr)
     {
         viewStyle = value;
@@ -134,6 +169,12 @@ void Glpa::Window::setViewStyle(UINT value)
 
 void Glpa::Window::addViewStyle(UINT value)
 {
+    Glpa::OutputLog
+    (
+        __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_WINDOW, 
+        "Window[" + strConverter.to_bytes(name) + "] viewStyle : " + std::to_string(value)
+    );
+
     if (hWnd == nullptr)
     {
         viewStyle |= value;
@@ -147,6 +188,12 @@ void Glpa::Window::addViewStyle(UINT value)
 
 void Glpa::Window::deleteViewStyle(UINT value)
 {
+    Glpa::OutputLog
+    (
+        __FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_WINDOW, 
+        "Window[" + strConverter.to_bytes(name) + "] viewStyle : " + std::to_string(value)
+    );
+
     if (hWnd == nullptr)
     {
         viewStyle &= ~value;
