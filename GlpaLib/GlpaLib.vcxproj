@@ -155,6 +155,8 @@
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
+    <ClCompile Include="src\Polygon.cpp" />
+    <ClCompile Include="src\RangeRect.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
@@ -185,6 +187,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </CudaCompile>
+    <ClInclude Include="include\Polygon.h" />
+    <ClInclude Include="include\RangeRect.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Scene2d.h" />
     <ClInclude Include="include\Scene3d.h" />
