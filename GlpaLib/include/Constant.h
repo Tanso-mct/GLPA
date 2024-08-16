@@ -60,6 +60,7 @@ constexpr const char* CLASS_FILE = "class_file";
 constexpr const char* CLASS_PNG = "class_png";
 constexpr const char* CLASS_IMAGE = "class_image";
 constexpr const char* CLASS_TEXT = "class_txt";
+constexpr const char* CLASS_STATIONARY_OBJECT = "class_stationary_object";
 
 constexpr const char* COLOR_BLACK = "color_black";
 constexpr const char* COLOR_GREEN = "color_green";

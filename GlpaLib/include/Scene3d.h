@@ -2,7 +2,7 @@
 #define GLPA_SCENE_3D_H_
 
 #include "Scene.h"
-
+#include "Material.h"
 
 namespace Glpa 
 {
@@ -11,6 +11,7 @@ class Scene3d : public Scene
 {
 private :
     Glpa::Render3d rend;
+    std::unordered_map<std::string, Glpa::Material*> mts;
 
 protected :
     
@@ -20,6 +21,9 @@ public :
 
     void load() override;
     void release() override;
+
+    void AddMaterial(Glpa::Material* ptMt);
+    void DeleteMaterial(Glpa::Material* ptMt);
 
     void rendering
     (

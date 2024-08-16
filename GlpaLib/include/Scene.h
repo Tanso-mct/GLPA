@@ -61,7 +61,7 @@ public :
     Scene();
     virtual ~Scene();
 
-    void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
+    void setManager(Glpa::FileDataManager* argFileDataManager);
     void setWindow(Glpa::Window* argWindow){window = argWindow;}
 
     int getType() const {return type;}

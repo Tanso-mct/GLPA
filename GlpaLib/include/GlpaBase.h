@@ -53,7 +53,7 @@ public :
 
     bool IsAnySceneLoaded() const {return loadingSceneCount > 0 ? true : false;}
 
-    void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
+    void setManager(Glpa::FileDataManager* argFileDataManager);
 
     /// @brief Get the pointer to the currently loaded scene.
     /// @return Pointer type for the currently loaded scene.

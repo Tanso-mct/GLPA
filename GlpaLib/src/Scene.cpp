@@ -18,6 +18,12 @@ Glpa::Scene::~Scene()
     destroy();
 }
 
+void Glpa::Scene::setManager(Glpa::FileDataManager *argFileDataManager)
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Scene[" + name + "]");
+    fileDataManager = argFileDataManager;
+}
+
 void Glpa::Scene::getKeyDown(UINT msg, WPARAM wParam, LPARAM lParam)
 {
     BOOL isRight;

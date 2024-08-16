@@ -26,7 +26,7 @@ public :
     SceneObject();
     virtual ~SceneObject();
 
-    void setManager(Glpa::FileDataManager* argFileDataManager){fileDataManager = argFileDataManager;}
+    void setManager(Glpa::FileDataManager* argFileDataManager);
 
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}

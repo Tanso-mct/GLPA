@@ -25,8 +25,6 @@ public :
 
 class Vec2d : public Vector
 {
-private :
-
 public :
     Vec2d(float valueX, float valueY);
     Vec2d(){};
@@ -104,8 +102,6 @@ public :
 
 class Vec3d : public Vector
 {
-private :
-
 public :
     Vec3d(float valueX, float valueY, float valueZ);
     Vec3d(){};
@@ -116,6 +112,77 @@ public :
 
     void toFloatAry(float* ary, int index) override;
     void fromFloatAry(float* ary, int index) override;
+
+    Vec3d operator+(const Vec3d& other) const 
+    {
+        return Vec3d(x + other.x, y + other.y, z + other.z);
+    }
+
+    Vec3d operator-(const Vec3d& other) const 
+    {
+        return Vec3d(x - other.x, y - other.y, z - other.z);
+    }
+
+    Vec3d operator*(float scalar) const 
+    {
+        return Vec3d(x * scalar, y * scalar, z * scalar);
+    }
+
+    Vec3d operator/(float scalar) const 
+    {
+        return Vec3d(x / scalar, y / scalar, z / scalar);
+    }
+
+    bool operator==(const Vec3d& other) const 
+    {
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    bool operator!=(const Vec3d& other) const 
+    {
+        return !(*this == other);
+    }
+
+    void operator+=(const Vec3d& other)
+    {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+    }
+
+    void operator-=(const Vec3d& other)
+    {
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+    }
+
+    void operator*=(float scalar)
+    {
+        x *= scalar;
+        y *= scalar;
+        z *= scalar;
+    }
+
+    void operator/=(float scalar)
+    {
+        x /= scalar;
+        y /= scalar;
+        z /= scalar;
+    }
+
+    Glpa::Vec3d operator=(const std::initializer_list<float>& values)
+    {
+        if (values.size() == 2) {
+            auto it = values.begin();
+            x = *it;
+            y = *(it + 1);
+            z = *(it + 2);
+        }
+        return *this;
+    }
+
+
 
 };
 

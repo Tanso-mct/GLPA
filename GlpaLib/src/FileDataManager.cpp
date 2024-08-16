@@ -253,6 +253,7 @@ void Glpa::PngData::release()
 void Glpa::ObjData::load()
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "OBJ file[" + filePath + "]");
+    
 }
 
 void Glpa::ObjData::release()

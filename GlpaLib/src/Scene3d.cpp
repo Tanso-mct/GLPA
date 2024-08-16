@@ -19,6 +19,11 @@ void Glpa::Scene3d::load()
     {
         obj.second->load();
     }
+
+    for (auto& mt : mts)
+    {
+        mt.second->load();
+    }
 }
 
 void Glpa::Scene3d::release()
@@ -28,6 +33,27 @@ void Glpa::Scene3d::release()
     {
         if (obj.second->isLoaded()) obj.second->release();
     }
+
+    for (auto& mt : mts)
+    {
+        if (mt.second->isLoaded()) mt.second->release();
+    }
+}
+
+void Glpa::Scene3d::AddMaterial(Glpa::Material *ptMt)
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Material[" + ptMt->getName() + "]");
+    ptMt->setManager(fileDataManager);
+    mts.emplace(ptMt->getName(), ptMt);
+}
+
+void Glpa::Scene3d::DeleteMaterial(Glpa::Material *ptMt)
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Material[" + ptMt->getName() + "]");
+    ptMt->release();
+
+    mts.erase(ptMt->getName());
+    delete ptMt;
 }
 
 void Glpa::Scene3d::rendering

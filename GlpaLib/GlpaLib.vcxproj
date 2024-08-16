@@ -160,6 +160,7 @@
     <ClCompile Include="src\Scene3d.cpp" />
     <ClCompile Include="src\SceneObject.cpp" />
     <ClCompile Include="src\Sound.cpp" />
+    <ClCompile Include="src\StationaryObject.cpp" />
     <ClCompile Include="src\Text.cpp" />
     <ClCompile Include="src\Ui.cpp" />
     <ClCompile Include="src\Vector.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="include\Scene3d.h" />
     <ClInclude Include="include\SceneObject.h" />
     <ClInclude Include="include\Sound.h" />
+    <ClInclude Include="include\StationaryObject.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\Ui.h" />

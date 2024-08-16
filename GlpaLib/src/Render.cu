@@ -99,19 +99,19 @@ void Glpa::Render2d::dMalloc
                     Vec2d imgPos = img->GetPos();
                     hImgPosX.push_back(imgPos.x);
                     hImgPosY.push_back(imgPos.y);
-                    hImgWidth.push_back(img->getWidth());
-                    hImgHeight.push_back(img->getHeight());
+                    hImgWidth.push_back(img->GetWidth());
+                    hImgHeight.push_back(img->GetHeight());
 
                     imgNames.push_back(img->getName());
                     drawOrder.push_back(img->getName());
 
-                    maxImgWidth = (maxImgWidth < img->getWidth()) ? img->getWidth() : maxImgWidth;
-                    maxImgHeight = (maxImgHeight < img->getHeight()) ? img->getHeight() : maxImgHeight;
+                    maxImgWidth = (maxImgWidth < img->GetWidth()) ? img->GetWidth() : maxImgWidth;
+                    maxImgHeight = (maxImgHeight < img->GetHeight()) ? img->GetHeight() : maxImgHeight;
 
                     LPDWORD dData;
-                    int dataSize = img->getWidth() * img->getHeight() * sizeof(DWORD);
+                    int dataSize = img->GetWidth() * img->GetHeight() * sizeof(DWORD);
                     cudaMalloc(&dData, dataSize);
-                    cudaMemcpy(dData, img->getData(), dataSize, cudaMemcpyHostToDevice);
+                    cudaMemcpy(dData, img->GetData(), dataSize, cudaMemcpyHostToDevice);
                     hImgData.push_back(dData);
                 }
             }

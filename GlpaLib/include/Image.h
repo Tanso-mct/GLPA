@@ -20,9 +20,9 @@ public :
     void load() override;
     void release() override;
 
-    int getWidth(){return fileDataManager->getWidth(filePath);}
-    int getHeight(){return fileDataManager->getHeight(filePath);}
-    LPDWORD getData(){return fileDataManager->getData(filePath);}
+    int GetWidth(){return fileDataManager->getWidth(filePath);}
+    int GetHeight(){return fileDataManager->getHeight(filePath);}
+    LPDWORD GetData(){return fileDataManager->getData(filePath);}
 
     bool getVisible() const {return visible;}
     void setVisible(bool symbol) {visible = symbol;}

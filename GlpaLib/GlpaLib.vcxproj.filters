@@ -108,6 +108,9 @@
     <ClCompile Include="src\GlpaEvent.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
+    <ClCompile Include="src\StationaryObject.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExampleBase.h">
@@ -180,6 +183,9 @@
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
     <ClInclude Include="include\GlpaLog.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\StationaryObject.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
   </ItemGroup>

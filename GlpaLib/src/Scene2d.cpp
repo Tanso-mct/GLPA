@@ -103,8 +103,8 @@ std::string Glpa::Scene2d::GetNowImageAtPos(Glpa::Vec2d pos)
         if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(objs[drawOrder[i]]))
         {
             Glpa::Vec2d imgPos = img->GetPos();
-            int imgWidth = img->getWidth();
-            int imgHeight = img->getHeight();
+            int imgWidth = img->GetWidth();
+            int imgHeight = img->GetHeight();
 
             if (pos.x >= imgPos.x && pos.y >= imgPos.y && pos.x < imgPos.x + imgWidth && pos.y < imgPos.y + imgHeight)
             {
@@ -127,8 +127,8 @@ bool Glpa::Scene2d::GetIsImageAtPos(Glpa::Vec2d pos, std::string imgName)
         if (Glpa::Image* img = dynamic_cast<Glpa::Image*>(objs[drawOrder[i]]))
         {
             Glpa::Vec2d imgPos = img->GetPos();
-            int imgWidth = img->getWidth();
-            int imgHeight = img->getHeight();
+            int imgWidth = img->GetWidth();
+            int imgHeight = img->GetHeight();
 
             if (pos.x >= imgPos.x && pos.y >= imgPos.y && pos.x < imgPos.x + imgWidth && pos.y < imgPos.y + imgHeight)
             {

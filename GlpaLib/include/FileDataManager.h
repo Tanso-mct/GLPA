@@ -3,8 +3,13 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "ErrorHandler.h"
+
+#include "Polygon.h"
+#include "RangeRect.h"
+#include "Vector.h"
 
 namespace Glpa 
 {
@@ -38,6 +43,15 @@ public :
 
 class ObjData : public Glpa::Data
 {
+private :
+    bool status = false;
+    std::vector<Glpa::Vec3d*> wv;
+    std::vector<Glpa::Vec2d*> uv;
+    std::vector<Glpa::Vec3d*> normal;
+
+    Glpa::RangeRect* rangeRect;
+    Glpa::Polygon* polygons;
+
 public :
     void load() override;
     void release() override;
