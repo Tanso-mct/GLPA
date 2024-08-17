@@ -154,6 +154,7 @@
     <ClCompile Include="src\GlpaEvent.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
+    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Polygon.cpp" />
     <ClCompile Include="src\RangeRect.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\GlpaLog.h" />
     <ClInclude Include="include\Image.h" />
+    <ClInclude Include="include\Material.h" />
     <ClInclude Include="include\Matrix.h" />
     <CudaCompile Include="include\Render.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -203,8 +205,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="resource\Assets\Mtls\temp_cube.mtl" />
-    <None Include="resource\Assets\Mtls\temp_field.mtl" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\Render.cu">
@@ -214,18 +214,16 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\Assets\Images\console_back_ground.png" />
+    <Image Include="resource\Assets\Mtls\Cube_BaseColor.png" />
+    <Image Include="resource\Assets\Mtls\Cube_Normal.png" />
+    <Image Include="resource\Assets\Mtls\Cube_OcclusionRoughnessMetallic.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resource\Assets\Objs\temp_cube.obj">
+    <None Include="resource\Assets\Objs\Cube.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </Resource>
-    <Resource Include="resource\Assets\Objs\temp_field.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </Resource>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

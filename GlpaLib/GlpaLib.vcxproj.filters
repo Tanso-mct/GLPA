@@ -117,6 +117,9 @@
     <ClCompile Include="src\RangeRect.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExampleBase.h">
@@ -200,16 +203,16 @@
     <ClInclude Include="include\RangeRect.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
+    <ClInclude Include="include\Material.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">
       <Filter>リソース ファイル</Filter>
     </None>
-    <None Include="resource\Assets\Mtls\temp_cube.mtl">
-      <Filter>リソース ファイル\Assetes\Mtls</Filter>
-    </None>
-    <None Include="resource\Assets\Mtls\temp_field.mtl">
-      <Filter>リソース ファイル\Assetes\Mtls</Filter>
+    <None Include="resource\Assets\Objs\Cube.obj">
+      <Filter>リソース ファイル\Assetes\Objs</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -224,13 +227,14 @@
     <Image Include="resource\Assets\Images\console_back_ground.png">
       <Filter>リソース ファイル\Assetes\Images</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resource\Assets\Objs\temp_cube.obj">
-      <Filter>リソース ファイル\Assetes\Objs</Filter>
-    </Resource>
-    <Resource Include="resource\Assets\Objs\temp_field.obj">
-      <Filter>リソース ファイル\Assetes\Objs</Filter>
-    </Resource>
+    <Image Include="resource\Assets\Mtls\Cube_BaseColor.png">
+      <Filter>リソース ファイル\Assetes\Mtls</Filter>
+    </Image>
+    <Image Include="resource\Assets\Mtls\Cube_Normal.png">
+      <Filter>リソース ファイル\Assetes\Mtls</Filter>
+    </Image>
+    <Image Include="resource\Assets\Mtls\Cube_OcclusionRoughnessMetallic.png">
+      <Filter>リソース ファイル\Assetes\Mtls</Filter>
+    </Image>
   </ItemGroup>
 </Project>

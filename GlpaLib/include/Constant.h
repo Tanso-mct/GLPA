@@ -65,6 +65,10 @@ constexpr const char* CLASS_STATIONARY_OBJECT = "class_stationary_object";
 constexpr const char* COLOR_BLACK = "color_black";
 constexpr const char* COLOR_GREEN = "color_green";
 
+constexpr const char* MATERIAL_DIFFUSE = "material_diffuse";
+constexpr const char* MATERIAL_ORM = "material_occlusion_roughness_metallic";
+constexpr const char* MATERIAL_NORMAL = "material_normal";
+
 
 }
 

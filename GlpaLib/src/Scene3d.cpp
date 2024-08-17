@@ -61,7 +61,7 @@ void Glpa::Scene3d::rendering
     ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, HWND hWnd, PAINTSTRUCT ps,
     LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
 ){
-    rend.run(objs, buf, bufWidth, bufHeight, bufDpi);
+    rend.run(objs, mts, buf, bufWidth, bufHeight, bufDpi);
 
     D2D1_BITMAP_PROPERTIES bitmapProperties;
     bitmapProperties.pixelFormat = pRenderTarget->GetPixelFormat();

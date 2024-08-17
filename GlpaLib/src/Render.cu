@@ -229,7 +229,9 @@ Glpa::Render3d::~Render3d()
 }
 
 void Glpa::Render3d::run(
-    std::unordered_map<std::string, Glpa::SceneObject*> objs, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
+    std::unordered_map<std::string, Glpa::SceneObject*> objs, 
+    std::unordered_map<std::string, Glpa::Material*> mts,
+    LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
 ){
 
 }

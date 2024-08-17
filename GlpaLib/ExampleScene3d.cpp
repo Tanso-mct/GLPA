@@ -6,7 +6,14 @@ ExampleScene3d::~ExampleScene3d()
 
 void ExampleScene3d::setup()
 {
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_EXAMPLE, "");
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_EXAMPLE, "Scene[" + name + "]");
+
+    Glpa::Material *ptMaterial = new Glpa::Material("mt_cube", "resource/Assets/Mtls/Cube_BaseColor.png");
+    AddMaterial(ptMaterial);
+
+    Glpa::StationaryObject* ptCube = new Glpa::StationaryObject("Cube", "resource/Assets/Objs/Cube.obj", Glpa::Vec3d(0.0, 0.0, 0.0));
+    ptCube->SetMaterial(ptMaterial);
+    AddSceneObject(ptCube);
     
 }
 

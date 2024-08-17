@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "Constant.h"
 #include "FileDataManager.h"
 
 namespace Glpa
@@ -14,9 +15,13 @@ private :
     bool loaded = false;
     std::string name;
 
+    // Diffuse texture
     std::string diffuseFilePath;
-    std::string aoFilePath;
-    std::string roughnessFilePath;
+
+    // Occlusion Roughness Metallic texture
+    std::string ormFilePath;
+
+    // Normal texture
     std::string normalFilePath;
 
     Glpa::FileDataManager* fileDataManager = nullptr;
@@ -32,8 +37,14 @@ public :
     std::string getName() const {return name;}
     void setName(std::string str) {name = str;}
 
+    int GetMtWidth(std::string mtName);
+    int GetMtHeight(std::string mtName);
+    LPDWORD GetMtData(std::string mtName);
+
     void load();
     void release();
+
+
 
 };
 

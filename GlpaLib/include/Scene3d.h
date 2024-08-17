@@ -3,6 +3,7 @@
 
 #include "Scene.h"
 #include "Material.h"
+#include "StationaryObject.h"
 
 namespace Glpa 
 {

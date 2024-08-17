@@ -4,6 +4,8 @@
 #include <string>
 
 #include "SceneObject.h"
+#include "Material.h"
+
 #include "Vector.h"
 
 namespace Glpa
@@ -16,6 +18,8 @@ protected :
     Glpa::Vec3d pos;
     Glpa::Vec3d rotate;
     Glpa::Vec3d scale;
+
+    Glpa::Material* mt = nullptr;
 
 public :
     StationaryObject(std::string argName, std::string argFilePath, Glpa::Vec3d defPos);
@@ -33,8 +37,11 @@ public :
     Glpa::Vec3d GetScale() const {return scale;}
     void SetScale(Glpa::Vec3d value) {scale = value;}
 
-    virtual void load() = 0;
-    virtual void release() = 0;
+    void SetMaterial(Glpa::Material* value) {mt = value;}
+    Glpa::Material* GetMaterial() const {return mt;}
+
+    void load();
+    void release();
 
 
 };
