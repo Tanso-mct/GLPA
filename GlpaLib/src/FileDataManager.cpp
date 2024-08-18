@@ -254,6 +254,100 @@ void Glpa::ObjData::load()
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "OBJ file[" + filePath + "]");
     
+    std::ifstream file(filePath);
+    if (file.fail()) Glpa::runTimeError(__FILE__, __LINE__, "Failed to load OBJ file.");
+
+    // Initialize data
+    wv.clear();
+    uv.clear();
+    normal.clear();
+
+    if (rangeRect != nullptr) delete rangeRect;
+    rangeRect = new Glpa::RangeRect();
+
+    if (polygons.size() != 0)
+    {
+        for (auto& polygon : polygons)
+        {
+            if (polygon == nullptr) continue;
+            delete polygon;
+        }
+        polygons.clear();
+    }
+
+
+    std::string line;
+    while (std::getline(file, line)) 
+    {
+        int space1 = line.find_first_of(" ");
+        std::string type = line.substr(0, space1);
+        std::string contents = line.substr(space1 + 1, line.size() - space1);
+
+        if (type == "#") continue;
+        else if (type == "") continue;
+        else if (type == "mtllib") continue;
+        else if (type == "g") continue;
+        else if (type == "usemtl") continue;
+        else if (type == "v")
+        {
+            Glpa::Vec3d* vec = new Glpa::Vec3d
+            (
+                std::stof(contents.substr(0, contents.find_first_of(" "))),
+                std::stof(contents.substr(contents.find_first_of(" ") + 1, contents.find_last_of(" ") - contents.find_first_of(" "))),
+                std::stof(contents.substr(contents.find_last_of(" ") + 1, contents.size() - contents.find_last_of(" ")))
+            );
+
+            wv.push_back(vec);
+            rangeRect->addRangeV(vec);
+        }
+        else if (type == "vt")
+        {
+            Glpa::Vec2d* vec = new Glpa::Vec2d
+            (
+                std::stof(contents.substr(0, contents.find_first_of(" "))),
+                std::stof(contents.substr(contents.find_first_of(" ") + 1, contents.size() - contents.find_first_of(" ")))
+            );
+
+            uv.push_back(vec);
+        }
+        else if (type == "vn")
+        {
+            Glpa::Vec3d* vec = new Glpa::Vec3d
+            (
+                std::stof(contents.substr(0, contents.find_first_of(" "))),
+                std::stof(contents.substr(contents.find_first_of(" ") + 1, contents.find_last_of(" ") - contents.find_first_of(" "))),
+                std::stof(contents.substr(contents.find_last_of(" ") + 1, contents.size() - contents.find_last_of(" ")))
+            );
+
+            normal.push_back(vec);
+        }
+        else if (type == "f")
+        {
+            std::vector<std::string> innerContents;
+            innerContents.push_back(contents.substr(0, contents.find_first_of(" ")));
+            innerContents.push_back(contents.substr(contents.find_first_of(" ") + 1, contents.find_last_of(" ") - contents.find_first_of(" ")));
+            innerContents.push_back(contents.substr(contents.find_last_of(" ") + 1, contents.size() - contents.find_last_of(" ")));
+
+            Glpa::Polygon* polygon = new Glpa::Polygon();
+            for (int i = 0; i < innerContents.size(); i++)
+            {
+                std::string innerContent = innerContents[i];
+                
+                int vNum = std::stoi(innerContent.substr(0, innerContent.find_first_of("/")));
+                int uvNum = std::stoi(innerContent.substr(innerContent.find_first_of("/") + 1, innerContent.find_last_of("/") - innerContent.find_first_of("/")));
+
+                polygon->addV(vNum, uvNum);
+            }
+
+            int vnNum = std::stoi(innerContents[0].substr(innerContents[0].find_last_of("/") + 1, innerContents[0].size() - innerContents[0].find_last_of("/")));
+            polygon->setNormal(*normal[vnNum - 1]);
+
+            polygons.push_back(polygon);
+        }
+    }
+
+    rangeRect->setWvs();
+
 }
 
 void Glpa::ObjData::release()

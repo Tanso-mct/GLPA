@@ -80,7 +80,13 @@
         "string_view": "cpp",
         "__locale": "cpp",
         "memory_resource": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "deque": "cpp",
+        "filesystem": "cpp",
+        "fstream": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "stack": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en"

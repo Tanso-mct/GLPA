@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <fstream>
 
 #include "ErrorHandler.h"
 
@@ -44,13 +45,12 @@ public :
 class ObjData : public Glpa::Data
 {
 private :
-    bool status = false;
     std::vector<Glpa::Vec3d*> wv;
     std::vector<Glpa::Vec2d*> uv;
     std::vector<Glpa::Vec3d*> normal;
 
-    Glpa::RangeRect* rangeRect;
-    Glpa::Polygon* polygons;
+    Glpa::RangeRect* rangeRect = nullptr;
+    std::vector<Glpa::Polygon*> polygons;
 
 public :
     void load() override;

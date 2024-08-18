@@ -10,6 +10,19 @@
 namespace Glpa
 {
 
+typedef struct _POLYGON
+{
+    float wv0[3];
+    float wv1[3];
+    float wv2[3];
+
+    float uv0[2];
+    float uv1[2];
+    float uv2[2];
+
+    float normal[3];
+} POLYGON;
+
 class Polygon
 {
 private :
@@ -17,19 +30,14 @@ private :
     std::vector<int> uvI;
     Glpa::Vec3d normal;
 
-    std::string mtName;
-
 public :
     Polygon();
     ~Polygon();
 
-    void addWv(Glpa::Vec3d argWv);
-    void addUv(Glpa::Vec2d argUv);
-    void addNormal(Glpa::Vec3d argNormal);
+    void addV(int argWvI, int argUvI);
+    void setNormal(Glpa::Vec3d argNormal){normal = argNormal;};
 
-    Glpa::Vec3d getWv(int index);
-    Glpa::Vec2d getUv(int index);
-    Glpa::Vec3d getNormal(int index);
+    Glpa::POLYGON getData(std::vector<Glpa::Vec3d*>& wv, std::vector<Glpa::Vec2d*>& uv);
 };
 
 }

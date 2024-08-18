@@ -95,6 +95,13 @@ public :
     Render3d();
     ~Render3d();
 
+    void dMallocData
+    (
+        std::unordered_map<std::string, Glpa::SceneObject*> objs, 
+        std::unordered_map<std::string, Glpa::Material*> mts,
+        int bufWidth, int bufHeight, int bufDpi
+    );
+
     void  run
     (
         std::unordered_map<std::string, Glpa::SceneObject*> objs, 

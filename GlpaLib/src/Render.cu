@@ -233,7 +233,7 @@ void Glpa::Render3d::run(
     std::unordered_map<std::string, Glpa::Material*> mts,
     LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
 ){
-
+    
 }
 
 __global__ void Glpa::Gpu2dDraw
