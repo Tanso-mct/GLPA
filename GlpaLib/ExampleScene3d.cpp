@@ -14,6 +14,14 @@ void ExampleScene3d::setup()
     Glpa::StationaryObject* ptCube = new Glpa::StationaryObject("Cube", "resource/Assets/Objs/Cube.obj", Glpa::Vec3d(0.0, 0.0, 0.0));
     ptCube->SetMaterial(ptMaterial);
     AddSceneObject(ptCube);
+
+    Glpa::Camera* ptCam = new Glpa::Camera
+    (
+        "Main Camera", Glpa::Vec3d(0.0, 0.0, 0.0), Glpa::Vec3d(0.0, 0.0, 0.0),
+        90, Glpa::Vec2d(16, 9), 0.1, 1000
+    );
+    AddCamera(ptCam);
+    SetCamera(ptCam);
     
 }
 

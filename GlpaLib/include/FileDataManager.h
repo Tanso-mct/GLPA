@@ -55,6 +55,9 @@ private :
 public :
     void load() override;
     void release() override;
+
+    std::vector<Glpa::POLYGON> getPolyData();
+    Glpa::RANGE_RECT getRangeRectData();
 };
 
 class FileData
@@ -82,7 +85,12 @@ public :
     int getWidth(std::string path);
     int getHeight(std::string path);
     int getChannels(std::string path);
-    LPDWORD getData(std::string path);
+
+    LPDWORD getPngData(std::string path);
+    std::vector<Glpa::POLYGON> getPolyData(std::string path);
+    Glpa::RANGE_RECT getRangeRectData(std::string path);
+
+
 };
 
 }

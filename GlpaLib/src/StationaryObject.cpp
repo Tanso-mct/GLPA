@@ -14,6 +14,16 @@ Glpa::StationaryObject::~StationaryObject()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
+std::vector<Glpa::POLYGON> Glpa::StationaryObject::getPolyData()
+{
+    return fileDataManager->getPolyData(filePath);
+}
+
+Glpa::RANGE_RECT Glpa::StationaryObject::getRangeRectData()
+{
+    return fileDataManager->getRangeRectData(filePath);
+}
+
 void Glpa::StationaryObject::load()
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "StationaryObject[" + name + "]");

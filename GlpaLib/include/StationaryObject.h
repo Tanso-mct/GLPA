@@ -40,6 +40,9 @@ public :
     void SetMaterial(Glpa::Material* value) {mt = value;}
     Glpa::Material* GetMaterial() const {return mt;}
 
+    std::vector<Glpa::POLYGON> getPolyData();
+    Glpa::RANGE_RECT getRangeRectData();
+
     void load();
     void release();
 

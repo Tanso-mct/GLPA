@@ -180,7 +180,7 @@ int Glpa::FileDataManager::getChannels(std::string path)
     }
 }
 
-LPDWORD Glpa::FileDataManager::getData(std::string path)
+LPDWORD Glpa::FileDataManager::getPngData(std::string path)
 {
     if (files.find(path) == files.end())
     {
@@ -191,6 +191,40 @@ LPDWORD Glpa::FileDataManager::getData(std::string path)
     {
         Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_FILE_DATA_MG, "Data[" + path + "]");
         return png->getData();
+    }
+    else
+    {
+        Glpa::runTimeError
+        (
+            __FILE__, __LINE__,
+            "It is not a file whose data can be obtained."
+        );
+    }
+}
+
+std::vector<Glpa::POLYGON> Glpa::FileDataManager::getPolyData(std::string path)
+{
+    if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
+    {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_FILE_DATA_MG, "Data[" + path + "]");
+        return obj->getPolyData();
+    }
+    else
+    {
+        Glpa::runTimeError
+        (
+            __FILE__, __LINE__,
+            "It is not a file whose data can be obtained."
+        );
+    }
+}
+
+Glpa::RANGE_RECT Glpa::FileDataManager::getRangeRectData(std::string path)
+{
+    if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
+    {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_FILE_DATA_MG, "Data[" + path + "]");
+        return obj->getRangeRectData();
     }
     else
     {
@@ -353,4 +387,76 @@ void Glpa::ObjData::load()
 void Glpa::ObjData::release()
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "OBJ file[" + filePath + "]");
+
+    if (rangeRect != nullptr)
+    {
+        delete rangeRect;
+        rangeRect = nullptr;
+    }
+
+    for (auto& vec : wv)
+    {
+        if (vec == nullptr) continue;
+        delete vec;
+    }
+    wv.clear();
+
+    for (auto& vec : uv)
+    {
+        if (vec == nullptr) continue;
+        delete vec;
+    }
+    uv.clear();
+
+    for (auto& vec : normal)
+    {
+        if (vec == nullptr) continue;
+        delete vec;
+    }
+    normal.clear();
+
+    for (auto& polygon : polygons)
+    {
+        if (polygon == nullptr) continue;
+        delete polygon;
+    }
+    polygons.clear();
+}
+
+std::vector<Glpa::POLYGON> Glpa::ObjData::getPolyData()
+{
+    if (polygons.size() != 0)
+    {
+        std::vector<Glpa::POLYGON> polyData;
+        for (auto& polygon : polygons)
+        {
+            polyData.push_back(polygon->getData(wv, uv));
+        }
+
+        return polyData;
+    }
+    else
+    {
+        Glpa::runTimeError
+        (
+            __FILE__, __LINE__,
+            "There is no data to be returned."
+        );
+    }
+}
+
+Glpa::RANGE_RECT Glpa::ObjData::getRangeRectData()
+{
+    if (rangeRect != nullptr)
+    {
+        return rangeRect->getData();
+    }
+    else
+    {
+        Glpa::runTimeError
+        (
+            __FILE__, __LINE__,
+            "There is no data to be returned."
+        );
+    }
 }

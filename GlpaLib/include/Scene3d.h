@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Material.h"
 #include "StationaryObject.h"
+#include "Camera.h"
 
 namespace Glpa 
 {
@@ -13,6 +14,9 @@ class Scene3d : public Scene
 private :
     Glpa::Render3d rend;
     std::unordered_map<std::string, Glpa::Material*> mts;
+    std::unordered_map<std::string, Glpa::Camera*> cams;
+
+    std::string currentCam = "";
 
 protected :
     
@@ -25,6 +29,10 @@ public :
 
     void AddMaterial(Glpa::Material* ptMt);
     void DeleteMaterial(Glpa::Material* ptMt);
+
+    void AddCamera(Glpa::Camera* ptCam);
+    void SetCamera(Glpa::Camera* ptCam);
+    void DeleteCamera(Glpa::Camera* ptCam);
 
     void rendering
     (

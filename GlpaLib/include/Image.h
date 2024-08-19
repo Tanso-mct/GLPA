@@ -22,7 +22,7 @@ public :
 
     int GetWidth(){return fileDataManager->getWidth(filePath);}
     int GetHeight(){return fileDataManager->getHeight(filePath);}
-    LPDWORD GetData(){return fileDataManager->getData(filePath);}
+    LPDWORD GetData(){return fileDataManager->getPngData(filePath);}
 
     bool getVisible() const {return visible;}
     void setVisible(bool symbol) {visible = symbol;}

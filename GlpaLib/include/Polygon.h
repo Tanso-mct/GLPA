@@ -12,14 +12,8 @@ namespace Glpa
 
 typedef struct _POLYGON
 {
-    float wv0[3];
-    float wv1[3];
-    float wv2[3];
-
-    float uv0[2];
-    float uv1[2];
-    float uv2[2];
-
+    float wv[3][3];
+    float uv[3][2];
     float normal[3];
 } POLYGON;
 

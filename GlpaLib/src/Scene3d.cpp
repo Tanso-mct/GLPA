@@ -10,6 +10,16 @@ Glpa::Scene3d::Scene3d()
 Glpa::Scene3d::~Scene3d()
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
+
+    for (auto& obj : objs)
+    {
+        delete obj.second;
+    }
+
+    for (auto& mt : mts)
+    {
+        delete mt.second;
+    }
 }
 
 void Glpa::Scene3d::load()
@@ -38,6 +48,8 @@ void Glpa::Scene3d::release()
     {
         if (mt.second->isLoaded()) mt.second->release();
     }
+
+    rend.dRelease();
 }
 
 void Glpa::Scene3d::AddMaterial(Glpa::Material *ptMt)
@@ -56,12 +68,31 @@ void Glpa::Scene3d::DeleteMaterial(Glpa::Material *ptMt)
     delete ptMt;
 }
 
+void Glpa::Scene3d::AddCamera(Glpa::Camera *ptCam)
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Camera[" + ptCam->getName() + "]");
+    cams.emplace(ptCam->getName(), ptCam);
+}
+
+void Glpa::Scene3d::SetCamera(Glpa::Camera *ptCam)
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Camera[" + ptCam->getName() + "]");
+    currentCam = ptCam->getName();
+}
+
+void Glpa::Scene3d::DeleteCamera(Glpa::Camera *ptCam)
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Camera[" + ptCam->getName() + "]");
+    cams.erase(ptCam->getName());
+    delete ptCam;
+}
+
 void Glpa::Scene3d::rendering
 (
     ID2D1HwndRenderTarget* pRenderTarget, ID2D1Bitmap** pBitMap, HWND hWnd, PAINTSTRUCT ps,
     LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
 ){
-    rend.run(objs, mts, buf, bufWidth, bufHeight, bufDpi);
+    rend.run(objs, mts, *cams[currentCam], buf, bufWidth, bufHeight, bufDpi);
 
     D2D1_BITMAP_PROPERTIES bitmapProperties;
     bitmapProperties.pixelFormat = pRenderTarget->GetPixelFormat();

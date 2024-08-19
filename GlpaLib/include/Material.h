@@ -9,6 +9,11 @@
 namespace Glpa
 {
 
+typedef struct _MATERIAL
+{
+    LPDWORD baseColor;
+} MATERIAL;
+
 class Material
 {
 private :
@@ -16,7 +21,7 @@ private :
     std::string name;
 
     // Diffuse texture
-    std::string diffuseFilePath;
+    std::string baseColorFilePath;
 
     // Occlusion Roughness Metallic texture
     std::string ormFilePath;
@@ -27,7 +32,7 @@ private :
     Glpa::FileDataManager* fileDataManager = nullptr;
 
 public :
-    Material(std::string argName, std::string argDiffuseFilePath);
+    Material(std::string argName, std::string argBaseColorFilePath);
     ~Material();
 
     bool isLoaded() const {return loaded;}
@@ -40,6 +45,8 @@ public :
     int GetMtWidth(std::string mtName);
     int GetMtHeight(std::string mtName);
     LPDWORD GetMtData(std::string mtName);
+
+    Glpa::MATERIAL getData();
 
     void load();
     void release();

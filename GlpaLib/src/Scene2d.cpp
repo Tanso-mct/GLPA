@@ -87,10 +87,10 @@ void Glpa::Scene2d::release()
         {
             obj.second->release();
             deleteDrawOrder(obj.second);
-
-            rend.dRelease();
         }
     }
+
+    rend.dRelease();
 }
 
 std::string Glpa::Scene2d::GetNowImageAtPos(Glpa::Vec2d pos)

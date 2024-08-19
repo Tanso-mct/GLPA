@@ -1,11 +1,11 @@
 #include "Material.h"
 #include "ErrorHandler.h"
 
-Glpa::Material::Material(std::string argName, std::string argDiffuseFilePath)
+Glpa::Material::Material(std::string argName, std::string argBaseColorFilePath)
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
     name = argName;
-    diffuseFilePath = argDiffuseFilePath;
+    baseColorFilePath = argBaseColorFilePath;
     
 }
 
@@ -22,7 +22,7 @@ void Glpa::Material::setManager(Glpa::FileDataManager *argFileDataManager)
 
 int Glpa::Material::GetMtWidth(std::string mtName)
 {
-    if (mtName == Glpa::MATERIAL_DIFFUSE) return fileDataManager->getWidth(diffuseFilePath);
+    if (mtName == Glpa::MATERIAL_BASE_COLOR) return fileDataManager->getWidth(baseColorFilePath);
     else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getWidth(ormFilePath);
     else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getWidth(normalFilePath);
     else
@@ -34,7 +34,7 @@ int Glpa::Material::GetMtWidth(std::string mtName)
 
 int Glpa::Material::GetMtHeight(std::string mtName)
 {
-    if (mtName == Glpa::MATERIAL_DIFFUSE) return fileDataManager->getHeight(diffuseFilePath);
+    if (mtName == Glpa::MATERIAL_BASE_COLOR) return fileDataManager->getHeight(baseColorFilePath);
     else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getHeight(ormFilePath);
     else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getHeight(normalFilePath);
     else
@@ -46,9 +46,9 @@ int Glpa::Material::GetMtHeight(std::string mtName)
 
 LPDWORD Glpa::Material::GetMtData(std::string mtName)
 {
-    if (mtName == Glpa::MATERIAL_DIFFUSE) return fileDataManager->getData(diffuseFilePath);
-    else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getData(ormFilePath);
-    else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getData(normalFilePath);
+    if (mtName == Glpa::MATERIAL_BASE_COLOR) return fileDataManager->getPngData(baseColorFilePath);
+    else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getPngData(ormFilePath);
+    else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getPngData(normalFilePath);
     else
     {
         Glpa::runTimeError(__FILE__, __LINE__, {mtName + " is not a valid material name"});
@@ -56,13 +56,22 @@ LPDWORD Glpa::Material::GetMtData(std::string mtName)
     };
 }
 
+Glpa::MATERIAL Glpa::Material::getData()
+{
+    Glpa::MATERIAL material;
+
+    material.baseColor = fileDataManager->getPngData(baseColorFilePath);
+
+    return material;
+}
+
 void Glpa::Material::load()
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Material[" + name + "]");
     loaded = true;
 
-    fileDataManager->newFile(diffuseFilePath);
-    fileDataManager->load(diffuseFilePath);
+    fileDataManager->newFile(baseColorFilePath);
+    fileDataManager->load(baseColorFilePath);
 }
 
 void Glpa::Material::release()
@@ -70,5 +79,5 @@ void Glpa::Material::release()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Material[" + name + "]");
     loaded = false;
 
-    fileDataManager->release(diffuseFilePath);
+    fileDataManager->release(baseColorFilePath);
 }

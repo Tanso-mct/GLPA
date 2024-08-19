@@ -146,6 +146,7 @@
     <ClCompile Include="ExampleEntry.cpp" />
     <ClCompile Include="ExampleScene2d.cpp" />
     <ClCompile Include="ExampleScene3d.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\FileDataManager.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
@@ -167,12 +168,14 @@
     <ClCompile Include="src\Text.cpp" />
     <ClCompile Include="src\Ui.cpp" />
     <ClCompile Include="src\Vector.cpp" />
+    <ClCompile Include="src\ViewVolume.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExampleBase.h" />
     <ClInclude Include="ExampleScene2d.h" />
     <ClInclude Include="ExampleScene3d.h" />
+    <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Constant.h" />
     <ClInclude Include="include\FileDataManager.h" />
@@ -201,6 +204,7 @@
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\Ui.h" />
     <ClInclude Include="include\Vector.h" />
+    <ClInclude Include="include\ViewVolume.h" />
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <ItemGroup>

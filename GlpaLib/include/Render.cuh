@@ -9,6 +9,8 @@
 #include "Image.h"
 #include "Color.h"
 #include "Material.h"
+#include "Camera.h"
+#include "StationaryObject.h"
 
 #include <unordered_map>
 #include <map>
@@ -87,27 +89,66 @@ public :
     );
 };
 
+typedef struct _OBJECT3D_DATA
+{
+    int id;
+    int mtId;
+    Glpa::RANGE_RECT range;
+    Glpa::POLYGON* polygons;
+} OBJECT3D_DATA;
+
+typedef struct _OBJECT_INFO
+{
+    bool isVisible;
+    float pos[3];
+    float rot[3];
+    float scale[3];
+} OBJECT_INFO;
+
 class Render3d
 {
 private :
+    bool camMalloced = false;
+    bool objMtDataMalloced = false;
+    bool objInfoMalloced = false;
+
+    std::unordered_map<std::string, int> mtIdMap;
+    std::unordered_map<std::string, int> objIdMap;
+
+    Glpa::CAMERA* dCamData;
+    Glpa::MATERIAL* dMts;
+    Glpa::OBJECT3D_DATA* dObjData;
+    Glpa::OBJECT_INFO* dObjInfo;
+
+    void dMallocCamData(Glpa::Camera& cam);
+    void dReleaseCamData();
+
+    void dMallocObjsMtData
+    (
+        std::unordered_map<std::string, Glpa::SceneObject*>& objs, 
+        std::unordered_map<std::string, Glpa::Material*>& mts
+    );
+    void dReleaseObjsMtData();
+
+    void dMallocObjInfo(std::unordered_map<std::string, Glpa::SceneObject*>& objs);
+    void dReleaseObjInfo();
+
+    void prepareObjs();
+    void setVs();
+    void rasterize();
 
 public :
     Render3d();
     ~Render3d();
 
-    void dMallocData
+    void run
     (
-        std::unordered_map<std::string, Glpa::SceneObject*> objs, 
-        std::unordered_map<std::string, Glpa::Material*> mts,
-        int bufWidth, int bufHeight, int bufDpi
-    );
-
-    void  run
-    (
-        std::unordered_map<std::string, Glpa::SceneObject*> objs, 
-        std::unordered_map<std::string, Glpa::Material*> mts,
+        std::unordered_map<std::string, Glpa::SceneObject*>& objs, 
+        std::unordered_map<std::string, Glpa::Material*>& mts, Glpa::Camera& cam,
         LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
     );
+
+    void dRelease();
 };
 
 }

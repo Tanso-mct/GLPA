@@ -8,6 +8,15 @@
 namespace Glpa
 {
 
+typedef struct _RANGE_RECT
+{
+    float origin[3];
+    float opposite[3];
+
+    float wv[8][3];
+
+} RANGE_RECT;
+
 class RangeRect
 {
 private :
@@ -26,7 +35,7 @@ public :
     void addRangeV(Glpa::Vec3d* wv);
 
     void setWvs();
-    std::vector<Glpa::Vec3d> getWvs() const {return wvs;}
+    Glpa::RANGE_RECT getData();
 
     void setStatus(bool value) {isStatus = value;}
     bool getStatus() const {return isStatus;}

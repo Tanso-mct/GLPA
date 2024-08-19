@@ -218,24 +218,6 @@ void Glpa::Render2d::run
     }
 }
 
-Glpa::Render3d::Render3d()
-{
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
-}
-
-Glpa::Render3d::~Render3d()
-{
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
-}
-
-void Glpa::Render3d::run(
-    std::unordered_map<std::string, Glpa::SceneObject*> objs, 
-    std::unordered_map<std::string, Glpa::Material*> mts,
-    LPDWORD buf, int bufWidth, int bufHeight, int bufDpi
-){
-    
-}
-
 __global__ void Glpa::Gpu2dDraw
 (
     int *imgPosX, int *imgPosY, int* imgWidth, int* imgHeight, LPDWORD *imgData, int imgAmount,
@@ -297,4 +279,158 @@ __global__ void Glpa::Gpu2dDraw
             }
         }
     }
+}
+
+Glpa::Render3d::Render3d()
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
+}
+
+Glpa::Render3d::~Render3d()
+{
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
+}
+
+void Glpa::Render3d::dMallocCamData(Glpa::Camera& cam)
+{
+    if (camMalloced) return;
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
+    cudaMalloc(&dCamData, sizeof(Glpa::CAMERA));
+    cudaMemcpy(dCamData, &cam.getData(), sizeof(Glpa::CAMERA), cudaMemcpyHostToDevice);
+}
+
+void Glpa::Render3d::dReleaseCamData()
+{
+    if (!camMalloced) return;
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
+    cudaFree(dCamData);
+    camMalloced = false;
+}
+
+void Glpa::Render3d::dMallocObjsMtData
+(
+    std::unordered_map<std::string, Glpa::SceneObject*>& objs,
+    std::unordered_map<std::string, Glpa::Material*>& mts
+){
+    if (objMtDataMalloced) return;
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
+
+    Glpa::MATERIAL* hMts = new Glpa::MATERIAL[mts.size()];
+    int mtId = 0;
+    for (auto& pair : mts)
+    {
+        hMts[mtId] = pair.second->getData();
+        mtIdMap[pair.first] = mtId;
+        mtId++;
+    }
+    cudaMalloc(&dMts, mtId * sizeof(Glpa::MATERIAL));
+    cudaMemcpy(dMts, hMts, mtId * sizeof(Glpa::MATERIAL), cudaMemcpyHostToDevice);
+    delete[] hMts;
+
+    Glpa::OBJECT3D_DATA* hObjData = new Glpa::OBJECT3D_DATA[objs.size()];
+    int objId = 0;
+    for (auto& pair : objs)
+    {
+        if (Glpa::StationaryObject* obj = dynamic_cast<Glpa::StationaryObject*>(pair.second))
+        {
+            hObjData[objId].id = objId;
+            hObjData[objId].mtId = mtIdMap[obj->GetMaterial()->getName()];
+            hObjData[objId].range = obj->getRangeRectData();
+
+            std::vector<Glpa::POLYGON> polygons = obj->getPolyData();
+            hObjData[objId].polygons = new Glpa::POLYGON[polygons.size()];
+
+            for (int i = 0; i < polygons.size(); i++)
+            {
+                hObjData[objId].polygons[i] = polygons[i];
+            }
+
+            objIdMap[pair.first] = objId;
+            objId++;
+        }
+    }
+
+    cudaMalloc(&dObjData, objId * sizeof(Glpa::OBJECT3D_DATA));
+    cudaMemcpy(dObjData, hObjData, objId * sizeof(Glpa::OBJECT3D_DATA), cudaMemcpyHostToDevice);
+    delete[] hObjData->polygons;
+    delete[] hObjData;
+}
+
+void Glpa::Render3d::dReleaseObjsMtData()
+{
+    if (!objMtDataMalloced) return;
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
+
+    cudaFree(dObjData);
+    objMtDataMalloced = false;
+}
+
+void Glpa::Render3d::dMallocObjInfo(std::unordered_map<std::string, Glpa::SceneObject *> &objs)
+{
+    if (objInfoMalloced)
+    {
+        dReleaseObjInfo();
+    };
+
+    Glpa::OBJECT_INFO* hObjInfo = new Glpa::OBJECT_INFO[objs.size()];
+    for (auto& pair : objIdMap)
+    {
+        if (Glpa::StationaryObject* obj = dynamic_cast<Glpa::StationaryObject*>(objs[pair.first]))
+        {
+            hObjInfo[pair.second].isVisible = obj->GetVisible();
+            Vec3d pos = obj->GetPos();
+            hObjInfo[pair.second].pos[0] = pos.x;
+            hObjInfo[pair.second].pos[1] = pos.y;
+            hObjInfo[pair.second].pos[2] = pos.z;
+
+            Vec3d rot = obj->GetRotate();
+            hObjInfo[pair.second].rot[0] = rot.x;
+            hObjInfo[pair.second].rot[1] = rot.y;
+            hObjInfo[pair.second].rot[2] = rot.z;
+
+            Vec3d scale = obj->GetScale();
+            hObjInfo[pair.second].scale[0] = scale.x;
+            hObjInfo[pair.second].scale[1] = scale.y;
+            hObjInfo[pair.second].scale[2] = scale.z;
+        }
+    }
+
+    cudaMalloc(&dObjInfo, objIdMap.size() * sizeof(Glpa::OBJECT_INFO));
+    cudaMemcpy(dObjInfo, hObjInfo, objIdMap.size() * sizeof(Glpa::OBJECT_INFO), cudaMemcpyHostToDevice);
+    delete[] hObjInfo;
+}
+
+void Glpa::Render3d::dReleaseObjInfo()
+{
+    if (!objInfoMalloced) return;
+    cudaFree(dObjInfo);
+    objInfoMalloced = false;
+}
+
+void Glpa::Render3d::prepareObjs()
+{
+}
+
+void Glpa::Render3d::setVs()
+{
+}
+
+void Glpa::Render3d::rasterize()
+{
+}
+
+void Glpa::Render3d::run(
+    std::unordered_map<std::string, Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts,
+    Glpa::Camera &cam, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
+{
+    if (!camMalloced) dMallocCamData(cam);
+    if (!objMtDataMalloced) dMallocObjsMtData(objs, mts);
+    dMallocObjInfo(objs);
+}
+
+void Glpa::Render3d::dRelease()
+{
+    dReleaseCamData();
+    dReleaseObjsMtData();
+    dReleaseObjInfo();
 }

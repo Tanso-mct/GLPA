@@ -120,6 +120,12 @@
     <ClCompile Include="src\Material.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewVolume.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExampleBase.h">
@@ -204,6 +210,12 @@
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
     <ClInclude Include="include\Material.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Camera.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ViewVolume.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
   </ItemGroup>

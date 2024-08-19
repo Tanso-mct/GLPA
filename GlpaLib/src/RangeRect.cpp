@@ -44,3 +44,25 @@ void Glpa::RangeRect::setWvs()
     wvs.push_back(Glpa::Vec3d(opposite.x, origin.y, opposite.z));
     wvs.push_back(Glpa::Vec3d(origin.x, origin.y, opposite.z));
 }
+
+Glpa::RANGE_RECT Glpa::RangeRect::getData()
+{
+    Glpa::RANGE_RECT rangeRect;
+
+    rangeRect.origin[X] = origin.x;
+    rangeRect.origin[Y] = origin.y;
+    rangeRect.origin[Z] = origin.z;
+
+    rangeRect.opposite[X] = opposite.x;
+    rangeRect.opposite[Y] = opposite.y;
+    rangeRect.opposite[Z] = opposite.z;
+
+    for (int i = 0; i < 8; i++)
+    {
+        rangeRect.wv[i][X] = wvs[i].x;
+        rangeRect.wv[i][Y] = wvs[i].y;
+        rangeRect.wv[i][Z] = wvs[i].z;
+    }
+
+    return rangeRect;
+}
