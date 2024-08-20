@@ -218,6 +218,9 @@
     <ClInclude Include="include\ViewVolume.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
+    <ClInclude Include="include\TriangleRatio.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">

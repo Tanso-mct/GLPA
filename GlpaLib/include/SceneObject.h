@@ -11,6 +11,22 @@
 namespace Glpa
 {
 
+typedef struct _OBJECT3D_DATA
+{
+    int id;
+    int mtId;
+    Glpa::RANGE_RECT range;
+    Glpa::POLYGON* polygons;
+} OBJECT3D_DATA;
+
+typedef struct _OBJECT_INFO
+{
+    bool isVisible;
+    float pos[3];
+    float rot[3];
+    float scale[3];
+} OBJECT_INFO;
+
 class SceneObject
 {
 protected :

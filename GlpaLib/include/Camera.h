@@ -2,6 +2,10 @@
 #define GLPA_CAMERA_H_
 
 #include "ViewVolume.h"
+#include "Matrix.h"
+#include "TriangleRatio.h"
+
+#include <cmath>
 
 namespace Glpa
 {
@@ -14,6 +18,8 @@ typedef struct _CAMERA
     float aspectRatio[2];
     float nearZ;
     float farZ;
+
+    float mtTransRot[4][4];
 } CAMERA;
 
 class Camera

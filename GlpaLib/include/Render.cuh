@@ -89,21 +89,14 @@ public :
     );
 };
 
-typedef struct _OBJECT3D_DATA
-{
-    int id;
-    int mtId;
-    Glpa::RANGE_RECT range;
-    Glpa::POLYGON* polygons;
-} OBJECT3D_DATA;
 
-typedef struct _OBJECT_INFO
-{
-    bool isVisible;
-    float pos[3];
-    float rot[3];
-    float scale[3];
-} OBJECT_INFO;
+__global__ void GpuPrepareObj
+(
+    Glpa::OBJECT3D_DATA* objData,
+    Glpa::OBJECT_INFO* objInfo,
+    Glpa::CAMERA* camData,
+    int objAmount    
+);
 
 class Render3d
 {
@@ -120,8 +113,8 @@ private :
     Glpa::OBJECT3D_DATA* dObjData;
     Glpa::OBJECT_INFO* dObjInfo;
 
-    void dMallocCamData(Glpa::Camera& cam);
-    void dReleaseCamData();
+    void dMallocCam(Glpa::Camera& cam);
+    void dReleaseCam();
 
     void dMallocObjsMtData
     (

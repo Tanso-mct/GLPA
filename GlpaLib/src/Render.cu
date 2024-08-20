@@ -199,15 +199,14 @@ void Glpa::Render2d::run
         dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
         dim3 dimGrid(blocksX, blocksY);
 
-        Gpu2dDraw<<<dimGrid, dimBlock>>>
+        Glpa::Gpu2dDraw<<<dimGrid, dimBlock>>>
         (
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
             dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
         );
         cudaError_t error = cudaDeviceSynchronize();
         if (error != 0){
-            OutputDebugStringA("GlpaLib ERROR Render.cu - Processing with Cuda failed.\n");
-            throw std::runtime_error("Processing with Cuda failed.");
+            Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
         }
 
         cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
@@ -291,19 +290,20 @@ Glpa::Render3d::~Render3d()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
-void Glpa::Render3d::dMallocCamData(Glpa::Camera& cam)
+void Glpa::Render3d::dMallocCam(Glpa::Camera& cam)
 {
-    if (camMalloced) return;
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
+    if (camMalloced) dReleaseCam();
     cudaMalloc(&dCamData, sizeof(Glpa::CAMERA));
     cudaMemcpy(dCamData, &cam.getData(), sizeof(Glpa::CAMERA), cudaMemcpyHostToDevice);
+
+    camMalloced = true;
 }
 
-void Glpa::Render3d::dReleaseCamData()
+void Glpa::Render3d::dReleaseCam()
 {
     if (!camMalloced) return;
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
     cudaFree(dCamData);
+
     camMalloced = false;
 }
 
@@ -319,7 +319,19 @@ void Glpa::Render3d::dMallocObjsMtData
     int mtId = 0;
     for (auto& pair : mts)
     {
-        hMts[mtId] = pair.second->getData();
+        cudaMalloc
+        (
+            &hMts[mtId].baseColor, 
+            pair.second->GetMtWidth(Glpa::MATERIAL_BASE_COLOR) * pair.second->GetMtHeight(Glpa::MATERIAL_BASE_COLOR) * sizeof(DWORD)
+        );
+        cudaMemcpy
+        (
+            hMts[mtId].baseColor, 
+            pair.second->GetMtData(Glpa::MATERIAL_BASE_COLOR), 
+            pair.second->GetMtWidth(Glpa::MATERIAL_BASE_COLOR) * pair.second->GetMtHeight(Glpa::MATERIAL_BASE_COLOR) * sizeof(DWORD), 
+            cudaMemcpyHostToDevice
+        );
+
         mtIdMap[pair.first] = mtId;
         mtId++;
     }
@@ -338,12 +350,8 @@ void Glpa::Render3d::dMallocObjsMtData
             hObjData[objId].range = obj->getRangeRectData();
 
             std::vector<Glpa::POLYGON> polygons = obj->getPolyData();
-            hObjData[objId].polygons = new Glpa::POLYGON[polygons.size()];
-
-            for (int i = 0; i < polygons.size(); i++)
-            {
-                hObjData[objId].polygons[i] = polygons[i];
-            }
+            cudaMalloc(&hObjData[objId].polygons, polygons.size() * sizeof(Glpa::POLYGON));
+            cudaMemcpy(hObjData[objId].polygons, polygons.data(), polygons.size() * sizeof(Glpa::POLYGON), cudaMemcpyHostToDevice);
 
             objIdMap[pair.first] = objId;
             objId++;
@@ -352,8 +360,9 @@ void Glpa::Render3d::dMallocObjsMtData
 
     cudaMalloc(&dObjData, objId * sizeof(Glpa::OBJECT3D_DATA));
     cudaMemcpy(dObjData, hObjData, objId * sizeof(Glpa::OBJECT3D_DATA), cudaMemcpyHostToDevice);
-    delete[] hObjData->polygons;
     delete[] hObjData;
+
+    objMtDataMalloced = true;
 }
 
 void Glpa::Render3d::dReleaseObjsMtData()
@@ -361,6 +370,22 @@ void Glpa::Render3d::dReleaseObjsMtData()
     if (!objMtDataMalloced) return;
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
 
+    for (int i = 0; i < mtIdMap.size(); i++)
+    {
+        Glpa::MATERIAL* hMt;
+        cudaMemcpy(&hMt, &dMts[i], sizeof(Glpa::MATERIAL*), cudaMemcpyDeviceToHost);
+
+        cudaFree(hMt->baseColor);
+    }
+    cudaFree(dMts);
+
+    for (int i = 0; i < objIdMap.size(); i++)
+    {
+        Glpa::OBJECT3D_DATA* hObjData;
+        cudaMemcpy(&hObjData, &dObjData[i], sizeof(Glpa::OBJECT3D_DATA*), cudaMemcpyDeviceToHost);
+
+        cudaFree(hObjData->polygons);
+    }
     cudaFree(dObjData);
     objMtDataMalloced = false;
 }
@@ -393,22 +418,137 @@ void Glpa::Render3d::dMallocObjInfo(std::unordered_map<std::string, Glpa::SceneO
             hObjInfo[pair.second].scale[1] = scale.y;
             hObjInfo[pair.second].scale[2] = scale.z;
         }
+        else
+        {
+            Glpa::outputErrorLog(__FILE__, __LINE__, {"Object is not a StationaryObject."});
+        }
     }
 
     cudaMalloc(&dObjInfo, objIdMap.size() * sizeof(Glpa::OBJECT_INFO));
     cudaMemcpy(dObjInfo, hObjInfo, objIdMap.size() * sizeof(Glpa::OBJECT_INFO), cudaMemcpyHostToDevice);
     delete[] hObjInfo;
+
+    objInfoMalloced = true;
 }
 
 void Glpa::Render3d::dReleaseObjInfo()
 {
     if (!objInfoMalloced) return;
     cudaFree(dObjInfo);
+
     objInfoMalloced = false;
+}
+
+__global__ void Glpa::GpuPrepareObj
+(
+    Glpa::OBJECT3D_DATA* objData,
+    Glpa::OBJECT_INFO* objInfo,
+    Glpa::CAMERA* camData,
+    int objAmount  
+){
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    const int X = 0;
+    const int Y = 1;
+    const int Z = 2;
+
+    if (i < objAmount)
+    {
+        int objRectStatus = 0;
+        float objRectOrigin[3];
+        float objRectOpposite[3];
+        for (int vI = 0; vI < 8; vI++)
+        {
+            float vec3d[3] = {objData->range.wv[vI][X], objData->range.wv[vI][Y], objData->range.wv[vI][Z]};
+
+            float camObjVs[3] = {
+                vec3d[X] * camData->mtTransRot[0][0] + vec3d[Y] * camData->mtTransRot[0][1] + vec3d[Z] * camData->mtTransRot[0][2] + 1 * camData->mtTransRot[0][3],
+                vec3d[X] * camData->mtTransRot[1][0] + vec3d[Y] * camData->mtTransRot[1][1] + vec3d[Z] * camData->mtTransRot[1][2] + 1 * camData->mtTransRot[1][3],
+                vec3d[X] * camData->mtTransRot[2][0] + vec3d[Y] * camData->mtTransRot[2][1] + vec3d[Z] * camData->mtTransRot[2][2] + 1 * camData->mtTransRot[2][3]
+            };
+
+            int objRectStatusIF = (objRectStatus > 0) ? TRUE : FALSE;
+
+            objRectOrigin[X] = (objRectStatusIF == FALSE) ? camObjVs[X] : (camObjVs[X] < objRectOrigin[X]) ? camObjVs[X] : objRectOrigin[X];
+            objRectOrigin[Y] = (objRectStatusIF == FALSE) ? camObjVs[Y] : (camObjVs[Y] < objRectOrigin[Y]) ? camObjVs[Y] : objRectOrigin[Y];
+            objRectOrigin[Z] = (objRectStatusIF == FALSE) ? camObjVs[Z] : (camObjVs[Z] > objRectOrigin[Z]) ? camObjVs[Z] : objRectOrigin[Z];
+
+            objRectOpposite[X] = (objRectStatusIF == FALSE) ? camObjVs[X] : (camObjVs[X] > objRectOpposite[X]) ? camObjVs[X] : objRectOpposite[X];
+            objRectOpposite[Y] = (objRectStatusIF == FALSE) ? camObjVs[Y] : (camObjVs[Y] > objRectOpposite[Y]) ? camObjVs[Y] : objRectOpposite[Y];
+            objRectOpposite[Z] = (objRectStatusIF == FALSE) ? camObjVs[Z] : (camObjVs[Z] < objRectOpposite[Z]) ? camObjVs[Z] : objRectOpposite[Z];
+
+            objRectStatus += 1;
+
+        }
+
+        float objOppositeVs[4][3] = {
+            {objRectOrigin[X], 0, objRectOpposite[Z]},
+            {objRectOpposite[X], 0, objRectOpposite[Z]},
+            {0, objRectOrigin[Y], objRectOpposite[Z]},
+            {0, objRectOpposite[Y], objRectOpposite[Z]}
+        };
+
+
+        float zVec[3] = {0, 0, -1};
+        float vecsCos[4];
+
+        for (int aryI = 0; aryI < 4; aryI++)
+        {
+            float calcObjOppositeV[3] = {
+                objOppositeVs[aryI][X],
+                objOppositeVs[aryI][Y],
+                objOppositeVs[aryI][Z]
+            };
+
+            // VEC_GET_VECS_COS(zVec, calcObjOppositeV, vecsCos[aryI]);
+        }
+
+        // int objZInIF = (objRectOrigin[Z] >= -camFarZ && objRectOpposite[Z] <= -camNearZ) ? TRUE : FALSE;
+
+        // // True if positive, false if negative.
+        // int xzOriginSymbol = (objRectOrigin[X] >= 0) ? TRUE : FALSE;
+        // int xzOppositeSymbol = (objRectOpposite[X] >= 0) ? TRUE : FALSE;
+        // int yzOriginSymbol = (objRectOrigin[Y] >= 0) ? TRUE : FALSE;
+        // int yzOppositeSymbol = (objRectOpposite[Y] >= 0) ? TRUE : FALSE;
+
+        // int objXzInIF = 
+        // (
+        //     (xzOriginSymbol == TRUE && vecsCos[0] >= camViewAngleCos[X]) || 
+        //     (xzOriginSymbol == FALSE && xzOppositeSymbol == TRUE) ||
+        //     (xzOppositeSymbol == TRUE && vecsCos[1] >= camViewAngleCos[X])
+        // ) ? TRUE : FALSE;
+
+        // int objYzInIF = 
+        // (
+        //     (yzOriginSymbol == TRUE && vecsCos[2] >= camViewAngleCos[Y]) || 
+        //     (yzOriginSymbol == FALSE && yzOppositeSymbol == TRUE) || 
+        //     (xzOppositeSymbol == TRUE && vecsCos[3] >= camViewAngleCos[Y])
+        // ) ? TRUE : FALSE;
+
+        // int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
+
+        // result[objInIF] = TRUE;
+    }
 }
 
 void Glpa::Render3d::prepareObjs()
 {
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSize = objIdMap.size();
+    int desiredThreadsPerBlock = 256;
+
+    int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
+    int threadsPerBlock = std::min(desiredThreadsPerBlock, deviceProp.maxThreadsPerBlock);
+
+    dim3 dimBlock(threadsPerBlock);
+    dim3 dimGrid(blocks);
+
+    GpuPrepareObj<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dataSize);
+    cudaDeviceSynchronize();
+    cudaError_t error = cudaGetLastError();
+    if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 }
 
 void Glpa::Render3d::setVs()
@@ -423,14 +563,18 @@ void Glpa::Render3d::run(
     std::unordered_map<std::string, Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts,
     Glpa::Camera &cam, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
 {
-    if (!camMalloced) dMallocCamData(cam);
+    dMallocCam(cam);
     if (!objMtDataMalloced) dMallocObjsMtData(objs, mts);
     dMallocObjInfo(objs);
+
+    prepareObjs();
+    setVs();
+    rasterize();
 }
 
 void Glpa::Render3d::dRelease()
 {
-    dReleaseCamData();
+    dReleaseCam();
     dReleaseObjsMtData();
     dReleaseObjInfo();
 }

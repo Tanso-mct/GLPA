@@ -70,6 +70,8 @@ constexpr const char* MATERIAL_BASE_COLOR = "material_base_color";
 constexpr const char* MATERIAL_ORM = "material_occlusion_roughness_metallic";
 constexpr const char* MATERIAL_NORMAL = "material_normal";
 
+constexpr const float PI = 3.14159265358979323846f;
+
 
 }
 

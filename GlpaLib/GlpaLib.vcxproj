@@ -202,6 +202,7 @@
     <ClInclude Include="include\StationaryObject.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Text.h" />
+    <ClInclude Include="include\TriangleRatio.h" />
     <ClInclude Include="include\Ui.h" />
     <ClInclude Include="include\Vector.h" />
     <ClInclude Include="include\ViewVolume.h" />
