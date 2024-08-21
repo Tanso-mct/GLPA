@@ -19,7 +19,7 @@ typedef struct _GPU_RANGE_RECT
     GPU_VEC_3D opposite;
     GPU_VEC_3D wv[8];
 
-    __device__ void addRangeV(GPU_VEC_3D wv)
+    __device__ __host__ void addRangeV(GPU_VEC_3D wv)
     {
         GPU_IF(!isEmpty, b2)
         {
@@ -42,7 +42,7 @@ typedef struct _GPU_RANGE_RECT
         isEmpty = TRUE;
     }
 
-    __device__ void setWvs()
+    __device__ __host__ void setWvs()
     {
         wv[0] = GPU_VEC_3D(origin.x, opposite.y, origin.z);
         wv[1] = GPU_VEC_3D(opposite.x, opposite.y, origin.z);

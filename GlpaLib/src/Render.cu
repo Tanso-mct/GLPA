@@ -362,12 +362,12 @@ void Glpa::Render3d::dMallocObjsMtData
             Glpa::GPU_OBJECT3D_DATA objData;
             objData.id = objId;
             objData.mtId = mtIdMap[obj->GetMaterial()->getName()];
-            
-            objData.range = obj->getRangeRectData();
 
             std::vector<Glpa::GPU_POLYGON> polygons = obj->getPolyData();
             err = cudaMalloc(&objData.polygons, polygons.size() * sizeof(Glpa::GPU_POLYGON));
             err = cudaMemcpy(objData.polygons, polygons.data(), polygons.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyHostToDevice);
+
+            objData.range = obj->getRangeRectData();
 
             objIdMap[pair.first] = objId;
 

@@ -105,13 +105,13 @@
     <ClCompile Include="src\StationaryObject.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
-    <ClCompile Include="src\Polygon.cpp">
-      <Filter>ヘッダー ファイル\GlpaLib</Filter>
-    </ClCompile>
     <ClCompile Include="src\Material.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Polygon.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
   </ItemGroup>

@@ -32,64 +32,64 @@ typedef struct _GPU_VEC_2D
     float x;
     float y;
 
-    __device__ _GPU_VEC_2D() : x(0), y(0) {}
-    __device__ _GPU_VEC_2D(float x, float y) : x(x), y(y) {}
+    __device__ __host__ _GPU_VEC_2D() : x(0), y(0) {}
+    __device__ __host__ _GPU_VEC_2D(float x, float y) : x(x), y(y) {}
 
-    __device__ _GPU_VEC_2D operator+(const _GPU_VEC_2D& other) const
+    __device__ __host__ _GPU_VEC_2D operator+(const _GPU_VEC_2D& other) const
     {
         return _GPU_VEC_2D(x + other.x, y + other.y);
     }
 
-    __device__ _GPU_VEC_2D operator-(const _GPU_VEC_2D& other) const
+    __device__ __host__ _GPU_VEC_2D operator-(const _GPU_VEC_2D& other) const
     {
         return _GPU_VEC_2D(x - other.x, y - other.y);
     }
 
-    __device__ _GPU_VEC_2D operator*(float scalar) const
+    __device__ __host__ _GPU_VEC_2D operator*(float scalar) const
     {
         return _GPU_VEC_2D(x * scalar, y * scalar);
     }
 
-    __device__ _GPU_VEC_2D operator/(float scalar) const
+    __device__ __host__ _GPU_VEC_2D operator/(float scalar) const
     {
         return _GPU_VEC_2D(x / scalar, y / scalar);
     }
 
-    __device__ GPU_BOOL operator==(const _GPU_VEC_2D& other) const
+    __device__ __host__ GPU_BOOL operator==(const _GPU_VEC_2D& other) const
     {
         return (x == other.x && y == other.y) ? TRUE : FALSE;
     }
 
-    __device__ GPU_BOOL operator!=(const _GPU_VEC_2D& other) const
+    __device__ __host__ GPU_BOOL operator!=(const _GPU_VEC_2D& other) const
     {
         return (!(*this == other)) ? TRUE : FALSE;
     }
 
-    __device__ void  operator+=(const _GPU_VEC_2D& other)
+    __device__ __host__ void  operator+=(const _GPU_VEC_2D& other)
     {
         x += other.x;
         y += other.y;
     }
 
-    __device__ void  operator-=(const _GPU_VEC_2D& other)
+    __device__ __host__ void  operator-=(const _GPU_VEC_2D& other)
     {
         x -= other.x;
         y -= other.y;
     }
 
-    __device__ void  operator*=(float scalar)
+    __device__ __host__ void  operator*=(float scalar)
     {
         x *= scalar;
         y *= scalar;
     }
 
-    __device__ void  operator/=(float scalar)
+    __device__ __host__ void  operator/=(float scalar)
     {
         x /= scalar;
         y /= scalar;
     }
 
-    __device__ _GPU_VEC_2D operator=(const _GPU_VEC_2D& other)
+    __device__ __host__ _GPU_VEC_2D operator=(const _GPU_VEC_2D& other)
     {
         x = other.x;
         y = other.y;
@@ -180,68 +180,68 @@ typedef struct _GPU_VEC_3D
     float y;
     float z;
 
-    __device__ _GPU_VEC_3D() : x(0), y(0), z(0) {}
-    __device__ _GPU_VEC_3D(float x, float y, float z) : x(x), y(y), z(z) {}
+    __device__ __host__ _GPU_VEC_3D() : x(0), y(0), z(0) {}
+    __device__ __host__ _GPU_VEC_3D(float x, float y, float z) : x(x), y(y), z(z) {}
 
-    __device__ _GPU_VEC_3D operator+(const _GPU_VEC_3D& other) const
+    __device__ __host__ _GPU_VEC_3D operator+(const _GPU_VEC_3D& other) const
     {
         return _GPU_VEC_3D(x + other.x, y + other.y, z + other.z);
     }
 
-    __device__ _GPU_VEC_3D operator-(const _GPU_VEC_3D& other) const
+    __device__ __host__ _GPU_VEC_3D operator-(const _GPU_VEC_3D& other) const
     {
         return _GPU_VEC_3D(x - other.x, y - other.y, z - other.z);
     }
 
-    __device__ _GPU_VEC_3D operator*(float scalar) const
+    __device__ __host__ _GPU_VEC_3D operator*(float scalar) const
     {
         return _GPU_VEC_3D(x * scalar, y * scalar, z * scalar);
     }
 
-    __device__ _GPU_VEC_3D operator/(float scalar) const
+    __device__ __host__ _GPU_VEC_3D operator/(float scalar) const
     {
         return _GPU_VEC_3D(x / scalar, y / scalar, z / scalar);
     }
 
-    __device__ GPU_BOOL operator==(const _GPU_VEC_3D& other) const
+    __device__ __host__ GPU_BOOL operator==(const _GPU_VEC_3D& other) const
     {
         return (x == other.x && y == other.y && z == other.z) ? TRUE : FALSE;
     }
 
-    __device__ GPU_BOOL operator!=(const _GPU_VEC_3D& other) const
+    __device__ __host__ GPU_BOOL operator!=(const _GPU_VEC_3D& other) const
     {
         return (!(*this == other)) ? TRUE : FALSE;
     }
 
-    __device__ void  operator+=(const _GPU_VEC_3D& other)
+    __device__ __host__ void  operator+=(const _GPU_VEC_3D& other)
     {
         x += other.x;
         y += other.y;
         z += other.z;
     }
 
-    __device__ void  operator-=(const _GPU_VEC_3D& other)
+    __device__ __host__ void  operator-=(const _GPU_VEC_3D& other)
     {
         x -= other.x;
         y -= other.y;
         z -= other.z;
     }
 
-    __device__ void  operator*=(float scalar)
+    __device__ __host__ void  operator*=(float scalar)
     {
         x *= scalar;
         y *= scalar;
         z *= scalar;
     }
 
-    __device__ void  operator/=(float scalar)
+    __device__ __host__ void  operator/=(float scalar)
     {
         x /= scalar;
         y /= scalar;
         z /= scalar;
     }
 
-    __device__ _GPU_VEC_3D operator=(const _GPU_VEC_3D& other)
+    __device__ __host__ _GPU_VEC_3D operator=(const _GPU_VEC_3D& other)
     {
         x = other.x;
         y = other.y;
@@ -337,57 +337,57 @@ public :
 typedef struct _GPU_VECTOR_MANAGER
 {
     // Vector 2D
-    __device__ float dot(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
+    __device__ __host__ float dot(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
     {
         return vec1.x * vec2.x + vec1.y * vec2.y;
     }
 
-    __device__ float cross(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
+    __device__ __host__ float cross(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
     {
         return vec1.x * vec2.y - vec1.y * vec2.x;
     }
 
-    __device__ float getLength(Glpa::GPU_VEC_2D vec)
+    __device__ __host__ float getLength(Glpa::GPU_VEC_2D vec)
     {
         return std::sqrtf(vec.x * vec.x + vec.y * vec.y);
     }
 
-    __device__ Glpa::GPU_VEC_2D normalize(Glpa::GPU_VEC_2D vec)
+    __device__ __host__ Glpa::GPU_VEC_2D normalize(Glpa::GPU_VEC_2D vec)
     {
         float length = getLength(vec);
         return Glpa::GPU_VEC_2D(vec.x / length, vec.y / length);
     }
 
-    __device__ float cos(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
+    __device__ __host__ float cos(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
     {
         return dot(vec1, vec2) / (getLength(vec1) * getLength(vec2));
     }
 
     // Vector 3D
-    __device__ float dot(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
+    __device__ __host__ float dot(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
     {
         return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
     }
 
-    __device__ Glpa::GPU_VEC_3D cross(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
+    __device__ __host__ Glpa::GPU_VEC_3D cross(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
     {
         return Glpa::GPU_VEC_3D(vec1.y * vec2.z - vec1.z * vec2.y,
                                 vec1.z * vec2.x - vec1.x * vec2.z,
                                 vec1.x * vec2.y - vec1.y * vec2.x);
     }
 
-    __device__ float getLength(Glpa::GPU_VEC_3D vec)
+    __device__ __host__ float getLength(Glpa::GPU_VEC_3D vec)
     {
         return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
     } 
 
-    __device__ Glpa::GPU_VEC_3D normalize(Glpa::GPU_VEC_3D vec)
+    __device__ __host__ Glpa::GPU_VEC_3D normalize(Glpa::GPU_VEC_3D vec)
     {
         float length = getLength(vec);
         return Glpa::GPU_VEC_3D(vec.x / length, vec.y / length, vec.z / length);
     }
 
-    __device__ float cos(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
+    __device__ __host__ float cos(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
     {
         return dot(vec1, vec2) / (getLength(vec1) * getLength(vec2));
     }

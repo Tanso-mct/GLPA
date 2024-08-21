@@ -39,7 +39,7 @@ typedef struct _GPU_MAT_4X4
         }
     }
 
-    __device__ Glpa::GPU_VEC_3D productLeft3x1(Glpa::GPU_VEC_3D& vec)
+    __device__ __host__ Glpa::GPU_VEC_3D productLeft3x1(Glpa::GPU_VEC_3D& vec)
     {
         Glpa::GPU_VEC_3D result;
         result.x = m[0][0] * vec.x + m[0][1] * vec.y + m[0][2] * vec.z + m[0][3];
