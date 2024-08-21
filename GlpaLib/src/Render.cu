@@ -168,56 +168,7 @@ void Glpa::Render2d::dRelease()
     malloced = false;
 }
 
-void Glpa::Render2d::run
-(
-        std::unordered_map<std::string, Glpa::SceneObject*>& objs,
-        std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
-        LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
-){
-    dMalloc(objs, drawOrderMap, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
-
-    if (imgAmount != 0)
-    {
-        cudaDeviceProp deviceProp;
-        cudaGetDeviceProperties(&deviceProp, 0);
-
-        int dataSizeY = bufWidth;
-        int dataSizeX = bufHeight;
-
-        int desiredThreadsPerBlockX = 16;
-        int desiredThreadsPerBlockY = 16;
-
-        int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
-        int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
-
-        blocksX = min(blocksX, deviceProp.maxGridSize[0]);
-        blocksY = min(blocksY, deviceProp.maxGridSize[1]);
-
-        int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
-        int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
-
-        dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
-        dim3 dimGrid(blocksX, blocksY);
-
-        Glpa::Gpu2dDraw<<<dimGrid, dimBlock>>>
-        (
-            dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
-            dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
-        );
-        cudaError_t error = cudaDeviceSynchronize();
-        if (error != 0){
-            Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
-        }
-
-        cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
-    }
-    else
-    {
-        cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
-    }
-}
-
-__global__ void Glpa::Gpu2dDraw
+__global__ void Gpu2dDraw
 (
     int *imgPosX, int *imgPosY, int* imgWidth, int* imgHeight, LPDWORD *imgData, int imgAmount,
     LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, DWORD background
@@ -277,6 +228,55 @@ __global__ void Glpa::Gpu2dDraw
                 }
             }
         }
+    }
+}
+
+void Glpa::Render2d::run
+(
+        std::unordered_map<std::string, Glpa::SceneObject*>& objs,
+        std::map<int, std::vector<std::string>>& drawOrderMap, std::vector<std::string>& drawOrder,
+        LPDWORD buf, int bufWidth, int bufHeight, int bufDpi, std::string bgColor
+){
+    dMalloc(objs, drawOrderMap, drawOrder, bufWidth, bufHeight, bufDpi, bgColor);
+
+    if (imgAmount != 0)
+    {
+        cudaDeviceProp deviceProp;
+        cudaGetDeviceProperties(&deviceProp, 0);
+
+        int dataSizeY = bufWidth;
+        int dataSizeX = bufHeight;
+
+        int desiredThreadsPerBlockX = 16;
+        int desiredThreadsPerBlockY = 16;
+
+        int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+        int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+        blocksX = min(blocksX, deviceProp.maxGridSize[0]);
+        blocksY = min(blocksY, deviceProp.maxGridSize[1]);
+
+        int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+        int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+        dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+        dim3 dimGrid(blocksX, blocksY);
+
+        Gpu2dDraw<<<dimGrid, dimBlock>>>
+        (
+            dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
+            dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
+        );
+        cudaError_t error = cudaDeviceSynchronize();
+        if (error != 0){
+            Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+        }
+
+        cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
+    }
+    else
+    {
+        cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
     }
 }
 
@@ -439,7 +439,12 @@ void Glpa::Render3d::dReleaseObjInfo()
     objInfoMalloced = false;
 }
 
-__global__ void Glpa::GpuPrepareObj
+__device__ void DebugFunc(float& rt)
+{
+    rt = 0;
+}
+
+__global__ void GpuPrepareObj
 (
     Glpa::OBJECT3D_DATA* objData,
     Glpa::OBJECT_INFO* objInfo,
@@ -448,87 +453,88 @@ __global__ void Glpa::GpuPrepareObj
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
-    const int X = 0;
-    const int Y = 1;
-    const int Z = 2;
-
     if (i < objAmount)
     {
-        int objRectStatus = 0;
-        float objRectOrigin[3];
-        float objRectOpposite[3];
-        for (int vI = 0; vI < 8; vI++)
-        {
-            float vec3d[3] = {objData->range.wv[vI][X], objData->range.wv[vI][Y], objData->range.wv[vI][Z]};
+    
+    int objRectStatus = 0;
+    float objRectOrigin[3];
+    float objRectOpposite[3];
+    for (int vI = 0; vI < 8; vI++)
+    {
+        float vec3d[3] = {objData->range.wv[vI].x, objData->range.wv[vI].y, objData->range.wv[vI].z};
 
-            float camObjVs[3] = {
-                vec3d[X] * camData->mtTransRot[0][0] + vec3d[Y] * camData->mtTransRot[0][1] + vec3d[Z] * camData->mtTransRot[0][2] + 1 * camData->mtTransRot[0][3],
-                vec3d[X] * camData->mtTransRot[1][0] + vec3d[Y] * camData->mtTransRot[1][1] + vec3d[Z] * camData->mtTransRot[1][2] + 1 * camData->mtTransRot[1][3],
-                vec3d[X] * camData->mtTransRot[2][0] + vec3d[Y] * camData->mtTransRot[2][1] + vec3d[Z] * camData->mtTransRot[2][2] + 1 * camData->mtTransRot[2][3]
-            };
-
-            int objRectStatusIF = (objRectStatus > 0) ? TRUE : FALSE;
-
-            objRectOrigin[X] = (objRectStatusIF == FALSE) ? camObjVs[X] : (camObjVs[X] < objRectOrigin[X]) ? camObjVs[X] : objRectOrigin[X];
-            objRectOrigin[Y] = (objRectStatusIF == FALSE) ? camObjVs[Y] : (camObjVs[Y] < objRectOrigin[Y]) ? camObjVs[Y] : objRectOrigin[Y];
-            objRectOrigin[Z] = (objRectStatusIF == FALSE) ? camObjVs[Z] : (camObjVs[Z] > objRectOrigin[Z]) ? camObjVs[Z] : objRectOrigin[Z];
-
-            objRectOpposite[X] = (objRectStatusIF == FALSE) ? camObjVs[X] : (camObjVs[X] > objRectOpposite[X]) ? camObjVs[X] : objRectOpposite[X];
-            objRectOpposite[Y] = (objRectStatusIF == FALSE) ? camObjVs[Y] : (camObjVs[Y] > objRectOpposite[Y]) ? camObjVs[Y] : objRectOpposite[Y];
-            objRectOpposite[Z] = (objRectStatusIF == FALSE) ? camObjVs[Z] : (camObjVs[Z] < objRectOpposite[Z]) ? camObjVs[Z] : objRectOpposite[Z];
-
-            objRectStatus += 1;
-
-        }
-
-        float objOppositeVs[4][3] = {
-            {objRectOrigin[X], 0, objRectOpposite[Z]},
-            {objRectOpposite[X], 0, objRectOpposite[Z]},
-            {0, objRectOrigin[Y], objRectOpposite[Z]},
-            {0, objRectOpposite[Y], objRectOpposite[Z]}
+        float camObjVs[3] = {
+            vec3d[Glpa::X] * camData->mtTransRot[0][0] + vec3d[Glpa::Y] * camData->mtTransRot[0][1] + vec3d[Glpa::Z] * camData->mtTransRot[0][2] + 1 * camData->mtTransRot[0][3],
+            vec3d[Glpa::X] * camData->mtTransRot[1][0] + vec3d[Glpa::Y] * camData->mtTransRot[1][1] + vec3d[Glpa::Z] * camData->mtTransRot[1][2] + 1 * camData->mtTransRot[1][3],
+            vec3d[Glpa::X] * camData->mtTransRot[2][0] + vec3d[Glpa::Y] * camData->mtTransRot[2][1] + vec3d[Glpa::Z] * camData->mtTransRot[2][2] + 1 * camData->mtTransRot[2][3]
         };
 
+        int objRectStatusIF = (objRectStatus > 0) ? TRUE : FALSE;
 
-        float zVec[3] = {0, 0, -1};
-        float vecsCos[4];
+        objRectOrigin[Glpa::X] = (objRectStatusIF == FALSE) ? camObjVs[Glpa::X] : (camObjVs[Glpa::X] < objRectOrigin[Glpa::X]) ? camObjVs[Glpa::X] : objRectOrigin[Glpa::X];
+        objRectOrigin[Glpa::Y] = (objRectStatusIF == FALSE) ? camObjVs[Glpa::Y] : (camObjVs[Glpa::Y] < objRectOrigin[Glpa::Y]) ? camObjVs[Glpa::Y] : objRectOrigin[Glpa::Y];
+        objRectOrigin[Glpa::Z] = (objRectStatusIF == FALSE) ? camObjVs[Glpa::Z] : (camObjVs[Glpa::Z] > objRectOrigin[Glpa::Z]) ? camObjVs[Glpa::Z] : objRectOrigin[Glpa::Z];
 
-        for (int aryI = 0; aryI < 4; aryI++)
-        {
-            float calcObjOppositeV[3] = {
-                objOppositeVs[aryI][X],
-                objOppositeVs[aryI][Y],
-                objOppositeVs[aryI][Z]
-            };
+        objRectOpposite[Glpa::X] = (objRectStatusIF == FALSE) ? camObjVs[Glpa::X] : (camObjVs[Glpa::X] > objRectOpposite[Glpa::X]) ? camObjVs[Glpa::X] : objRectOpposite[Glpa::X];
+        objRectOpposite[Glpa::Y] = (objRectStatusIF == FALSE) ? camObjVs[Glpa::Y] : (camObjVs[Glpa::Y] > objRectOpposite[Glpa::Y]) ? camObjVs[Glpa::Y] : objRectOpposite[Glpa::Y];
+        objRectOpposite[Glpa::Z] = (objRectStatusIF == FALSE) ? camObjVs[Glpa::Z] : (camObjVs[Glpa::Z] < objRectOpposite[Glpa::Z]) ? camObjVs[Glpa::Z] : objRectOpposite[Glpa::Z];
 
-            // VEC_GET_VECS_COS(zVec, calcObjOppositeV, vecsCos[aryI]);
-        }
+        objRectStatus += 1;
 
-        // int objZInIF = (objRectOrigin[Z] >= -camFarZ && objRectOpposite[Z] <= -camNearZ) ? TRUE : FALSE;
-
-        // // True if positive, false if negative.
-        // int xzOriginSymbol = (objRectOrigin[X] >= 0) ? TRUE : FALSE;
-        // int xzOppositeSymbol = (objRectOpposite[X] >= 0) ? TRUE : FALSE;
-        // int yzOriginSymbol = (objRectOrigin[Y] >= 0) ? TRUE : FALSE;
-        // int yzOppositeSymbol = (objRectOpposite[Y] >= 0) ? TRUE : FALSE;
-
-        // int objXzInIF = 
-        // (
-        //     (xzOriginSymbol == TRUE && vecsCos[0] >= camViewAngleCos[X]) || 
-        //     (xzOriginSymbol == FALSE && xzOppositeSymbol == TRUE) ||
-        //     (xzOppositeSymbol == TRUE && vecsCos[1] >= camViewAngleCos[X])
-        // ) ? TRUE : FALSE;
-
-        // int objYzInIF = 
-        // (
-        //     (yzOriginSymbol == TRUE && vecsCos[2] >= camViewAngleCos[Y]) || 
-        //     (yzOriginSymbol == FALSE && yzOppositeSymbol == TRUE) || 
-        //     (xzOppositeSymbol == TRUE && vecsCos[3] >= camViewAngleCos[Y])
-        // ) ? TRUE : FALSE;
-
-        // int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
-
-        // result[objInIF] = TRUE;
     }
+
+    float objOppositeVs[4][3] = {
+        {objRectOrigin[Glpa::X], 0, objRectOpposite[Glpa::Z]},
+        {objRectOpposite[Glpa::X], 0, objRectOpposite[Glpa::Z]},
+        {0, objRectOrigin[Glpa::Y], objRectOpposite[Glpa::Z]},
+        {0, objRectOpposite[Glpa::Y], objRectOpposite[Glpa::Z]}
+    };
+
+
+    float zVec[3] = {0, 0, -1};
+    float vecsCos[4];
+
+    for (int aryI = 0; aryI < 4; aryI++)
+    {
+        float calcObjOppositeV[3] = {
+            objOppositeVs[aryI][Glpa::X],
+            objOppositeVs[aryI][Glpa::Y],
+            objOppositeVs[aryI][Glpa::Z]
+        };
+
+        // VEC_GET_VECS_COS(zVec, calcObjOppositeV, vecsCos[aryI]);
+    }
+
+    float temp;
+    DebugFunc(temp);
+
+    // int objZInIF = (objRectOrigin[Glpa::Z] >= -camFarZ && objRectOpposite[Glpa::Z] <= -camNearZ) ? TRUE : FALSE;
+
+    // // True if positive, false if negative.
+    // int xzOriginSymbol = (objRectOrigin[Glpa::X] >= 0) ? TRUE : FALSE;
+    // int xzOppositeSymbol = (objRectOpposite[Glpa::X] >= 0) ? TRUE : FALSE;
+    // int yzOriginSymbol = (objRectOrigin[Glpa::Y] >= 0) ? TRUE : FALSE;
+    // int yzOppositeSymbol = (objRectOpposite[Glpa::Y] >= 0) ? TRUE : FALSE;
+
+    // int objXzInIF = 
+    // (
+    //     (xzOriginSymbol == TRUE && vecsCos[0] >= camViewAngleCos[Glpa::X]) || 
+    //     (xzOriginSymbol == FALSE && xzOppositeSymbol == TRUE) ||
+    //     (xzOppositeSymbol == TRUE && vecsCos[1] >= camViewAngleCos[Glpa::X])
+    // ) ? TRUE : FALSE;
+
+    // int objYzInIF = 
+    // (
+    //     (yzOriginSymbol == TRUE && vecsCos[2] >= camViewAngleCos[Glpa::Y]) || 
+    //     (yzOriginSymbol == FALSE && yzOppositeSymbol == TRUE) || 
+    //     (xzOppositeSymbol == TRUE && vecsCos[3] >= camViewAngleCos[Glpa::Y])
+    // ) ? TRUE : FALSE;
+
+    // int objInIF = (objZInIF == TRUE && objXzInIF == TRUE && objYzInIF == TRUE) ? i + 1 : 0;
+
+    // result[objInIF] = TRUE;
+
+    } // if (i < objAmount)
 }
 
 void Glpa::Render3d::prepareObjs()

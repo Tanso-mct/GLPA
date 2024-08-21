@@ -2,6 +2,7 @@
 #define GLPA_RANGE_RECT_H_
 
 #include <vector>
+#include <Windows.h>
 
 #include "Vector.h"
 
@@ -10,12 +11,19 @@ namespace Glpa
 
 typedef struct _RANGE_RECT
 {
-    float origin[3];
-    float opposite[3];
+    GPU_VEC_3D origin;
+    GPU_VEC_3D opposite;
 
-    float wv[8][3];
-
+    GPU_VEC_3D wv[8];
 } RANGE_RECT;
+
+typedef struct _GPU_RANGE_RECT
+{
+    GPU_BOOL isEmpty = FALSE;
+
+    GPU_VEC_3D origin;
+    GPU_VEC_3D opposite;
+} GPU_RANGE_RECT;
 
 class RangeRect
 {

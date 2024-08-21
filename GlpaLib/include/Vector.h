@@ -100,6 +100,76 @@ public :
     }
 };
 
+typedef struct _GPU_VEC_3D
+{
+    float x;
+    float y;
+    float z;
+
+    _GPU_VEC_3D() : x(0), y(0), z(0) {}
+    _GPU_VEC_3D(float x, float y, float z) : x(x), y(y), z(z) {}
+
+    _GPU_VEC_3D operator+(const _GPU_VEC_3D& other) const
+    {
+        return _GPU_VEC_3D(x + other.x, y + other.y, z + other.z);
+    }
+
+    _GPU_VEC_3D operator-(const _GPU_VEC_3D& other) const
+    {
+        return _GPU_VEC_3D(x - other.x, y - other.y, z - other.z);
+    }
+
+    _GPU_VEC_3D operator*(float scalar) const
+    {
+        return _GPU_VEC_3D(x * scalar, y * scalar, z * scalar);
+    }
+
+    _GPU_VEC_3D operator/(float scalar) const
+    {
+        return _GPU_VEC_3D(x / scalar, y / scalar, z / scalar);
+    }
+
+    GPU_BOOL operator==(const _GPU_VEC_3D& other) const
+    {
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    GPU_BOOL operator!=(const _GPU_VEC_3D& other) const
+    {
+        return !(*this == other);
+    }
+
+    void operator+=(const _GPU_VEC_3D& other)
+    {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+    }
+
+    void operator-=(const _GPU_VEC_3D& other)
+    {
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+    }
+
+    void operator*=(float scalar)
+    {
+        x *= scalar;
+        y *= scalar;
+        z *= scalar;
+    }
+
+    void operator/=(float scalar)
+    {
+        x /= scalar;
+        y /= scalar;
+        z /= scalar;
+    }
+
+    
+} GPU_VEC_3D;
+
 class Vec3d : public Vector
 {
 public :

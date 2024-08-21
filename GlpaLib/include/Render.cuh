@@ -21,21 +21,6 @@
 namespace Glpa
 {
 
-__global__ void Gpu2dDraw
-(
-    int* imgPosX,
-    int* imgPosY,
-    int* imgWidth,
-    int* imgHeight,
-    LPDWORD* imgData,
-    int imgAmount,
-    LPDWORD buf,
-    int bufWidth,
-    int bufHeight,
-    int bufDpi,
-    DWORD background
-);
-
 class Render2d
 {
 private :
@@ -89,14 +74,6 @@ public :
     );
 };
 
-
-__global__ void GpuPrepareObj
-(
-    Glpa::OBJECT3D_DATA* objData,
-    Glpa::OBJECT_INFO* objInfo,
-    Glpa::CAMERA* camData,
-    int objAmount    
-);
 
 class Render3d
 {

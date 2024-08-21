@@ -367,8 +367,13 @@ void Glpa::ObjData::load()
             {
                 std::string innerContent = innerContents[i];
                 
-                int vNum = std::stoi(innerContent.substr(0, innerContent.find_first_of("/")));
-                int uvNum = std::stoi(innerContent.substr(innerContent.find_first_of("/") + 1, innerContent.find_last_of("/") - innerContent.find_first_of("/")));
+                int vNum = std::stoi(innerContent.substr(0, innerContent.find_first_of("/"))) - 1;
+                int uvNum 
+                = std::stoi
+                (
+                    innerContent.substr(innerContent.find_first_of("/") + 1, 
+                    innerContent.find_last_of("/") - innerContent.find_first_of("/"))
+                ) - 1;
 
                 polygon->addV(vNum, uvNum);
             }

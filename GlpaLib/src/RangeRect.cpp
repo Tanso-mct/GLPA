@@ -49,19 +49,19 @@ Glpa::RANGE_RECT Glpa::RangeRect::getData()
 {
     Glpa::RANGE_RECT rangeRect;
 
-    rangeRect.origin[X] = origin.x;
-    rangeRect.origin[Y] = origin.y;
-    rangeRect.origin[Z] = origin.z;
+    rangeRect.origin.x = origin.x;
+    rangeRect.origin.y = origin.y;
+    rangeRect.origin.z = origin.z;
 
-    rangeRect.opposite[X] = opposite.x;
-    rangeRect.opposite[Y] = opposite.y;
-    rangeRect.opposite[Z] = opposite.z;
+    rangeRect.opposite.x = opposite.x;
+    rangeRect.opposite.y = opposite.y;
+    rangeRect.opposite.z = opposite.z;
 
     for (int i = 0; i < 8; i++)
     {
-        rangeRect.wv[i][X] = wvs[i].x;
-        rangeRect.wv[i][Y] = wvs[i].y;
-        rangeRect.wv[i][Z] = wvs[i].z;
+        rangeRect.wv[i].x = wvs[i].x;
+        rangeRect.wv[i].y = wvs[i].y;
+        rangeRect.wv[i].z = wvs[i].z;
     }
 
     return rangeRect;

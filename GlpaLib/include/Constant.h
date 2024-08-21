@@ -1,6 +1,8 @@
 #ifndef GLPA_CONSTANT_H_
 #define GLPA_CONSTANT_H_
 
+#define GPU_BOOL int
+
 namespace Glpa 
 {
 
