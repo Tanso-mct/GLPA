@@ -11,6 +11,16 @@ Glpa::Camera::Camera(std::string argName, Glpa::Vec3d defPos, Glpa::Vec3d defRot
     aspectRatio = defAspectRatio;
     nearZ = defNearZ;
     farZ = defFarZ;
+
+    // Get screen size
+    nearScrSize.x = fabs(tan(Glpa::RtoD(fov / 2)) * -nearZ) * 2;
+    nearScrSize.y = fabs(nearScrSize.x * aspectRatio.y / aspectRatio.x);
+
+    farScrSize.x = fabs(tan(Glpa::RtoD(fov / 2)) * -farZ) * 2;
+    farScrSize.y = fabs(farScrSize.x * aspectRatio.y / aspectRatio.x);
+
+    fovXzCos = cos(Glpa::RtoD(fov / 2));
+    fovYzCos = fabs(-nearZ / sqrt(-nearZ*-nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
 }
 
 Glpa::Camera::~Camera()
@@ -18,28 +28,30 @@ Glpa::Camera::~Camera()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
-Glpa::CAMERA Glpa::Camera::getData()
+Glpa::GPU_CAMERA Glpa::Camera::getData()
 {
-    Glpa::CAMERA camera;
+    Glpa::GPU_CAMERA camera;
 
-    camera.pos[X] = pos.x;
-    camera.pos[Y] = pos.y;
-    camera.pos[Z] = pos.z;
+    camera.pos.x = pos.x;
+    camera.pos.y = pos.y;
+    camera.pos.z = pos.z;
 
-    camera.rotate[X] = rotate.x;
-    camera.rotate[Y] = rotate.y;
-    camera.rotate[Z] = rotate.z;
+    camera.rotate.x = rotate.x;
+    camera.rotate.y = rotate.y;
+    camera.rotate.z = rotate.z;
 
     camera.fov = fov;
+    camera.fovXzCos = fovXzCos;
+    camera.fovYzCos = fovYzCos;
 
-    camera.aspectRatio[X] = aspectRatio.x;
-    camera.aspectRatio[Y] = aspectRatio.y;
+    camera.aspectRatio.x = aspectRatio.x;
+    camera.aspectRatio.y = aspectRatio.y;
 
     camera.nearZ = nearZ;
     camera.farZ = farZ;
-    
-    Glpa::Matrix mtTransRot
-    ({
+
+    float mt4x4[16] =
+    {
         std::cos(Glpa::RtoD(rotate.z)) * std::cos(Glpa::RtoD(-rotate.y)), 
         std::cos(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::sin(Glpa::RtoD(-rotate.x)) - std::sin(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.x)), 
         std::cos(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::cos(Glpa::RtoD(-rotate.x)) - std::sin(Glpa::RtoD(-rotate.z)) * -std::sin(Glpa::RtoD(-rotate.x)), 
@@ -56,10 +68,9 @@ Glpa::CAMERA Glpa::Camera::getData()
         -pos.z,
 
         0, 0, 0, 1
-    });
+    };
 
-    mtTransRot.put(camera.mtTransRot);
-    
+    camera.mtTransRot.set(mt4x4);
     return camera;
 }
 

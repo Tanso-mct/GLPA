@@ -6,7 +6,7 @@
 #include "SceneObject.h"
 #include "Material.h"
 
-#include "Vector.h"
+#include "Vector.cuh"
 
 namespace Glpa
 {
@@ -40,8 +40,10 @@ public :
     void SetMaterial(Glpa::Material* value) {mt = value;}
     Glpa::Material* GetMaterial() const {return mt;}
 
-    std::vector<Glpa::POLYGON> getPolyData();
-    Glpa::RANGE_RECT getRangeRectData();
+    Glpa::GPU_OBJECT3D_INFO getInfo();
+
+    std::vector<Glpa::GPU_POLYGON> getPolyData();
+    Glpa::GPU_RANGE_RECT getRangeRectData();
 
     void load();
     void release();

@@ -5,27 +5,29 @@
 #include <locale>
 #include <codecvt>
 
-#include "Vector.h"
+#include "Vector.cuh"
 #include "FileDataManager.h"
 
 namespace Glpa
 {
 
-typedef struct _OBJECT3D_DATA
+typedef struct _GPU_OBJECT3D_DATA
 {
     int id;
     int mtId;
-    Glpa::RANGE_RECT range;
-    Glpa::POLYGON* polygons;
-} OBJECT3D_DATA;
+    Glpa::GPU_RANGE_RECT range;
+    Glpa::GPU_POLYGON* polygons;
+} GPU_OBJECT3D_DATA;
 
-typedef struct _OBJECT_INFO
+typedef struct _GPU_OBJECT_INFO
 {
-    bool isVisible;
-    float pos[3];
-    float rot[3];
-    float scale[3];
-} OBJECT_INFO;
+    GPU_BOOL isVisible = TRUE;
+    Glpa::GPU_VEC_3D pos;
+    Glpa::GPU_VEC_3D rot;
+    Glpa::GPU_VEC_3D scale;
+
+    GPU_BOOL isInVV = FALSE;
+} GPU_OBJECT3D_INFO;
 
 class SceneObject
 {

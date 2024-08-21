@@ -1,4 +1,4 @@
-#include "RangeRect.h"
+#include "RangeRect.cuh"
 #include "GlpaLog.h"
 
 Glpa::RangeRect::RangeRect()
@@ -13,7 +13,7 @@ Glpa::RangeRect::~RangeRect()
 
 void Glpa::RangeRect::addRangeV(Glpa::Vec3d *wv)
 {
-    if (!isStatus)
+    if (!isEmpty)
     {
         origin = (*wv);
         opposite = (*wv);
@@ -29,7 +29,7 @@ void Glpa::RangeRect::addRangeV(Glpa::Vec3d *wv)
         if ((*wv).z < opposite.z) opposite.z = (*wv).z;
     }
 
-    isStatus = true;
+    isEmpty = true;
 }
 
 void Glpa::RangeRect::setWvs()
@@ -45,9 +45,9 @@ void Glpa::RangeRect::setWvs()
     wvs.push_back(Glpa::Vec3d(origin.x, origin.y, opposite.z));
 }
 
-Glpa::RANGE_RECT Glpa::RangeRect::getData()
+Glpa::GPU_RANGE_RECT Glpa::RangeRect::getData()
 {
-    Glpa::RANGE_RECT rangeRect;
+    Glpa::GPU_RANGE_RECT rangeRect;
 
     rangeRect.origin.x = origin.x;
     rangeRect.origin.y = origin.y;

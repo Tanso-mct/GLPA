@@ -9,10 +9,10 @@
 namespace Glpa
 {
 
-typedef struct _MATERIAL
+typedef struct _GPU_MATERIAL
 {
     LPDWORD baseColor;
-} MATERIAL;
+} GPU_MATERIAL;
 
 class Material
 {
@@ -46,7 +46,7 @@ public :
     int GetMtHeight(std::string mtName);
     LPDWORD GetMtData(std::string mtName);
 
-    Glpa::MATERIAL getData();
+    Glpa::GPU_MATERIAL getData();
 
     void load();
     void release();

@@ -4,18 +4,18 @@
 #include <vector>
 #include <string>
 
-#include "Vector.h"
+#include "Vector.cuh"
 
 
 namespace Glpa
 {
 
-typedef struct _POLYGON
+typedef struct _GPU_POLYGON
 {
-    float wv[3][3];
-    float uv[3][2];
-    float normal[3];
-} POLYGON;
+    Glpa::GPU_VEC_3D wv[3];
+    Glpa::GPU_VEC_2D uv[3];
+    Glpa::GPU_VEC_3D normal;
+} GPU_POLYGON;
 
 class Polygon
 {
@@ -31,7 +31,7 @@ public :
     void addV(int argWvI, int argUvI);
     void setNormal(Glpa::Vec3d argNormal){normal = argNormal;};
 
-    Glpa::POLYGON getData(std::vector<Glpa::Vec3d*>& wv, std::vector<Glpa::Vec2d*>& uv);
+    Glpa::GPU_POLYGON getData(std::vector<Glpa::Vec3d*>& wv, std::vector<Glpa::Vec2d*>& uv);
 };
 
 }

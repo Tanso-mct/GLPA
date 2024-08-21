@@ -1,26 +1,30 @@
 #ifndef GLPA_CAMERA_H_
 #define GLPA_CAMERA_H_
 
-#include "ViewVolume.h"
-#include "Matrix.h"
+#include "Matrix.cuh"
 #include "TriangleRatio.h"
 
 #include <cmath>
+#include <string>
 
 namespace Glpa
 {
 
-typedef struct _CAMERA
+typedef struct _GPU_CAMERA
 {
-    float pos[3];
-    float rotate[3];
+    Glpa::GPU_VEC_3D pos;
+    Glpa::GPU_VEC_3D rotate;
+
     float fov;
-    float aspectRatio[2];
+    float fovXzCos;
+    float fovYzCos;
+
+    Glpa::GPU_VEC_2D aspectRatio;
     float nearZ;
     float farZ;
 
-    float mtTransRot[4][4];
-} CAMERA;
+    Glpa::GPU_MAT_4X4 mtTransRot;
+} GPU_CAMERA;
 
 class Camera
 {
@@ -30,11 +34,15 @@ private :
     Glpa::Vec3d rotate;
 
     float fov = 0.0f;
+    float fovXzCos = 0.0f;
+    float fovYzCos = 0.0f;
+
     Glpa::Vec2d aspectRatio;
     float nearZ = 0.0f;
     float farZ = 0.0f;
 
-    Glpa::ViewVolume* vv = nullptr;
+    Glpa::Vec2d nearScrSize;
+    Glpa::Vec2d farScrSize;
 
 public :
     Camera
@@ -46,7 +54,7 @@ public :
 
     std::string getName() const {return name;}
 
-    Glpa::CAMERA getData();
+    Glpa::GPU_CAMERA getData();
 
 };
 

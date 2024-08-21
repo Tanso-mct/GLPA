@@ -9,8 +9,8 @@
 #include "ErrorHandler.h"
 
 #include "Polygon.h"
-#include "RangeRect.h"
-#include "Vector.h"
+#include "RangeRect.cuh"
+#include "Vector.cuh"
 
 namespace Glpa 
 {
@@ -56,8 +56,8 @@ public :
     void load() override;
     void release() override;
 
-    std::vector<Glpa::POLYGON> getPolyData();
-    Glpa::RANGE_RECT getRangeRectData();
+    std::vector<Glpa::GPU_POLYGON> getPolyData();
+    Glpa::GPU_RANGE_RECT getRangeRectData();
 };
 
 class FileData
@@ -87,8 +87,8 @@ public :
     int getChannels(std::string path);
 
     LPDWORD getPngData(std::string path);
-    std::vector<Glpa::POLYGON> getPolyData(std::string path);
-    Glpa::RANGE_RECT getRangeRectData(std::string path);
+    std::vector<Glpa::GPU_POLYGON> getPolyData(std::string path);
+    Glpa::GPU_RANGE_RECT getRangeRectData(std::string path);
 
 
 };

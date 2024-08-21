@@ -1,4 +1,4 @@
-#include "Vector.h"
+#include "Vector.cuh"
 
 Glpa::Vec2d::Vec2d(float valueX, float valueY)
 {

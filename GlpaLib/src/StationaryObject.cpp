@@ -14,12 +14,32 @@ Glpa::StationaryObject::~StationaryObject()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
-std::vector<Glpa::POLYGON> Glpa::StationaryObject::getPolyData()
+Glpa::GPU_OBJECT3D_INFO Glpa::StationaryObject::getInfo()
+{
+    Glpa::GPU_OBJECT3D_INFO info;
+
+    info.isVisible = (visible) ? TRUE : FALSE;
+    info.pos.x = pos.x;
+    info.pos.y = pos.y;
+    info.pos.z = pos.z;
+
+    info.rot.x = rotate.x;
+    info.rot.y = rotate.y;
+    info.rot.z = rotate.z;
+
+    info.scale.x = scale.x;
+    info.scale.y = scale.y;
+    info.scale.z = scale.z;
+
+    return info;
+}
+
+std::vector<Glpa::GPU_POLYGON> Glpa::StationaryObject::getPolyData()
 {
     return fileDataManager->getPolyData(filePath);
 }
 
-Glpa::RANGE_RECT Glpa::StationaryObject::getRangeRectData()
+Glpa::GPU_RANGE_RECT Glpa::StationaryObject::getRangeRectData()
 {
     return fileDataManager->getRangeRectData(filePath);
 }

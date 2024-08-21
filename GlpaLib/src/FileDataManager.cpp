@@ -202,7 +202,7 @@ LPDWORD Glpa::FileDataManager::getPngData(std::string path)
     }
 }
 
-std::vector<Glpa::POLYGON> Glpa::FileDataManager::getPolyData(std::string path)
+std::vector<Glpa::GPU_POLYGON> Glpa::FileDataManager::getPolyData(std::string path)
 {
     if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
     {
@@ -219,7 +219,7 @@ std::vector<Glpa::POLYGON> Glpa::FileDataManager::getPolyData(std::string path)
     }
 }
 
-Glpa::RANGE_RECT Glpa::FileDataManager::getRangeRectData(std::string path)
+Glpa::GPU_RANGE_RECT Glpa::FileDataManager::getRangeRectData(std::string path)
 {
     if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
     {
@@ -428,11 +428,11 @@ void Glpa::ObjData::release()
     polygons.clear();
 }
 
-std::vector<Glpa::POLYGON> Glpa::ObjData::getPolyData()
+std::vector<Glpa::GPU_POLYGON> Glpa::ObjData::getPolyData()
 {
     if (polygons.size() != 0)
     {
-        std::vector<Glpa::POLYGON> polyData;
+        std::vector<Glpa::GPU_POLYGON> polyData;
         for (auto& polygon : polygons)
         {
             polyData.push_back(polygon->getData(wv, uv));
@@ -450,7 +450,7 @@ std::vector<Glpa::POLYGON> Glpa::ObjData::getPolyData()
     }
 }
 
-Glpa::RANGE_RECT Glpa::ObjData::getRangeRectData()
+Glpa::GPU_RANGE_RECT Glpa::ObjData::getRangeRectData()
 {
     if (rangeRect != nullptr)
     {

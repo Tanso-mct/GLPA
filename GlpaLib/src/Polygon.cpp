@@ -17,23 +17,23 @@ void Glpa::Polygon::addV(int argWvI, int argUvI)
     uvI.push_back(argUvI);
 }
 
-Glpa::POLYGON Glpa::Polygon::getData(std::vector<Glpa::Vec3d*>& wv, std::vector<Glpa::Vec2d*>& uv)
+Glpa::GPU_POLYGON Glpa::Polygon::getData(std::vector<Glpa::Vec3d*>& wv, std::vector<Glpa::Vec2d*>& uv)
 {
-    Glpa::POLYGON polygon;
+    Glpa::GPU_POLYGON polygon;
 
     for (int i = 0; i < 3; i++)
     {
-        polygon.wv[i][X] = wv[wvI[i]]->x;
-        polygon.wv[i][Y] = wv[wvI[i]]->y;
-        polygon.wv[i][Z] = wv[wvI[i]]->z;
+        polygon.wv[i].x = wv[wvI[i]]->x;
+        polygon.wv[i].y = wv[wvI[i]]->y;
+        polygon.wv[i].z = wv[wvI[i]]->z;
 
-        polygon.uv[i][X] = uv[uvI[i]]->x;
-        polygon.uv[i][Y] = uv[uvI[i]]->y;
+        polygon.uv[i].x = uv[uvI[i]]->x;
+        polygon.uv[i].y = uv[uvI[i]]->y;
     }
 
-    polygon.normal[X] = normal.x;
-    polygon.normal[Y] = normal.y;
-    polygon.normal[Z] = normal.z;
+    polygon.normal.x = normal.x;
+    polygon.normal.y = normal.y;
+    polygon.normal.z = normal.z;
 
     return polygon;
 }

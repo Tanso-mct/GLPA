@@ -162,9 +162,7 @@
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\Material.cpp" />
-    <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Polygon.cpp" />
-    <ClCompile Include="src\RangeRect.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
@@ -173,8 +171,6 @@
     <ClCompile Include="src\StationaryObject.cpp" />
     <ClCompile Include="src\Text.cpp" />
     <ClCompile Include="src\Ui.cpp" />
-    <ClCompile Include="src\Vector.cpp" />
-    <ClCompile Include="src\ViewVolume.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -193,13 +189,15 @@
     <ClInclude Include="include\GlpaLog.h" />
     <ClInclude Include="include\Image.h" />
     <ClInclude Include="include\Material.h" />
-    <ClInclude Include="include\Matrix.h" />
     <CudaCompile Include="include\Render.cuh">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
     </CudaCompile>
+    <CudaCompile Include="include\Matrix.cuh" />
     <ClInclude Include="include\Polygon.h" />
-    <ClInclude Include="include\RangeRect.h" />
+    <CudaCompile Include="include\RangeRect.cuh" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Scene2d.h" />
     <ClInclude Include="include\Scene3d.h" />
@@ -210,17 +208,21 @@
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\TriangleRatio.h" />
     <ClInclude Include="include\Ui.h" />
-    <ClInclude Include="include\Vector.h" />
-    <ClInclude Include="include\ViewVolume.h" />
+    <CudaCompile Include="include\Vector.cuh" />
     <ClInclude Include="include\Window.h" />
+    <CudaCompile Include="src\Matrix.cu" />
+    <CudaCompile Include="src\RangeRect.cu" />
+    <CudaCompile Include="src\Vector.cu" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="src\Render.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

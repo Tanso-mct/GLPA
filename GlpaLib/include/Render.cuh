@@ -85,10 +85,10 @@ private :
     std::unordered_map<std::string, int> mtIdMap;
     std::unordered_map<std::string, int> objIdMap;
 
-    Glpa::CAMERA* dCamData;
-    Glpa::MATERIAL* dMts;
-    Glpa::OBJECT3D_DATA* dObjData;
-    Glpa::OBJECT_INFO* dObjInfo;
+    Glpa::GPU_CAMERA* dCamData;
+    Glpa::GPU_MATERIAL* dMts;
+    Glpa::GPU_OBJECT3D_DATA* dObjData;
+    Glpa::GPU_OBJECT3D_INFO* dObjInfo;
 
     void dMallocCam(Glpa::Camera& cam);
     void dReleaseCam();

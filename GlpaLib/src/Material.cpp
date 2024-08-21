@@ -56,9 +56,9 @@ LPDWORD Glpa::Material::GetMtData(std::string mtName)
     };
 }
 
-Glpa::MATERIAL Glpa::Material::getData()
+Glpa::GPU_MATERIAL Glpa::Material::getData()
 {
-    Glpa::MATERIAL material;
+    Glpa::GPU_MATERIAL material;
 
     material.baseColor = fileDataManager->getPngData(baseColorFilePath);
 

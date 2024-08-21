@@ -3,6 +3,13 @@
 
 #define GPU_BOOL int
 
+#define GPU_CO(condition, trueValue, falseValue) \
+    condition ? trueValue : falseValue;
+
+#define GPU_IF(condition, branch) \
+    for(int branch = 0; branch < (condition) ? TRUE : FALSE; branch++) \
+
+
 namespace Glpa 
 {
 
