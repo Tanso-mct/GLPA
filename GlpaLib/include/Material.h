@@ -21,7 +21,7 @@ private :
     std::string name;
 
     // Diffuse texture
-    std::string baseColorFilePath;
+    std::string diffuseFilePath;
 
     // Occlusion Roughness Metallic texture
     std::string ormFilePath;

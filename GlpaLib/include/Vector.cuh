@@ -35,6 +35,12 @@ typedef struct _GPU_VEC_2D
     __device__ __host__ _GPU_VEC_2D() : x(0), y(0) {}
     __device__ __host__ _GPU_VEC_2D(float x, float y) : x(x), y(y) {}
 
+    __device__ __host__ void set(float argX, float argY)
+    {
+        x = argX;
+        y = argY;
+    }
+
     __device__ __host__ _GPU_VEC_2D operator+(const _GPU_VEC_2D& other) const
     {
         return _GPU_VEC_2D(x + other.x, y + other.y);
@@ -163,7 +169,7 @@ public :
         y /= scalar;
     }
 
-    Glpa::Vec2d operator=(const std::initializer_list<float>& values)
+    Vec2d operator=(const std::initializer_list<float>& values)
     {
         if (values.size() == 2) {
             auto it = values.begin();
@@ -182,6 +188,13 @@ typedef struct _GPU_VEC_3D
 
     __device__ __host__ _GPU_VEC_3D() : x(0), y(0), z(0) {}
     __device__ __host__ _GPU_VEC_3D(float x, float y, float z) : x(x), y(y), z(z) {}
+
+    __device__ __host__ void set(float argX, float argY, float argZ)
+    {
+        x = argX;
+        y = argY;
+        z = argZ;
+    }
 
     __device__ __host__ _GPU_VEC_3D operator+(const _GPU_VEC_3D& other) const
     {
@@ -213,28 +226,28 @@ typedef struct _GPU_VEC_3D
         return (!(*this == other)) ? TRUE : FALSE;
     }
 
-    __device__ __host__ void  operator+=(const _GPU_VEC_3D& other)
+    __device__ __host__ void operator+=(const _GPU_VEC_3D& other)
     {
         x += other.x;
         y += other.y;
         z += other.z;
     }
 
-    __device__ __host__ void  operator-=(const _GPU_VEC_3D& other)
+    __device__ __host__ void operator-=(const _GPU_VEC_3D& other)
     {
         x -= other.x;
         y -= other.y;
         z -= other.z;
     }
 
-    __device__ __host__ void  operator*=(float scalar)
+    __device__ __host__ void operator*=(float scalar)
     {
         x *= scalar;
         y *= scalar;
         z *= scalar;
     }
 
-    __device__ __host__ void  operator/=(float scalar)
+    __device__ __host__ void operator/=(float scalar)
     {
         x /= scalar;
         y /= scalar;
@@ -250,6 +263,67 @@ typedef struct _GPU_VEC_3D
     }
     
 } GPU_VEC_3D;
+
+typedef struct _GPU_LINE_3D
+{
+    Glpa::GPU_VEC_3D start;
+    Glpa::GPU_VEC_3D end;
+    Glpa::GPU_VEC_3D vec;
+
+    __device__ __host__ void set(Glpa::GPU_VEC_3D argStart, Glpa::GPU_VEC_3D argEnd)
+    {
+        start = argStart;
+        end = argEnd;
+        vec = end - start;
+    }
+
+    __device__ __host__ float getLength() const
+    {
+        return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    }
+
+    __device__ __host__ Glpa::GPU_VEC_3D getPoint(float t) const
+    {
+        return start + vec * t;
+    }
+
+    __device__ __host__ GPU_BOOL operator==(const _GPU_LINE_3D& other) const
+    {
+        return (start == other.start && end == other.end) ? TRUE : FALSE;
+    }
+
+    __device__ __host__ GPU_BOOL operator!=(const _GPU_LINE_3D& other) const
+    {
+        return (!(*this == other)) ? TRUE : FALSE;
+    }
+
+    __device__ __host__ _GPU_LINE_3D operator=(const _GPU_LINE_3D& other)
+    {
+        start = other.start;
+        end = other.end;
+        return *this;
+    }
+
+} GPU_LINE_3D;
+
+typedef struct _GPU_FACE_3D
+{
+    Glpa::GPU_VEC_3D v;
+    Glpa::GPU_VEC_3D n;
+
+    __device__ __host__ void set(Glpa::GPU_VEC_3D argV, Glpa::GPU_VEC_3D vecA, Glpa::GPU_VEC_3D vecB)
+    {
+        v = argV;
+
+        n.set
+        (
+            vecA.y * vecB.z - vecA.z * vecB.y,
+            vecA.z * vecB.x - vecA.x * vecB.z,
+            vecA.x * vecB.y - vecA.y * vecB.x
+        );
+    }
+
+} GPU_FACE_3D;
 
 class Vec3d : public Vector
 {

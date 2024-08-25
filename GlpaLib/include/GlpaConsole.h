@@ -22,8 +22,7 @@ constexpr const char* CONSOLE_TAG_EXAMPLE = "tag_example";
 
 constexpr const char* CONSOLE_TAG_ENABLE_FILTERS[] 
 = {
-    CONSOLE_TAG_CONSOLE,
-    CONSOLE_TAG_EXAMPLE
+    CONSOLE_TAG_GLPA_LIB
 };
 
 

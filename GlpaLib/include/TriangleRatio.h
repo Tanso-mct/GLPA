@@ -8,7 +8,7 @@ namespace Glpa
     
 inline float RtoD(float radian)
 {
-    return radian * 180.0f / Glpa::PI;
+    return radian * Glpa::PI / 180.0f;
 }
 
 

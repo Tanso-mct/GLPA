@@ -5,7 +5,7 @@ Glpa::Material::Material(std::string argName, std::string argBaseColorFilePath)
 {
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
     name = argName;
-    baseColorFilePath = argBaseColorFilePath;
+    diffuseFilePath = argBaseColorFilePath;
     
 }
 
@@ -22,7 +22,7 @@ void Glpa::Material::setManager(Glpa::FileDataManager *argFileDataManager)
 
 int Glpa::Material::GetMtWidth(std::string mtName)
 {
-    if (mtName == Glpa::MATERIAL_BASE_COLOR) return fileDataManager->getWidth(baseColorFilePath);
+    if (mtName == Glpa::MATERIAL_DIFFUSE) return fileDataManager->getWidth(diffuseFilePath);
     else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getWidth(ormFilePath);
     else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getWidth(normalFilePath);
     else
@@ -34,7 +34,7 @@ int Glpa::Material::GetMtWidth(std::string mtName)
 
 int Glpa::Material::GetMtHeight(std::string mtName)
 {
-    if (mtName == Glpa::MATERIAL_BASE_COLOR) return fileDataManager->getHeight(baseColorFilePath);
+    if (mtName == Glpa::MATERIAL_DIFFUSE) return fileDataManager->getHeight(diffuseFilePath);
     else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getHeight(ormFilePath);
     else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getHeight(normalFilePath);
     else
@@ -46,7 +46,7 @@ int Glpa::Material::GetMtHeight(std::string mtName)
 
 LPDWORD Glpa::Material::GetMtData(std::string mtName)
 {
-    if (mtName == Glpa::MATERIAL_BASE_COLOR) return fileDataManager->getPngData(baseColorFilePath);
+    if (mtName == Glpa::MATERIAL_DIFFUSE) return fileDataManager->getPngData(diffuseFilePath);
     else if (mtName == Glpa::MATERIAL_ORM) return fileDataManager->getPngData(ormFilePath);
     else if (mtName == Glpa::MATERIAL_NORMAL) return fileDataManager->getPngData(normalFilePath);
     else
@@ -60,7 +60,7 @@ Glpa::GPU_MATERIAL Glpa::Material::getData()
 {
     Glpa::GPU_MATERIAL material;
 
-    material.baseColor = fileDataManager->getPngData(baseColorFilePath);
+    material.baseColor = fileDataManager->getPngData(diffuseFilePath);
 
     return material;
 }
@@ -70,8 +70,8 @@ void Glpa::Material::load()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Material[" + name + "]");
     loaded = true;
 
-    fileDataManager->newFile(baseColorFilePath);
-    fileDataManager->load(baseColorFilePath);
+    fileDataManager->newFile(diffuseFilePath);
+    fileDataManager->load(diffuseFilePath);
 }
 
 void Glpa::Material::release()
@@ -79,5 +79,5 @@ void Glpa::Material::release()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Material[" + name + "]");
     loaded = false;
 
-    fileDataManager->release(baseColorFilePath);
+    fileDataManager->release(diffuseFilePath);
 }

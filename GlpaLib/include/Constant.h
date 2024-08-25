@@ -75,12 +75,88 @@ constexpr const char* CLASS_CAMERA = "class_camera";
 constexpr const char* COLOR_BLACK = "color_black";
 constexpr const char* COLOR_GREEN = "color_green";
 
-constexpr const char* MATERIAL_BASE_COLOR = "material_base_color";
+constexpr const char* MATERIAL_DIFFUSE = "material_diffuse";
 constexpr const char* MATERIAL_ORM = "material_occlusion_roughness_metallic";
 constexpr const char* MATERIAL_NORMAL = "material_normal";
 
 constexpr const float PI = 3.14159265358979323846f;
 
+const enum VV_XZ_FACE
+{
+    NEAR_LEFT,
+    FAR_LEFT,
+    FAR_RIGHT,
+    NEAR_RIGHT
+};
+
+const enum VV_YZ_FACE
+{
+    NEAR_TOP,
+    FAR_TOP,
+    FAR_BOTTOM,
+    NEAR_BOTTOM
+};
+
+const enum FACE_3D
+{
+    TOP,
+    FRONT,
+    RIGHT,
+    LEFT,
+    BACK,
+    BOTTOM
+};
+
+const enum RECT_3D
+{
+    FRONT_TOP_LEFT,
+    FRONT_TOP_RIGHT,
+    FRONT_BOTTOM_RIGHT,
+    FRONT_BOTTOM_LEFT,
+    BACK_TOP_LEFT,
+    BACK_TOP_RIGHT,
+    BACK_BOTTOM_RIGHT,
+    BACK_BOTTOM_LEFT
+};
+
+const enum RECT_3D_LINE
+{
+    L1_START = Glpa::RECT_3D::FRONT_TOP_LEFT,
+    L1_END = Glpa::RECT_3D::FRONT_TOP_RIGHT,
+
+    L2_START = Glpa::RECT_3D::FRONT_TOP_RIGHT,
+    L2_END = Glpa::RECT_3D::FRONT_BOTTOM_RIGHT,
+
+    L3_START = Glpa::RECT_3D::FRONT_BOTTOM_RIGHT,
+    L3_END = Glpa::RECT_3D::FRONT_BOTTOM_LEFT,
+
+    L4_START = Glpa::RECT_3D::FRONT_BOTTOM_LEFT,
+    L4_END = Glpa::RECT_3D::FRONT_TOP_LEFT,
+
+    L5_START = Glpa::RECT_3D::FRONT_TOP_LEFT,
+    L5_END = Glpa::RECT_3D::BACK_TOP_LEFT,
+
+    L6_START = Glpa::RECT_3D::FRONT_TOP_RIGHT,
+    L6_END = Glpa::RECT_3D::BACK_TOP_RIGHT,
+
+    L7_START = Glpa::RECT_3D::FRONT_BOTTOM_RIGHT,
+    L7_END = Glpa::RECT_3D::BACK_BOTTOM_RIGHT,
+
+    L8_START = Glpa::RECT_3D::FRONT_BOTTOM_LEFT,
+    L8_END = Glpa::RECT_3D::BACK_BOTTOM_LEFT,
+
+    L9_START = Glpa::RECT_3D::BACK_TOP_LEFT,
+    L9_END = Glpa::RECT_3D::BACK_TOP_RIGHT,
+
+    L10_START = Glpa::RECT_3D::BACK_TOP_RIGHT,
+    L10_END = Glpa::RECT_3D::BACK_BOTTOM_RIGHT,
+
+    L11_START = Glpa::RECT_3D::BACK_BOTTOM_RIGHT,
+    L11_END = Glpa::RECT_3D::BACK_BOTTOM_LEFT,
+
+    L12_START = Glpa::RECT_3D::BACK_BOTTOM_LEFT,
+    L12_END = Glpa::RECT_3D::BACK_TOP_LEFT
+};
 
 }
 

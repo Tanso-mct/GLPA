@@ -1,5 +1,7 @@
 #include "Render.cuh"
+
 #include "GlpaLog.h"
+#include "GlpaConsole.h"
 
 Glpa::Render2d::Render2d()
 {
@@ -329,13 +331,13 @@ void Glpa::Render3d::dMallocObjsMtData
         err = cudaMalloc
         (
             &mt.baseColor, 
-            pair.second->GetMtWidth(Glpa::MATERIAL_BASE_COLOR) * pair.second->GetMtHeight(Glpa::MATERIAL_BASE_COLOR) * sizeof(DWORD)
+            pair.second->GetMtWidth(Glpa::MATERIAL_DIFFUSE) * pair.second->GetMtHeight(Glpa::MATERIAL_DIFFUSE) * sizeof(DWORD)
         );
         err = cudaMemcpy
         (
             mt.baseColor, 
-            pair.second->GetMtData(Glpa::MATERIAL_BASE_COLOR), 
-            pair.second->GetMtWidth(Glpa::MATERIAL_BASE_COLOR) * pair.second->GetMtHeight(Glpa::MATERIAL_BASE_COLOR) * sizeof(DWORD), 
+            pair.second->GetMtData(Glpa::MATERIAL_DIFFUSE), 
+            pair.second->GetMtWidth(Glpa::MATERIAL_DIFFUSE) * pair.second->GetMtHeight(Glpa::MATERIAL_DIFFUSE) * sizeof(DWORD), 
             cudaMemcpyHostToDevice
         );
 
@@ -395,19 +397,17 @@ void Glpa::Render3d::dReleaseObjsMtData()
 
     for (int i = 0; i < mtIdMap.size(); i++)
     {
-        Glpa::GPU_MATERIAL* hMt;
-        err = cudaMemcpy(&hMt, &dMts[i], sizeof(Glpa::GPU_MATERIAL*), cudaMemcpyDeviceToHost);
-
-        err = cudaFree(hMt->baseColor);
+        LPDWORD dBaseColor = nullptr;
+        err = cudaMemcpy(dBaseColor, &dMts[i].baseColor, sizeof(LPDWORD), cudaMemcpyDeviceToHost);
+        err = cudaFree(dBaseColor);
     }
-    cudaFree(dMts);
+    err = cudaFree(dMts);
 
     for (int i = 0; i < objIdMap.size(); i++)
     {
-        Glpa::GPU_OBJECT3D_DATA* hObjData;
-        err = cudaMemcpy(&hObjData, &dObjData[i], sizeof(Glpa::GPU_OBJECT3D_DATA*), cudaMemcpyDeviceToHost);
-
-        err = cudaFree(hObjData->polygons);
+        Glpa::GPU_POLYGON* dPolygons = nullptr;
+        err = cudaMemcpy(dPolygons, &dObjData[i].polygons, sizeof(Glpa::GPU_OBJECT3D_DATA*), cudaMemcpyDeviceToHost);
+        err = cudaFree(dPolygons);
     }
     err = cudaFree(dObjData);
     objMtDataMalloced = false;
@@ -496,16 +496,16 @@ __global__ void GpuPrepareObj
         GPU_BOOL isObjXzIn = GPU_CO
         (
             (objRangeRect.origin.x >= 0 && vecsCos[0] >= camData->fovXzCos) || 
-            (objRangeRect.origin.x < 0 && objRangeRect.opposite.x >= 0) || 
-            (objRangeRect.opposite.x >= 0 && vecsCos[1] >= camData->fovXzCos), 
+            (objRangeRect.opposite.x <= 0 && vecsCos[1] >= camData->fovXzCos) ||
+            (objRangeRect.origin.x <= 0 && objRangeRect.opposite.x >= 0),
             TRUE, FALSE
         );
 
         GPU_BOOL isObjYzIn = GPU_CO
         (
             (objRangeRect.origin.y >= 0 && vecsCos[2] >= camData->fovYzCos) || 
-            (objRangeRect.origin.y < 0 && objRangeRect.opposite.y >= 0) || 
-            (objRangeRect.opposite.y >= 0 && vecsCos[3] >= camData->fovYzCos), 
+            (objRangeRect.opposite.y <= 0 && vecsCos[3] >= camData->fovYzCos) ||
+            (objRangeRect.origin.y <= 0 && objRangeRect.opposite.y >= 0),
             TRUE, FALSE
         );
 
@@ -536,6 +536,16 @@ void Glpa::Render3d::prepareObjs()
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+
+    for (int i = 0; i < dataSize; i++)
+    {
+        Glpa::GPU_OBJECT3D_INFO hObjInfo;
+        cudaMemcpy(&hObjInfo, &dObjInfo[i], sizeof(Glpa::GPU_OBJECT3D_INFO), cudaMemcpyDeviceToHost);
+        if (hObjInfo.isInVV == TRUE)
+        {
+            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "Object is in the viewing volume.");
+        }
+    }
 }
 
 void Glpa::Render3d::setVs()

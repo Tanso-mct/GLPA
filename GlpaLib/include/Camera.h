@@ -10,6 +10,17 @@
 namespace Glpa
 {
 
+typedef struct _GPU_VIEW_VOLUME
+{
+    Glpa::GPU_VEC_3D wv[8];
+
+    Glpa::GPU_VEC_2D xzV[4];
+    Glpa::GPU_VEC_2D yzV[4];
+
+    Glpa::GPU_LINE_3D line[12];
+    Glpa::GPU_FACE_3D face[6];
+} GPU_VIEW_VOLUME;
+
 typedef struct _GPU_CAMERA
 {
     Glpa::GPU_VEC_3D pos;
@@ -24,6 +35,8 @@ typedef struct _GPU_CAMERA
     float farZ;
 
     Glpa::GPU_MAT_4X4 mtTransRot;
+
+    Glpa::GPU_VIEW_VOLUME vv;
 } GPU_CAMERA;
 
 class Camera

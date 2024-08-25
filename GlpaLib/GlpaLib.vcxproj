@@ -227,16 +227,22 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\Assets\Images\console_back_ground.png" />
-    <Image Include="resource\Assets\Mtls\Cube_BaseColor.png" />
-    <Image Include="resource\Assets\Mtls\Cube_Normal.png" />
-    <Image Include="resource\Assets\Mtls\Cube_OcclusionRoughnessMetallic.png" />
+    <Image Include="resource\Assets\Mtls\cube\cube_source_baseColor.png" />
+    <Image Include="resource\Assets\Mtls\cube\cube_source_normal.png" />
+    <Image Include="resource\Assets\Mtls\floor\floor_source_baseColor.png" />
+    <Image Include="resource\Assets\Mtls\floor\floor_source_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resource\Assets\Objs\Cube.obj">
+    <Resource Include="resource\Assets\Objs\Cube.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
+    </Resource>
+    <Resource Include="resource\Assets\Objs\Floor.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Resource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -34,8 +34,7 @@ constexpr const char* OUTPUT_TAG_EXAMPLE = "tag_example";
 constexpr const char* OUTPUT_TAG_ENABLE_FILTERS[] 
 = {
     OUTPUT_TAG_GLPA_LIB,
-    OUTPUT_TAG_GLPA_COLOR,
-    OUTPUT_TAG_EXAMPLE,
+    OUTPUT_TAG_GLPA_RENDER
 };
 
 
