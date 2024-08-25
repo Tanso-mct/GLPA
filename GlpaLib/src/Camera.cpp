@@ -32,23 +32,19 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
 {
     Glpa::GPU_CAMERA camera;
 
-    camera.pos.x = pos.x;
-    camera.pos.y = pos.y;
-    camera.pos.z = pos.z;
-
-    camera.rotate.x = rotate.x;
-    camera.rotate.y = rotate.y;
-    camera.rotate.z = rotate.z;
+    camera.pos.set(pos.x, pos.y, pos.z);
+    camera.rotate.set(rotate.x, rotate.y, rotate.z);
 
     camera.fov = fov;
     camera.fovXzCos = fovXzCos;
     camera.fovYzCos = fovYzCos;
 
-    camera.aspectRatio.x = aspectRatio.x;
-    camera.aspectRatio.y = aspectRatio.y;
+    camera.aspectRatio.set(aspectRatio.x, aspectRatio.y);
 
     camera.nearZ = nearZ;
     camera.farZ = farZ;
+
+    camera.nearScrSize.set(nearScrSize.x, nearScrSize.y);
 
     float mt4x4[16] =
     {

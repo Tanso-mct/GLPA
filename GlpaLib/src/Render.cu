@@ -536,20 +536,44 @@ void Glpa::Render3d::prepareObjs()
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+}
 
-    for (int i = 0; i < dataSize; i++)
+__global__ void GpuSetVs
+(
+    Glpa::GPU_OBJECT3D_DATA* objData,
+    Glpa::GPU_OBJECT3D_INFO* objInfo,
+    Glpa::GPU_CAMERA* camData,
+    int objAmount  
+){
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    Glpa::GPU_VECTOR_MG vecMg;
+
+    if (i < objAmount)
     {
-        Glpa::GPU_OBJECT3D_INFO hObjInfo;
-        cudaMemcpy(&hObjInfo, &dObjInfo[i], sizeof(Glpa::GPU_OBJECT3D_INFO), cudaMemcpyDeviceToHost);
-        if (hObjInfo.isInVV == TRUE)
-        {
-            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "Object is in the viewing volume.");
-        }
+        
     }
+
+
 }
 
 void Glpa::Render3d::setVs()
 {
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSize = objIdMap.size();
+    int desiredThreadsPerBlock = 256;
+
+    int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
+    int threadsPerBlock = std::min(desiredThreadsPerBlock, deviceProp.maxThreadsPerBlock);
+
+    dim3 dimBlock(threadsPerBlock);
+    dim3 dimGrid(blocks);
+
+    GpuSetVs<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dataSize);
+    cudaDeviceSynchronize();
+    cudaError_t error = cudaGetLastError();
+    if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 }
 
 void Glpa::Render3d::rasterize()

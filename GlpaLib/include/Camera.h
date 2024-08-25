@@ -34,6 +34,9 @@ typedef struct _GPU_CAMERA
     float nearZ;
     float farZ;
 
+    Glpa::GPU_VEC_2D nearScrSize;
+    Glpa::GPU_VEC_2D farScrSize;
+
     Glpa::GPU_MAT_4X4 mtTransRot;
 
     Glpa::GPU_VIEW_VOLUME vv;
