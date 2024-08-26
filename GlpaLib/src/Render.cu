@@ -366,6 +366,8 @@ void Glpa::Render3d::dMallocObjsMtData
             objData.mtId = mtIdMap[obj->GetMaterial()->getName()];
 
             std::vector<Glpa::GPU_POLYGON> polygons = obj->getPolyData();
+            objData.polyAmount = polygons.size();
+
             err = cudaMalloc(&objData.polygons, polygons.size() * sizeof(Glpa::GPU_POLYGON));
             err = cudaMemcpy(objData.polygons, polygons.data(), polygons.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyHostToDevice);
 
@@ -449,12 +451,39 @@ void Glpa::Render3d::dReleaseObjInfo()
     objInfoMalloced = false;
 }
 
+void Glpa::Render3d::dMallocResult()
+{
+    cudaError_t err;
+    if (resultMalloced) dReleaseResult();
+
+    Glpa::GPU_RENDER_RESULT hResult;
+    err = cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
+    err = cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
+
+    err = cudaMalloc(&dPolyAmounts, objIdMap.size() * sizeof(int));
+    err = cudaMemcpy(&(dResult->polyAmounts), &dPolyAmounts, objIdMap.size() * sizeof(int), cudaMemcpyHostToDevice);
+    
+    resultMalloced = true;
+
+}
+
+void Glpa::Render3d::dReleaseResult()
+{
+    cudaError_t err;
+    if (!resultMalloced) return;
+
+    err = cudaFree(dPolyAmounts);
+    err = cudaFree(dResult);
+    resultMalloced = false;
+}
+
 __global__ void GpuPrepareObj
 (
     Glpa::GPU_OBJECT3D_DATA* objData,
     Glpa::GPU_OBJECT3D_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
-    int objAmount  
+    Glpa::GPU_RENDER_RESULT* result,
+    int objAmount
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -515,6 +544,12 @@ __global__ void GpuPrepareObj
             TRUE, FALSE
         );
 
+        GPU_IF(objInfo[i].isInVV == TRUE, branch2)
+        {
+            result->polyAmounts[i] = result->polySum;
+            atomicAdd(&result->polySum, objData[i].polyAmount);
+        }
+        
     } // if (i < objAmount)
 }
 
@@ -532,10 +567,27 @@ void Glpa::Render3d::prepareObjs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuPrepareObj<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dataSize);
+    GpuPrepareObj<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dResult, dataSize);
     cudaDeviceSynchronize();
-    cudaError_t error = cudaGetLastError();
-    if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+    cudaError_t err = cudaGetLastError();
+    if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+
+    Glpa::GPU_RENDER_RESULT hResult;
+    err = cudaMemcpy(&hResult, dResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyDeviceToHost);
+
+    int* polyAmounts = nullptr;
+    err = cudaMemcpy(polyAmounts, dPolyAmounts, dataSize * sizeof(int), cudaMemcpyDeviceToHost);
+
+    for (int i = 0; i < dataSize; i++)
+    {
+        Glpa::GPU_OBJECT3D_INFO objInfo;
+        err = cudaMemcpy(&objInfo, &dObjInfo[i], sizeof(Glpa::GPU_OBJECT3D_INFO), cudaMemcpyDeviceToHost);
+
+        if (objInfo.isInVV == TRUE)
+        {
+            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "Object is in the viewing volume.");
+        }
+    }
 }
 
 __global__ void GpuSetVs
@@ -543,12 +595,12 @@ __global__ void GpuSetVs
     Glpa::GPU_OBJECT3D_DATA* objData,
     Glpa::GPU_OBJECT3D_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
-    int objAmount  
+    Glpa::GPU_RENDER_RESULT* result
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     Glpa::GPU_VECTOR_MG vecMg;
 
-    if (i < objAmount)
+    if (i < result->polySum)
     {
         
     }
@@ -570,7 +622,7 @@ void Glpa::Render3d::setVs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuSetVs<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dataSize);
+    GpuSetVs<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dResult);
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
@@ -587,6 +639,7 @@ void Glpa::Render3d::run(
     dMallocCam(cam);
     if (!objMtDataMalloced) dMallocObjsMtData(objs, mts);
     dMallocObjInfo(objs);
+    dMallocResult();
 
     prepareObjs();
     setVs();
@@ -598,4 +651,5 @@ void Glpa::Render3d::dRelease()
     dReleaseCam();
     dReleaseObjsMtData();
     dReleaseObjInfo();
+    dReleaseResult();
 }

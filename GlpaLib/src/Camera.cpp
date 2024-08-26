@@ -46,9 +46,9 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
 
     camera.nearScrSize.set(nearScrSize.x, nearScrSize.y);
 
-    float mt4x4[16] =
+    float mtTransRot[16] =
     {
-        std::cos(Glpa::RtoD(rotate.z)) * std::cos(Glpa::RtoD(-rotate.y)), 
+        std::cos(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.y)), 
         std::cos(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::sin(Glpa::RtoD(-rotate.x)) - std::sin(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.x)), 
         std::cos(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::cos(Glpa::RtoD(-rotate.x)) - std::sin(Glpa::RtoD(-rotate.z)) * -std::sin(Glpa::RtoD(-rotate.x)), 
         -pos.x,
@@ -65,8 +65,28 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
 
         0, 0, 0, 1
     };
+    camera.mtTransRot.set(mtTransRot);
 
-    camera.mtTransRot.set(mt4x4);
+    float mtRot[16] =
+    {
+        std::cos(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.y)), 
+        std::cos(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::sin(Glpa::RtoD(-rotate.x)) - std::sin(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.x)), 
+        std::cos(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::cos(Glpa::RtoD(-rotate.x)) - std::sin(Glpa::RtoD(-rotate.z)) * -std::sin(Glpa::RtoD(-rotate.x)), 
+        0,
+
+        std::sin(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.y)),
+        std::sin(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::sin(Glpa::RtoD(-rotate.x)) + std::cos(Glpa::RtoD(-rotate.z)) * std::cos(Glpa::RtoD(-rotate.x)),
+        std::sin(Glpa::RtoD(-rotate.z)) * std::sin(Glpa::RtoD(-rotate.y)) * std::cos(Glpa::RtoD(-rotate.x)) + std::cos(Glpa::RtoD(-rotate.z)) * -std::sin(Glpa::RtoD(-rotate.x)),
+        0,
+
+        -std::sin(Glpa::RtoD(-rotate.y)),
+        std::cos(Glpa::RtoD(-rotate.y)) * std::sin(Glpa::RtoD(-rotate.x)),
+        std::cos(Glpa::RtoD(-rotate.y)) * std::cos(Glpa::RtoD(-rotate.x)),
+        0,
+
+        0, 0, 0, 1
+    };
+    camera.mtRot.set(mtRot);
 
     // Defines the coordinates of the four vertices when the view volume is viewed from the positive y-axis direction.
     camera.vv.xzV[Glpa::VV_XZ_FACE::NEAR_LEFT].set(-nearScrSize.x / 2, -nearZ);

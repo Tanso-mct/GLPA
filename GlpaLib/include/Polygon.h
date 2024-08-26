@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Vector.cuh"
+#include "Matrix.cuh"
 
 
 namespace Glpa
@@ -14,7 +15,23 @@ typedef struct _GPU_POLYGON
 {
     Glpa::GPU_VEC_3D wv[3];
     Glpa::GPU_VEC_2D uv[3];
-    Glpa::GPU_VEC_3D normal;
+    Glpa::GPU_VEC_3D n;
+
+    __device__ __host__ GPU_BOOL isFacing(Glpa::GPU_MAT_4X4& mtTransRot, Glpa::_GPU_MAT_4X4& mtRot)
+    {
+        Glpa::GPU_VEC_3D cnvtV = mtTransRot.productLeft3x1(wv[0]);
+        Glpa::GPU_VEC_3D cnvtN = mtRot.productLeft3x1(n);
+
+        Glpa::GPU_VECTOR_MG vecMg;
+        float dot = vecMg.dot(cnvtV, cnvtN);
+
+        GPU_IF(dot <= 0, branch2)
+        {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
 } GPU_POLYGON;
 
 class Polygon

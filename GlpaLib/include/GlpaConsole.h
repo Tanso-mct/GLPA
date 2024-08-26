@@ -17,12 +17,14 @@ constexpr bool CONSOLE_LOG = true;
 constexpr bool CONSOLE_TAG_FILTER = true;
 
 constexpr const char* CONSOLE_TAG_GLPA_LIB = "tag_glpa_lib";
+constexpr const char* CONSOLE_TAG_GLPA_RENDER = "tag_glpa_render";
 constexpr const char* CONSOLE_TAG_CONSOLE = "tag_console";
 constexpr const char* CONSOLE_TAG_EXAMPLE = "tag_example";
 
 constexpr const char* CONSOLE_TAG_ENABLE_FILTERS[] 
 = {
-    CONSOLE_TAG_GLPA_LIB
+    CONSOLE_TAG_GLPA_LIB,
+    CONSOLE_TAG_GLPA_RENDER
 };
 
 

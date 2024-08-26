@@ -86,8 +86,12 @@
         "fstream": "cpp",
         "ranges": "cpp",
         "span": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "__config": "cpp"
     },
     "commentTranslate.hover.enabled": true,
-    "commentTranslate.targetLanguage": "en"
+    "commentTranslate.targetLanguage": "en",
+    "cSpell.words": [
+        "cnvt"
+    ]
 }

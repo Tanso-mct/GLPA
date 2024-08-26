@@ -75,12 +75,28 @@ public :
 };
 
 
+typedef struct _GPU_RENDER_RESULT
+{
+    int objSum;
+    int polySum;
+
+    int* polyAmounts;
+
+    __device__ __host__ _GPU_RENDER_RESULT()
+    {
+        objSum = 0;
+        polySum = 0;
+        polyAmounts = nullptr;
+    }
+} GPU_RENDER_RESULT;
+
 class Render3d
 {
 private :
     bool camMalloced = false;
     bool objMtDataMalloced = false;
     bool objInfoMalloced = false;
+    bool resultMalloced = false;
 
     std::unordered_map<std::string, int> mtIdMap;
     std::unordered_map<std::string, int> objIdMap;
@@ -89,6 +105,9 @@ private :
     Glpa::GPU_MATERIAL* dMts;
     Glpa::GPU_OBJECT3D_DATA* dObjData;
     Glpa::GPU_OBJECT3D_INFO* dObjInfo;
+
+    int* dPolyAmounts;
+    Glpa::GPU_RENDER_RESULT* dResult;
 
     void dMallocCam(Glpa::Camera& cam);
     void dReleaseCam();
@@ -102,6 +121,9 @@ private :
 
     void dMallocObjInfo(std::unordered_map<std::string, Glpa::SceneObject*>& objs);
     void dReleaseObjInfo();
+
+    void dMallocResult();
+    void dReleaseResult();
 
     void prepareObjs();
     void setVs();

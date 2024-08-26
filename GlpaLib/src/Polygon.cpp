@@ -23,17 +23,11 @@ Glpa::GPU_POLYGON Glpa::Polygon::getData(std::vector<Glpa::Vec3d*>& wv, std::vec
 
     for (int i = 0; i < 3; i++)
     {
-        polygon.wv[i].x = wv[wvI[i]]->x;
-        polygon.wv[i].y = wv[wvI[i]]->y;
-        polygon.wv[i].z = wv[wvI[i]]->z;
-
-        polygon.uv[i].x = uv[uvI[i]]->x;
-        polygon.uv[i].y = uv[uvI[i]]->y;
+        polygon.wv[i].set(wv[wvI[i]]->x, wv[wvI[i]]->y, wv[wvI[i]]->z);
+        polygon.uv[i].set(uv[uvI[i]]->x, uv[uvI[i]]->y);
     }
 
-    polygon.normal.x = normal.x;
-    polygon.normal.y = normal.y;
-    polygon.normal.z = normal.z;
+    polygon.n.set(normal.x, normal.y, normal.z);
 
     return polygon;
 }

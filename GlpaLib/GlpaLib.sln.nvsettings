@@ -1,2 +1,2 @@
 [WarpWatch]
-Expressions=cullingVecs
+Expressions=dResult[0].objSum

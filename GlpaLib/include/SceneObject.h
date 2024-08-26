@@ -15,6 +15,7 @@ typedef struct _GPU_OBJECT3D_DATA
 {
     int id;
     int mtId;
+    int polyAmount;
     Glpa::GPU_RANGE_RECT range;
     Glpa::GPU_POLYGON* polygons;
 } GPU_OBJECT3D_DATA;

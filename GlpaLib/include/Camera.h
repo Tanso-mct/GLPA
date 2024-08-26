@@ -38,6 +38,7 @@ typedef struct _GPU_CAMERA
     Glpa::GPU_VEC_2D farScrSize;
 
     Glpa::GPU_MAT_4X4 mtTransRot;
+    Glpa::GPU_MAT_4X4 mtRot;
 
     Glpa::GPU_VIEW_VOLUME vv;
 } GPU_CAMERA;
