@@ -456,12 +456,14 @@ void Glpa::Render3d::dMallocResult()
     cudaError_t err;
     if (resultMalloced) dReleaseResult();
 
-    Glpa::GPU_RENDER_RESULT hResult;
-    err = cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
-    err = cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
+    Glpa::GPU_RENDER_RESULT hResult(objIdMap.size());
 
-    err = cudaMalloc(&dPolyAmounts, objIdMap.size() * sizeof(int));
-    err = cudaMemcpy(&(dResult->polyAmounts), &dPolyAmounts, objIdMap.size() * sizeof(int), cudaMemcpyHostToDevice);
+    err = cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
+    if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"cudaMalloc", "dResult", std::to_string(err)});
+
+    err = cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
+    if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"cudaMemcpy", "dResult", std::to_string(err)});
+
     
     resultMalloced = true;
 
@@ -546,7 +548,7 @@ __global__ void GpuPrepareObj
 
         GPU_IF(objInfo[i].isInVV == TRUE, branch2)
         {
-            result->polyAmounts[i] = result->polySum;
+            result->dPolyAmounts[i] = 5;
             atomicAdd(&result->polySum, objData[i].polyAmount);
         }
         
@@ -572,11 +574,9 @@ void Glpa::Render3d::prepareObjs()
     cudaError_t err = cudaGetLastError();
     if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
-    Glpa::GPU_RENDER_RESULT hResult;
-    err = cudaMemcpy(&hResult, dResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyDeviceToHost);
-
-    int* polyAmounts = nullptr;
-    err = cudaMemcpy(polyAmounts, dPolyAmounts, dataSize * sizeof(int), cudaMemcpyDeviceToHost);
+    Glpa::GPU_RENDER_RESULT* hResult = new Glpa::GPU_RENDER_RESULT;
+    err = cudaMemcpy(hResult, dResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyDeviceToHost);
+    hResult->deviceToHost();
 
     for (int i = 0; i < dataSize; i++)
     {

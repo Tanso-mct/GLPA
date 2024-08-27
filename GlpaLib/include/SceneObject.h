@@ -13,6 +13,7 @@ namespace Glpa
 
 typedef struct _GPU_OBJECT3D_DATA
 {
+    const int arySize = 5;
     int id;
     int mtId;
     int polyAmount;

@@ -77,17 +77,51 @@ public :
 
 typedef struct _GPU_RENDER_RESULT
 {
+    cudaError_t err;
+    int srcObjSum;
     int objSum;
     int polySum;
 
-    int* polyAmounts;
+    int* hPolyAmounts;
+    int* dPolyAmounts;
 
     __device__ __host__ _GPU_RENDER_RESULT()
     {
+        srcObjSum = 0;
         objSum = 0;
         polySum = 0;
-        polyAmounts = nullptr;
+
+        hPolyAmounts = nullptr;
+        dPolyAmounts = nullptr;
     }
+
+    __device__ __host__ _GPU_RENDER_RESULT(int argSrcObjSum)
+    {
+        srcObjSum = argSrcObjSum;
+        objSum = 0;
+        polySum = 0;
+
+        hPolyAmounts = new int[srcObjSum];
+
+        err = cudaMalloc(&dPolyAmounts, srcObjSum * sizeof(int));
+        if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"cudaMalloc", "dPolyAmounts", std::to_string(err)});
+    }
+
+    __device__ __host__ ~_GPU_RENDER_RESULT()
+    {
+        if (dPolyAmounts != nullptr) cudaFree(dPolyAmounts);
+    }
+
+    __host__ void deviceToHost()
+    {
+        int* dOtherPolyAmounts;
+        err = cudaMalloc(&dOtherPolyAmounts, srcObjSum * sizeof(int));
+        err = cudaMemcpy(dOtherPolyAmounts, dPolyAmounts, srcObjSum * sizeof(int), cudaMemcpyDeviceToDevice);
+        err = cudaMemcpy(hPolyAmounts, dOtherPolyAmounts, srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
+        cudaFree(dOtherPolyAmounts);
+    }
+
+    
 } GPU_RENDER_RESULT;
 
 class Render3d

@@ -1,2 +1,2 @@
 [WarpWatch]
-Expressions=dResult[0].objSum
+Expressions=result->dPolyAmounts
