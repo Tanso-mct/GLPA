@@ -109,7 +109,17 @@ typedef struct _GPU_RENDER_RESULT
 
     __device__ __host__ ~_GPU_RENDER_RESULT()
     {
-        if (dPolyAmounts != nullptr) cudaFree(dPolyAmounts);
+        if (hPolyAmounts != nullptr)
+        {
+            delete[] hPolyAmounts;
+            hPolyAmounts = nullptr;
+        }
+
+        if (dPolyAmounts != nullptr)
+        {
+            cudaFree(dPolyAmounts);
+            dPolyAmounts = nullptr;
+        }
     }
 
     __host__ void deviceToHost()
