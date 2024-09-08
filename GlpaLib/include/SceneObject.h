@@ -11,26 +11,6 @@
 namespace Glpa
 {
 
-typedef struct _GPU_OBJECT3D_DATA
-{
-    const int arySize = 5;
-    int id;
-    int mtId;
-    int polyAmount;
-    Glpa::GPU_RANGE_RECT range;
-    Glpa::GPU_POLYGON* polygons;
-} GPU_OBJECT3D_DATA;
-
-typedef struct _GPU_OBJECT_INFO
-{
-    GPU_BOOL isVisible = TRUE;
-    Glpa::GPU_VEC_3D pos;
-    Glpa::GPU_VEC_3D rot;
-    Glpa::GPU_VEC_3D scale;
-
-    GPU_BOOL isInVV = FALSE;
-} GPU_OBJECT3D_INFO;
-
 class SceneObject
 {
 protected :

@@ -8,9 +8,9 @@
 
 #include "Image.h"
 #include "Color.h"
-#include "Material.h"
-#include "Camera.h"
-#include "StationaryObject.h"
+#include "Material.cuh"
+#include "Camera.cuh"
+#include "StationaryObject.cuh"
 
 #include <unordered_map>
 #include <map>
@@ -84,90 +84,47 @@ typedef struct _GPU_RENDER_RESULT
 
     int* hPolyAmounts;
     int* dPolyAmounts;
-
-    __device__ __host__ _GPU_RENDER_RESULT()
-    {
-        srcObjSum = 0;
-        objSum = 0;
-        polySum = 0;
-
-        hPolyAmounts = nullptr;
-        dPolyAmounts = nullptr;
-    }
-
-    __device__ __host__ _GPU_RENDER_RESULT(int argSrcObjSum)
-    {
-        srcObjSum = argSrcObjSum;
-        objSum = 0;
-        polySum = 0;
-
-        hPolyAmounts = new int[srcObjSum];
-
-        err = cudaMalloc(&dPolyAmounts, srcObjSum * sizeof(int));
-        if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"cudaMalloc", "dPolyAmounts", std::to_string(err)});
-    }
-
-    __device__ __host__ ~_GPU_RENDER_RESULT()
-    {
-        if (hPolyAmounts != nullptr)
-        {
-            delete[] hPolyAmounts;
-            hPolyAmounts = nullptr;
-        }
-
-        if (dPolyAmounts != nullptr)
-        {
-            cudaFree(dPolyAmounts);
-            dPolyAmounts = nullptr;
-        }
-    }
-
-    __host__ void deviceToHost()
-    {
-        int* dOtherPolyAmounts;
-        err = cudaMalloc(&dOtherPolyAmounts, srcObjSum * sizeof(int));
-        err = cudaMemcpy(dOtherPolyAmounts, dPolyAmounts, srcObjSum * sizeof(int), cudaMemcpyDeviceToDevice);
-        err = cudaMemcpy(hPolyAmounts, dOtherPolyAmounts, srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
-        cudaFree(dOtherPolyAmounts);
-    }
-
-    
 } GPU_RENDER_RESULT;
+
+class RENDER_RESULT_FACTORY
+{
+public :
+    Glpa::GPU_RENDER_RESULT hResult;
+    bool malloced = false;
+
+    RENDER_RESULT_FACTORY()
+    {
+        malloced = false;
+    }
+
+    void dFree(Glpa::GPU_RENDER_RESULT*& dResult);
+    void dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum);
+
+    void deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult);
+};
 
 class Render3d
 {
 private :
-    bool camMalloced = false;
-    bool objMtDataMalloced = false;
-    bool objInfoMalloced = false;
-    bool resultMalloced = false;
+    Glpa::CAMERA_FACTORY camFactory;
+    Glpa::GPU_CAMERA* dCamData = nullptr;
 
-    std::unordered_map<std::string, int> mtIdMap;
-    std::unordered_map<std::string, int> objIdMap;
+    Glpa::MATERIAL_FACTORY mtFactory;
+    Glpa::GPU_MATERIAL* dMts = nullptr;
 
-    Glpa::GPU_CAMERA* dCamData;
-    Glpa::GPU_MATERIAL* dMts;
-    Glpa::GPU_OBJECT3D_DATA* dObjData;
-    Glpa::GPU_OBJECT3D_INFO* dObjInfo;
+    Glpa::ST_OBJECT_FACTORY stObjFactory;
+    Glpa::GPU_ST_OBJECT_DATA* dStObjData = nullptr;
+    Glpa::GPU_ST_OBJECT_INFO* dStObjInfo = nullptr;
 
-    int* dPolyAmounts;
-    Glpa::GPU_RENDER_RESULT* dResult;
+    Glpa::RENDER_RESULT_FACTORY resultFactory;
+    Glpa::GPU_RENDER_RESULT* dResult = nullptr;
 
-    void dMallocCam(Glpa::Camera& cam);
-    void dReleaseCam();
-
-    void dMallocObjsMtData
+    void dMalloc
     (
+        Glpa::Camera& cam, 
         std::unordered_map<std::string, Glpa::SceneObject*>& objs, 
         std::unordered_map<std::string, Glpa::Material*>& mts
     );
-    void dReleaseObjsMtData();
-
-    void dMallocObjInfo(std::unordered_map<std::string, Glpa::SceneObject*>& objs);
-    void dReleaseObjInfo();
-
-    void dMallocResult();
-    void dReleaseResult();
 
     void prepareObjs();
     void setVs();

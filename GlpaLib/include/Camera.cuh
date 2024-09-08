@@ -1,6 +1,9 @@
 #ifndef GLPA_CAMERA_H_
 #define GLPA_CAMERA_H_
 
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
 #include "Matrix.cuh"
 #include "TriangleRatio.h"
 
@@ -41,7 +44,9 @@ typedef struct _GPU_CAMERA
     Glpa::GPU_MAT_4X4 mtRot;
 
     Glpa::GPU_VIEW_VOLUME vv;
+
 } GPU_CAMERA;
+
 
 class Camera
 {
@@ -75,9 +80,24 @@ public :
 
 };
 
+class CAMERA_FACTORY
+{
+public :
+    bool malloced = false;
+
+    CAMERA_FACTORY()
+    {
+        malloced = false;
+    }
+
+    void dFree(Glpa::GPU_CAMERA*& dCamera);
+    void dMalloc(Glpa::GPU_CAMERA*& dCamera, Glpa::GPU_CAMERA& hCamera);
+
+    void deviceToHost(Glpa::GPU_CAMERA*& dCamera, Glpa::GPU_CAMERA& hCamera);
+};
 
 
-}
+}; // namespace Glpa
 
 
 

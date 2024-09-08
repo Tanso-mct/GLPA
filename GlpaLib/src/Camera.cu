@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "Camera.cuh"
 #include "GlpaLog.h"
 
 Glpa::Camera::Camera(std::string argName, Glpa::Vec3d defPos, Glpa::Vec3d defRotate, float defFov, Glpa::Vec2d defAspectRatio, float defNearZ, float defFarZ)
@@ -159,3 +159,26 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
     return camera;
 }
 
+void Glpa::CAMERA_FACTORY::dFree(Glpa::GPU_CAMERA*& dCamera)
+{
+    if (!malloced) return;
+
+    cudaFree(dCamera);
+    dCamera = nullptr;
+    malloced = false;
+}
+
+void Glpa::CAMERA_FACTORY::dMalloc(Glpa::GPU_CAMERA*& dCamera, Glpa::GPU_CAMERA &hCamera)
+{
+    if (malloced) dFree(dCamera);
+    cudaMalloc(&dCamera, sizeof(Glpa::GPU_CAMERA));
+    cudaMemcpy(dCamera, &hCamera, sizeof(Glpa::GPU_CAMERA), cudaMemcpyHostToDevice);
+
+    malloced = true;
+}
+
+void Glpa::CAMERA_FACTORY::deviceToHost(Glpa::GPU_CAMERA*& dCamera, Glpa::GPU_CAMERA &hCamera)
+{
+    if (!malloced) Glpa::runTimeError(__FILE__, __LINE__, {"There is no memory on the camera device side."});
+    cudaMemcpy(&hCamera, dCamera, sizeof(Glpa::GPU_CAMERA), cudaMemcpyDeviceToHost);
+}

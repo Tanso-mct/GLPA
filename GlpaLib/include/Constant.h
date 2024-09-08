@@ -1,6 +1,10 @@
 #ifndef GLPA_CONSTANT_H_
 #define GLPA_CONSTANT_H_
 
+#include <string>
+
+#include "ErrorHandler.h"
+
 #define GPU_BOOL int
 
 #define GPU_CO(condition, trueValue, falseValue) \

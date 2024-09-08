@@ -81,9 +81,6 @@
     <ClCompile Include="src\Scene3d.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneObject.cpp">
-      <Filter>ソース ファイル\GlpaLib</Filter>
-    </ClCompile>
     <ClCompile Include="src\Sound.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
@@ -108,16 +105,10 @@
     <ClCompile Include="src\GlpaEvent.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
-    <ClCompile Include="src\StationaryObject.cpp">
-      <Filter>ソース ファイル\GlpaLib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Material.cpp">
-      <Filter>ソース ファイル\GlpaLib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>ソース ファイル\GlpaLib</Filter>
-    </ClCompile>
     <ClCompile Include="src\Polygon.cpp">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObject.cpp">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClCompile>
   </ItemGroup>
@@ -155,9 +146,6 @@
     <ClInclude Include="include\Scene3d.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
-    <ClInclude Include="include\SceneObject.h">
-      <Filter>ヘッダー ファイル\GlpaLib</Filter>
-    </ClInclude>
     <ClInclude Include="include\Sound.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
@@ -188,19 +176,13 @@
     <ClInclude Include="include\GlpaLog.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
-    <ClInclude Include="include\StationaryObject.h">
-      <Filter>ヘッダー ファイル\GlpaLib</Filter>
-    </ClInclude>
     <ClInclude Include="include\Polygon.h">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </ClInclude>
-    <ClInclude Include="include\Material.h">
-      <Filter>ヘッダー ファイル\GlpaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Camera.h">
-      <Filter>ヘッダー ファイル\GlpaLib</Filter>
-    </ClInclude>
     <ClInclude Include="include\TriangleRatio.h">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SceneObject.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
   </ItemGroup>
@@ -233,6 +215,24 @@
     </CudaCompile>
     <CudaCompile Include="include\Matrix.cuh">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="include\Camera.cuh">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Camera.cu">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="include\Material.cuh">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\Material.cu">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="include\StationaryObject.cuh">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="src\StationaryObject.cu">
+      <Filter>ソース ファイル\GlpaLib</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>

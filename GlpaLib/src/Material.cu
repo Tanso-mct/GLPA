@@ -1,4 +1,4 @@
-#include "Material.h"
+#include "Material.cuh"
 #include "ErrorHandler.h"
 
 Glpa::Material::Material(std::string argName, std::string argBaseColorFilePath)
@@ -80,4 +80,64 @@ void Glpa::Material::release()
     loaded = false;
 
     fileDataManager->release(diffuseFilePath);
+}
+
+void Glpa::MATERIAL_FACTORY::dFree(Glpa::GPU_MATERIAL*& dMts)
+{
+    if (malloced)
+    {
+        for (size_t i = 0; i < idMap.size(); i++)
+        {
+            LPDWORD dBaseColor = nullptr;
+            cudaMemcpy(dBaseColor, &dMts[i].baseColor, sizeof(LPDWORD), cudaMemcpyDeviceToHost);
+            cudaFree(dBaseColor);
+        }
+
+        cudaFree(dMts);
+        dMts = nullptr;
+
+        idMap.clear();
+
+        malloced = false;
+    }
+}
+
+void Glpa::MATERIAL_FACTORY::dMalloc(Glpa::GPU_MATERIAL*& dMts, std::unordered_map<std::string, Glpa::Material *> &sMts)
+{
+    if (malloced) dFree(dMts);
+
+    std::vector<Glpa::GPU_MATERIAL> hMts;
+    int id = 0;
+    for (auto& pair : sMts)
+    {
+        Glpa::GPU_MATERIAL mt;
+        cudaMalloc
+        (
+            &mt.baseColor, 
+            pair.second->GetMtWidth(Glpa::MATERIAL_DIFFUSE) * pair.second->GetMtHeight(Glpa::MATERIAL_DIFFUSE) * sizeof(DWORD)
+        );
+
+        cudaMemcpy
+        (
+            mt.baseColor, 
+            pair.second->GetMtData(Glpa::MATERIAL_DIFFUSE), 
+            pair.second->GetMtWidth(Glpa::MATERIAL_DIFFUSE) * pair.second->GetMtHeight(Glpa::MATERIAL_DIFFUSE) * sizeof(DWORD), 
+            cudaMemcpyHostToDevice
+        );
+
+        idMap[pair.first] = id;
+
+        hMts.push_back(mt);
+        id++;
+    }
+
+    cudaMalloc(&dMts, sMts.size() * sizeof(Glpa::GPU_MATERIAL));
+    cudaMemcpy(dMts, hMts.data(), sMts.size() * sizeof(Glpa::GPU_MATERIAL), cudaMemcpyHostToDevice);
+
+    for (int i = 0; i < hMts.size(); i++)
+    {
+        cudaFree(hMts[i].baseColor);
+    }
+
+    malloced = true;
 }

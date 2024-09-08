@@ -1,7 +1,11 @@
 #ifndef GLPA_MATERIAL_H_
 #define GLPA_MATERIAL_H_
 
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
 #include <string>
+#include <unordered_map>
 
 #include "Constant.h"
 #include "FileDataManager.h"
@@ -50,8 +54,22 @@ public :
 
     void load();
     void release();
+};
 
 
+class MATERIAL_FACTORY
+{
+public  :
+    std::unordered_map<std::string, int> idMap;
+    bool malloced = false;
+
+    MATERIAL_FACTORY()
+    {
+        malloced = false;
+    }
+
+    void dFree(Glpa::GPU_MATERIAL*& dMts);
+    void dMalloc(Glpa::GPU_MATERIAL*& dMts, std::unordered_map<std::string, Glpa::Material*>& sMts);
 
 };
 

@@ -152,7 +152,9 @@
     <ClCompile Include="ExampleEntry.cpp" />
     <ClCompile Include="ExampleScene2d.cpp" />
     <ClCompile Include="ExampleScene3d.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
+    <CudaCompile Include="src\Camera.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\FileDataManager.cpp" />
     <ClCompile Include="src\GlpaBase.cpp" />
@@ -161,14 +163,20 @@
     <ClCompile Include="src\GlpaEvent.cpp" />
     <ClCompile Include="src\GlpaLib.cpp" />
     <ClCompile Include="src\Image.cpp" />
-    <ClCompile Include="src\Material.cpp" />
+    <CudaCompile Include="src\Material.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="src\Polygon.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene2d.cpp" />
     <ClCompile Include="src\Scene3d.cpp" />
-    <ClCompile Include="src\SceneObject.cpp" />
+    <ClCompile Include="src\SceneObject.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClCompile Include="src\Sound.cpp" />
-    <ClCompile Include="src\StationaryObject.cpp" />
+    <CudaCompile Include="src\StationaryObject.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <ClCompile Include="src\Text.cpp" />
     <ClCompile Include="src\Ui.cpp" />
     <ClCompile Include="src\Window.cpp" />
@@ -177,7 +185,7 @@
     <ClInclude Include="ExampleBase.h" />
     <ClInclude Include="ExampleScene2d.h" />
     <ClInclude Include="ExampleScene3d.h" />
-    <ClInclude Include="include\Camera.h" />
+    <CudaCompile Include="include\Camera.cuh" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Constant.h" />
     <ClInclude Include="include\FileDataManager.h" />
@@ -188,7 +196,7 @@
     <ClInclude Include="include\GlpaLib.h" />
     <ClInclude Include="include\GlpaLog.h" />
     <ClInclude Include="include\Image.h" />
-    <ClInclude Include="include\Material.h" />
+    <CudaCompile Include="include\Material.cuh" />
     <CudaCompile Include="include\Render.cuh">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
@@ -203,7 +211,7 @@
     <ClInclude Include="include\Scene3d.h" />
     <ClInclude Include="include\SceneObject.h" />
     <ClInclude Include="include\Sound.h" />
-    <ClInclude Include="include\StationaryObject.h" />
+    <CudaCompile Include="include\StationaryObject.cuh" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Text.h" />
     <ClInclude Include="include\TriangleRatio.h" />

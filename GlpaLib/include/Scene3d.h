@@ -2,9 +2,9 @@
 #define GLPA_SCENE_3D_H_
 
 #include "Scene.h"
-#include "Material.h"
-#include "StationaryObject.h"
-#include "Camera.h"
+#include "Material.cuh"
+#include "StationaryObject.cuh"
+#include "Camera.cuh"
 
 namespace Glpa 
 {

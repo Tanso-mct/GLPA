@@ -87,7 +87,9 @@
         "ranges": "cpp",
         "span": "cpp",
         "stack": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "__functional_03": "cpp",
+        "target": "cpp"
     },
     "commentTranslate.hover.enabled": true,
     "commentTranslate.targetLanguage": "en",

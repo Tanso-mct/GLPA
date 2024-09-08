@@ -19,7 +19,7 @@ inline void runTimeError(const char* file, int line, std::string errorMsg)
     throw std::runtime_error(outputStr.c_str());
 }
 
-inline void outputErrorLog(const char* file, int line,std::string errorMsg)
+inline void outputErrorLog(const char* file, int line, std::string errorMsg)
 {
     if (!Glpa::OUTPUT_ERROR_LOG) return;
     std::string outputStr 

@@ -292,197 +292,35 @@ Glpa::Render3d::~Render3d()
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Destructor");
 }
 
-void Glpa::Render3d::dMallocCam(Glpa::Camera& cam)
-{
-    if (camMalloced) dReleaseCam();
-    cudaError_t err;
-
-    err = cudaMalloc(&dCamData, sizeof(Glpa::GPU_CAMERA));
-    err = cudaMemcpy(dCamData, &cam.getData(), sizeof(Glpa::GPU_CAMERA), cudaMemcpyHostToDevice);
-
-    camMalloced = true;
-}
-
-void Glpa::Render3d::dReleaseCam()
-{
-    if (!camMalloced) return;
-    cudaError_t err;
-
-    err = cudaFree(dCamData);
-
-    camMalloced = false;
-}
-
-void Glpa::Render3d::dMallocObjsMtData
+void Glpa::Render3d::dMalloc
 (
-    std::unordered_map<std::string, Glpa::SceneObject*>& objs,
-    std::unordered_map<std::string, Glpa::Material*>& mts
+    Glpa::Camera &cam, 
+    std::unordered_map<std::string,
+    Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts
 ){
-    if (objMtDataMalloced) return;
-    cudaError_t err;
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
+    // Camera data
+    if (camFactory.malloced) camFactory.dFree(dCamData);;
+    camFactory.dMalloc(dCamData, cam.getData());
 
     // Material data
-    std::vector<Glpa::GPU_MATERIAL> hMts;
-    int mtId = 0;
-    for (auto& pair : mts)
-    {
-        Glpa::GPU_MATERIAL mt;
-        err = cudaMalloc
-        (
-            &mt.baseColor, 
-            pair.second->GetMtWidth(Glpa::MATERIAL_DIFFUSE) * pair.second->GetMtHeight(Glpa::MATERIAL_DIFFUSE) * sizeof(DWORD)
-        );
-        err = cudaMemcpy
-        (
-            mt.baseColor, 
-            pair.second->GetMtData(Glpa::MATERIAL_DIFFUSE), 
-            pair.second->GetMtWidth(Glpa::MATERIAL_DIFFUSE) * pair.second->GetMtHeight(Glpa::MATERIAL_DIFFUSE) * sizeof(DWORD), 
-            cudaMemcpyHostToDevice
-        );
-
-        mtIdMap[pair.first] = mtId;
-
-        hMts.push_back(mt);
-        mtId++;
-    }
-    err = cudaMalloc(&dMts, mtId * sizeof(Glpa::GPU_MATERIAL));
-    err = cudaMemcpy(dMts, hMts.data(), mtId * sizeof(Glpa::GPU_MATERIAL), cudaMemcpyHostToDevice);
-
-    for (int i = 0; i < hMts.size(); i++)
-    {
-        err = cudaFree(hMts[i].baseColor);
-    }
+    if (!mtFactory.malloced) mtFactory.dMalloc(dMts, mts);;
 
     // Object data
-    std::vector<Glpa::GPU_OBJECT3D_DATA> hObjData;
-    int objId = 0;
-    for (auto& pair : objs)
-    {
-        if (Glpa::StationaryObject* obj = dynamic_cast<Glpa::StationaryObject*>(pair.second))
-        {
-            Glpa::GPU_OBJECT3D_DATA objData;
-            objData.id = objId;
-            objData.mtId = mtIdMap[obj->GetMaterial()->getName()];
+    if (!stObjFactory.dataMalloced) stObjFactory.dMalloc(dStObjData, objs, mtFactory.idMap);
 
-            std::vector<Glpa::GPU_POLYGON> polygons = obj->getPolyData();
-            objData.polyAmount = polygons.size();
+    // Object info
+    if (stObjFactory.infoMalloced) stObjFactory.dFree(dStObjInfo);
+    stObjFactory.dMalloc(dStObjInfo, objs);
 
-            err = cudaMalloc(&objData.polygons, polygons.size() * sizeof(Glpa::GPU_POLYGON));
-            err = cudaMemcpy(objData.polygons, polygons.data(), polygons.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyHostToDevice);
-
-            objData.range = obj->getRangeRectData();
-
-            objIdMap[pair.first] = objId;
-
-            hObjData.push_back(objData);
-            objId++;
-        }
-    }
-
-    err = cudaMalloc(&dObjData, objId * sizeof(Glpa::GPU_OBJECT3D_DATA));
-    err = cudaMemcpy(dObjData, hObjData.data(), objId * sizeof(Glpa::GPU_OBJECT3D_DATA), cudaMemcpyHostToDevice);
-
-    for (int i = 0; i < hObjData.size(); i++)
-    {
-        err = cudaFree(hObjData[i].polygons);
-    }
-
-    objMtDataMalloced = true;
-}
-
-void Glpa::Render3d::dReleaseObjsMtData()
-{
-    if (!objMtDataMalloced) return;
-    cudaError_t err;
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "");
-
-    for (int i = 0; i < mtIdMap.size(); i++)
-    {
-        LPDWORD dBaseColor = nullptr;
-        err = cudaMemcpy(dBaseColor, &dMts[i].baseColor, sizeof(LPDWORD), cudaMemcpyDeviceToHost);
-        err = cudaFree(dBaseColor);
-    }
-    err = cudaFree(dMts);
-
-    for (int i = 0; i < objIdMap.size(); i++)
-    {
-        Glpa::GPU_POLYGON* dPolygons = nullptr;
-        err = cudaMemcpy(dPolygons, &dObjData[i].polygons, sizeof(Glpa::GPU_OBJECT3D_DATA*), cudaMemcpyDeviceToHost);
-        err = cudaFree(dPolygons);
-    }
-    err = cudaFree(dObjData);
-    objMtDataMalloced = false;
-}
-
-void Glpa::Render3d::dMallocObjInfo(std::unordered_map<std::string, Glpa::SceneObject *> &objs)
-{
-    cudaError_t err;
-    if (objInfoMalloced)
-    {
-        dReleaseObjInfo();
-    };
-
-    std::vector<Glpa::GPU_OBJECT3D_INFO> hObjInfo;
-    for (auto& pair : objIdMap)
-    {
-        if (Glpa::StationaryObject* obj = dynamic_cast<Glpa::StationaryObject*>(objs[pair.first]))
-        {
-            hObjInfo.push_back(obj->getInfo());
-        }
-        else
-        {
-            Glpa::outputErrorLog(__FILE__, __LINE__, {"Object is not a StationaryObject."});
-        }
-    }
-
-    err = cudaMalloc(&dObjInfo, objIdMap.size() * sizeof(Glpa::GPU_OBJECT3D_INFO));
-    err = cudaMemcpy(dObjInfo, hObjInfo.data(), objIdMap.size() * sizeof(Glpa::GPU_OBJECT3D_INFO), cudaMemcpyHostToDevice);
-
-    objInfoMalloced = true;
-}
-
-void Glpa::Render3d::dReleaseObjInfo()
-{
-    cudaError_t err;
-    if (!objInfoMalloced) return;
-
-    err = cudaFree(dObjInfo);
-    objInfoMalloced = false;
-}
-
-void Glpa::Render3d::dMallocResult()
-{
-    cudaError_t err;
-    if (resultMalloced) dReleaseResult();
-
-    Glpa::GPU_RENDER_RESULT hResult(objIdMap.size());
-
-    err = cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
-    if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"cudaMalloc", "dResult", std::to_string(err)});
-
-    err = cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
-    if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"cudaMemcpy", "dResult", std::to_string(err)});
-
-    
-    resultMalloced = true;
-
-}
-
-void Glpa::Render3d::dReleaseResult()
-{
-    cudaError_t err;
-    if (!resultMalloced) return;
-
-    err = cudaFree(dPolyAmounts);
-    err = cudaFree(dResult);
-    resultMalloced = false;
+    // Result data
+    if (resultFactory.malloced) resultFactory.dFree(dResult);
+    resultFactory.dMalloc(dResult, stObjFactory.idMap.size());
 }
 
 __global__ void GpuPrepareObj
 (
-    Glpa::GPU_OBJECT3D_DATA* objData,
-    Glpa::GPU_OBJECT3D_INFO* objInfo,
+    Glpa::GPU_ST_OBJECT_DATA* objData,
+    Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_RENDER_RESULT* result,
     int objAmount
@@ -560,7 +398,7 @@ void Glpa::Render3d::prepareObjs()
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
 
-    int dataSize = objIdMap.size();
+    int dataSize = stObjFactory.idMap.size();
     int desiredThreadsPerBlock = 256;
 
     int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
@@ -569,19 +407,17 @@ void Glpa::Render3d::prepareObjs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuPrepareObj<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dResult, dataSize);
+    GpuPrepareObj<<<dimGrid, dimBlock>>>(dStObjData, dStObjInfo, dCamData, dResult, dataSize);
     cudaDeviceSynchronize();
     cudaError_t err = cudaGetLastError();
     if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
-    Glpa::GPU_RENDER_RESULT* hResult = new Glpa::GPU_RENDER_RESULT;
-    err = cudaMemcpy(hResult, dResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyDeviceToHost);
-    hResult->deviceToHost();
+    resultFactory.deviceToHost(dResult);
 
     for (int i = 0; i < dataSize; i++)
     {
-        Glpa::GPU_OBJECT3D_INFO objInfo;
-        err = cudaMemcpy(&objInfo, &dObjInfo[i], sizeof(Glpa::GPU_OBJECT3D_INFO), cudaMemcpyDeviceToHost);
+        Glpa::GPU_ST_OBJECT_INFO objInfo;
+        err = cudaMemcpy(&objInfo, &dStObjInfo[i], sizeof(Glpa::GPU_ST_OBJECT_INFO), cudaMemcpyDeviceToHost);
 
         if (objInfo.isInVV == TRUE)
         {
@@ -592,8 +428,8 @@ void Glpa::Render3d::prepareObjs()
 
 __global__ void GpuSetVs
 (
-    Glpa::GPU_OBJECT3D_DATA* objData,
-    Glpa::GPU_OBJECT3D_INFO* objInfo,
+    Glpa::GPU_ST_OBJECT_DATA* objData,
+    Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_RENDER_RESULT* result
 ){
@@ -613,7 +449,7 @@ void Glpa::Render3d::setVs()
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
 
-    int dataSize = objIdMap.size();
+    int dataSize = stObjFactory.idMap.size();
     int desiredThreadsPerBlock = 256;
 
     int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
@@ -622,7 +458,7 @@ void Glpa::Render3d::setVs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuSetVs<<<dimGrid, dimBlock>>>(dObjData, dObjInfo, dCamData, dResult);
+    GpuSetVs<<<dimGrid, dimBlock>>>(dStObjData, dStObjInfo, dCamData, dResult);
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
@@ -636,10 +472,7 @@ void Glpa::Render3d::run(
     std::unordered_map<std::string, Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts,
     Glpa::Camera &cam, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
 {
-    dMallocCam(cam);
-    if (!objMtDataMalloced) dMallocObjsMtData(objs, mts);
-    dMallocObjInfo(objs);
-    dMallocResult();
+    dMalloc(cam, objs, mts);
 
     prepareObjs();
     setVs();
@@ -648,8 +481,59 @@ void Glpa::Render3d::run(
 
 void Glpa::Render3d::dRelease()
 {
-    dReleaseCam();
-    dReleaseObjsMtData();
-    dReleaseObjInfo();
-    dReleaseResult();
+    camFactory.dFree(dCamData);
+    mtFactory.dFree(dMts);
+    stObjFactory.dFree(dStObjData);
+    stObjFactory.dFree(dStObjInfo);
+    resultFactory.dFree(dResult);
+}
+
+void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult)
+{
+    if (!malloced) return;
+
+    delete[] dResult->hPolyAmounts;
+    dResult->hPolyAmounts = nullptr;
+
+    int* dPolyAmounts;
+    cudaMemcpy(&dPolyAmounts, &dResult->dPolyAmounts, sizeof(int*), cudaMemcpyDeviceToHost);
+    cudaFree(dPolyAmounts);
+
+    free(dResult);
+    dResult = nullptr;
+    malloced = false;
+}
+
+void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum)
+{
+    if (malloced) dFree(dResult);
+
+    hResult.srcObjSum = srcObjSum;
+    hResult.objSum = 0;
+    hResult.polySum = 0;
+
+    hResult.hPolyAmounts = new int[srcObjSum];
+    cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));
+
+    cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
+    cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
+
+    cudaFree(hResult.dPolyAmounts);
+
+    malloced = true;
+}
+
+void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult)
+{
+    if (!malloced) Glpa::runTimeError(__FILE__, __LINE__, {"There is no memory on the result device side."});
+
+    cudaMemcpy(&hResult, dResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyDeviceToHost);
+
+    int* dOtherPolyAmounts;
+    cudaMalloc(&dOtherPolyAmounts, hResult.srcObjSum * sizeof(int));
+    cudaMemcpy(dOtherPolyAmounts, hResult.dPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToDevice);
+
+    cudaMemcpy(hResult.hPolyAmounts, dOtherPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
+
+    cudaFree(dOtherPolyAmounts);
 }
