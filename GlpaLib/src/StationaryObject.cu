@@ -108,8 +108,14 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
             std::vector<Glpa::GPU_POLYGON> polygons = obj->getPolyData();
             objData.polyAmount = polygons.size();
 
+            GPU_POLYGON* dPolygons = nullptr;
+            cudaMalloc(&dPolygons, polygons.size() * sizeof(Glpa::GPU_POLYGON));
+            cudaMemcpy(dPolygons, polygons.data(), polygons.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyHostToDevice);
+
             cudaMalloc(&objData.polygons, polygons.size() * sizeof(Glpa::GPU_POLYGON));
-            cudaMemcpy(objData.polygons, polygons.data(), polygons.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyHostToDevice);
+            cudaMemcpy(objData.polygons, dPolygons, polygons.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyDeviceToDevice);
+
+            cudaFree(dPolygons);
 
             objData.range = obj->getRangeRectData();
 
