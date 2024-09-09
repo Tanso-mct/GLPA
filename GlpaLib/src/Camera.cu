@@ -130,30 +130,60 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
     (
         camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_LEFT], camera.vv.line[0].vec, camera.vv.line[4].vec
     );
+    camera.vv.face[Glpa::FACE_3D::TOP].setSquare
+    (
+        camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_LEFT], camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_RIGHT], 
+        camera.vv.wv[Glpa::RECT_3D::BACK_TOP_RIGHT], camera.vv.wv[Glpa::RECT_3D::BACK_TOP_LEFT]
+    );
 
     camera.vv.face[Glpa::FACE_3D::FRONT].set
     (
         camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_LEFT], camera.vv.line[0].vec, camera.vv.line[1].vec
+    );
+    camera.vv.face[Glpa::FACE_3D::FRONT].setSquare
+    (
+        camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_LEFT], camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_RIGHT], 
+        camera.vv.wv[Glpa::RECT_3D::FRONT_BOTTOM_RIGHT], camera.vv.wv[Glpa::RECT_3D::FRONT_BOTTOM_LEFT]
     );
 
     camera.vv.face[Glpa::FACE_3D::RIGHT].set
     (
         camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_RIGHT], camera.vv.line[1].vec, camera.vv.line[5].vec
     );
+    camera.vv.face[Glpa::FACE_3D::RIGHT].setSquare
+    (
+        camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_RIGHT], camera.vv.wv[Glpa::RECT_3D::BACK_TOP_RIGHT], 
+        camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_RIGHT], camera.vv.wv[Glpa::RECT_3D::FRONT_BOTTOM_RIGHT]
+    );
 
     camera.vv.face[Glpa::FACE_3D::LEFT].set
     (
         camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_LEFT], camera.vv.line[3].vec, camera.vv.line[4].vec
+    );
+    camera.vv.face[Glpa::FACE_3D::LEFT].setSquare
+    (
+        camera.vv.wv[Glpa::RECT_3D::FRONT_TOP_LEFT], camera.vv.wv[Glpa::RECT_3D::BACK_TOP_LEFT], 
+        camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_LEFT], camera.vv.wv[Glpa::RECT_3D::FRONT_BOTTOM_LEFT]
     );
 
     camera.vv.face[Glpa::FACE_3D::BACK].set
     (
         camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_RIGHT], camera.vv.line[8].vec, camera.vv.line[9].vec
     );
+    camera.vv.face[Glpa::FACE_3D::BACK].setSquare
+    (
+        camera.vv.wv[Glpa::RECT_3D::BACK_TOP_LEFT], camera.vv.wv[Glpa::RECT_3D::BACK_TOP_RIGHT], 
+        camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_RIGHT], camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_LEFT]
+    );
 
     camera.vv.face[Glpa::FACE_3D::BOTTOM].set
     (
         camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_RIGHT], camera.vv.line[2].vec, camera.vv.line[6].vec
+    );
+    camera.vv.face[Glpa::FACE_3D::BOTTOM].setSquare
+    (
+        camera.vv.wv[Glpa::RECT_3D::FRONT_BOTTOM_LEFT], camera.vv.wv[Glpa::RECT_3D::FRONT_BOTTOM_RIGHT], 
+        camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_RIGHT], camera.vv.wv[Glpa::RECT_3D::BACK_BOTTOM_LEFT]
     );
 
     return camera;

@@ -82,6 +82,10 @@ typedef struct _GPU_RENDER_RESULT
     int objSum;
     int polySum;
 
+    int facingPolySum;
+    int insidePolySum;
+    int insidePolyRangeSum;
+
     int* hPolyAmounts;
     int* dPolyAmounts;
 } GPU_RENDER_RESULT;

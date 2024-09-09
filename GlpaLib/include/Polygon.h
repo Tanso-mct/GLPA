@@ -17,6 +17,19 @@ typedef struct _GPU_POLYGON
     Glpa::GPU_VEC_2D uv[3];
     Glpa::GPU_VEC_3D n;
 
+    __device__ __host__ _GPU_POLYGON(){}
+
+    __device__ __host__ _GPU_POLYGON(_GPU_POLYGON sPoly, Glpa::GPU_MAT_4X4& mtTransRot, Glpa::_GPU_MAT_4X4& mtRot)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            wv[i] = mtTransRot.productLeft3x1(sPoly.wv[i]);
+            uv[i] = sPoly.uv[i];
+        }
+
+        n = mtRot.productLeft3x1(sPoly.n);
+    }
+
     __device__ __host__ GPU_BOOL isFacing(Glpa::GPU_MAT_4X4& mtTransRot, Glpa::_GPU_MAT_4X4& mtRot)
     {
         Glpa::GPU_VEC_3D cnvtV = mtTransRot.productLeft3x1(wv[0]);
@@ -32,6 +45,7 @@ typedef struct _GPU_POLYGON
 
         return FALSE;
     }
+
 } GPU_POLYGON;
 
 class Polygon

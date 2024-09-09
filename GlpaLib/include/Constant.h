@@ -13,6 +13,16 @@
 #define GPU_IF(condition, branch) \
     for(int branch = 0; branch < (condition) ? TRUE : FALSE; branch++) \
 
+#define GPU_IS_EMPTY -1
+#define GPU_IS_TRIANGLE 0
+#define GPU_IS_SQUARE 1
+
+#define GPU_MAX_FACE_V 4
+
+#define GPU_VV_FACE_AMOUNT 6
+#define GPU_VV_LINE_AMOUNT 12
+
+#define GPU_POLY_LINE_AMOUNT 3
 
 namespace Glpa 
 {

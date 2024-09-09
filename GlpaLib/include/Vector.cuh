@@ -264,11 +264,90 @@ typedef struct _GPU_VEC_3D
     
 } GPU_VEC_3D;
 
+typedef struct _GPU_VECTOR_MANAGER
+{
+    // Vector 2D
+    __device__ __host__ Glpa::GPU_VEC_2D getVec(Glpa::GPU_VEC_2D start, Glpa::GPU_VEC_2D end)
+    {
+        return Glpa::GPU_VEC_2D(end.x - start.x, end.y - start.y);
+    }
+
+    __device__ __host__ float dot(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
+    {
+        return vec1.x * vec2.x + vec1.y * vec2.y;
+    }
+
+    __device__ __host__ float cross(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
+    {
+        return vec1.x * vec2.y - vec1.y * vec2.x;
+    }
+
+    __device__ __host__ float getLength(Glpa::GPU_VEC_2D vec)
+    {
+        return std::sqrtf(vec.x * vec.x + vec.y * vec.y);
+    }
+
+    __device__ __host__ Glpa::GPU_VEC_2D normalize(Glpa::GPU_VEC_2D vec)
+    {
+        float length = getLength(vec);
+        return Glpa::GPU_VEC_2D(vec.x / length, vec.y / length);
+    }
+
+    __device__ __host__ float cos(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
+    {
+        return dot(vec1, vec2) / (getLength(vec1) * getLength(vec2));
+    }
+
+    // Vector 3D
+    __device__ __host__ Glpa::GPU_VEC_3D getVec(Glpa::GPU_VEC_3D start, Glpa::GPU_VEC_3D end)
+    {
+        return Glpa::GPU_VEC_3D(end.x - start.x, end.y - start.y, end.z - start.z);
+    }
+
+    __device__ __host__ float dot(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
+    {
+        return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+    }
+
+    __device__ __host__ Glpa::GPU_VEC_3D cross(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
+    {
+        return Glpa::GPU_VEC_3D(vec1.y * vec2.z - vec1.z * vec2.y,
+                                vec1.z * vec2.x - vec1.x * vec2.z,
+                                vec1.x * vec2.y - vec1.y * vec2.x);
+    }
+
+    __device__ __host__ float getLength(Glpa::GPU_VEC_3D vec)
+    {
+        return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    } 
+
+    __device__ __host__ Glpa::GPU_VEC_3D normalize(Glpa::GPU_VEC_3D vec)
+    {
+        float length = getLength(vec);
+        return Glpa::GPU_VEC_3D(vec.x / length, vec.y / length, vec.z / length);
+    }
+
+    __device__ __host__ float cos(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
+    {
+        return dot(vec1, vec2) / (getLength(vec1) * getLength(vec2));
+    }
+
+} GPU_VECTOR_MG;
+
 typedef struct _GPU_LINE_3D
 {
     Glpa::GPU_VEC_3D start;
     Glpa::GPU_VEC_3D end;
     Glpa::GPU_VEC_3D vec;
+
+    __device__ __host__ _GPU_LINE_3D(){};
+
+    __device__ __host__ _GPU_LINE_3D(Glpa::GPU_VEC_3D argStart, Glpa::GPU_VEC_3D argEnd)
+    {
+        start = argStart;
+        end = argEnd;
+        vec = end - start;
+    }
 
     __device__ __host__ void set(Glpa::GPU_VEC_3D argStart, Glpa::GPU_VEC_3D argEnd)
     {
@@ -308,8 +387,19 @@ typedef struct _GPU_LINE_3D
 
 typedef struct _GPU_FACE_3D
 {
+    int type = GPU_IS_EMPTY;
     Glpa::GPU_VEC_3D v;
     Glpa::GPU_VEC_3D n;
+
+    Glpa::GPU_VEC_3D vs[GPU_MAX_FACE_V];
+
+    __device__ __host__ _GPU_FACE_3D(){};
+
+    __device__ __host__ _GPU_FACE_3D(Glpa::GPU_VEC_3D argV, Glpa::GPU_VEC_3D argN)
+    {
+        v = argV;
+        n = argN;
+    };
 
     __device__ __host__ void set(Glpa::GPU_VEC_3D argV, Glpa::GPU_VEC_3D vecA, Glpa::GPU_VEC_3D vecB)
     {
@@ -321,6 +411,91 @@ typedef struct _GPU_FACE_3D
             vecA.z * vecB.x - vecA.x * vecB.z,
             vecA.x * vecB.y - vecA.y * vecB.x
         );
+    }
+
+    __device__ __host__ void setTriangle(Glpa::GPU_VEC_3D& v0, Glpa::GPU_VEC_3D& v1, Glpa::GPU_VEC_3D& v2)
+    {
+        type = GPU_IS_TRIANGLE;
+        vs[0] = v0;
+        vs[1] = v1;
+        vs[2] = v2;
+    }
+
+    __device__ __host__ void setSquare(Glpa::GPU_VEC_3D& v0, Glpa::GPU_VEC_3D& v1, Glpa::GPU_VEC_3D& v2, Glpa::GPU_VEC_3D& v3)
+    {
+        type = GPU_IS_SQUARE;
+        vs[0] = v0;
+        vs[1] = v1;
+        vs[2] = v2;
+        vs[3] = v3;
+    }
+
+    __device__ __host__ GPU_BOOL isInside(Glpa::GPU_VEC_3D& point)
+    {
+        Glpa::GPU_VECTOR_MG vecMgr;
+        GPU_IF(type == GPU_IS_TRIANGLE, br2)
+        {
+            // Dot product of a polygon line segment and a point.
+            // The polygon line segment is pla, and the point is p.
+            float dotPlaP[3] = 
+            {
+                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), point),
+                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), point),
+                vecMgr.dot(vecMgr.getVec(vs[2], vs[0]), point)
+            };
+
+            // Let plb be the line segment from the polygon vertex that is not pla.
+            float dotPlaPlb[3] = 
+            {
+                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
+                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
+                vecMgr.dot(vecMgr.getVec(vs[2], vs[0]), vecMgr.getVec(vs[2], vs[1]))
+            };
+
+            // PLAとPLBの内積の値より、PLAとPの内積の値が大きいかどうかを判定する。
+            GPU_BOOL isDotBigger = TRUE;
+            for (int i = 0; i < 3; i++)
+            {
+                isDotBigger *= GPU_CO(dotPlaP[i] >= dotPlaPlb[i], TRUE, FALSE);
+            }
+
+            // If all three test results are true, the point is inside the triangle.
+            return isDotBigger;
+        }
+
+        GPU_IF(type == GPU_IS_SQUARE, br2)
+        {
+            // Dot product of a polygon line segment and a point.
+            // The polygon line segment is pla, and the point is p.
+            float dotPlaP[4] = 
+            {
+                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), point),
+                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), point),
+                vecMgr.dot(vecMgr.getVec(vs[2], vs[3]), point),
+                vecMgr.dot(vecMgr.getVec(vs[3], vs[0]), point)
+            };
+
+            // Let plb be the line segment from the polygon vertex that is not pla.
+            float dotPlaPlb[4] = 
+            {
+                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
+                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
+                vecMgr.dot(vecMgr.getVec(vs[2], vs[3]), vecMgr.getVec(vs[2], vs[1])),
+                vecMgr.dot(vecMgr.getVec(vs[3], vs[0]), vecMgr.getVec(vs[3], vs[2]))
+            };
+
+            // PLAとPLBの内積の値より、PLAとPの内積の値が大きいかどうかを判定する。
+            GPU_BOOL isDotBigger = TRUE;
+            for (int i = 0; i < 4; i++)
+            {
+                isDotBigger *= GPU_CO(dotPlaP[i] >= dotPlaPlb[i], TRUE, FALSE);
+            }
+
+            // If all three test results are true, the point is inside the triangle.
+            return isDotBigger;
+        }
+
+        return FALSE;
     }
 
 } GPU_FACE_3D;
@@ -407,66 +582,6 @@ public :
         return *this;
     }
 };
-
-typedef struct _GPU_VECTOR_MANAGER
-{
-    // Vector 2D
-    __device__ __host__ float dot(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
-    {
-        return vec1.x * vec2.x + vec1.y * vec2.y;
-    }
-
-    __device__ __host__ float cross(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
-    {
-        return vec1.x * vec2.y - vec1.y * vec2.x;
-    }
-
-    __device__ __host__ float getLength(Glpa::GPU_VEC_2D vec)
-    {
-        return std::sqrtf(vec.x * vec.x + vec.y * vec.y);
-    }
-
-    __device__ __host__ Glpa::GPU_VEC_2D normalize(Glpa::GPU_VEC_2D vec)
-    {
-        float length = getLength(vec);
-        return Glpa::GPU_VEC_2D(vec.x / length, vec.y / length);
-    }
-
-    __device__ __host__ float cos(Glpa::GPU_VEC_2D vec1, Glpa::GPU_VEC_2D vec2)
-    {
-        return dot(vec1, vec2) / (getLength(vec1) * getLength(vec2));
-    }
-
-    // Vector 3D
-    __device__ __host__ float dot(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
-    {
-        return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
-    }
-
-    __device__ __host__ Glpa::GPU_VEC_3D cross(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
-    {
-        return Glpa::GPU_VEC_3D(vec1.y * vec2.z - vec1.z * vec2.y,
-                                vec1.z * vec2.x - vec1.x * vec2.z,
-                                vec1.x * vec2.y - vec1.y * vec2.x);
-    }
-
-    __device__ __host__ float getLength(Glpa::GPU_VEC_3D vec)
-    {
-        return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-    } 
-
-    __device__ __host__ Glpa::GPU_VEC_3D normalize(Glpa::GPU_VEC_3D vec)
-    {
-        float length = getLength(vec);
-        return Glpa::GPU_VEC_3D(vec.x / length, vec.y / length, vec.z / length);
-    }
-
-    __device__ __host__ float cos(Glpa::GPU_VEC_3D vec1, Glpa::GPU_VEC_3D vec2)
-    {
-        return dot(vec1, vec2) / (getLength(vec1) * getLength(vec2));
-    }
-
-} GPU_VECTOR_MG;
 
 }
 

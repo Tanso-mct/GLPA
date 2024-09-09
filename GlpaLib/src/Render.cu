@@ -327,7 +327,7 @@ __global__ void GpuPrepareObj
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
 
-    Glpa::GPU_VECTOR_MG vecMg;
+    Glpa::GPU_VECTOR_MG vecMgr;
 
     if (i < objAmount)
     {
@@ -338,60 +338,19 @@ __global__ void GpuPrepareObj
             objRangeRect.addRangeV(camData->mtTransRot.productLeft3x1(objData[i].range.wv[vI]));
         }
 
-        // By looking two-dimensionally, 
-        // it is possible to determine whether an object is even partially within the camera's viewing angle.
-        Glpa::GPU_VEC_2D cullingVecs[4] = {
-            {objRangeRect.origin.x, objRangeRect.opposite.z},
-            {objRangeRect.opposite.x, objRangeRect.opposite.z},
-            {objRangeRect.origin.y, objRangeRect.opposite.z},
-            {objRangeRect.opposite.y, objRangeRect.opposite.z}
-        };
-
-        Glpa::GPU_VEC_2D axisVec(0, -1);
-
-        float vecsCos[4] = {
-            vecMg.cos(cullingVecs[0], axisVec),
-            vecMg.cos(cullingVecs[1], axisVec),
-            vecMg.cos(cullingVecs[2], axisVec),
-            vecMg.cos(cullingVecs[3], axisVec)
-        };
-
-        GPU_BOOL isObjZIn = GPU_CO
-        (
-            objRangeRect.origin.z >= -camData->farZ && objRangeRect.opposite.z <= -camData->nearZ, 
-            TRUE, FALSE
-        );
-
-        GPU_BOOL isObjXzIn = GPU_CO
-        (
-            (objRangeRect.origin.x >= 0 && vecsCos[0] >= camData->fovXzCos) || 
-            (objRangeRect.opposite.x <= 0 && vecsCos[1] >= camData->fovXzCos) ||
-            (objRangeRect.origin.x <= 0 && objRangeRect.opposite.x >= 0),
-            TRUE, FALSE
-        );
-
-        GPU_BOOL isObjYzIn = GPU_CO
-        (
-            (objRangeRect.origin.y >= 0 && vecsCos[2] >= camData->fovYzCos) || 
-            (objRangeRect.opposite.y <= 0 && vecsCos[3] >= camData->fovYzCos) ||
-            (objRangeRect.origin.y <= 0 && objRangeRect.opposite.y >= 0),
-            TRUE, FALSE
-        );
-
-        objInfo[i].isInVV = GPU_CO
-        (
-            isObjZIn == TRUE && isObjXzIn == TRUE && isObjYzIn == TRUE, 
-            TRUE, FALSE
-        );
+        objInfo[i].isInVV = camData->isInside(objRangeRect);
 
         GPU_IF(objInfo[i].isInVV == TRUE, branch2)
         {
-            result->dPolyAmounts[i] = 5;
+            atomicAdd(&result->objSum, 1);
             atomicAdd(&result->polySum, objData[i].polyAmount);
+
+            result->dPolyAmounts[i] = objData[i].polyAmount;
         }
         
     } // if (i < objAmount)
 }
+
 
 void Glpa::Render3d::prepareObjs()
 {
@@ -413,17 +372,67 @@ void Glpa::Render3d::prepareObjs()
     if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
     resultFactory.deviceToHost(dResult);
+}
 
-    for (int i = 0; i < dataSize; i++)
+__device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objI, int& polyI)
+{
+    int polyAmountSum = polyAmounts[0];
+    for (int i = 1; i <= objSum; i++)
     {
-        Glpa::GPU_ST_OBJECT_INFO objInfo;
-        err = cudaMemcpy(&objInfo, &dStObjInfo[i], sizeof(Glpa::GPU_ST_OBJECT_INFO), cudaMemcpyDeviceToHost);
-
-        if (objInfo.isInVV == TRUE)
+        if (nI + 1 <= polyAmountSum)
         {
-            Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_RENDER, "Object is in the viewing volume.");
+            objI = i - 1;
+            polyI = nI - (polyAmountSum - polyAmounts[i - 1]);
+            return;
+        }
+        else
+        {
+            polyAmountSum += polyAmounts[i];
         }
     }
+
+    objI = GPU_IS_EMPTY;
+    polyI = GPU_IS_EMPTY;
+    return;
+}
+
+__device__ GPU_BOOL GpuGetFaceLineInxtn(Glpa::GPU_FACE_3D& face, Glpa::GPU_LINE_3D& line, Glpa::GPU_VEC_3D& inxtn)
+{
+    Glpa::GPU_VECTOR_MG vecMgr;
+
+    /* 
+    one vertex of the surface be p, 
+    the normal vector of the surface be n,
+    the starting point of the line segment be a, 
+    the end point of the line segment be b.
+    */
+    Glpa::GPU_VEC_3D pa = vecMgr.getVec(face.v, line.start);
+    Glpa::GPU_VEC_3D pb = vecMgr.getVec(face.v, line.end);
+
+    // The dot product of the normal vector of the surface and the line segment
+    float dotPaN = vecMgr.dot(face.n, pa);
+    float dotPbN = vecMgr.dot(face.n, pb);
+
+    // Determine whether they intersect.
+    GPU_BOOL isIntersect = GPU_CO(dotPaN * dotPbN <= 0, TRUE, FALSE);
+
+    GPU_IF(isIntersect == FALSE, br1) return FALSE;
+
+    // Find the absolute value of the inner product.
+    float absDotPaN = abs(dotPaN);
+    float absDotPbN = abs(dotPbN);
+
+    Glpa::GPU_VEC_3D intersectV = line.start + line.vec * (absDotPaN / (absDotPaN + absDotPbN));
+
+    GPU_BOOL isInside = face.isInside(intersectV);
+    GPU_IF(isInside == TRUE, br2)
+    {
+        inxtn = intersectV;
+        return TRUE;
+    }
+
+    return FALSE;
+
 }
 
 __global__ void GpuSetVs
@@ -434,11 +443,95 @@ __global__ void GpuSetVs
     Glpa::GPU_RENDER_RESULT* result
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
-    Glpa::GPU_VECTOR_MG vecMg;
+    Glpa::GPU_VECTOR_MG vecMgr;
 
     if (i < result->polySum)
     {
-        
+        // Get the index of each object and polygon from the current i
+        int objI, polyI;
+        GpuSetI(i, result->dPolyAmounts, result->objSum, objI, polyI);
+
+        // Execute if current i is not out of range.
+        GPU_IF(objI != GPU_IS_EMPTY, br2)
+        {
+            // Check if the polygon is facing the camera
+            GPU_BOOL isPolyFacing = objData[objI].polygons[polyI].isFacing(camData->mtTransRot, camData->mtRot);
+            
+            // Add the result to the result data
+            atomicAdd(&result->facingPolySum, isPolyFacing);
+
+            GPU_IF(isPolyFacing == TRUE, br3)
+            {
+                Glpa::GPU_POLYGON ctPoly(objData[objI].polygons[polyI], camData->mtTransRot, camData->mtRot);
+
+                GPU_BOOL isPolyIn = FALSE;
+                GPU_BOOL isPolyRangeIn = FALSE;
+                GPU_BOOL isCtVIn[3];
+
+                // Determine whether the polygon's vertices are within the view volume.
+                for (int j = 0; j < 3; j++)
+                {
+                    isCtVIn[j] = camData->isInside(ctPoly.wv[j]);
+                    isPolyIn = GPU_CO(isPolyIn + isCtVIn[j] >= 1, TRUE, FALSE);
+                }
+
+                // Add the result to the result data
+                atomicAdd(&result->insidePolySum, isPolyIn);
+
+                GPU_IF(isPolyIn == FALSE, br4)
+                {
+                    Glpa::GPU_RANGE_RECT polyRangeRect;
+                    for (int j = 0; j < 3; j++)
+                    {
+                        polyRangeRect.addRangeV(ctPoly.wv[j]);
+                    }
+                    polyRangeRect.setWvs();
+
+                    isPolyRangeIn = camData->isInside(polyRangeRect);
+                }
+
+                // Add the result to the result data
+                atomicAdd(&result->insidePolyRangeSum, isPolyRangeIn);
+
+                GPU_IF(isPolyIn == TRUE || isPolyRangeIn == TRUE, br4)
+                {
+                    Glpa::GPU_FACE_3D polyFace(ctPoly.wv[0], ctPoly.n);
+                    polyFace.setTriangle(ctPoly.wv[0], ctPoly.wv[1], ctPoly.wv[2]);
+
+                    Glpa::GPU_LINE_3D polyLine[3] = 
+                    {
+                        Glpa::GPU_LINE_3D(ctPoly.wv[0], ctPoly.wv[1]),
+                        Glpa::GPU_LINE_3D(ctPoly.wv[1], ctPoly.wv[2]),
+                        Glpa::GPU_LINE_3D(ctPoly.wv[2], ctPoly.wv[0])
+                    };
+
+                    int inxtnSum = 0;
+
+                    // Obtain the intersection of the polygon surface and the view volume line.
+                    GPU_BOOL isExistAtPolyFace[GPU_VV_LINE_AMOUNT];
+                    Glpa::GPU_VEC_3D polyFaceInxtn[GPU_VV_LINE_AMOUNT];
+                    for (int j = 0; j < GPU_VV_LINE_AMOUNT; j++)
+                    {
+                        isExistAtPolyFace[j] = GpuGetFaceLineInxtn(polyFace, camData->vv.line[j], polyFaceInxtn[j]);
+                        inxtnSum += isExistAtPolyFace[j];
+                    }
+
+                    // Obtain the intersection of the view volume surface and the polygon line.
+                    GPU_BOOL isExistAtVVFace[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
+                    Glpa::GPU_VEC_3D vvFaceInxtn[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
+                    for (int j = 0; j < GPU_VV_FACE_AMOUNT; j++)
+                    {
+                        for (int k = 0; k < GPU_POLY_LINE_AMOUNT; k++)
+                        {
+                            isExistAtVVFace[j][k] = GpuGetFaceLineInxtn(camData->vv.face[j], polyLine[k], vvFaceInxtn[j][k]);
+                            inxtnSum += isExistAtVVFace[j][k];
+                        }
+                    }
+
+                }
+                
+            }
+        }
     }
 
 
@@ -449,7 +542,7 @@ void Glpa::Render3d::setVs()
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
 
-    int dataSize = stObjFactory.idMap.size();
+    int dataSize = resultFactory.hResult.polySum;
     int desiredThreadsPerBlock = 256;
 
     int blocks = (dataSize + desiredThreadsPerBlock - 1) / desiredThreadsPerBlock;
@@ -462,6 +555,8 @@ void Glpa::Render3d::setVs()
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+
+    resultFactory.deviceToHost(dResult);
 }
 
 void Glpa::Render3d::rasterize()
@@ -512,6 +607,10 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int
     hResult.objSum = 0;
     hResult.polySum = 0;
 
+    hResult.facingPolySum = 0;
+    hResult.insidePolySum = 0;
+    hResult.insidePolyRangeSum = 0;
+
     hResult.hPolyAmounts = new int[srcObjSum];
     cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));
 
@@ -534,6 +633,5 @@ void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult
     cudaMemcpy(dOtherPolyAmounts, hResult.dPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToDevice);
 
     cudaMemcpy(hResult.hPolyAmounts, dOtherPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
-
     cudaFree(dOtherPolyAmounts);
 }
