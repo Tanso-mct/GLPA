@@ -38,12 +38,13 @@ typedef struct _GPU_POLYGON
         Glpa::GPU_VECTOR_MG vecMg;
         float dot = vecMg.dot(cnvtV, cnvtN);
 
-        GPU_IF(dot <= 0, branch2)
+        GPU_BOOL rt = FALSE;
+        GPU_IF(dot <= 0, br2)
         {
-            return TRUE;
+            rt = TRUE;
         }
 
-        return FALSE;
+        return rt;
     }
 
 } GPU_POLYGON;

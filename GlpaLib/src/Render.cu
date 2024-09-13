@@ -306,7 +306,7 @@ void Glpa::Render3d::dMalloc
     if (!mtFactory.malloced) mtFactory.dMalloc(dMts, mts);;
 
     // Object data
-    if (!stObjFactory.dataMalloced) stObjFactory.dMalloc(dStObjData, objs, mtFactory.idMap);
+    if (!stObjFactory.dataMalloced) stObjFactory.dMalloc(dStObjData, dObjPolys, objs, mtFactory.idMap);
 
     // Object info
     if (stObjFactory.infoMalloced) stObjFactory.dFree(dStObjInfo);
@@ -438,6 +438,7 @@ __device__ GPU_BOOL GpuGetFaceLineInxtn(Glpa::GPU_FACE_3D& face, Glpa::GPU_LINE_
 __global__ void GpuSetVs
 (
     Glpa::GPU_ST_OBJECT_DATA* objData,
+    Glpa::GPU_POLYGON* objPolys,
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_RENDER_RESULT* result
@@ -454,29 +455,45 @@ __global__ void GpuSetVs
         // Execute if current i is not out of range.
         GPU_IF(objI != GPU_IS_EMPTY, br2)
         {
+            result->facingObjI[i] = GPU_IS_EMPTY;
+            result->facingPolyI[i] = GPU_IS_EMPTY;
+
+            result->inxtnObjId[i] = GPU_IS_EMPTY;
+            result->inxtnPolyId[i] = GPU_IS_EMPTY;
+            result->inxtnAmountsPoly[i] = GPU_IS_EMPTY;
+            result->inxtnAmountsVv[i] = GPU_IS_EMPTY;
+
             // Check if the polygon is facing the camera
-            GPU_BOOL isPolyFacing = objData[objI].polygons[polyI].isFacing(camData->mtTransRot, camData->mtRot);
-            
-            // Add the result to the result data
-            atomicAdd(&result->facingPolySum, isPolyFacing);
+            GPU_BOOL isPolyFacing = objPolys[i].isFacing(camData->mtTransRot, camData->mtRot);
 
             GPU_IF(isPolyFacing == TRUE, br3)
             {
-                Glpa::GPU_POLYGON ctPoly(objData[objI].polygons[polyI], camData->mtTransRot, camData->mtRot);
+                // Add the result to the result data
+                atomicAdd(&result->facingPolySum, isPolyFacing);
+                result->facingObjI[i] = objI;
+                result->facingPolyI[i] = polyI;
 
+                Glpa::GPU_POLYGON ctPoly(objPolys[i], camData->mtTransRot, camData->mtRot);
+
+                GPU_BOOL isCtVIn[3];
                 GPU_BOOL isPolyIn = FALSE;
                 GPU_BOOL isPolyRangeIn = FALSE;
-                GPU_BOOL isCtVIn[3];
+                int inVSum = 0;
 
                 // Determine whether the polygon's vertices are within the view volume.
                 for (int j = 0; j < 3; j++)
                 {
                     isCtVIn[j] = camData->isInside(ctPoly.wv[j]);
                     isPolyIn = GPU_CO(isPolyIn + isCtVIn[j] >= 1, TRUE, FALSE);
+                    inVSum += isCtVIn[j];
                 }
 
                 // Add the result to the result data
                 atomicAdd(&result->insidePolySum, isPolyIn);
+                GPU_IF(inVSum != 3 && isPolyIn == TRUE, br4)
+                {
+                    atomicAdd(&result->needClipPolySum, 1);
+                }
 
                 GPU_IF(isPolyIn == FALSE, br4)
                 {
@@ -493,7 +510,7 @@ __global__ void GpuSetVs
                 // Add the result to the result data
                 atomicAdd(&result->insidePolyRangeSum, isPolyRangeIn);
 
-                GPU_IF(isPolyIn == TRUE || isPolyRangeIn == TRUE, br4)
+                GPU_IF((inVSum != 3 && isPolyIn == TRUE) || isPolyRangeIn == TRUE, br4)
                 {
                     Glpa::GPU_FACE_3D polyFace(ctPoly.wv[0], ctPoly.n);
                     polyFace.setTriangle(ctPoly.wv[0], ctPoly.wv[1], ctPoly.wv[2]);
@@ -505,7 +522,7 @@ __global__ void GpuSetVs
                         Glpa::GPU_LINE_3D(ctPoly.wv[2], ctPoly.wv[0])
                     };
 
-                    int inxtnSum = 0;
+                    int inxtnAmount = 0;
 
                     // Obtain the intersection of the polygon surface and the view volume line.
                     GPU_BOOL isExistAtPolyFace[GPU_VV_LINE_AMOUNT];
@@ -513,8 +530,17 @@ __global__ void GpuSetVs
                     for (int j = 0; j < GPU_VV_LINE_AMOUNT; j++)
                     {
                         isExistAtPolyFace[j] = GpuGetFaceLineInxtn(polyFace, camData->vv.line[j], polyFaceInxtn[j]);
-                        inxtnSum += isExistAtPolyFace[j];
+                        inxtnAmount += isExistAtPolyFace[j];
                     }
+
+                    // Add the result to the result data
+                    GPU_IF(inxtnAmount != 0, br5)
+                    {
+                        result->inxtnObjId[i] = objI;
+                        result->inxtnPolyId[i] = polyI;
+                        result->inxtnAmountsPoly[i] = inxtnAmount;
+                    }
+
 
                     // Obtain the intersection of the view volume surface and the polygon line.
                     GPU_BOOL isExistAtVVFace[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
@@ -524,10 +550,17 @@ __global__ void GpuSetVs
                         for (int k = 0; k < GPU_POLY_LINE_AMOUNT; k++)
                         {
                             isExistAtVVFace[j][k] = GpuGetFaceLineInxtn(camData->vv.face[j], polyLine[k], vvFaceInxtn[j][k]);
-                            inxtnSum += isExistAtVVFace[j][k];
+                            inxtnAmount += isExistAtVVFace[j][k];
                         }
                     }
 
+                    // Add the result to the result data
+                    GPU_IF(inxtnAmount != 0, br5)
+                    {
+                        result->inxtnObjId[i] = objI;
+                        result->inxtnPolyId[i] = polyI;
+                        result->inxtnAmountsVv[i] = inxtnAmount;
+                    }
                 }
                 
             }
@@ -551,7 +584,7 @@ void Glpa::Render3d::setVs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuSetVs<<<dimGrid, dimBlock>>>(dStObjData, dStObjInfo, dCamData, dResult);
+    GpuSetVs<<<dimGrid, dimBlock>>>(dStObjData, dObjPolys,dStObjInfo, dCamData, dResult);
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
@@ -578,7 +611,7 @@ void Glpa::Render3d::dRelease()
 {
     camFactory.dFree(dCamData);
     mtFactory.dFree(dMts);
-    stObjFactory.dFree(dStObjData);
+    stObjFactory.dFree(dStObjData, dObjPolys);
     stObjFactory.dFree(dStObjInfo);
     resultFactory.dFree(dResult);
 }
@@ -610,6 +643,11 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int
     hResult.facingPolySum = 0;
     hResult.insidePolySum = 0;
     hResult.insidePolyRangeSum = 0;
+
+    hResult.needClipPolySum = 0;
+
+    hResult.polyFaceInxtnSum = 0;
+    hResult.vvFaceInxtnSum = 0;
 
     hResult.hPolyAmounts = new int[srcObjSum];
     cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));

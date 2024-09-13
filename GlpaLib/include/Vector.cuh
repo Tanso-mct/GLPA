@@ -413,7 +413,7 @@ typedef struct _GPU_FACE_3D
         );
     }
 
-    __device__ __host__ void setTriangle(Glpa::GPU_VEC_3D& v0, Glpa::GPU_VEC_3D& v1, Glpa::GPU_VEC_3D& v2)
+    __device__ __host__ void setTriangle(Glpa::GPU_VEC_3D v0, Glpa::GPU_VEC_3D v1, Glpa::GPU_VEC_3D v2)
     {
         type = GPU_IS_TRIANGLE;
         vs[0] = v0;
@@ -421,7 +421,7 @@ typedef struct _GPU_FACE_3D
         vs[2] = v2;
     }
 
-    __device__ __host__ void setSquare(Glpa::GPU_VEC_3D& v0, Glpa::GPU_VEC_3D& v1, Glpa::GPU_VEC_3D& v2, Glpa::GPU_VEC_3D& v3)
+    __device__ __host__ void setSquare(Glpa::GPU_VEC_3D v0, Glpa::GPU_VEC_3D v1, Glpa::GPU_VEC_3D v2, Glpa::GPU_VEC_3D v3)
     {
         type = GPU_IS_SQUARE;
         vs[0] = v0;
@@ -439,17 +439,17 @@ typedef struct _GPU_FACE_3D
             // The polygon line segment is pla, and the point is p.
             float dotPlaP[3] = 
             {
-                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), point),
-                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), point),
-                vecMgr.dot(vecMgr.getVec(vs[2], vs[0]), point)
+                vecMgr.cos(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], point)),
+                vecMgr.cos(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], point)),
+                vecMgr.cos(vecMgr.getVec(vs[2], vs[0]), vecMgr.getVec(vs[2], point))
             };
 
             // Let plb be the line segment from the polygon vertex that is not pla.
             float dotPlaPlb[3] = 
             {
-                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
-                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
-                vecMgr.dot(vecMgr.getVec(vs[2], vs[0]), vecMgr.getVec(vs[2], vs[1]))
+                vecMgr.cos(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
+                vecMgr.cos(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
+                vecMgr.cos(vecMgr.getVec(vs[2], vs[0]), vecMgr.getVec(vs[2], vs[1]))
             };
 
             // PLAとPLBの内積の値より、PLAとPの内積の値が大きいかどうかを判定する。
@@ -469,19 +469,19 @@ typedef struct _GPU_FACE_3D
             // The polygon line segment is pla, and the point is p.
             float dotPlaP[4] = 
             {
-                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), point),
-                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), point),
-                vecMgr.dot(vecMgr.getVec(vs[2], vs[3]), point),
-                vecMgr.dot(vecMgr.getVec(vs[3], vs[0]), point)
+                vecMgr.cos(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], point)),
+                vecMgr.cos(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], point)),
+                vecMgr.cos(vecMgr.getVec(vs[2], vs[3]), vecMgr.getVec(vs[2], point)),
+                vecMgr.cos(vecMgr.getVec(vs[3], vs[0]), vecMgr.getVec(vs[3], point))
             };
 
             // Let plb be the line segment from the polygon vertex that is not pla.
             float dotPlaPlb[4] = 
             {
-                vecMgr.dot(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
-                vecMgr.dot(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
-                vecMgr.dot(vecMgr.getVec(vs[2], vs[3]), vecMgr.getVec(vs[2], vs[1])),
-                vecMgr.dot(vecMgr.getVec(vs[3], vs[0]), vecMgr.getVec(vs[3], vs[2]))
+                vecMgr.cos(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
+                vecMgr.cos(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
+                vecMgr.cos(vecMgr.getVec(vs[2], vs[3]), vecMgr.getVec(vs[2], vs[1])),
+                vecMgr.cos(vecMgr.getVec(vs[3], vs[0]), vecMgr.getVec(vs[3], vs[2]))
             };
 
             // PLAとPLBの内積の値より、PLAとPの内積の値が大きいかどうかを判定する。

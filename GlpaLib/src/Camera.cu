@@ -86,6 +86,7 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
 
         0, 0, 0, 1
     };
+    
     camera.mtRot.set(mtRot);
 
     // Defines the coordinates of the four vertices when the view volume is viewed from the positive y-axis direction.

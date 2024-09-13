@@ -202,12 +202,12 @@ LPDWORD Glpa::FileDataManager::getPngData(std::string path)
     }
 }
 
-std::vector<Glpa::GPU_POLYGON> Glpa::FileDataManager::getPolyData(std::string path)
+void Glpa::FileDataManager::getPolyData(std::string path, std::vector<Glpa::GPU_POLYGON>& polys)
 {
     if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
     {
         Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_FILE_DATA_MG, "Data[" + path + "]");
-        return obj->getPolyData();
+        obj->getPolyData(polys);
     }
     else
     {
@@ -428,17 +428,14 @@ void Glpa::ObjData::release()
     polygons.clear();
 }
 
-std::vector<Glpa::GPU_POLYGON> Glpa::ObjData::getPolyData()
+void Glpa::ObjData::getPolyData(std::vector<Glpa::GPU_POLYGON>& polys)
 {
     if (polygons.size() != 0)
     {
-        std::vector<Glpa::GPU_POLYGON> polyData;
         for (auto& polygon : polygons)
         {
-            polyData.push_back(polygon->getData(wv, uv));
+            polys.push_back(polygon->getData(wv, uv));
         }
-
-        return polyData;
     }
     else
     {

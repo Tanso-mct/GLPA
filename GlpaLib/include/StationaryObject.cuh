@@ -20,7 +20,7 @@ typedef struct _GPU_STATIONARY_OBJECT_DATA
     int mtId;
     int polyAmount;
     Glpa::GPU_RANGE_RECT range;
-    Glpa::GPU_POLYGON* polygons;
+    // Glpa::GPU_POLYGON* polygons;
 } GPU_ST_OBJECT_DATA;
 
 typedef struct _GPU_STATIONARY_OBJECT_INFO
@@ -64,7 +64,7 @@ public :
 
     Glpa::GPU_ST_OBJECT_INFO getInfo();
 
-    std::vector<Glpa::GPU_POLYGON> getPolyData();
+    void getPolyData(std::vector<Glpa::GPU_POLYGON>& polys);
     Glpa::GPU_RANGE_RECT getRangeRectData();
 
     void load();
@@ -85,12 +85,13 @@ public :
         infoMalloced = false;
     }
 
-    void dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData);
+    void dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON*& dPolys);
     void dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo);
 
     void dMalloc
     (
-        Glpa::GPU_ST_OBJECT_DATA*& dObjData, 
+        Glpa::GPU_ST_OBJECT_DATA*& dObjData,
+        Glpa::GPU_POLYGON*& dPolys,
         std::unordered_map<std::string, Glpa::SceneObject*>& sObjs,
         std::unordered_map<std::string, int>& mtIdMap
     );

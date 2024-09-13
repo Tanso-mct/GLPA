@@ -83,8 +83,22 @@ typedef struct _GPU_RENDER_RESULT
     int polySum;
 
     int facingPolySum;
+
+    int facingPolyI[212];
+    int facingObjI[212];
+
     int insidePolySum;
     int insidePolyRangeSum;
+
+    int needClipPolySum;
+
+    int polyFaceInxtnSum;
+    int vvFaceInxtnSum;
+
+    int inxtnObjId[212];
+    int inxtnPolyId[212];
+    int inxtnAmountsPoly[212];
+    int inxtnAmountsVv[212];
 
     int* hPolyAmounts;
     int* dPolyAmounts;
@@ -118,6 +132,7 @@ private :
 
     Glpa::ST_OBJECT_FACTORY stObjFactory;
     Glpa::GPU_ST_OBJECT_DATA* dStObjData = nullptr;
+    Glpa::GPU_POLYGON* dObjPolys;
     Glpa::GPU_ST_OBJECT_INFO* dStObjInfo = nullptr;
 
     Glpa::RENDER_RESULT_FACTORY resultFactory;
