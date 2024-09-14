@@ -234,6 +234,12 @@
     <CudaCompile Include="src\StationaryObject.cu">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </CudaCompile>
+    <CudaCompile Include="src\Sort.cu">
+      <Filter>ソース ファイル\GlpaLib</Filter>
+    </CudaCompile>
+    <CudaCompile Include="include\Sort.cuh">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource\Assets\Images\console_back_ground.png">
