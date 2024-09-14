@@ -463,6 +463,26 @@ __global__ void GpuSetVs
             result->inxtnAmountsPoly[i] = GPU_IS_EMPTY;
             result->inxtnAmountsVv[i] = GPU_IS_EMPTY;
 
+            for (int j = 0; j < 12; j++)
+            {
+                for (int k = 0; k < 7; k++)
+                {
+                    result->mPolyCubeVs[i][k][Glpa::X] = 0;
+                    result->mPolyCubeVs[i][k][Glpa::Y] = 0;
+                    result->mPolyCubeVs[i][k][Glpa::Z] = 0;
+                }
+            }
+
+            for (int j = 0; j < 200; j++)
+            {
+                for (int k = 0; k < 7; k++)
+                {
+                    result->mPolyPlaneVs[i-12][k][Glpa::X] = 0;
+                    result->mPolyPlaneVs[i-12][k][Glpa::Y] = 0;
+                    result->mPolyPlaneVs[i-12][k][Glpa::Z] = 0;
+                }
+            }
+
             // Check if the polygon is facing the camera
             GPU_BOOL isPolyFacing = objPolys[i].isFacing(camData->mtTransRot, camData->mtRot);
 
@@ -510,6 +530,10 @@ __global__ void GpuSetVs
                 // Add the result to the result data
                 atomicAdd(&result->insidePolyRangeSum, isPolyRangeIn);
 
+                // Store the coordinates of the intersection
+                int mPolyVSum = 0;
+                Glpa::GPU_VEC_3D mPolyVs[7];
+
                 GPU_IF((inVSum != 3 && isPolyIn == TRUE) || isPolyRangeIn == TRUE, br4)
                 {
                     Glpa::GPU_FACE_3D polyFace(ctPoly.wv[0], ctPoly.n);
@@ -541,8 +565,6 @@ __global__ void GpuSetVs
                         result->inxtnAmountsPoly[i] = inxtnAmount;
                     }
 
-                    inxtnAmount = 0;
-
                     // Obtain the intersection of the view volume surface and the polygon line.
                     GPU_BOOL isExistAtVVFace[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
                     Glpa::GPU_VEC_3D vvFaceInxtn[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
@@ -562,8 +584,85 @@ __global__ void GpuSetVs
                         result->inxtnPolyId[i] = polyI;
                         result->inxtnAmountsVv[i] = inxtnAmount;
                     }
+
+                    // Store the coordinates of the intersection
+                    GPU_IF(inVSum + inxtnAmount >= 3, br5)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            GPU_IF(isCtVIn[j] == TRUE, br6)
+                            {
+                                mPolyVs[mPolyVSum] = ctPoly.wv[j];
+                                mPolyVSum++;
+
+                                result->onErr = GPU_CO(mPolyVSum >= 7, TRUE, FALSE);
+                            }
+                        }
+
+                        for (int j = 0; j < GPU_VV_LINE_AMOUNT; j++)
+                        {
+                            GPU_IF(isExistAtPolyFace[j] == TRUE, br6)
+                            {
+                                mPolyVs[mPolyVSum] = polyFaceInxtn[j];
+                                mPolyVSum++;
+
+                                result->onErr = GPU_CO(mPolyVSum >= 7, TRUE, FALSE);
+                            }
+                        }
+
+                        for (int j = 0; j < GPU_VV_FACE_AMOUNT; j++)
+                        {
+                            for (int k = 0; k < GPU_POLY_LINE_AMOUNT; k++)
+                            {
+                                GPU_IF(isExistAtVVFace[j][k] == TRUE, br6)
+                                {
+                                    mPolyVs[mPolyVSum] = vvFaceInxtn[j][k];
+                                    mPolyVSum++;
+
+                                    result->onErr = GPU_CO(mPolyVSum >= 7, TRUE, FALSE);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Store the coordinates of the polygon vertices
+                GPU_IF(inVSum == 3, br4)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        mPolyVs[mPolyVSum] = ctPoly.wv[j];
+                        mPolyVSum++;
+                    }
                 }
                 
+                // Add the result to the result data
+                GPU_IF(mPolyVSum != 0, br4)
+                {
+                    GPU_IF(i < 12, br5)
+                    {
+                        for (int j = 0; j < mPolyVSum; j++)
+                        {
+                            result->mPolyCubeVs[i][j][Glpa::X] = mPolyVs[j].x;
+                            result->mPolyCubeVs[i][j][Glpa::Y] = mPolyVs[j].y;
+                            result->mPolyCubeVs[i][j][Glpa::Z] = mPolyVs[j].z;
+                        }
+                    }
+
+                    GPU_IF(i >= 12 && i < 212, br5)
+                    {
+                        for (int j = 0; j < mPolyVSum; j++)
+                        {
+                            result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyVs[j].x;
+                            result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyVs[j].y;
+                            result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyVs[j].z;
+                        }
+                    }
+                }
+
+                
+
+
             }
         }
     }
@@ -649,8 +748,6 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int
 
     hResult.polyFaceInxtnSum = 0;
     hResult.vvFaceInxtnSum = 0;
-
-    hResult.bugPoly = 0;
 
     hResult.hPolyAmounts = new int[srcObjSum];
     cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));

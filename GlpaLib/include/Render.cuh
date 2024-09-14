@@ -77,7 +77,7 @@ public :
 
 typedef struct _GPU_RENDER_RESULT
 {
-    cudaError_t err;
+    GPU_BOOL onErr = FALSE;
     int srcObjSum;
     int objSum;
     int polySum;
@@ -100,7 +100,8 @@ typedef struct _GPU_RENDER_RESULT
     int inxtnAmountsPoly[212];
     int inxtnAmountsVv[212];
 
-    int bugPoly;
+    float mPolyCubeVs[12][7][3];
+    float mPolyPlaneVs[200][7][3];
 
     int* hPolyAmounts;
     int* dPolyAmounts;
