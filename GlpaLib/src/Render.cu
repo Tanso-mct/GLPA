@@ -541,6 +541,7 @@ __global__ void GpuSetVs
                         result->inxtnAmountsPoly[i] = inxtnAmount;
                     }
 
+                    inxtnAmount = 0;
 
                     // Obtain the intersection of the view volume surface and the polygon line.
                     GPU_BOOL isExistAtVVFace[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
@@ -648,6 +649,8 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int
 
     hResult.polyFaceInxtnSum = 0;
     hResult.vvFaceInxtnSum = 0;
+
+    hResult.bugPoly = 0;
 
     hResult.hPolyAmounts = new int[srcObjSum];
     cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));

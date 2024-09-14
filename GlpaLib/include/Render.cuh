@@ -100,6 +100,8 @@ typedef struct _GPU_RENDER_RESULT
     int inxtnAmountsPoly[212];
     int inxtnAmountsVv[212];
 
+    int bugPoly;
+
     int* hPolyAmounts;
     int* dPolyAmounts;
 } GPU_RENDER_RESULT;

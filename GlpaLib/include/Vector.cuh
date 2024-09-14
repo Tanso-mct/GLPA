@@ -452,7 +452,8 @@ typedef struct _GPU_FACE_3D
                 vecMgr.cos(vecMgr.getVec(vs[2], vs[0]), vecMgr.getVec(vs[2], vs[1]))
             };
 
-            // PLAとPLBの内積の値より、PLAとPの内積の値が大きいかどうかを判定する。
+            // Determine whether the value of the inner product of PLA and P is greater than 
+            // the value of the inner product of PLA and PLB.
             GPU_BOOL isDotBigger = TRUE;
             for (int i = 0; i < 3; i++)
             {
@@ -478,13 +479,14 @@ typedef struct _GPU_FACE_3D
             // Let plb be the line segment from the polygon vertex that is not pla.
             float dotPlaPlb[4] = 
             {
-                vecMgr.cos(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[2])),
+                vecMgr.cos(vecMgr.getVec(vs[0], vs[1]), vecMgr.getVec(vs[0], vs[3])),
                 vecMgr.cos(vecMgr.getVec(vs[1], vs[2]), vecMgr.getVec(vs[1], vs[0])),
                 vecMgr.cos(vecMgr.getVec(vs[2], vs[3]), vecMgr.getVec(vs[2], vs[1])),
                 vecMgr.cos(vecMgr.getVec(vs[3], vs[0]), vecMgr.getVec(vs[3], vs[2]))
             };
 
-            // PLAとPLBの内積の値より、PLAとPの内積の値が大きいかどうかを判定する。
+            // Determine whether the value of the inner product of PLA and P is greater than 
+            // the value of the inner product of PLA and PLB.
             GPU_BOOL isDotBigger = TRUE;
             for (int i = 0; i < 4; i++)
             {
