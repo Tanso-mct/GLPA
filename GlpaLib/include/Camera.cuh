@@ -132,6 +132,22 @@ typedef struct _GPU_CAMERA
         return isIn;
     }
 
+    __device__ __host__ Glpa::GPU_VEC_3D getScrPos(Glpa::GPU_VEC_3D point)
+    {
+        Glpa::GPU_VECTOR_MG vecMgr;
+        Glpa::GPU_VEC_3D normPoint = vecMgr.normalize(point);
+
+        float mag = nearZ / point.z;
+        Glpa::GPU_VEC_3D scrPos =
+        {
+            normPoint.x * mag + nearScrSize.x / 2,
+            normPoint.y * mag + nearScrSize.y / 2,
+            point.z
+        };
+
+        return scrPos;
+    }
+
 } GPU_CAMERA;
 
 

@@ -11,6 +11,7 @@
 #include "Material.cuh"
 #include "Camera.cuh"
 #include "StationaryObject.cuh"
+#include "Sort.cuh"
 
 #include <unordered_map>
 #include <map>

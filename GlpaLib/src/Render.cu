@@ -660,7 +660,52 @@ __global__ void GpuSetVs
                     }
                 }
 
-                
+                // Arrange vertices in the order they form a line segment
+                GPU_IF(mPolyVSum >= 3, br4)
+                {
+                    Glpa::GPU_VEC_3D mPolyScrVs[7];
+                    for (int j = 0; j < mPolyVSum; j++)
+                    {
+                        mPolyScrVs[j] = camData->getScrPos(mPolyVs[j]);
+                    }
+
+                    Glpa::GPU_VEC_2D baseVec = vecMgr.getVec
+                    (
+                        {mPolyScrVs[0].x, mPolyScrVs[0].y}, {mPolyScrVs[1].x, mPolyScrVs[1].y}
+                    );
+
+                    float compareCross[5];
+                    for (int j = 0; j < mPolyVSum - 2; j++)
+                    {
+                        compareCross[j] = vecMgr.cross
+                        (
+                            baseVec, 
+                            vecMgr.getVec({mPolyScrVs[0].x, mPolyScrVs[0].y}, {mPolyScrVs[j+2].x, mPolyScrVs[j+2].y})
+                        );
+                    }
+
+                    // Sort the vertices based on the size of the cross product.
+                    Glpa::LIST3 leftVs;
+                    Glpa::LIST3 rightVs;
+
+                    for (int j = 0; j < mPolyVSum - 2; j++)
+                    {
+                        if (compareCross[j] > 0)
+                        {
+                            leftVs.push({j+2, abs(compareCross[j])});
+                        }
+                        else
+                        {
+                            rightVs.push({j+2, abs(compareCross[j])});
+                        }
+                    }
+
+                    leftVs.ascendSortByVal2();
+                    rightVs.descendSortByVal2();
+                    
+                    
+
+                }
 
 
             }
