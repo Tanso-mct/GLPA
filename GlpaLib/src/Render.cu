@@ -666,7 +666,7 @@ __global__ void GpuSetVs
                     Glpa::GPU_VEC_3D mPolyScrVs[7];
                     for (int j = 0; j < mPolyVSum; j++)
                     {
-                        mPolyScrVs[j] = camData->getScrPos(i, mPolyVs[j]);
+                        mPolyScrVs[j] = camData->getScrPos(mPolyVs[j]);
                     }
 
                     Glpa::GPU_VEC_2D baseVec = vecMgr.getVec
@@ -723,15 +723,15 @@ __global__ void GpuSetVs
                     {
                         sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[(int)rightVs.pair[j].val1];
                         sortedMPolyVsSum++;
-                    } 
-
-                    GPU_IF(i == 79, br5)
-                    {
-                        int debug = 0;
-                        debug = 100;
                     }
-                    
-                    
+
+                    for (int j = 0; j < sortedMPolyVsSum-1; j++)
+                    {
+                        for (int k = 0; k < sortedMPolyVs[j+1].x - sortedMPolyVs[j].x; k++)
+                        {
+                            
+                        }
+                    }
 
                 }
 
