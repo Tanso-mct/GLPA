@@ -666,7 +666,7 @@ __global__ void GpuSetVs
                     Glpa::GPU_VEC_3D mPolyScrVs[7];
                     for (int j = 0; j < mPolyVSum; j++)
                     {
-                        mPolyScrVs[j] = camData->getScrPos(mPolyVs[j]);
+                        mPolyScrVs[j] = camData->getScrPos(i, mPolyVs[j]);
                     }
 
                     Glpa::GPU_VEC_2D baseVec = vecMgr.getVec
@@ -700,8 +700,36 @@ __global__ void GpuSetVs
                         }
                     }
 
-                    leftVs.ascendSortByVal2();
-                    rightVs.descendSortByVal2();
+                    leftVs.aSortByVal2();
+                    rightVs.dSortByVal2();
+
+                    // Store vertices in order.
+                    int sortedMPolyVsSum = 0;
+                    Glpa::GPU_VEC_3D sortedMPolyVs[7];
+
+                    sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[0];
+                    sortedMPolyVsSum++;
+
+                    for (int j = 0; j < leftVs.size; j++)
+                    {
+                        sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[(int)leftVs.pair[j].val1];
+                        sortedMPolyVsSum++;
+                    }
+
+                    sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[1];
+                    sortedMPolyVsSum++;
+
+                    for (int j = 0; j < rightVs.size; j++)
+                    {
+                        sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[(int)rightVs.pair[j].val1];
+                        sortedMPolyVsSum++;
+                    } 
+
+                    GPU_IF(i == 79, br5)
+                    {
+                        int debug = 0;
+                        debug = 100;
+                    }
                     
                     
 

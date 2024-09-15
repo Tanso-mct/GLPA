@@ -25,7 +25,7 @@ void ExampleScene3d::setup()
     Glpa::Camera* ptCam = new Glpa::Camera
     (
         "Main Camera", Glpa::Vec3d(0.0, 0.0, 0.0), Glpa::Vec3d(0.0, 0.0, 0.0),
-        80, Glpa::Vec2d(16, 9), 0.1, 10000
+        80, Glpa::Vec2d(16, 9), 0.1, 10000, {1920, 1080}
     );
     AddCamera(ptCam);
     SetCamera(ptCam);

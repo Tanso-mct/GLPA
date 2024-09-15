@@ -1,8 +1,11 @@
 #include "Camera.cuh"
 #include "GlpaLog.h"
 
-Glpa::Camera::Camera(std::string argName, Glpa::Vec3d defPos, Glpa::Vec3d defRotate, float defFov, Glpa::Vec2d defAspectRatio, float defNearZ, float defFarZ)
-{
+Glpa::Camera::Camera
+(
+    std::string argName, Glpa::Vec3d defPos, Glpa::Vec3d defRotate, float defFov, Glpa::Vec2d defAspectRatio, 
+    float defNearZ, float defFarZ, Glpa::Vec2d defScrSize
+){
     Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_LIB, "Constructor");
     name = argName;
     pos = defPos;
@@ -18,6 +21,8 @@ Glpa::Camera::Camera(std::string argName, Glpa::Vec3d defPos, Glpa::Vec3d defRot
 
     farScrSize.x = std::fabs(std::tan(Glpa::RtoD(fov / 2)) * -farZ) * 2;
     farScrSize.y = std::fabs(farScrSize.x * aspectRatio.y / aspectRatio.x);
+
+    scrSize = defScrSize;
 
     fovXzCos = cos(Glpa::RtoD(fov / 2));
     fovYzCos = std::fabs(-nearZ / sqrt(-nearZ*-nearZ + (nearScrSize.y/2) * (nearScrSize.y/2)));
@@ -45,6 +50,8 @@ Glpa::GPU_CAMERA Glpa::Camera::getData()
     camera.farZ = farZ;
 
     camera.nearScrSize.set(nearScrSize.x, nearScrSize.y);
+    camera.farScrSize.set(farScrSize.x, farScrSize.y);
+    camera.scrSize.set(scrSize.x, scrSize.y);
 
     float mtTransRot[16] =
     {

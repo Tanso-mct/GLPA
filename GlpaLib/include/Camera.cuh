@@ -40,6 +40,7 @@ typedef struct _GPU_CAMERA
 
     Glpa::GPU_VEC_2D nearScrSize;
     Glpa::GPU_VEC_2D farScrSize;
+    Glpa::GPU_VEC_2D scrSize;
 
     Glpa::GPU_MAT_4X4 mtTransRot;
     Glpa::GPU_MAT_4X4 mtRot;
@@ -132,18 +133,14 @@ typedef struct _GPU_CAMERA
         return isIn;
     }
 
-    __device__ __host__ Glpa::GPU_VEC_3D getScrPos(Glpa::GPU_VEC_3D point)
+    __device__ __host__ Glpa::GPU_VEC_3D getScrPos(int i, Glpa::GPU_VEC_3D point)
     {
-        Glpa::GPU_VECTOR_MG vecMgr;
-        Glpa::GPU_VEC_3D normPoint = vecMgr.normalize(point);
+        float scrX = -nearZ * point.x / point.z + nearScrSize.x / 2;
+        float scrY = -nearZ * point.y / point.z + nearScrSize.y / 2;
 
-        float mag = nearZ / point.z;
-        Glpa::GPU_VEC_3D scrPos =
-        {
-            normPoint.x * mag + nearScrSize.x / 2,
-            normPoint.y * mag + nearScrSize.y / 2,
-            point.z
-        };
+        int scrPixelX = (scrX / nearScrSize.x) * scrSize.x;
+        int scrPixelY = scrSize.y - (scrY / nearScrSize.y) * scrSize.y;
+        Glpa::GPU_VEC_3D scrPos = {(float)scrPixelX, (float)scrPixelY, point.z};
 
         return scrPos;
     }
@@ -168,12 +165,13 @@ private :
 
     Glpa::Vec2d nearScrSize;
     Glpa::Vec2d farScrSize;
+    Glpa::Vec2d scrSize;
 
 public :
     Camera
     (
         std::string argName, Glpa::Vec3d defPos, Glpa::Vec3d defRotate, 
-        float defFov, Glpa::Vec2d defAspectRatio, float defNearZ, float defFarZ
+        float defFov, Glpa::Vec2d defAspectRatio, float defNearZ, float defFarZ, Glpa::Vec2d defScrSize
     );
     ~Camera();
 

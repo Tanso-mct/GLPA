@@ -11,7 +11,7 @@ namespace Glpa
 
 typedef struct _PAIR
 {
-    int val1, val2;
+    float val1, val2;
 
     __device__ __host__ _PAIR()
     {
@@ -46,7 +46,7 @@ typedef struct _LIST_3
         }
     }
 
-    __device__ __host__ void ascendSortByVal1()
+    __device__ __host__ void aSortByVal1()
     {
         for (int i = 0; i < size-1; i++)
         {
@@ -62,7 +62,7 @@ typedef struct _LIST_3
         }    
     }
 
-    __device__ __host__ void ascendSortByVal2()
+    __device__ __host__ void aSortByVal2()
     {
         for (int i = 0; i < size-1; i++)
         {
@@ -78,7 +78,7 @@ typedef struct _LIST_3
         }    
     }
 
-    __device__ __host__ void descendSortByVal1()
+    __device__ __host__ void dSortByVal1()
     {
         for (int i = 0; i < size-1; i++)
         {
@@ -94,7 +94,7 @@ typedef struct _LIST_3
         }    
     }
 
-    __device__ __host__ void descendSortByVal2()
+    __device__ __host__ void dSortByVal2()
     {
         for (int i = 0; i < size-1; i++)
         {
