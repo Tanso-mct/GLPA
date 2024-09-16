@@ -448,13 +448,6 @@ __global__ void GpuSetVs
 
     if (i < result->polySum)
     {
-        int* ptNum = new int[5];
-        ptNum[3] = 10;
-
-        result->debugNum = ptNum[3];
-
-        delete[] ptNum;
-
         // Get the index of each object and polygon from the current i
         int objI, polyI;
         GpuSetI(i, result->dPolyAmounts, result->objSum, objI, polyI);
@@ -539,7 +532,8 @@ __global__ void GpuSetVs
 
                 // Store the coordinates of the intersection
                 int mPolyVSum = 0;
-                Glpa::GPU_VEC_3D mPolyVs[7];
+                // Glpa::GPU_VEC_3D mPolyVs[7];
+                Glpa::GPU_VEC_3D* mPolyVs = nullptr;
 
                 GPU_IF((inVSum != 3 && isPolyIn == TRUE) || isPolyRangeIn == TRUE, br4)
                 {
@@ -595,6 +589,7 @@ __global__ void GpuSetVs
                     // Store the coordinates of the intersection
                     GPU_IF(inVSum + inxtnAmount >= 3, br5)
                     {
+                        mPolyVs = new Glpa::GPU_VEC_3D[inVSum + inxtnAmount];
                         for (int j = 0; j < 3; j++)
                         {
                             GPU_IF(isCtVIn[j] == TRUE, br6)
@@ -636,6 +631,7 @@ __global__ void GpuSetVs
                 // Store the coordinates of the polygon vertices
                 GPU_IF(inVSum == 3, br4)
                 {
+                    mPolyVs = new Glpa::GPU_VEC_3D[3];
                     for (int j = 0; j < 3; j++)
                     {
                         mPolyVs[mPolyVSum] = ctPoly.wv[j];
@@ -740,6 +736,12 @@ __global__ void GpuSetVs
                         }
                     }
 
+                }
+
+                GPU_IF(mPolyVs != nullptr, br4)
+                {
+                    delete[] mPolyVs;
+                    mPolyVs = nullptr;
                 }
 
 
