@@ -379,13 +379,13 @@ __device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objI, int& po
     int polyAmountSum = polyAmounts[0];
     for (int i = 1; i <= objSum; i++)
     {
-        if (nI + 1 <= polyAmountSum)
+        GPU_IF(nI + 1 <= polyAmountSum, br1)
         {
             objI = i - 1;
             polyI = nI - (polyAmountSum - polyAmounts[i - 1]);
             return;
         }
-        else
+        GPU_IF(nI + 1 > polyAmountSum, br1)
         {
             polyAmountSum += polyAmounts[i];
         }
@@ -396,7 +396,7 @@ __device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objI, int& po
     return;
 }
 
-__device__ GPU_BOOL GpuGetFaceLineInxtn(Glpa::GPU_FACE_3D& face, Glpa::GPU_LINE_3D& line, Glpa::GPU_VEC_3D& inxtn)
+__device__ GPU_BOOL GpuGetFaceLineInxtn(Glpa::GPU_FACE_3D& face, Glpa::GPU_LINE_3D& line, Glpa::GPU_ARRAY& polyVs)
 {
     Glpa::GPU_VECTOR_MG vecMgr;
 
@@ -427,7 +427,7 @@ __device__ GPU_BOOL GpuGetFaceLineInxtn(Glpa::GPU_FACE_3D& face, Glpa::GPU_LINE_
     GPU_BOOL isInside = face.isInside(intersectV);
     GPU_IF(isInside == TRUE, br2)
     {
-        inxtn = intersectV;
+        polyVs.push(intersectV);
         return TRUE;
     }
 
@@ -531,9 +531,16 @@ __global__ void GpuSetVs
                 atomicAdd(&result->insidePolyRangeSum, isPolyRangeIn);
 
                 // Store the coordinates of the intersection
-                int mPolyVSum = 0;
-                // Glpa::GPU_VEC_3D mPolyVs[7];
-                Glpa::GPU_VEC_3D* mPolyVs = nullptr;
+                Glpa::GPU_ARRAY mPolyVs;
+
+                for (int j = 0; j < 3; j++)
+                {
+                    GPU_IF(isCtVIn[j] == TRUE, br6)
+                    {
+                        mPolyVs.push(ctPoly.wv[j]);
+                        result->onErr = GPU_CO(mPolyVs.size >= 7, TRUE, FALSE);
+                    }
+                }
 
                 GPU_IF((inVSum != 3 && isPolyIn == TRUE) || isPolyRangeIn == TRUE, br4)
                 {
@@ -550,12 +557,9 @@ __global__ void GpuSetVs
                     int inxtnAmount = 0;
 
                     // Obtain the intersection of the polygon surface and the view volume line.
-                    GPU_BOOL isExistAtPolyFace[GPU_VV_LINE_AMOUNT];
-                    Glpa::GPU_VEC_3D polyFaceInxtn[GPU_VV_LINE_AMOUNT];
                     for (int j = 0; j < GPU_VV_LINE_AMOUNT; j++)
                     {
-                        isExistAtPolyFace[j] = GpuGetFaceLineInxtn(polyFace, camData->vv.line[j], polyFaceInxtn[j]);
-                        inxtnAmount += isExistAtPolyFace[j];
+                        GpuGetFaceLineInxtn(polyFace, camData->vv.line[j], mPolyVs);
                     }
 
                     // Add the result to the result data
@@ -567,14 +571,11 @@ __global__ void GpuSetVs
                     }
 
                     // Obtain the intersection of the view volume surface and the polygon line.
-                    GPU_BOOL isExistAtVVFace[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
-                    Glpa::GPU_VEC_3D vvFaceInxtn[GPU_VV_FACE_AMOUNT][GPU_POLY_LINE_AMOUNT];
                     for (int j = 0; j < GPU_VV_FACE_AMOUNT; j++)
                     {
                         for (int k = 0; k < GPU_POLY_LINE_AMOUNT; k++)
                         {
-                            isExistAtVVFace[j][k] = GpuGetFaceLineInxtn(camData->vv.face[j], polyLine[k], vvFaceInxtn[j][k]);
-                            inxtnAmount += isExistAtVVFace[j][k];
+                            GpuGetFaceLineInxtn(camData->vv.face[j], polyLine[k], mPolyVs);
                         }
                     }
 
@@ -586,104 +587,57 @@ __global__ void GpuSetVs
                         result->inxtnAmountsVv[i] = inxtnAmount;
                     }
 
-                    // Store the coordinates of the intersection
-                    GPU_IF(inVSum + inxtnAmount >= 3, br5)
-                    {
-                        mPolyVs = new Glpa::GPU_VEC_3D[inVSum + inxtnAmount];
-                        for (int j = 0; j < 3; j++)
-                        {
-                            GPU_IF(isCtVIn[j] == TRUE, br6)
-                            {
-                                mPolyVs[mPolyVSum] = ctPoly.wv[j];
-                                mPolyVSum++;
+                    // GPU_IF(mPolyVs.size != 0, br4)
+                    // {
+                    //     GPU_IF(i < 12, br5)
+                    //     {
+                    //         for (int j = 0; j < mPolyVs.size; j++)
+                    //         {
+                    //             Glpa::GPU_VEC_3D* mPolyV = mPolyVs.get(j);
+                    //             result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
+                    //             result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
+                    //             result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
+                    //         }
+                    //     }
 
-                                result->onErr = GPU_CO(mPolyVSum >= 7, TRUE, FALSE);
-                            }
-                        }
-
-                        for (int j = 0; j < GPU_VV_LINE_AMOUNT; j++)
-                        {
-                            GPU_IF(isExistAtPolyFace[j] == TRUE, br6)
-                            {
-                                mPolyVs[mPolyVSum] = polyFaceInxtn[j];
-                                mPolyVSum++;
-
-                                result->onErr = GPU_CO(mPolyVSum >= 7, TRUE, FALSE);
-                            }
-                        }
-
-                        for (int j = 0; j < GPU_VV_FACE_AMOUNT; j++)
-                        {
-                            for (int k = 0; k < GPU_POLY_LINE_AMOUNT; k++)
-                            {
-                                GPU_IF(isExistAtVVFace[j][k] == TRUE, br6)
-                                {
-                                    mPolyVs[mPolyVSum] = vvFaceInxtn[j][k];
-                                    mPolyVSum++;
-
-                                    result->onErr = GPU_CO(mPolyVSum >= 7, TRUE, FALSE);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Store the coordinates of the polygon vertices
-                GPU_IF(inVSum == 3, br4)
-                {
-                    mPolyVs = new Glpa::GPU_VEC_3D[3];
-                    for (int j = 0; j < 3; j++)
-                    {
-                        mPolyVs[mPolyVSum] = ctPoly.wv[j];
-                        mPolyVSum++;
-                    }
-                }
-                
-                // Add the result to the result data
-                GPU_IF(mPolyVSum != 0, br4)
-                {
-                    GPU_IF(i < 12, br5)
-                    {
-                        for (int j = 0; j < mPolyVSum; j++)
-                        {
-                            result->mPolyCubeVs[i][j][Glpa::X] = mPolyVs[j].x;
-                            result->mPolyCubeVs[i][j][Glpa::Y] = mPolyVs[j].y;
-                            result->mPolyCubeVs[i][j][Glpa::Z] = mPolyVs[j].z;
-                        }
-                    }
-
-                    GPU_IF(i >= 12 && i < 212, br5)
-                    {
-                        for (int j = 0; j < mPolyVSum; j++)
-                        {
-                            result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyVs[j].x;
-                            result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyVs[j].y;
-                            result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyVs[j].z;
-                        }
-                    }
+                    //     GPU_IF(i >= 12 && i < 212, br5)
+                    //     {
+                    //         for (int j = 0; j < mPolyVs.size; j++)
+                    //         {
+                    //             Glpa::GPU_VEC_3D* mPolyV = mPolyVs.get(j);
+                    //             result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
+                    //             result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
+                    //             result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
+                    //         }
+                    //     }
+                    // }
                 }
 
                 // Arrange vertices in the order they form a line segment
-                GPU_IF(mPolyVSum >= 3, br4)
+                GPU_IF(mPolyVs.size >= 3, br4)
                 {
-                    Glpa::GPU_VEC_3D mPolyScrVs[7];
-                    for (int j = 0; j < mPolyVSum; j++)
+                    Glpa::GPU_ARRAY mPolyScrVs;
+                    for (int j = 0; j < mPolyVs.size; j++)
                     {
-                        mPolyScrVs[j] = camData->getScrPos(mPolyVs[j]);
+                        mPolyScrVs.push(camData->getScrPos(*mPolyVs.get(j)));
                     }
 
                     Glpa::GPU_VEC_2D baseVec = vecMgr.getVec
                     (
-                        {mPolyScrVs[0].x, mPolyScrVs[0].y}, {mPolyScrVs[1].x, mPolyScrVs[1].y}
+                        {mPolyScrVs.get(0)->x, mPolyScrVs.get(0)->y}, {mPolyScrVs.get(1)->x, mPolyScrVs.get(1)->y}
                     );
 
                     float compareCross[5];
-                    for (int j = 0; j < mPolyVSum - 2; j++)
+                    for (int j = 0; j < mPolyVs.size - 2; j++)
                     {
                         compareCross[j] = vecMgr.cross
                         (
                             baseVec, 
-                            vecMgr.getVec({mPolyScrVs[0].x, mPolyScrVs[0].y}, {mPolyScrVs[j+2].x, mPolyScrVs[j+2].y})
+                            vecMgr.getVec
+                            (
+                                {mPolyScrVs.get(0)->x, mPolyScrVs.get(0)->y}, 
+                                {mPolyScrVs.get(j+2)->x, mPolyScrVs.get(j+2)->y}
+                            )
                         );
                     }
 
@@ -691,58 +645,78 @@ __global__ void GpuSetVs
                     Glpa::GPU_LIST3 leftVs;
                     Glpa::GPU_LIST3 rightVs;
 
-                    for (int j = 0; j < mPolyVSum - 2; j++)
+                    for (int j = 0; j < mPolyVs.size - 2; j++)
                     {
-                        if (compareCross[j] > 0)
+                        GPU_IF(compareCross[j] <= 0, br5)
                         {
                             leftVs.push({j+2, abs(compareCross[j])});
                         }
-                        else
+                        GPU_IF(compareCross[j] > 0, br5)
                         {
                             rightVs.push({j+2, abs(compareCross[j])});
                         }
                     }
 
                     leftVs.aSortByVal2();
-                    rightVs.dSortByVal2();
+                    rightVs.aSortByVal2();
 
                     // Store vertices in order.
-                    int sortedMPolyVsSum = 0;
-                    Glpa::GPU_VEC_3D sortedMPolyVs[7];
-
-                    sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[0];
-                    sortedMPolyVsSum++;
+                    Glpa::GPU_ARRAY sortedMPolyVs;
+                    sortedMPolyVs.push(*mPolyScrVs.get(0));
 
                     for (int j = 0; j < leftVs.size; j++)
                     {
-                        sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[(int)leftVs.pair[j].val1];
-                        sortedMPolyVsSum++;
+                        sortedMPolyVs.push(*mPolyScrVs.get((int)leftVs.pair[j].val1));
                     }
 
-                    sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[1];
-                    sortedMPolyVsSum++;
+                    sortedMPolyVs.push(*mPolyScrVs.get(1));
 
                     for (int j = 0; j < rightVs.size; j++)
                     {
-                        sortedMPolyVs[sortedMPolyVsSum] = mPolyScrVs[(int)rightVs.pair[j].val1];
-                        sortedMPolyVsSum++;
+                        sortedMPolyVs.push(*mPolyScrVs.get((int)rightVs.pair[j].val1));
                     }
 
-                    for (int j = 0; j < sortedMPolyVsSum-1; j++)
-                    {
-                        for (int k = 0; k < sortedMPolyVs[j+1].x - sortedMPolyVs[j].x; k++)
-                        {
+                    // for (int j = 0; j < sortedMPolyVsSum-1; j++)
+                    // {
+                    //     for (int k = 0; k < sortedMPolyVs[j+1].x - sortedMPolyVs[j].x; k++)
+                    //     {
                             
+                    //     }
+                    // }
+
+                    mPolyScrVs.clear();
+
+                    // Add the result to the result data
+                    GPU_IF(sortedMPolyVs.size != 0, br4)
+                    {
+                        GPU_IF(i < 12, br5)
+                        {
+                            for (int j = 0; j < sortedMPolyVs.size; j++)
+                            {
+                                Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
+                                result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
+                                result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
+                                result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
+                            }
+                        }
+
+                        GPU_IF(i >= 12 && i < 212, br5)
+                        {
+                            for (int j = 0; j < sortedMPolyVs.size; j++)
+                            {
+                                Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
+                                result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
+                                result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
+                                result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
+                            }
                         }
                     }
 
+                    sortedMPolyVs.clear();
+
                 }
 
-                GPU_IF(mPolyVs != nullptr, br4)
-                {
-                    delete[] mPolyVs;
-                    mPolyVs = nullptr;
-                }
+                mPolyVs.clear();
 
 
             }

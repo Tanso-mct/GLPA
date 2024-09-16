@@ -4,6 +4,8 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
+#include "Vector.cuh"
+
 #include "Constant.h"
 
 namespace Glpa
@@ -113,18 +115,18 @@ typedef struct _GPU_LIST_3
 
 } GPU_LIST3;
 
-typedef struct _GPU_ARRAY_VAL_ GPU_ARRAY_VAL;
+typedef struct _GPU_ARRAY_VEC_3D GPU_ARRAY_VEC_3D;
 
-typedef struct _GPU_ARRAY_VAL_
+typedef struct _GPU_ARRAY_VEC_3D
 {
-    _GPU_ARRAY_VAL_* next = nullptr;
-    float val;
-} GPU_ARRAY_VAL;
+    _GPU_ARRAY_VEC_3D* next = nullptr;
+    Glpa::GPU_VEC_3D val;
+} GPU_ARRAY_VEC_3D;
 
 typedef struct _GPU_ARRAY_
 {
     int size;
-    Glpa::GPU_ARRAY_VAL* head;
+    Glpa::GPU_ARRAY_VEC_3D* head;
 
     __device__ __host__ _GPU_ARRAY_()
     {
@@ -132,9 +134,9 @@ typedef struct _GPU_ARRAY_
         head = nullptr;
     }
 
-    __device__ __host__ void push(float val)
+    __device__ __host__ void push(Glpa::GPU_VEC_3D val)
     {
-        Glpa::GPU_ARRAY_VAL* newVal = new Glpa::GPU_ARRAY_VAL;
+        Glpa::GPU_ARRAY_VEC_3D* newVal = new Glpa::GPU_ARRAY_VEC_3D;
         newVal->val = val;
         newVal->next = nullptr;
 
@@ -144,7 +146,7 @@ typedef struct _GPU_ARRAY_
         }
         else
         {
-            Glpa::GPU_ARRAY_VAL* temp = head;
+            Glpa::GPU_ARRAY_VEC_3D* temp = head;
             while (temp->next != nullptr)
             {
                 temp = temp->next;
@@ -158,7 +160,7 @@ typedef struct _GPU_ARRAY_
     {
         if (head != nullptr)
         {
-            Glpa::GPU_ARRAY_VAL* temp = head;
+            Glpa::GPU_ARRAY_VEC_3D* temp = head;
             head = head->next;
             delete temp;
             size--;
@@ -169,35 +171,35 @@ typedef struct _GPU_ARRAY_
     {
         while (head != nullptr)
         {
-            Glpa::GPU_ARRAY_VAL* temp = head;
+            Glpa::GPU_ARRAY_VEC_3D* temp = head;
             head = head->next;
             delete temp;
         }
         size = 0;
     }
 
-    __device__ __host__ float get(int index)
+    __device__ __host__ Glpa::GPU_VEC_3D* get(int index)
     {
         if (index < size)
         {
-            Glpa::GPU_ARRAY_VAL* temp = head;
+            Glpa::GPU_ARRAY_VEC_3D* temp = head;
             for (int i = 0; i < index; i++)
             {
                 temp = temp->next;
             }
-            return temp->val;
+            return &temp->val;
         }
         else
         {
-            return 0;
+            return nullptr;
         }
     }
 
-    __device__ __host__ void set(int index, float val)
+    __device__ __host__ void set(int index, Glpa::GPU_VEC_3D val)
     {
         if (index < size)
         {
-            Glpa::GPU_ARRAY_VAL* temp = head;
+            Glpa::GPU_ARRAY_VEC_3D* temp = head;
             for (int i = 0; i < index; i++)
             {
                 temp = temp->next;
