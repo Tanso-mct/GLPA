@@ -11,7 +11,7 @@
 #include "Material.cuh"
 #include "Camera.cuh"
 #include "StationaryObject.cuh"
-#include "Sort.cuh"
+#include "GpuData.cuh"
 
 #include <unordered_map>
 #include <map>
@@ -103,6 +103,8 @@ typedef struct _GPU_RENDER_RESULT
 
     float mPolyCubeVs[12][7][3];
     float mPolyPlaneVs[200][7][3];
+
+    int debugNum;
 
     int* hPolyAmounts;
     int* dPolyAmounts;

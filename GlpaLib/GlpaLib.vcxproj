@@ -253,8 +253,8 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="include\Sort.cuh" />
-    <CudaCompile Include="src\Sort.cu">
+    <CudaCompile Include="include\GpuData.cuh" />
+    <CudaCompile Include="src\GpuData.cu">
       <FileType>Document</FileType>
     </CudaCompile>
   </ItemGroup>

@@ -234,10 +234,10 @@
     <CudaCompile Include="src\StationaryObject.cu">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </CudaCompile>
-    <CudaCompile Include="src\Sort.cu">
+    <CudaCompile Include="src\GpuData.cu">
       <Filter>ソース ファイル\GlpaLib</Filter>
     </CudaCompile>
-    <CudaCompile Include="include\Sort.cuh">
+    <CudaCompile Include="include\GpuData.cuh">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </CudaCompile>
   </ItemGroup>

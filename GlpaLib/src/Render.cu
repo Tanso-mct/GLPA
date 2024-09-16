@@ -448,6 +448,13 @@ __global__ void GpuSetVs
 
     if (i < result->polySum)
     {
+        int* ptNum = new int[5];
+        ptNum[3] = 10;
+
+        result->debugNum = ptNum[3];
+
+        delete[] ptNum;
+
         // Get the index of each object and polygon from the current i
         int objI, polyI;
         GpuSetI(i, result->dPolyAmounts, result->objSum, objI, polyI);
@@ -685,8 +692,8 @@ __global__ void GpuSetVs
                     }
 
                     // Sort the vertices based on the size of the cross product.
-                    Glpa::LIST3 leftVs;
-                    Glpa::LIST3 rightVs;
+                    Glpa::GPU_LIST3 leftVs;
+                    Glpa::GPU_LIST3 rightVs;
 
                     for (int j = 0; j < mPolyVSum - 2; j++)
                     {
@@ -821,6 +828,9 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int
 
     hResult.polyFaceInxtnSum = 0;
     hResult.vvFaceInxtnSum = 0;
+
+    hResult.onErr = FALSE;
+    hResult.debugNum = 0;
 
     hResult.hPolyAmounts = new int[srcObjSum];
     cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));
