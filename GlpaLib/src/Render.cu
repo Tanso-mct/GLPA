@@ -435,6 +435,35 @@ __device__ GPU_BOOL GpuGetFaceLineInxtn(Glpa::GPU_FACE_3D& face, Glpa::GPU_LINE_
 
 }
 
+__device__ void GpuSetMaxMinY(int& maxY, int& minY, int val)
+{
+    maxY = GPU_CO(val > maxY, val, maxY);
+    minY = GPU_CO(val < minY, val, minY);
+}
+
+__device__ Glpa::GPU_VEC_3D GpuLineRasterize(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
+{
+    Glpa::GPU_VECTOR_MG vecMgr;
+
+    float t = (y - start->y) / (end->y - start->y);
+    int x = start->x + t * (end->x - start->x);
+    float z = start->z + t * (end->z - start->z);
+
+    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
+}
+
+
+__device__ void GpuSetMaxMinCoords(Glpa::GPU_VEC_2D* maxCoords, Glpa::GPU_VEC_2D* minCoords, Glpa::GPU_VEC_3D* coord, int i)
+{
+    GPU_BOOL isMaxX = GPU_CO(maxCoords[i].x < coord->x, TRUE, FALSE);
+    maxCoords[i].x = GPU_CO(isMaxX == TRUE, coord->x, maxCoords[i].x);
+    maxCoords[i].y = GPU_CO(isMaxX == TRUE, coord->z, maxCoords[i].y);
+
+    GPU_BOOL isMinX = GPU_CO(minCoords[i].x > coord->x, TRUE, FALSE);
+    minCoords[i].x = GPU_CO(isMinX == TRUE, coord->x, minCoords[i].x);
+    minCoords[i].y = GPU_CO(isMinX == TRUE, coord->z, minCoords[i].y);
+}
+
 __global__ void GpuSetVs
 (
     Glpa::GPU_ST_OBJECT_DATA* objData,
@@ -647,70 +676,120 @@ __global__ void GpuSetVs
 
                     for (int j = 0; j < mPolyVs.size - 2; j++)
                     {
-                        GPU_IF(compareCross[j] <= 0, br5)
+                        GPU_IF(compareCross[j] >= 0, br5)
                         {
                             leftVs.push({j+2, abs(compareCross[j])});
                         }
-                        GPU_IF(compareCross[j] > 0, br5)
+                        GPU_IF(compareCross[j] < 0, br5)
                         {
                             rightVs.push({j+2, abs(compareCross[j])});
                         }
                     }
 
-                    leftVs.aSortByVal2();
+                    leftVs.dSortByVal2();
                     rightVs.aSortByVal2();
 
                     // Store vertices in order.
                     Glpa::GPU_ARRAY sortedMPolyVs;
+                    int maxY = 0;
+                    int minY = camData->scrSize.y;
+
                     sortedMPolyVs.push(*mPolyScrVs.get(0));
+                    GpuSetMaxMinY(maxY, minY, mPolyScrVs.get(0)->y);
 
                     for (int j = 0; j < leftVs.size; j++)
                     {
                         sortedMPolyVs.push(*mPolyScrVs.get((int)leftVs.pair[j].val1));
+                        GpuSetMaxMinY(maxY, minY, mPolyScrVs.get((int)leftVs.pair[j].val1)->y);
                     }
 
                     sortedMPolyVs.push(*mPolyScrVs.get(1));
+                    GpuSetMaxMinY(maxY, minY, mPolyScrVs.get(1)->y);
 
                     for (int j = 0; j < rightVs.size; j++)
                     {
                         sortedMPolyVs.push(*mPolyScrVs.get((int)rightVs.pair[j].val1));
+                        GpuSetMaxMinY(maxY, minY, mPolyScrVs.get((int)rightVs.pair[j].val1)->y);
                     }
 
-                    // for (int j = 0; j < sortedMPolyVsSum-1; j++)
-                    // {
-                    //     for (int k = 0; k < sortedMPolyVs[j+1].x - sortedMPolyVs[j].x; k++)
-                    //     {
-                            
-                    //     }
-                    // }
+                    int ySize = maxY - minY + 1;
+                    Glpa::GPU_VEC_2D* maxCoords = new Glpa::GPU_VEC_2D[ySize];
+                    Glpa::GPU_VEC_2D* minCoords = new Glpa::GPU_VEC_2D[ySize];
+                    for (int j = 0; j < ySize; j++)
+                    {
+                        maxCoords[j].set(-1, -1);
+                        minCoords[j].set(camData->scrSize.x + 1, camData->scrSize.y + 1);
+                    }
+
+                    for (int j = 0; j < sortedMPolyVs.size; j++)
+                    {
+                        GpuSetMaxMinCoords(maxCoords, minCoords, sortedMPolyVs.get(j), sortedMPolyVs.get(j)->y - minY);
+                    }
+
+                    for (int j = 0; j < sortedMPolyVs.size-1; j++)
+                    {
+                        int direction = GPU_CO(sortedMPolyVs.get(j+1)->y - sortedMPolyVs.get(j)->y >= 0, 1, -1);
+                        int startY = sortedMPolyVs.get(j)->y;
+                        int height = abs(sortedMPolyVs.get(j+1)->y - sortedMPolyVs.get(j)->y + 1);
+
+                        for (int nY = 1; nY < height; nY++)
+                        {
+                            int diffY = startY + nY * direction;
+                            Glpa::GPU_VEC_3D rasterizedV = GpuLineRasterize
+                            (
+                                sortedMPolyVs.get(j), sortedMPolyVs.get(j+1), diffY
+                            );
+
+                            GpuSetMaxMinCoords(maxCoords, minCoords, &rasterizedV, diffY - minY - 1);
+                        }
+                    }
+
+                    int startPointI = sortedMPolyVs.size - 1;
+                    int direction = GPU_CO(sortedMPolyVs.get(startPointI)->y - sortedMPolyVs.get(0)->y >= 0, 1, -1);
+                    int startY = sortedMPolyVs.get(0)->y;
+                    int height = abs(sortedMPolyVs.get(startPointI)->y - sortedMPolyVs.get(0)->y + 1);
+
+                    for (int nY = 1; nY < height; nY++)
+                    {
+                        int diffY = startY + nY * direction;
+                        Glpa::GPU_VEC_3D rasterizedV = GpuLineRasterize
+                        (
+                            sortedMPolyVs.get(0), sortedMPolyVs.get(startPointI), diffY
+                        );
+
+                        GpuSetMaxMinCoords(maxCoords, minCoords, &rasterizedV, diffY - minY - 1);
+                    }
+
+                    delete[] maxCoords;
+                    delete[] minCoords;
 
                     mPolyScrVs.clear();
 
                     // Add the result to the result data
-                    GPU_IF(sortedMPolyVs.size != 0, br4)
-                    {
-                        GPU_IF(i < 12, br5)
-                        {
-                            for (int j = 0; j < sortedMPolyVs.size; j++)
-                            {
-                                Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
-                                result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
-                                result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
-                                result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
-                            }
-                        }
+                    // GPU_IF(sortedMPolyVs.size != 0, br4)
+                    // {
+                    //     GPU_IF(i < 12, br5)
+                    //     {
+                    //         for (int j = 0; j < sortedMPolyVs.size; j++)
+                    //         {
+                    //             Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
+                    //             result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
+                    //             result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
+                    //             result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
+                    //         }
+                    //     }
 
-                        GPU_IF(i >= 12 && i < 212, br5)
-                        {
-                            for (int j = 0; j < sortedMPolyVs.size; j++)
-                            {
-                                Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
-                                result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
-                                result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
-                                result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
-                            }
-                        }
-                    }
+                    //     GPU_IF(i >= 12 && i < 212, br5)
+                    //     {
+                    //         for (int j = 0; j < sortedMPolyVs.size; j++)
+                    //         {
+                    //             Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
+                    //             result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
+                    //             result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
+                    //             result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
+                    //         }
+                    //     }
+                    // }
 
                     sortedMPolyVs.clear();
 
