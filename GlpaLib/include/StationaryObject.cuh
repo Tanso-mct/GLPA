@@ -20,7 +20,6 @@ typedef struct _GPU_STATIONARY_OBJECT_DATA
     int mtId;
     int polyAmount;
     Glpa::GPU_RANGE_RECT range;
-    // Glpa::GPU_POLYGON* polygons;
 } GPU_ST_OBJECT_DATA;
 
 typedef struct _GPU_STATIONARY_OBJECT_INFO

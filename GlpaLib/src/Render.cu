@@ -295,8 +295,8 @@ Glpa::Render3d::~Render3d()
 void Glpa::Render3d::dMalloc
 (
     Glpa::Camera &cam, 
-    std::unordered_map<std::string,
-    Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts
+    std::unordered_map<std::string,Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts,
+    int& bufWidth, int& bufHeight, int& bufDpi
 ){
     // Camera data
     if (camFactory.malloced) camFactory.dFree(dCamData);;
@@ -313,8 +313,14 @@ void Glpa::Render3d::dMalloc
     stObjFactory.dMalloc(dStObjInfo, objs);
 
     // Result data
-    if (resultFactory.malloced) resultFactory.dFree(dResult);
-    resultFactory.dMalloc(dResult, stObjFactory.idMap.size());
+    if (resultFactory.malloced)
+    {
+        resultFactory.dFree(dResult, dZBufAry);
+        delete[] hZBufAry;
+    }
+    resultFactory.dMalloc(dResult, stObjFactory.idMap.size(), dZBufAry ,bufWidth, bufHeight, bufDpi);
+    hZBufAry = new Glpa::GPU_Z_BUFFER_ARY[bufWidth * bufHeight * bufDpi];
+    bufSize = bufWidth * bufHeight * bufDpi;
 }
 
 __global__ void GpuPrepareObj
@@ -371,18 +377,18 @@ void Glpa::Render3d::prepareObjs()
     cudaError_t err = cudaGetLastError();
     if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
-    resultFactory.deviceToHost(dResult);
+    resultFactory.deviceToHost(dResult, dZBufAry);
 }
 
-__device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objI, int& polyI)
+__device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objId, int& polyId)
 {
     int polyAmountSum = polyAmounts[0];
     for (int i = 1; i <= objSum; i++)
     {
         GPU_IF(nI + 1 <= polyAmountSum, br1)
         {
-            objI = i - 1;
-            polyI = nI - (polyAmountSum - polyAmounts[i - 1]);
+            objId = i - 1;
+            polyId = nI - (polyAmountSum - polyAmounts[i - 1]);
             return;
         }
         GPU_IF(nI + 1 > polyAmountSum, br1)
@@ -391,8 +397,8 @@ __device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objI, int& po
         }
     }
 
-    objI = GPU_IS_EMPTY;
-    polyI = GPU_IS_EMPTY;
+    objId = GPU_IS_EMPTY;
+    polyId = GPU_IS_EMPTY;
     return;
 }
 
@@ -441,7 +447,18 @@ __device__ void GpuSetMaxMinY(int& maxY, int& minY, int val)
     minY = GPU_CO(val < minY, val, minY);
 }
 
-__device__ Glpa::GPU_VEC_3D GpuLineRasterize(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
+__device__ Glpa::GPU_VEC_3D GpuLineIP_X(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int x)
+{
+    Glpa::GPU_VECTOR_MG vecMgr;
+
+    float t = (x - start->x) / (end->x - start->x);
+    int y = start->y + t * (end->y - start->y);
+    float z = start->z + t * (end->z - start->z);
+
+    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
+}
+
+__device__ Glpa::GPU_VEC_3D GpuLineIP_Y(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
 {
     Glpa::GPU_VECTOR_MG vecMgr;
 
@@ -451,7 +468,6 @@ __device__ Glpa::GPU_VEC_3D GpuLineRasterize(Glpa::GPU_VEC_3D* start, Glpa::GPU_
 
     return Glpa::GPU_VEC_3D((float)x, (float)y, z);
 }
-
 
 __device__ void GpuSetMaxMinCoords(Glpa::GPU_VEC_2D* maxCoords, Glpa::GPU_VEC_2D* minCoords, Glpa::GPU_VEC_3D* coord, int i)
 {
@@ -470,7 +486,8 @@ __global__ void GpuSetVs
     Glpa::GPU_POLYGON* objPolys,
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
-    Glpa::GPU_RENDER_RESULT* result
+    Glpa::GPU_RENDER_RESULT* result,
+    Glpa::GPU_Z_BUFFER_ARY* zBufAry, int bufWidth, int bufHeight, int bufDpi
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     Glpa::GPU_VECTOR_MG vecMgr;
@@ -478,11 +495,11 @@ __global__ void GpuSetVs
     if (i < result->polySum)
     {
         // Get the index of each object and polygon from the current i
-        int objI, polyI;
-        GpuSetI(i, result->dPolyAmounts, result->objSum, objI, polyI);
+        int objId, polyId;
+        GpuSetI(i, result->dPolyAmounts, result->objSum, objId, polyId);
 
         // Execute if current i is not out of range.
-        GPU_IF(objI != GPU_IS_EMPTY, br2)
+        GPU_IF(objId != GPU_IS_EMPTY, br2)
         {
             result->facingObjI[i] = GPU_IS_EMPTY;
             result->facingPolyI[i] = GPU_IS_EMPTY;
@@ -519,8 +536,8 @@ __global__ void GpuSetVs
             {
                 // Add the result to the result data
                 atomicAdd(&result->facingPolySum, isPolyFacing);
-                result->facingObjI[i] = objI;
-                result->facingPolyI[i] = polyI;
+                result->facingObjI[i] = objId;
+                result->facingPolyI[i] = polyId;
 
                 Glpa::GPU_POLYGON ctPoly(objPolys[i], camData->mtTransRot, camData->mtRot);
 
@@ -594,8 +611,8 @@ __global__ void GpuSetVs
                     // Add the result to the result data
                     GPU_IF(inxtnAmount != 0, br5)
                     {
-                        result->inxtnObjId[i] = objI;
-                        result->inxtnPolyId[i] = polyI;
+                        result->inxtnObjId[i] = objId;
+                        result->inxtnPolyId[i] = polyId;
                         result->inxtnAmountsPoly[i] = inxtnAmount;
                     }
 
@@ -611,8 +628,8 @@ __global__ void GpuSetVs
                     // Add the result to the result data
                     GPU_IF(inxtnAmount != 0, br5)
                     {
-                        result->inxtnObjId[i] = objI;
-                        result->inxtnPolyId[i] = polyI;
+                        result->inxtnObjId[i] = objId;
+                        result->inxtnPolyId[i] = polyId;
                         result->inxtnAmountsVv[i] = inxtnAmount;
                     }
 
@@ -735,7 +752,7 @@ __global__ void GpuSetVs
                         for (int nY = 1; nY < height; nY++)
                         {
                             int diffY = startY + nY * direction;
-                            Glpa::GPU_VEC_3D rasterizedV = GpuLineRasterize
+                            Glpa::GPU_VEC_3D rasterizedV = GpuLineIP_Y
                             (
                                 sortedMPolyVs.get(j), sortedMPolyVs.get(j+1), diffY
                             );
@@ -752,13 +769,31 @@ __global__ void GpuSetVs
                     for (int nY = 1; nY < height; nY++)
                     {
                         int diffY = startY + nY * direction;
-                        Glpa::GPU_VEC_3D rasterizedV = GpuLineRasterize
+                        Glpa::GPU_VEC_3D rasterizedV = GpuLineIP_Y
                         (
                             sortedMPolyVs.get(0), sortedMPolyVs.get(startPointI), diffY
                         );
 
                         GpuSetMaxMinCoords(maxCoords, minCoords, &rasterizedV, diffY - minY - 1);
                     }
+
+                    // for (int by = minY; by < minY + ySize; by++)
+                    // {
+                    //     for (int bx = minCoords[by].x; bx < maxCoords[by].x; bx++)
+                    //     {
+                    //         Glpa::GPU_VEC_3D startPoint = {minCoords[by].x, by, minCoords[by].y};
+                    //         Glpa::GPU_VEC_3D endPoint = {maxCoords[by].x, by, maxCoords[by].y};
+                    //         Glpa::GPU_VEC_3D thisPoint = GpuLineIP_X
+                    //         (
+                    //             &startPoint, &endPoint, bx
+                    //         );
+
+                    //         int zBufI = bx + by * bufWidth * bufDpi;
+                    //         atomicExch(&zBufAry[zBufI].isEmpt, TRUE);
+                    //         // zBufAry[zBufI].set(objId, polyId, thisPoint.z, {bx, by});
+                            
+                    //     }
+                    // }
 
                     delete[] maxCoords;
                     delete[] minCoords;
@@ -805,7 +840,7 @@ __global__ void GpuSetVs
 
 }
 
-void Glpa::Render3d::setVs()
+void Glpa::Render3d::zBuffer(int& bufWidth, int& bufHeight, int& bufDpi)
 {
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -819,12 +854,17 @@ void Glpa::Render3d::setVs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuSetVs<<<dimGrid, dimBlock>>>(dStObjData, dObjPolys,dStObjInfo, dCamData, dResult);
+    GpuSetVs<<<dimGrid, dimBlock>>>
+    (
+        dStObjData, dObjPolys,dStObjInfo, dCamData, dResult, 
+        dZBufAry, bufWidth, bufHeight, bufDpi
+    );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
-    resultFactory.deviceToHost(dResult);
+    resultFactory.deviceToHost(dResult, dZBufAry);
+    cudaMemcpy(hZBufAry, dZBufAry, bufSize * sizeof(Glpa::GPU_Z_BUFFER_ARY), cudaMemcpyDeviceToHost);
 }
 
 void Glpa::Render3d::rasterize()
@@ -833,12 +873,12 @@ void Glpa::Render3d::rasterize()
 
 void Glpa::Render3d::run(
     std::unordered_map<std::string, Glpa::SceneObject *> &objs, std::unordered_map<std::string, Glpa::Material *> &mts,
-    Glpa::Camera &cam, LPDWORD buf, int bufWidth, int bufHeight, int bufDpi)
+    Glpa::Camera &cam, LPDWORD buf, int& bufWidth, int& bufHeight, int& bufDpi)
 {
-    dMalloc(cam, objs, mts);
+    dMalloc(cam, objs, mts, bufWidth, bufHeight, bufDpi);
 
     prepareObjs();
-    setVs();
+    zBuffer(bufWidth, bufHeight, bufDpi);
     rasterize();
 }
 
@@ -848,15 +888,15 @@ void Glpa::Render3d::dRelease()
     mtFactory.dFree(dMts);
     stObjFactory.dFree(dStObjData, dObjPolys);
     stObjFactory.dFree(dStObjInfo);
-    resultFactory.dFree(dResult);
+    resultFactory.dFree(dResult, dZBufAry);
 }
 
-void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult)
+void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult, Glpa::GPU_Z_BUFFER_ARY*& dZBufAry)
 {
     if (!malloced) return;
 
-    delete[] dResult->hPolyAmounts;
-    dResult->hPolyAmounts = nullptr;
+    delete[] hResult.hPolyAmounts;
+    hResult.hPolyAmounts = nullptr;
 
     int* dPolyAmounts;
     cudaMemcpy(&dPolyAmounts, &dResult->dPolyAmounts, sizeof(int*), cudaMemcpyDeviceToHost);
@@ -864,12 +904,19 @@ void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult)
 
     free(dResult);
     dResult = nullptr;
+
+    cudaFree(dZBufAry);
+    dZBufAry = nullptr;
+
     malloced = false;
 }
 
-void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum)
-{
-    if (malloced) dFree(dResult);
+void Glpa::RENDER_RESULT_FACTORY::dMalloc
+(
+    Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum, 
+    Glpa::GPU_Z_BUFFER_ARY*& dZBufAry, int bufWidth, int bufHeight, int bufDpi
+){
+    if (malloced) dFree(dResult, dZBufAry);
 
     hResult.srcObjSum = srcObjSum;
     hResult.objSum = 0;
@@ -893,12 +940,14 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc(Glpa::GPU_RENDER_RESULT*& dResult, int
     cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
     cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
 
+    cudaMalloc(&dZBufAry, bufWidth * bufHeight * bufDpi * sizeof(Glpa::GPU_Z_BUFFER_ARY));
+
     cudaFree(hResult.dPolyAmounts);
 
     malloced = true;
 }
 
-void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult)
+void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult, Glpa::GPU_Z_BUFFER_ARY*& zBufAry)
 {
     if (!malloced) Glpa::runTimeError(__FILE__, __LINE__, {"There is no memory on the result device side."});
 
@@ -910,4 +959,6 @@ void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult
 
     cudaMemcpy(hResult.hPolyAmounts, dOtherPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
     cudaFree(dOtherPolyAmounts);
+
+
 }
