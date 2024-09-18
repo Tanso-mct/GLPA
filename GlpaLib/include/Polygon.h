@@ -17,6 +17,10 @@ typedef struct _GPU_POLYGON
     Glpa::GPU_VEC_2D uv[3];
     Glpa::GPU_VEC_3D n;
 
+    Glpa::GPU_VEC_3D ctWv[3];
+    Glpa::GPU_VEC_2D ctUv[3];
+    Glpa::GPU_VEC_3D ctN;
+
     __device__ __host__ _GPU_POLYGON(){}
 
     __device__ __host__ _GPU_POLYGON(_GPU_POLYGON sPoly, Glpa::GPU_MAT_4X4& mtTransRot, Glpa::_GPU_MAT_4X4& mtRot)
@@ -28,6 +32,17 @@ typedef struct _GPU_POLYGON
         }
 
         n = mtRot.productLeft3x1(sPoly.n);
+    }
+
+    __device__ __host__ void convert(Glpa::GPU_MAT_4X4& mtTransRot, Glpa::_GPU_MAT_4X4& mtRot)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            ctWv[i] = mtTransRot.productLeft3x1(wv[i]);
+            ctUv[i] = uv[i];
+        }
+
+        ctN = mtRot.productLeft3x1(n);
     }
 
     __device__ __host__ GPU_BOOL isFacing(Glpa::GPU_MAT_4X4& mtTransRot, Glpa::_GPU_MAT_4X4& mtRot)

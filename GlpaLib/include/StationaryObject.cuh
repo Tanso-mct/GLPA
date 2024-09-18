@@ -84,13 +84,13 @@ public :
         infoMalloced = false;
     }
 
-    void dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON*& dPolys);
+    void dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON**& dPolys);
     void dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo);
 
     void dMalloc
     (
         Glpa::GPU_ST_OBJECT_DATA*& dObjData,
-        Glpa::GPU_POLYGON*& dPolys,
+        Glpa::GPU_POLYGON**& dPolys,
         std::unordered_map<std::string, Glpa::SceneObject*>& sObjs,
         std::unordered_map<std::string, int>& mtIdMap
     );

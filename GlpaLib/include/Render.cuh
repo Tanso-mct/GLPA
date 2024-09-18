@@ -166,7 +166,7 @@ private :
 
     Glpa::ST_OBJECT_FACTORY stObjFactory;
     Glpa::GPU_ST_OBJECT_DATA* dStObjData = nullptr;
-    Glpa::GPU_POLYGON* dObjPolys;
+    Glpa::GPU_POLYGON** dObjPolys;
     Glpa::GPU_ST_OBJECT_INFO* dStObjInfo = nullptr;
 
     Glpa::RENDER_RESULT_FACTORY resultFactory;
@@ -181,7 +181,7 @@ private :
     );
 
     void prepareObjs();
-    void zBuffer(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf);
+    void prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf);
     void rasterize();
 
 public :

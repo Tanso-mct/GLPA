@@ -61,14 +61,18 @@ void Glpa::StationaryObject::release()
     fileDataManager->release(filePath);
 }
 
-void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON*& dPolys)
-{
+void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON**& dPolys){
     if (dataMalloced)
     {
-        free(dObjData);
+        cudaFree(dObjData);
         dObjData = nullptr;
 
-        free(dPolys);
+        for (int i = 0; i < idMap.size(); i++)
+        {
+            cudaFree(dPolys[i]);
+        }
+
+        cudaFree(dPolys);
         dPolys = nullptr;
 
         dataMalloced = false;
@@ -86,14 +90,14 @@ void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo)
 void Glpa::ST_OBJECT_FACTORY::dMalloc
 (
     Glpa::GPU_ST_OBJECT_DATA*& dObjData, 
-    Glpa::GPU_POLYGON*& dPolys,
+    Glpa::GPU_POLYGON**& dPolys,
     std::unordered_map<std::string, Glpa::SceneObject *> &sObjs, 
     std::unordered_map<std::string, int> &mtIdMap
 ){
     if (dataMalloced) dFree(dObjData, dPolys);
 
     std::vector<Glpa::GPU_ST_OBJECT_DATA> hObjs;
-    std::vector<Glpa::GPU_POLYGON> polys;
+    std::vector<Glpa::GPU_POLYGON*> polys;
     int id = 0;
     for (auto& pair : sObjs)
     {
@@ -103,9 +107,15 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
             objData.id = id;
             objData.mtId = mtIdMap[obj->GetMaterial()->getName()];
 
+            Glpa::GPU_POLYGON* dThisPolys;
+
+            cudaMalloc(&dThisPolys, obj->getPolyAmount() * sizeof(Glpa::GPU_POLYGON));
+
             int beforeSize = polys.size();
-            obj->getPolyData(polys);
+            obj->getPolyData(thisPolys);
             int afterSize = polys.size();
+
+            polys.push_back(thisPolys);
 
             objData.polyAmount = afterSize - beforeSize;
 
@@ -121,8 +131,8 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
     cudaMalloc(&dObjData, id * sizeof(Glpa::GPU_ST_OBJECT_DATA));
     cudaMemcpy(dObjData, hObjs.data(), id * sizeof(Glpa::GPU_ST_OBJECT_DATA), cudaMemcpyHostToDevice);
 
-    cudaMalloc(&dPolys, polys.size() * sizeof(Glpa::GPU_POLYGON));
-    cudaMemcpy(dPolys, polys.data(), polys.size() * sizeof(Glpa::GPU_POLYGON), cudaMemcpyHostToDevice);
+    cudaMalloc(&dPolys, polys.size() * sizeof(Glpa::GPU_POLYGON*));
+    cudaMemcpy(dPolys, polys.data(), polys.size() * sizeof(Glpa::GPU_POLYGON*), cudaMemcpyHostToDevice);
 
     dataMalloced = true;
 }
