@@ -101,4 +101,17 @@ void Glpa::Scene3d::rendering
 
     D2D1_SIZE_U size = D2D1::SizeU(bufWidth, bufHeight);
     pRenderTarget->CreateBitmap(size, buf, bufWidth * sizeof(DWORD), &bitmapProperties, pBitMap);
+
+    ID2D1Bitmap* bitMap = *pBitMap;
+
+    BeginPaint(hWnd, &ps);
+    pRenderTarget->BeginDraw();
+    
+    D2D1_SIZE_F bitMapSize = bitMap->GetSize();
+    D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, bitMapSize.width, bitMapSize.height);
+
+    pRenderTarget->DrawBitmap(bitMap, layoutRect);
+    
+    pRenderTarget->EndDraw();
+    EndPaint(hWnd, &ps);
 }

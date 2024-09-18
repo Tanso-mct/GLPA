@@ -315,12 +315,9 @@ void Glpa::Render3d::dMalloc
     // Result data
     if (resultFactory.malloced)
     {
-        resultFactory.dFree(dResult, dZBufAry);
-        delete[] hZBufAry;
+        resultFactory.dFree(dResult);
     }
-    resultFactory.dMalloc(dResult, stObjFactory.idMap.size(), dZBufAry ,bufWidth, bufHeight, bufDpi);
-    hZBufAry = new Glpa::GPU_Z_BUFFER_ARY[bufWidth * bufHeight * bufDpi];
-    bufSize = bufWidth * bufHeight * bufDpi;
+    resultFactory.dMalloc(dResult, stObjFactory.idMap.size() ,bufWidth, bufHeight, bufDpi);
 }
 
 __global__ void GpuPrepareObj
@@ -377,7 +374,7 @@ void Glpa::Render3d::prepareObjs()
     cudaError_t err = cudaGetLastError();
     if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
-    resultFactory.deviceToHost(dResult, dZBufAry);
+    resultFactory.deviceToHost(dResult);
 }
 
 __device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objId, int& polyId)
@@ -487,7 +484,7 @@ __global__ void GpuSetVs
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_RENDER_RESULT* result,
-    Glpa::GPU_Z_BUFFER_ARY* zBufAry, int bufWidth, int bufHeight, int bufDpi
+    int bufWidth, int bufHeight, int bufDpi, LPDWORD buf
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     Glpa::GPU_VECTOR_MG vecMgr;
@@ -777,23 +774,32 @@ __global__ void GpuSetVs
                         GpuSetMaxMinCoords(maxCoords, minCoords, &rasterizedV, diffY - minY - 1);
                     }
 
-                    // for (int by = minY; by < minY + ySize; by++)
-                    // {
-                    //     for (int bx = minCoords[by].x; bx < maxCoords[by].x; bx++)
-                    //     {
-                    //         Glpa::GPU_VEC_3D startPoint = {minCoords[by].x, by, minCoords[by].y};
-                    //         Glpa::GPU_VEC_3D endPoint = {maxCoords[by].x, by, maxCoords[by].y};
-                    //         Glpa::GPU_VEC_3D thisPoint = GpuLineIP_X
-                    //         (
-                    //             &startPoint, &endPoint, bx
-                    //         );
+                    for (int by = minY; by < minY + ySize; by++)
+                    {
+                        for (int bx = minCoords[by-minY].x; bx < maxCoords[by-minY].x; bx++)
+                        {
+                            Glpa::GPU_VEC_3D startPoint = {minCoords[by-minY].x, by, minCoords[by-minY].y};
+                            Glpa::GPU_VEC_3D endPoint = {maxCoords[by-minY].x, by, maxCoords[by-minY].y};
+                            Glpa::GPU_VEC_3D thisPoint = GpuLineIP_X
+                            (
+                                &startPoint, &endPoint, bx
+                            );
 
-                    //         int zBufI = bx + by * bufWidth * bufDpi;
-                    //         atomicExch(&zBufAry[zBufI].isEmpt, TRUE);
-                    //         // zBufAry[zBufI].set(objId, polyId, thisPoint.z, {bx, by});
+                            int zBufI = bx + by * bufWidth * bufDpi;
+                            atomicExch((unsigned int*)&buf[zBufI], 0xFF0000FF);
+                            // atomicExch(&zBufAry[zBufI].isEmpt, TRUE);buf[zBufI] = 0xFF0000FF;
+
+                            // atomicExch(&zBufAry[zBufI].isEmpt, TRUE);
+                            // zBufAry[zBufI].set(objId, polyId, thisPoint.z, {bx, by});
                             
-                    //     }
-                    // }
+                        }
+                    }
+
+                    GPU_IF(i = 69 + 12, br5)
+                    {
+                        int debugNum = 0;
+                        debugNum = 100;
+                    }
 
                     delete[] maxCoords;
                     delete[] minCoords;
@@ -840,7 +846,7 @@ __global__ void GpuSetVs
 
 }
 
-void Glpa::Render3d::zBuffer(int& bufWidth, int& bufHeight, int& bufDpi)
+void Glpa::Render3d::zBuffer(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf)
 {
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -854,17 +860,22 @@ void Glpa::Render3d::zBuffer(int& bufWidth, int& bufHeight, int& bufDpi)
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
+    LPDWORD dBuf;
+    cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
+
     GpuSetVs<<<dimGrid, dimBlock>>>
     (
         dStObjData, dObjPolys,dStObjInfo, dCamData, dResult, 
-        dZBufAry, bufWidth, bufHeight, bufDpi
+        bufWidth, bufHeight, bufDpi, dBuf
     );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
-    resultFactory.deviceToHost(dResult, dZBufAry);
-    cudaMemcpy(hZBufAry, dZBufAry, bufSize * sizeof(Glpa::GPU_Z_BUFFER_ARY), cudaMemcpyDeviceToHost);
+    resultFactory.deviceToHost(dResult);
+    cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
+
+    cudaFree(dBuf);
 }
 
 void Glpa::Render3d::rasterize()
@@ -878,7 +889,7 @@ void Glpa::Render3d::run(
     dMalloc(cam, objs, mts, bufWidth, bufHeight, bufDpi);
 
     prepareObjs();
-    zBuffer(bufWidth, bufHeight, bufDpi);
+    zBuffer(bufWidth, bufHeight, bufDpi, buf);
     rasterize();
 }
 
@@ -888,10 +899,10 @@ void Glpa::Render3d::dRelease()
     mtFactory.dFree(dMts);
     stObjFactory.dFree(dStObjData, dObjPolys);
     stObjFactory.dFree(dStObjInfo);
-    resultFactory.dFree(dResult, dZBufAry);
+    resultFactory.dFree(dResult);
 }
 
-void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult, Glpa::GPU_Z_BUFFER_ARY*& dZBufAry)
+void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult)
 {
     if (!malloced) return;
 
@@ -902,11 +913,8 @@ void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult, Glpa:
     cudaMemcpy(&dPolyAmounts, &dResult->dPolyAmounts, sizeof(int*), cudaMemcpyDeviceToHost);
     cudaFree(dPolyAmounts);
 
-    free(dResult);
+    cudaFree(dResult);
     dResult = nullptr;
-
-    cudaFree(dZBufAry);
-    dZBufAry = nullptr;
 
     malloced = false;
 }
@@ -914,9 +922,9 @@ void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult, Glpa:
 void Glpa::RENDER_RESULT_FACTORY::dMalloc
 (
     Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum, 
-    Glpa::GPU_Z_BUFFER_ARY*& dZBufAry, int bufWidth, int bufHeight, int bufDpi
+    int bufWidth, int bufHeight, int bufDpi
 ){
-    if (malloced) dFree(dResult, dZBufAry);
+    if (malloced) dFree(dResult);
 
     hResult.srcObjSum = srcObjSum;
     hResult.objSum = 0;
@@ -940,14 +948,12 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc
     cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
     cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
 
-    cudaMalloc(&dZBufAry, bufWidth * bufHeight * bufDpi * sizeof(Glpa::GPU_Z_BUFFER_ARY));
-
     cudaFree(hResult.dPolyAmounts);
 
     malloced = true;
 }
 
-void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult, Glpa::GPU_Z_BUFFER_ARY*& zBufAry)
+void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult)
 {
     if (!malloced) Glpa::runTimeError(__FILE__, __LINE__, {"There is no memory on the result device side."});
 

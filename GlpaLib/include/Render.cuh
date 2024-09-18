@@ -110,29 +110,29 @@ typedef struct _GPU_RENDER_RESULT
     int* dPolyAmounts;
 } GPU_RENDER_RESULT;
 
-typedef struct _GPU_Z_BUFFER_ARRAY
-{
-    int isEmpt = 0;
-    int objId = 0;
-    int polyId = 0;
+// typedef struct _GPU_Z_BUFFER_ARRAY
+// {
+//     int isEmpt = 0;
+//     int objId = 0;
+//     int polyId = 0;
 
-    Glpa::GPU_VEC_3D v;
-    Glpa::GPU_VEC_2D scrV;
+//     Glpa::GPU_VEC_3D v;
+//     Glpa::GPU_VEC_2D scrV;
 
-    __device__ __host__ void set(int argObjId, int argPolyId, float newZ, Glpa::GPU_VEC_2D argScrV)
-    {
-        GPU_BOOL update = GPU_CO(newZ > v.z || isEmpt == 0, TRUE, FALSE);
+//     __device__ __host__ void set(int argObjId, int argPolyId, float newZ, Glpa::GPU_VEC_2D argScrV)
+//     {
+//         GPU_BOOL update = GPU_CO(newZ > v.z || isEmpt == 0, TRUE, FALSE);
 
-        GPU_IF(update == TRUE, br4)
-        {
-            isEmpt = 1;
-            objId = argObjId + 1;
-            polyId = argPolyId;
-            v.z = newZ;
-            scrV = argScrV;
-        }
-    }
-} GPU_Z_BUFFER_ARY;
+//         GPU_IF(update == TRUE, br4)
+//         {
+//             isEmpt = 1;
+//             objId = argObjId + 1;
+//             polyId = argPolyId;
+//             v.z = newZ;
+//             scrV = argScrV;
+//         }
+//     }
+// } GPU_Z_BUFFER_ARY;
 
 class RENDER_RESULT_FACTORY
 {
@@ -145,14 +145,14 @@ public :
         malloced = false;
     }
 
-    void dFree(Glpa::GPU_RENDER_RESULT*& dResult, Glpa::GPU_Z_BUFFER_ARY*& dZBufAry);
+    void dFree(Glpa::GPU_RENDER_RESULT*& dResult);
     void dMalloc
     (
         Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum, 
-        Glpa::GPU_Z_BUFFER_ARY*& dZBufAry, int bufWidth, int bufHeight, int bufDpi
+        int bufWidth, int bufHeight, int bufDpi
     );
 
-    void deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult, Glpa::GPU_Z_BUFFER_ARY*& zBufAry);
+    void deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult);
 };
 
 class Render3d
@@ -172,10 +172,6 @@ private :
     Glpa::RENDER_RESULT_FACTORY resultFactory;
     Glpa::GPU_RENDER_RESULT* dResult = nullptr;
 
-    int bufSize = 0;
-    Glpa::GPU_Z_BUFFER_ARY* hZBufAry = nullptr;
-    Glpa::GPU_Z_BUFFER_ARY* dZBufAry = nullptr;
-
     void dMalloc
     (
         Glpa::Camera& cam, 
@@ -185,7 +181,7 @@ private :
     );
 
     void prepareObjs();
-    void zBuffer(int& bufWidth, int& bufHeight, int& bufDpi);
+    void zBuffer(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf);
     void rasterize();
 
 public :

@@ -170,7 +170,6 @@ void Glpa::Scene2d::rendering
 
     pRenderTarget->DrawBitmap(bitMap, layoutRect);
 
-    //TODO: Add Text drawing processing here.
     for (auto& obj : objs)
     {
         if (Glpa::Text* text = dynamic_cast<Glpa::Text*>(obj.second))
@@ -178,7 +177,6 @@ void Glpa::Scene2d::rendering
             text->drawText(pRenderTarget);
         }
     }
-
     
     pRenderTarget->EndDraw();
     EndPaint(hWnd, &ps);
