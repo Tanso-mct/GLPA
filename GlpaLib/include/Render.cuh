@@ -185,8 +185,8 @@ private :
     );
 
     void prepareObjs();
-    void prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf);
-    void rasterize();
+    void prepareLines();
+    void rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf);
 
 public :
     Render3d();

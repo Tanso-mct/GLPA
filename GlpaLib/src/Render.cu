@@ -483,7 +483,6 @@ __global__ void GpuPrepareLines
     Glpa::GPU_POLYGON** objPolys,
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
-    int bufWidth, int bufHeight, int bufDpi,
     Glpa::GPU_POLY_LINE** polyLines,
     int* polyLineAmounts,
     Glpa::GPU_RENDER_RESULT* result
@@ -866,18 +865,24 @@ __global__ void GpuPrepareLines
 
 __global__ void GpuRasterize
 (
-    int bufWidth, int bufHeight, int bufDpi,
     Glpa::GPU_POLY_LINE** polyLines,
     int* polyLineAmounts,
+    int bufWidth, int bufHeight, int bufDpi, LPDWORD buf,
     Glpa::GPU_RENDER_RESULT* result
 ){
-    int x = blockIdx.y * blockDim.y + threadIdx.y;
-    int y = blockIdx.x * blockDim.x + threadIdx.x;
+    int tI = blockIdx.y * blockDim.y + threadIdx.y;
+    int tJ = blockIdx.x * blockDim.x + threadIdx.x;
 
-    
+    if (tI < result->polySum)
+    {
+        if (tJ < polyLineAmounts[tI])
+        {
+            
+        }
+    }
 }
 
-void Glpa::Render3d::prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf)
+void Glpa::Render3d::prepareLines()
 {
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -897,7 +902,7 @@ void Glpa::Render3d::prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LP
     GpuPrepareLines<<<dimGrid, dimBlock>>>
     (
         dStObjData, dObjPolys, dStObjInfo, dCamData, 
-        bufWidth, bufHeight, bufDpi, dPolyLines, dPolyLineAmounts, dResult
+        dPolyLines, dPolyLineAmounts, dResult
     );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
@@ -906,7 +911,7 @@ void Glpa::Render3d::prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LP
     resultFactory.deviceToHost(dResult);
 }
 
-void Glpa::Render3d::rasterize()
+void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf)
 {
     cudaDeviceProp deviceProp;
     cudaGetDeviceProperties(&deviceProp, 0);
@@ -929,14 +934,20 @@ void Glpa::Render3d::rasterize()
     dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
     dim3 dimGrid(blocksX, blocksY);
 
+    LPDWORD dBuf;
+    cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
+
     GpuRasterize<<<dimGrid, dimBlock>>>
     (
-        
+        dPolyLines, dPolyLineAmounts, bufWidth, bufHeight, bufDpi, dBuf, dResult
     );
     cudaError_t error = cudaDeviceSynchronize();
     if (error != 0){
         Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
     }
+
+    cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
+    cudaFree(dBuf);
 
 
 }
@@ -948,8 +959,8 @@ void Glpa::Render3d::run(
     dMalloc(cam, objs, mts, bufWidth, bufHeight, bufDpi);
 
     prepareObjs();
-    prepareLines(bufWidth, bufHeight, bufDpi, buf);
-    rasterize();
+    prepareLines();
+    rasterize(bufWidth, bufHeight, bufDpi, buf);
 }
 
 void Glpa::Render3d::dRelease()
