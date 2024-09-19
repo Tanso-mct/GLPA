@@ -104,6 +104,7 @@ typedef struct _GPU_RENDER_RESULT
     float mPolyCubeVs[12][7][3];
     float mPolyPlaneVs[200][7][3];
 
+    int maxLineAmount;
     int debugNum;
 
     int* hPolyAmounts;
@@ -168,6 +169,9 @@ private :
     Glpa::GPU_ST_OBJECT_DATA* dStObjData = nullptr;
     Glpa::GPU_POLYGON** dObjPolys;
     Glpa::GPU_ST_OBJECT_INFO* dStObjInfo = nullptr;
+
+    int* dPolyLineAmounts = nullptr;
+    Glpa::GPU_POLY_LINE** dPolyLines = nullptr;
 
     Glpa::RENDER_RESULT_FACTORY resultFactory;
     Glpa::GPU_RENDER_RESULT* dResult = nullptr;

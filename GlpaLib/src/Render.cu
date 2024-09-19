@@ -484,6 +484,8 @@ __global__ void GpuPrepareLines
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     int bufWidth, int bufHeight, int bufDpi,
+    Glpa::GPU_POLY_LINE** polyLines,
+    int* polyLineAmounts,
     Glpa::GPU_RENDER_RESULT* result
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -495,34 +497,36 @@ __global__ void GpuPrepareLines
         int objId, polyId;
         GpuSetI(i, result->dPolyAmounts, result->objSum, objId, polyId);
 
+        polyLineAmounts[i] = 0;
+
         // Execute if current i is not out of range.
         GPU_IF(objId != GPU_IS_EMPTY, br2)
         {
             // Add the result to the result data
-            result->facingObjI[i] = GPU_IS_EMPTY;
-            result->facingPolyI[i] = GPU_IS_EMPTY;
-            result->inxtnObjId[i] = GPU_IS_EMPTY;
-            result->inxtnPolyId[i] = GPU_IS_EMPTY;
-            result->inxtnAmountsPoly[i] = GPU_IS_EMPTY;
-            result->inxtnAmountsVv[i] = GPU_IS_EMPTY;
-            for (int j = 0; j < 12; j++)
-            {
-                for (int k = 0; k < 7; k++)
-                {
-                    result->mPolyCubeVs[i][k][Glpa::X] = GPU_IS_EMPTY;
-                    result->mPolyCubeVs[i][k][Glpa::Y] = GPU_IS_EMPTY;
-                    result->mPolyCubeVs[i][k][Glpa::Z] = GPU_IS_EMPTY;
-                }
-            }
-            for (int j = 0; j < 200; j++)
-            {
-                for (int k = 0; k < 7; k++)
-                {
-                    result->mPolyPlaneVs[i-12][k][Glpa::X] = GPU_IS_EMPTY;
-                    result->mPolyPlaneVs[i-12][k][Glpa::Y] = GPU_IS_EMPTY;
-                    result->mPolyPlaneVs[i-12][k][Glpa::Z] = GPU_IS_EMPTY;
-                }
-            }
+            // result->facingObjI[i] = GPU_IS_EMPTY;
+            // result->facingPolyI[i] = GPU_IS_EMPTY;
+            // result->inxtnObjId[i] = GPU_IS_EMPTY;
+            // result->inxtnPolyId[i] = GPU_IS_EMPTY;
+            // result->inxtnAmountsPoly[i] = GPU_IS_EMPTY;
+            // result->inxtnAmountsVv[i] = GPU_IS_EMPTY;
+            // for (int j = 0; j < 12; j++)
+            // {
+            //     for (int k = 0; k < 7; k++)
+            //     {
+            //         result->mPolyCubeVs[i][k][Glpa::X] = GPU_IS_EMPTY;
+            //         result->mPolyCubeVs[i][k][Glpa::Y] = GPU_IS_EMPTY;
+            //         result->mPolyCubeVs[i][k][Glpa::Z] = GPU_IS_EMPTY;
+            //     }
+            // }
+            // for (int j = 0; j < 200; j++)
+            // {
+            //     for (int k = 0; k < 7; k++)
+            //     {
+            //         result->mPolyPlaneVs[i-12][k][Glpa::X] = GPU_IS_EMPTY;
+            //         result->mPolyPlaneVs[i-12][k][Glpa::Y] = GPU_IS_EMPTY;
+            //         result->mPolyPlaneVs[i-12][k][Glpa::Z] = GPU_IS_EMPTY;
+            //     }
+            // }
 
             // Check if the polygon is facing the camera
             GPU_BOOL isPolyFacing = objPolys[objId][polyId].isFacing(camData->mtTransRot, camData->mtRot);
@@ -605,12 +609,12 @@ __global__ void GpuPrepareLines
                     }
 
                     // Add the result to the result data
-                    GPU_IF(inxtnAmount != 0, br5)
-                    {
-                        result->inxtnObjId[i] = objId;
-                        result->inxtnPolyId[i] = polyId;
-                        result->inxtnAmountsPoly[i] = inxtnAmount;
-                    }
+                    // GPU_IF(inxtnAmount != 0, br5)
+                    // {
+                    //     result->inxtnObjId[i] = objId;
+                    //     result->inxtnPolyId[i] = polyId;
+                    //     result->inxtnAmountsPoly[i] = inxtnAmount;
+                    // }
 
                     // Obtain the intersection of the view volume surface and the polygon line.
                     for (int j = 0; j < GPU_VV_FACE_AMOUNT; j++)
@@ -622,39 +626,39 @@ __global__ void GpuPrepareLines
                     }
 
                     // Add the result to the result data
-                    GPU_IF(inxtnAmount != 0, br5)
-                    {
-                        result->inxtnObjId[i] = objId;
-                        result->inxtnPolyId[i] = polyId;
-                        result->inxtnAmountsVv[i] = inxtnAmount;
-                    }
+                    // GPU_IF(inxtnAmount != 0, br5)
+                    // {
+                    //     result->inxtnObjId[i] = objId;
+                    //     result->inxtnPolyId[i] = polyId;
+                    //     result->inxtnAmountsVv[i] = inxtnAmount;
+                    // }
 
                 }
 
                 // Add the result to the result data
-                GPU_IF(mPolyVs.size != 0, br4)
-                {
-                    GPU_IF(i < 12, br5)
-                    {
-                        for (int j = 0; j < mPolyVs.size; j++)
-                        {
-                            Glpa::GPU_VEC_3D* mPolyV = mPolyVs.get(j);
-                            result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
-                            result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
-                            result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
-                        }
-                    }
-                    GPU_IF(i >= 12 && i < 212, br5)
-                    {
-                        for (int j = 0; j < mPolyVs.size; j++)
-                        {
-                            Glpa::GPU_VEC_3D* mPolyV = mPolyVs.get(j);
-                            result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
-                            result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
-                            result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
-                        }
-                    }
-                }
+                // GPU_IF(mPolyVs.size != 0, br4)
+                // {
+                //     GPU_IF(i < 12, br5)
+                //     {
+                //         for (int j = 0; j < mPolyVs.size; j++)
+                //         {
+                //             Glpa::GPU_VEC_3D* mPolyV = mPolyVs.get(j);
+                //             result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
+                //             result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
+                //             result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
+                //         }
+                //     }
+                //     GPU_IF(i >= 12 && i < 212, br5)
+                //     {
+                //         for (int j = 0; j < mPolyVs.size; j++)
+                //         {
+                //             Glpa::GPU_VEC_3D* mPolyV = mPolyVs.get(j);
+                //             result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
+                //             result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
+                //             result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
+                //         }
+                //     }
+                // }
 
                 // // Arrange vertices in the order they form a line segment
                 GPU_IF(mPolyVs.size >= 3, br4)
@@ -725,6 +729,26 @@ __global__ void GpuPrepareLines
                         sortedMPolyVs.push(*mPolyScrVs.get((int)rightVs.pair[j].val1));
                         GpuSetMaxMinY(maxY, minY, mPolyScrVs.get((int)rightVs.pair[j].val1)->y);
                     }
+
+                    atomicMax(&result->maxLineAmount, sortedMPolyVs.size);
+                    polyLineAmounts[i] = sortedMPolyVs.size;
+
+                    polyLines[i] = (Glpa::GPU_POLY_LINE*)malloc(sizeof(Glpa::GPU_POLY_LINE) * (sortedMPolyVs.size));
+
+                    for (int j = 0; j < sortedMPolyVs.size-1; j++)
+                    {
+                        polyLines[i][j].set
+                        (
+                            objId, polyId, j, *sortedMPolyVs.get(j), j+1, *sortedMPolyVs.get(j+1)
+                        );
+                    }
+
+                    polyLines[i][sortedMPolyVs.size-1].set
+                    (
+                        objId, polyId, 
+                        sortedMPolyVs.size-1, *sortedMPolyVs.get(sortedMPolyVs.size-1), 
+                        0, *sortedMPolyVs.get(0)
+                    );
 
                     mPolyScrVs.clear();
                     sortedMPolyVs.clear();
@@ -798,12 +822,6 @@ __global__ void GpuPrepareLines
                     //     }
                     // }
 
-                    // GPU_IF(i = 69 + 12, br5)
-                    // {
-                    //     int debugNum = 0;
-                    //     debugNum = 100;
-                    // }
-
                     // delete[] maxCoords;
                     // delete[] minCoords;
 
@@ -846,6 +864,19 @@ __global__ void GpuPrepareLines
 
 }
 
+__global__ void GpuRasterize
+(
+    int bufWidth, int bufHeight, int bufDpi,
+    Glpa::GPU_POLY_LINE** polyLines,
+    int* polyLineAmounts,
+    Glpa::GPU_RENDER_RESULT* result
+){
+    int x = blockIdx.y * blockDim.y + threadIdx.y;
+    int y = blockIdx.x * blockDim.x + threadIdx.x;
+
+    
+}
+
 void Glpa::Render3d::prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf)
 {
     cudaDeviceProp deviceProp;
@@ -860,26 +891,54 @@ void Glpa::Render3d::prepareLines(int& bufWidth, int& bufHeight, int& bufDpi, LP
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    // LPDWORD dBuf;
-    // cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
+    stObjFactory.dFree(dPolyLines, dPolyLineAmounts);
+    stObjFactory.dMalloc(dPolyLines, dPolyLineAmounts, resultFactory.hResult.polySum);
 
     GpuPrepareLines<<<dimGrid, dimBlock>>>
     (
         dStObjData, dObjPolys, dStObjInfo, dCamData, 
-        bufWidth, bufHeight, bufDpi, dResult
+        bufWidth, bufHeight, bufDpi, dPolyLines, dPolyLineAmounts, dResult
     );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
     if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
 
     resultFactory.deviceToHost(dResult);
-    // cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
-
-    // cudaFree(dBuf);
 }
 
 void Glpa::Render3d::rasterize()
 {
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, 0);
+
+    int dataSizeY = resultFactory.hResult.polySum;
+    int dataSizeX = resultFactory.hResult.maxLineAmount;
+
+    int desiredThreadsPerBlockX = 16;
+    int desiredThreadsPerBlockY = 16;
+
+    int blocksX = (dataSizeX + desiredThreadsPerBlockX - 1) / desiredThreadsPerBlockX;
+    int blocksY = (dataSizeY + desiredThreadsPerBlockY - 1) / desiredThreadsPerBlockY;
+
+    blocksX = min(blocksX, deviceProp.maxGridSize[0]);
+    blocksY = min(blocksY, deviceProp.maxGridSize[1]);
+
+    int threadsPerBlockX = min(desiredThreadsPerBlockX, deviceProp.maxThreadsDim[0]);
+    int threadsPerBlockY = min(desiredThreadsPerBlockY, deviceProp.maxThreadsDim[1]);
+
+    dim3 dimBlock(threadsPerBlockX, threadsPerBlockY);
+    dim3 dimGrid(blocksX, blocksY);
+
+    GpuRasterize<<<dimGrid, dimBlock>>>
+    (
+        
+    );
+    cudaError_t error = cudaDeviceSynchronize();
+    if (error != 0){
+        Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+    }
+
+
 }
 
 void Glpa::Render3d::run(
@@ -899,6 +958,7 @@ void Glpa::Render3d::dRelease()
     mtFactory.dFree(dMts);
     stObjFactory.dFree(dStObjData, dObjPolys);
     stObjFactory.dFree(dStObjInfo);
+    stObjFactory.dFree(dPolyLines, dPolyLineAmounts);
     resultFactory.dFree(dResult);
 }
 
@@ -938,6 +998,8 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc
 
     hResult.polyFaceInxtnSum = 0;
     hResult.vvFaceInxtnSum = 0;
+
+    hResult.maxLineAmount = 0;
 
     hResult.onErr = FALSE;
     hResult.debugNum = 0;

@@ -14,6 +14,8 @@
     for(int branch = 0; branch < (condition) ? TRUE : FALSE; branch++) \
 
 #define GPU_IS_EMPTY -1
+#define GPU_IS_FILLED 1
+
 #define GPU_IS_TRIANGLE 0
 #define GPU_IS_SQUARE 1
 

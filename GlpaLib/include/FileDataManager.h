@@ -56,6 +56,7 @@ public :
     void load() override;
     void release() override;
 
+    int getPolyAmount();
     void getPolyData(std::vector<Glpa::GPU_POLYGON>& polys);
     Glpa::GPU_RANGE_RECT getRangeRectData();
 };
@@ -87,6 +88,8 @@ public :
     int getChannels(std::string path);
 
     LPDWORD getPngData(std::string path);
+
+    int getPolyAmount(std::string path);
     void getPolyData(std::string path, std::vector<Glpa::GPU_POLYGON>& polys);
     Glpa::GPU_RANGE_RECT getRangeRectData(std::string path);
 

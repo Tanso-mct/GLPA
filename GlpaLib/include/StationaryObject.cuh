@@ -63,6 +63,7 @@ public :
 
     Glpa::GPU_ST_OBJECT_INFO getInfo();
 
+    int getPolyAmount();
     void getPolyData(std::vector<Glpa::GPU_POLYGON>& polys);
     Glpa::GPU_RANGE_RECT getRangeRectData();
 
@@ -77,6 +78,9 @@ public :
 
     bool dataMalloced = false;
     bool infoMalloced = false;
+    bool polyLineMalloced = false;
+
+    int lastPolySum = 0;
 
     ST_OBJECT_FACTORY()
     {
@@ -86,6 +90,7 @@ public :
 
     void dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON**& dPolys);
     void dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo);
+    void dFree(Glpa::GPU_POLY_LINE**& dPolyLines, int*& dPolyLineAmounts);
 
     void dMalloc
     (
@@ -97,8 +102,14 @@ public :
 
     void dMalloc
     (
-        Glpa::GPU_ST_OBJECT_INFO*& dObjInfo, 
+        Glpa::GPU_ST_OBJECT_INFO*& dObjInfo,
         std::unordered_map<std::string, Glpa::SceneObject*>& sObjs
+    );
+
+    void dMalloc
+    (
+        Glpa::GPU_POLY_LINE**& dPolyLines, int*& dPolyLineAmounts,
+        int polySum
     );
 };
 

@@ -202,7 +202,24 @@ LPDWORD Glpa::FileDataManager::getPngData(std::string path)
     }
 }
 
-void Glpa::FileDataManager::getPolyData(std::string path, std::vector<Glpa::GPU_POLYGON>& polys)
+int Glpa::FileDataManager::getPolyAmount(std::string path)
+{
+    if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
+    {
+        Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_GLPA_FILE_DATA_MG, "Data[" + path + "]");
+        return obj->getPolyAmount();
+    }
+    else
+    {
+        Glpa::runTimeError
+        (
+            __FILE__, __LINE__,
+            "It is not a file whose data can be obtained."
+        );
+    }
+}
+
+void Glpa::FileDataManager::getPolyData(std::string path, std::vector<Glpa::GPU_POLYGON> &polys)
 {
     if (Glpa::ObjData* obj = dynamic_cast<Glpa::ObjData*>(files[path]->data))
     {
@@ -428,7 +445,12 @@ void Glpa::ObjData::release()
     polygons.clear();
 }
 
-void Glpa::ObjData::getPolyData(std::vector<Glpa::GPU_POLYGON>& polys)
+int Glpa::ObjData::getPolyAmount()
+{
+    return polygons.size();
+}
+
+void Glpa::ObjData::getPolyData(std::vector<Glpa::GPU_POLYGON> &polys)
 {
     if (polygons.size() != 0)
     {

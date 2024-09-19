@@ -385,6 +385,83 @@ typedef struct _GPU_LINE_3D
 
 } GPU_LINE_3D;
 
+typedef struct _GPU_POLY_LINE
+{
+    int objId = GPU_IS_EMPTY;
+    int polyId = GPU_IS_EMPTY;
+
+    int startId = GPU_IS_EMPTY;
+    int endId = GPU_IS_EMPTY;
+
+    Glpa::GPU_VEC_3D start;
+    Glpa::GPU_VEC_3D end;
+    Glpa::GPU_VEC_3D vec;
+
+    __device__ __host__ _GPU_POLY_LINE(){};
+
+    __device__ __host__ _GPU_POLY_LINE
+    (
+        int argObjId, int argPolyId, 
+        int argStartId, Glpa::GPU_VEC_3D argStart, 
+        int argEndId, Glpa::GPU_VEC_3D argEnd
+    ){
+        objId = argObjId;
+        polyId = argPolyId;
+
+        startId = argStartId;
+        endId = argEndId;
+
+        start = argStart;
+        end = argEnd;
+        vec = end - start;
+    }
+
+    __device__ __host__ void set
+    (
+        int argObjId, int argPolyId, 
+        int argStartId, Glpa::GPU_VEC_3D argStart, 
+        int argEndId, Glpa::GPU_VEC_3D argEnd
+    ){
+        objId = argObjId;
+        polyId = argPolyId;
+
+        startId = argStartId;
+        endId = argEndId;
+
+        start = argStart;
+        end = argEnd;
+        vec = end - start;
+    }
+
+    __device__ __host__ float getLength() const
+    {
+        return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    }
+
+    __device__ __host__ Glpa::GPU_VEC_3D getPoint(float t) const
+    {
+        return start + vec * t;
+    }
+
+    __device__ __host__ GPU_BOOL operator==(const _GPU_POLY_LINE& other) const
+    {
+        return (start == other.start && end == other.end) ? TRUE : FALSE;
+    }
+
+    __device__ __host__ GPU_BOOL operator!=(const _GPU_POLY_LINE& other) const
+    {
+        return (!(*this == other)) ? TRUE : FALSE;
+    }
+
+    __device__ __host__ _GPU_POLY_LINE operator=(const _GPU_POLY_LINE& other)
+    {
+        start = other.start;
+        end = other.end;
+        return *this;
+    }
+
+} GPU_POLY_LINE;
+
 typedef struct _GPU_FACE_3D
 {
     int type = GPU_IS_EMPTY;
