@@ -92,19 +92,24 @@ void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo)
     };
 }
 
-void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_POLY_LINE **&dPolyLines, int *&dPolyLineAmounts)
+__global__ void freeInKanel(Glpa::GPU_POLY_LINE** dPolyLine, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        free(dPolyLine[i]);
+    }
+}
+
+void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_POLY_LINE **&dPolyLines, Glpa::GPU_MPOLYGON_INFO*& dMPolyInfo)
 {
     if (polyLineMalloced)
     {
-        for (int i = 0; i < lastPolySum; i++)
-        {
-            cudaFree(dPolyLines[i]);
-        }
+        freeInKanel<<<1, 1>>>(dPolyLines, lastPolySum);
 
         cudaFree(dPolyLines);
         dPolyLines = nullptr;
 
-        cudaFree(dPolyLineAmounts);
+        cudaFree(dMPolyInfo);
 
         polyLineMalloced = false;
     }
@@ -174,18 +179,12 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
     cudaMemcpy(dObjInfo, hObjInfo.data(), idMap.size() * sizeof(Glpa::GPU_ST_OBJECT_INFO), cudaMemcpyHostToDevice);
 }
 
-void Glpa::ST_OBJECT_FACTORY::dMalloc(Glpa::GPU_POLY_LINE**& dPolyLines, int*& dPolyLineAmounts, int polySum)
+void Glpa::ST_OBJECT_FACTORY::dMalloc(Glpa::GPU_POLY_LINE**& dPolyLines, GPU_MPOLYGON_INFO*& dMPolyInfo, int polySum)
 {
-    if (polyLineMalloced) dFree(dPolyLines, dPolyLineAmounts);
+    if (polyLineMalloced) dFree(dPolyLines, dMPolyInfo);
 
     cudaMalloc(&dPolyLines, polySum * sizeof(Glpa::GPU_POLY_LINE*));
-
-    int* hPolyLineAmounts = new int[polySum];
-    std::fill(hPolyLineAmounts, hPolyLineAmounts + polySum, FALSE);
-
-    cudaMalloc(&dPolyLineAmounts, polySum * sizeof(int));
-    cudaMemcpy(dPolyLineAmounts, hPolyLineAmounts, polySum * sizeof(int), cudaMemcpyHostToDevice);
-    delete[] hPolyLineAmounts;
+    cudaMalloc(&dMPolyInfo, polySum * sizeof(GPU_MPOLYGON_INFO));
 
     lastPolySum = polySum;
 

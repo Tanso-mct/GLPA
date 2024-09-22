@@ -444,28 +444,6 @@ __device__ void GpuSetMaxMinY(int& maxY, int& minY, int val)
     minY = GPU_CO(val < minY, val, minY);
 }
 
-__device__ Glpa::GPU_VEC_3D GpuLineIP_X(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int x)
-{
-    Glpa::GPU_VECTOR_MG vecMgr;
-
-    float t = (x - start->x) / (end->x - start->x);
-    int y = start->y + t * (end->y - start->y);
-    float z = start->z + t * (end->z - start->z);
-
-    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
-}
-
-__device__ Glpa::GPU_VEC_3D GpuLineIP_Y(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
-{
-    Glpa::GPU_VECTOR_MG vecMgr;
-
-    float t = (y - start->y) / (end->y - start->y);
-    int x = start->x + t * (end->x - start->x);
-    float z = start->z + t * (end->z - start->z);
-
-    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
-}
-
 __device__ void GpuSetMaxMinCoords(Glpa::GPU_VEC_2D* maxCoords, Glpa::GPU_VEC_2D* minCoords, Glpa::GPU_VEC_3D* coord, int i)
 {
     GPU_BOOL isMaxX = GPU_CO(maxCoords[i].x < coord->x, TRUE, FALSE);
@@ -484,7 +462,7 @@ __global__ void GpuPrepareLines
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_POLY_LINE** polyLines,
-    int* polyLineAmounts,
+    Glpa::GPU_MPOLYGON_INFO* mPolyInfo,
     Glpa::GPU_RENDER_RESULT* result
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -496,7 +474,7 @@ __global__ void GpuPrepareLines
         int objId, polyId;
         GpuSetI(i, result->dPolyAmounts, result->objSum, objId, polyId);
 
-        polyLineAmounts[i] = 0;
+        mPolyInfo[i].height = 0;
 
         // Execute if current i is not out of range.
         GPU_IF(objId != GPU_IS_EMPTY, br2)
@@ -730,7 +708,10 @@ __global__ void GpuPrepareLines
                     }
 
                     atomicMax(&result->maxLineAmount, sortedMPolyVs.size);
-                    polyLineAmounts[i] = sortedMPolyVs.size;
+                    mPolyInfo[i].lineAmount = sortedMPolyVs.size;
+
+                    atomicMax(&result->maxPolyHeight, maxY - minY + 1);
+                    mPolyInfo[i].height = maxY - minY + 1;
 
                     polyLines[i] = (Glpa::GPU_POLY_LINE*)malloc(sizeof(Glpa::GPU_POLY_LINE) * (sortedMPolyVs.size));
 
@@ -863,10 +844,72 @@ __global__ void GpuPrepareLines
 
 }
 
+__device__ Glpa::GPU_VEC_3D GpuLineIP_X(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int x)
+{
+    Glpa::GPU_VECTOR_MG vecMgr;
+
+    float t = (x - start->x) / (end->x - start->x);
+    int y = start->y + t * (end->y - start->y);
+    float z = start->z + t * (end->z - start->z);
+
+    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
+}
+
+__device__ Glpa::GPU_VEC_3D GpuLineIP_Y(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
+{
+    Glpa::GPU_VECTOR_MG vecMgr;
+
+    float t = (y - start->y) / (end->y - start->y);
+    int x = start->x + t * (end->x - start->x);
+    float z = start->z + t * (end->z - start->z);
+
+    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
+}
+
+__device__ void GpuScanLines
+(
+    int lineY, Glpa::GPU_POLY_LINE* polyLines, int lineAmount, 
+    Glpa::GPU_VEC_3D& leftPoint, Glpa::GPU_VEC_3D& rightPoint, int bufWidth, int bufDpi
+){
+    int leftLineI, rightLineI;
+    float leftX = bufWidth * bufDpi;
+    float rightX = 0;
+
+    for (int i = 0; i < lineAmount; i++)
+    {
+        GPU_IF
+        (
+            (lineY >= polyLines[i].start.y && lineY <= polyLines[i].end.y) ||
+            (lineY >= polyLines[i].end.y && lineY <= polyLines[i].start.y), 
+            br1
+        ){
+            float m = (polyLines[i].end.y - polyLines[i].start.y) / (polyLines[i].end.x - polyLines[i].start.x);
+            float x = polyLines[i].start.x + (lineY - polyLines[i].start.y) / m;
+
+            GPU_IF(x < leftX, br2)
+            {
+                leftX = x;
+                leftLineI = i;
+            }
+
+            GPU_IF(x > rightX, br2)
+            {
+                rightX = x;
+                rightLineI = i;
+            }
+        }
+    }
+
+    leftPoint = GpuLineIP_X(&polyLines[leftLineI].start, &polyLines[leftLineI].end, leftX);
+    rightPoint = GpuLineIP_X(&polyLines[rightLineI].start, &polyLines[rightLineI].end, rightX);
+
+    leftPoint = {(int)leftPoint.x, (int)leftPoint.y, leftPoint.z};
+    rightPoint = {(int)rightPoint.x, (int)rightPoint.y, rightPoint.z};
+}
+
 __global__ void GpuRasterize
 (
-    Glpa::GPU_POLY_LINE** polyLines,
-    int* polyLineAmounts,
+    Glpa::GPU_POLY_LINE** polyLines, Glpa::GPU_MPOLYGON_INFO* mPolyInfo,
     int bufWidth, int bufHeight, int bufDpi, LPDWORD buf,
     Glpa::GPU_RENDER_RESULT* result
 ){
@@ -875,9 +918,16 @@ __global__ void GpuRasterize
 
     if (tI < result->polySum)
     {
-        if (tJ < polyLineAmounts[tI])
+        if (tJ < mPolyInfo[tI].height)
         {
-            
+            Glpa::GPU_VEC_3D leftPoint, rightPoint;
+            GpuScanLines(tJ, polyLines[tI], mPolyInfo[tI].lineAmount, leftPoint, rightPoint, bufWidth, bufDpi);
+
+            for (int i = leftPoint.x; i < rightPoint.x; i++)
+            {
+                int zBufI = i + tJ * bufWidth * bufDpi;
+                atomicExch((unsigned int*)&buf[zBufI], 0xFF0000FF);
+            }
         }
     }
 }
@@ -896,13 +946,13 @@ void Glpa::Render3d::prepareLines()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    stObjFactory.dFree(dPolyLines, dPolyLineAmounts);
-    stObjFactory.dMalloc(dPolyLines, dPolyLineAmounts, resultFactory.hResult.polySum);
+    stObjFactory.dFree(dPolyLines, dMPolyInfo);
+    stObjFactory.dMalloc(dPolyLines, dMPolyInfo, resultFactory.hResult.polySum);
 
     GpuPrepareLines<<<dimGrid, dimBlock>>>
     (
         dStObjData, dObjPolys, dStObjInfo, dCamData, 
-        dPolyLines, dPolyLineAmounts, dResult
+        dPolyLines, dMPolyInfo, dResult
     );
     cudaDeviceSynchronize();
     cudaError_t error = cudaGetLastError();
@@ -917,7 +967,7 @@ void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWO
     cudaGetDeviceProperties(&deviceProp, 0);
 
     int dataSizeY = resultFactory.hResult.polySum;
-    int dataSizeX = resultFactory.hResult.maxLineAmount;
+    int dataSizeX = resultFactory.hResult.maxPolyHeight;
 
     int desiredThreadsPerBlockX = 16;
     int desiredThreadsPerBlockY = 16;
@@ -939,7 +989,7 @@ void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWO
 
     GpuRasterize<<<dimGrid, dimBlock>>>
     (
-        dPolyLines, dPolyLineAmounts, bufWidth, bufHeight, bufDpi, dBuf, dResult
+        dPolyLines, dMPolyInfo, bufWidth, bufHeight, bufDpi, dBuf, dResult
     );
     cudaError_t error = cudaDeviceSynchronize();
     if (error != 0){
@@ -948,8 +998,6 @@ void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWO
 
     cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
     cudaFree(dBuf);
-
-
 }
 
 void Glpa::Render3d::run(
@@ -969,7 +1017,7 @@ void Glpa::Render3d::dRelease()
     mtFactory.dFree(dMts);
     stObjFactory.dFree(dStObjData, dObjPolys);
     stObjFactory.dFree(dStObjInfo);
-    stObjFactory.dFree(dPolyLines, dPolyLineAmounts);
+    stObjFactory.dFree(dPolyLines, dMPolyInfo);
     resultFactory.dFree(dResult);
 }
 
@@ -1011,6 +1059,7 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc
     hResult.vvFaceInxtnSum = 0;
 
     hResult.maxLineAmount = 0;
+    hResult.maxPolyHeight = 0;
 
     hResult.onErr = FALSE;
     hResult.debugNum = 0;

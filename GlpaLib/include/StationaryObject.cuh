@@ -90,7 +90,7 @@ public :
 
     void dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON**& dPolys);
     void dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo);
-    void dFree(Glpa::GPU_POLY_LINE**& dPolyLines, int*& dPolyLineAmounts);
+    void dFree(Glpa::GPU_POLY_LINE**& dPolyLines, GPU_MPOLYGON_INFO*& dMPolyInfo);
 
     void dMalloc
     (
@@ -108,8 +108,7 @@ public :
 
     void dMalloc
     (
-        Glpa::GPU_POLY_LINE**& dPolyLines, int*& dPolyLineAmounts,
-        int polySum
+        Glpa::GPU_POLY_LINE**& dPolyLines, GPU_MPOLYGON_INFO*& dMPolyInfo, int polySum
     );
 };
 

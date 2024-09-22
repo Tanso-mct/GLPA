@@ -432,34 +432,6 @@ typedef struct _GPU_POLY_LINE
         end = argEnd;
         vec = end - start;
     }
-
-    __device__ __host__ float getLength() const
-    {
-        return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-    }
-
-    __device__ __host__ Glpa::GPU_VEC_3D getPoint(float t) const
-    {
-        return start + vec * t;
-    }
-
-    __device__ __host__ GPU_BOOL operator==(const _GPU_POLY_LINE& other) const
-    {
-        return (start == other.start && end == other.end) ? TRUE : FALSE;
-    }
-
-    __device__ __host__ GPU_BOOL operator!=(const _GPU_POLY_LINE& other) const
-    {
-        return (!(*this == other)) ? TRUE : FALSE;
-    }
-
-    __device__ __host__ _GPU_POLY_LINE operator=(const _GPU_POLY_LINE& other)
-    {
-        start = other.start;
-        end = other.end;
-        return *this;
-    }
-
 } GPU_POLY_LINE;
 
 typedef struct _GPU_FACE_3D

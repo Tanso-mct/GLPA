@@ -105,35 +105,22 @@ typedef struct _GPU_RENDER_RESULT
     float mPolyPlaneVs[200][7][3];
 
     int maxLineAmount;
+    int maxPolyHeight;
     int debugNum;
 
     int* hPolyAmounts;
     int* dPolyAmounts;
 } GPU_RENDER_RESULT;
 
-// typedef struct _GPU_Z_BUFFER_ARRAY
-// {
-//     int isEmpt = 0;
-//     int objId = 0;
-//     int polyId = 0;
+typedef struct _GPU_Z_BUFFER_ARRAY
+{
+    int isEmpt = 0;
+    int objId = 0;
+    int polyId = 0;
 
-//     Glpa::GPU_VEC_3D v;
-//     Glpa::GPU_VEC_2D scrV;
-
-//     __device__ __host__ void set(int argObjId, int argPolyId, float newZ, Glpa::GPU_VEC_2D argScrV)
-//     {
-//         GPU_BOOL update = GPU_CO(newZ > v.z || isEmpt == 0, TRUE, FALSE);
-
-//         GPU_IF(update == TRUE, br4)
-//         {
-//             isEmpt = 1;
-//             objId = argObjId + 1;
-//             polyId = argPolyId;
-//             v.z = newZ;
-//             scrV = argScrV;
-//         }
-//     }
-// } GPU_Z_BUFFER_ARY;
+    Glpa::GPU_VEC_3D v;
+    Glpa::GPU_VEC_2D scrV;
+} GPU_Z_BUFFER_ARY;
 
 class RENDER_RESULT_FACTORY
 {
@@ -170,7 +157,7 @@ private :
     Glpa::GPU_POLYGON** dObjPolys;
     Glpa::GPU_ST_OBJECT_INFO* dStObjInfo = nullptr;
 
-    int* dPolyLineAmounts = nullptr;
+    GPU_MPOLYGON_INFO* dMPolyInfo = nullptr;
     Glpa::GPU_POLY_LINE** dPolyLines = nullptr;
 
     Glpa::RENDER_RESULT_FACTORY resultFactory;

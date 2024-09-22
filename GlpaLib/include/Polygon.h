@@ -64,6 +64,15 @@ typedef struct _GPU_POLYGON
 
 } GPU_POLYGON;
 
+typedef struct _GPU_MODIFY_POLYGON_INFO
+{
+    int lineAmount;
+    int height;
+
+    int minY;
+
+} GPU_MPOLYGON_INFO;
+
 class Polygon
 {
 private :
