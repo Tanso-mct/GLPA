@@ -730,6 +730,32 @@ __global__ void GpuPrepareLines
                         0, *sortedMPolyVs.get(0)
                     );
 
+                    // Add the result to the result data
+                    GPU_IF(sortedMPolyVs.size != 0, br4)
+                    {
+                        GPU_IF(i < 12, br5)
+                        {
+                            for (int j = 0; j < sortedMPolyVs.size; j++)
+                            {
+                                Glpa::GPU_VEC_3D* mPolyV = &polyLines[i][j].start;
+                                result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
+                                result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
+                                result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
+                            }
+                        }
+
+                        GPU_IF(i >= 12 && i < 212, br5)
+                        {
+                            for (int j = 0; j < sortedMPolyVs.size; j++)
+                            {
+                                Glpa::GPU_VEC_3D* mPolyV = &polyLines[i][j].start;
+                                result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
+                                result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
+                                result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
+                            }
+                        }
+                    }
+
                     mPolyScrVs.clear();
                     sortedMPolyVs.clear();
 
@@ -804,33 +830,6 @@ __global__ void GpuPrepareLines
 
                     // delete[] maxCoords;
                     // delete[] minCoords;
-
-
-                    // Add the result to the result data
-                    // GPU_IF(sortedMPolyVs.size != 0, br4)
-                    // {
-                    //     GPU_IF(i < 12, br5)
-                    //     {
-                    //         for (int j = 0; j < sortedMPolyVs.size; j++)
-                    //         {
-                    //             Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
-                    //             result->mPolyCubeVs[i][j][Glpa::X] = mPolyV->x;
-                    //             result->mPolyCubeVs[i][j][Glpa::Y] = mPolyV->y;
-                    //             result->mPolyCubeVs[i][j][Glpa::Z] = mPolyV->z;
-                    //         }
-                    //     }
-
-                    //     GPU_IF(i >= 12 && i < 212, br5)
-                    //     {
-                    //         for (int j = 0; j < sortedMPolyVs.size; j++)
-                    //         {
-                    //             Glpa::GPU_VEC_3D* mPolyV = sortedMPolyVs.get(j);
-                    //             result->mPolyPlaneVs[i-12][j][Glpa::X] = mPolyV->x;
-                    //             result->mPolyPlaneVs[i-12][j][Glpa::Y] = mPolyV->y;
-                    //             result->mPolyPlaneVs[i-12][j][Glpa::Z] = mPolyV->z;
-                    //         }
-                    //     }
-                    // }
 
                 }
 
@@ -995,6 +994,8 @@ void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWO
     if (error != 0){
         Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
     }
+
+    resultFactory.deviceToHost(dResult);
 
     cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
     cudaFree(dBuf);
