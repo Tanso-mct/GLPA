@@ -843,27 +843,27 @@ __global__ void GpuPrepareLines
 
 }
 
-__device__ Glpa::GPU_VEC_3D GpuLineIP_X(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int x)
-{
-    Glpa::GPU_VECTOR_MG vecMgr;
+// __device__ Glpa::GPU_VEC_3D GpuLineIP_X(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int x)
+// {
+//     Glpa::GPU_VECTOR_MG vecMgr;
 
-    float t = (x - start->x) / (end->x - start->x);
-    int y = start->y + t * (end->y - start->y);
-    float z = start->z + t * (end->z - start->z);
+//     float t = (x - start->x) / (end->x - start->x);
+//     int y = start->y + t * (end->y - start->y);
+//     float z = start->z + t * (end->z - start->z);
 
-    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
-}
+//     return Glpa::GPU_VEC_3D((float)x, (float)y, z);
+// }
 
-__device__ Glpa::GPU_VEC_3D GpuLineIP_Y(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
-{
-    Glpa::GPU_VECTOR_MG vecMgr;
+// __device__ Glpa::GPU_VEC_3D GpuLineIP_Y(Glpa::GPU_VEC_3D* start, Glpa::GPU_VEC_3D* end, int y)
+// {
+//     Glpa::GPU_VECTOR_MG vecMgr;
 
-    float t = (y - start->y) / (end->y - start->y);
-    int x = start->x + t * (end->x - start->x);
-    float z = start->z + t * (end->z - start->z);
+//     float t = (y - start->y) / (end->y - start->y);
+//     int x = start->x + t * (end->x - start->x);
+//     float z = start->z + t * (end->z - start->z);
 
-    return Glpa::GPU_VEC_3D((float)x, (float)y, z);
-}
+//     return Glpa::GPU_VEC_3D((float)x, (float)y, z);
+// }
 
 __device__ void GpuScanLines
 (
@@ -874,36 +874,36 @@ __device__ void GpuScanLines
     float leftX = bufWidth * bufDpi;
     float rightX = 0;
 
-    for (int i = 0; i < lineAmount; i++)
-    {
-        GPU_IF
-        (
-            (lineY >= polyLines[i].start.y && lineY <= polyLines[i].end.y) ||
-            (lineY >= polyLines[i].end.y && lineY <= polyLines[i].start.y), 
-            br1
-        ){
-            float m = (polyLines[i].end.y - polyLines[i].start.y) / (polyLines[i].end.x - polyLines[i].start.x);
-            float x = polyLines[i].start.x + (lineY - polyLines[i].start.y) / m;
+    // for (int i = 0; i < lineAmount; i++)
+    // {
+    //     GPU_IF
+    //     (
+    //         (lineY >= polyLines[i].start.y && lineY <= polyLines[i].end.y) ||
+    //         (lineY >= polyLines[i].end.y && lineY <= polyLines[i].start.y), 
+    //         br1
+    //     ){
+    //         float m = (polyLines[i].end.y - polyLines[i].start.y) / (polyLines[i].end.x - polyLines[i].start.x);
+    //         float x = polyLines[i].start.x + (lineY - polyLines[i].start.y) / m;
 
-            GPU_IF(x < leftX, br2)
-            {
-                leftX = x;
-                leftLineI = i;
-            }
+    //         GPU_IF(x < leftX, br2)
+    //         {
+    //             leftX = x;
+    //             leftLineI = i;
+    //         }
 
-            GPU_IF(x > rightX, br2)
-            {
-                rightX = x;
-                rightLineI = i;
-            }
-        }
-    }
+    //         GPU_IF(x > rightX, br2)
+    //         {
+    //             rightX = x;
+    //             rightLineI = i;
+    //         }
+    //     }
+    // }
 
-    leftPoint = GpuLineIP_X(&polyLines[leftLineI].start, &polyLines[leftLineI].end, leftX);
-    rightPoint = GpuLineIP_X(&polyLines[rightLineI].start, &polyLines[rightLineI].end, rightX);
+    // leftPoint = GpuLineIP_X(&polyLines[leftLineI].start, &polyLines[leftLineI].end, leftX);
+    // rightPoint = GpuLineIP_X(&polyLines[rightLineI].start, &polyLines[rightLineI].end, rightX);
 
-    leftPoint = {(int)leftPoint.x, (int)leftPoint.y, leftPoint.z};
-    rightPoint = {(int)rightPoint.x, (int)rightPoint.y, rightPoint.z};
+    // leftPoint = {(int)leftPoint.x, (int)leftPoint.y, leftPoint.z};
+    // rightPoint = {(int)rightPoint.x, (int)rightPoint.y, rightPoint.z};
 }
 
 __global__ void GpuRasterize
