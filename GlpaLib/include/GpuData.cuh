@@ -54,7 +54,7 @@ typedef struct _GPU_LIST_3
         {
             for (int j = 0; j < size-1; j++)
             {
-                GPU_IF(pair[j].val1 > pair[j+1].val1, br4)
+                GPU_IF(pair[j].val1 < pair[j+1].val1, br4)
                 {
                     Glpa::GPU_PAIR temp = pair[j];
                     pair[j] = pair[j + 1];
@@ -70,7 +70,7 @@ typedef struct _GPU_LIST_3
         {
             for (int j = 0; j < size-1; j++)
             {
-                GPU_IF(pair[j].val2 > pair[j+1].val2, br4)
+                GPU_IF(pair[j].val2 < pair[j+1].val2, br4)
                 {
                     Glpa::GPU_PAIR temp = pair[j];
                     pair[j] = pair[j + 1];
@@ -86,7 +86,7 @@ typedef struct _GPU_LIST_3
         {
             for (int j = 0; j < size-1; j++)
             {
-                GPU_IF(pair[j].val1 < pair[j+1].val1, br4)
+                GPU_IF(pair[j].val1 > pair[j+1].val1, br4)
                 {
                     Glpa::GPU_PAIR temp = pair[j];
                     pair[j] = pair[j + 1];
@@ -102,7 +102,7 @@ typedef struct _GPU_LIST_3
         {
             for (int j = 0; j < size-1; j++)
             {
-                GPU_IF(pair[j].val2 < pair[j+1].val2, br4)
+                GPU_IF(pair[j].val2 > pair[j+1].val2, br4)
                 {
                     Glpa::GPU_PAIR temp = pair[j];
                     pair[j] = pair[j + 1];

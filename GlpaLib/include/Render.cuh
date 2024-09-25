@@ -108,6 +108,8 @@ typedef struct _GPU_RENDER_RESULT
     int maxPolyHeight;
     int debugNum;
 
+    int rasterizePolySum;
+
     int* hPolyAmounts;
     int* dPolyAmounts;
 } GPU_RENDER_RESULT;
@@ -162,6 +164,8 @@ private :
 
     Glpa::RENDER_RESULT_FACTORY resultFactory;
     Glpa::GPU_RENDER_RESULT* dResult = nullptr;
+
+    LPDWORD dBuf;
 
     void dMalloc
     (
