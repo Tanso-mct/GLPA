@@ -188,6 +188,7 @@
     <CudaCompile Include="include\Camera.cuh" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Constant.h" />
+    <ClInclude Include="include\ErrorHandler.cuh" />
     <ClInclude Include="include\FileDataManager.h" />
     <ClInclude Include="include\GlpaBase.h" />
     <ClInclude Include="include\ConsoleScene.h" />

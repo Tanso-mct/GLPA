@@ -66,30 +66,30 @@ void Glpa::StationaryObject::release()
     fileDataManager->release(filePath);
 }
 
-void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON**& dPolys){
-    if (dataMalloced)
+void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_DATA*& dObjData, Glpa::GPU_POLYGON**& dPolys)
+{
+    if (!dataMalloced) return;
+
+    cudaFree(dObjData);
+    dObjData = nullptr;
+
+    for (int i = 0; i < idMap.size(); i++)
     {
-        cudaFree(dObjData);
-        dObjData = nullptr;
+        cudaFree(dPolys[i]);
+    }
 
-        for (int i = 0; i < idMap.size(); i++)
-        {
-            cudaFree(dPolys[i]);
-        }
+    cudaFree(dPolys);
+    dPolys = nullptr;
 
-        cudaFree(dPolys);
-        dPolys = nullptr;
-
-        dataMalloced = false;
-    };
+    dataMalloced = false;
 }
 
 void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_ST_OBJECT_INFO*& dObjInfo)
 {
-    if (infoMalloced)
-    {
-        cudaFree(dObjInfo);
-    };
+    if (!infoMalloced) return;
+
+    cudaFree(dObjInfo);
+    infoMalloced = false;
 }
 
 __global__ void freeInKanel(Glpa::GPU_POLY_LINE** dPolyLine, int size)
@@ -102,17 +102,18 @@ __global__ void freeInKanel(Glpa::GPU_POLY_LINE** dPolyLine, int size)
 
 void Glpa::ST_OBJECT_FACTORY::dFree(Glpa::GPU_POLY_LINE **&dPolyLines, Glpa::GPU_MPOLYGON_INFO*& dMPolyInfo)
 {
-    if (polyLineMalloced)
-    {
-        freeInKanel<<<1, 1>>>(dPolyLines, lastPolySum);
+    if (!polyLineMalloced) return;
 
-        cudaFree(dPolyLines);
-        dPolyLines = nullptr;
+    freeInKanel<<<1, 1>>>(dPolyLines, lastPolySum);
+    cudaDeviceSynchronize();
+    checkCudaErr(__FILE__, __LINE__, __FUNCSIG__);
 
-        cudaFree(dMPolyInfo);
+    cudaFree(dPolyLines);
+    dPolyLines = nullptr;
 
-        polyLineMalloced = false;
-    }
+    cudaFree(dMPolyInfo);
+
+    polyLineMalloced = false;
 }
 
 void Glpa::ST_OBJECT_FACTORY::dMalloc
@@ -122,7 +123,7 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
     std::unordered_map<std::string, Glpa::SceneObject *> &sObjs, 
     std::unordered_map<std::string, int> &mtIdMap
 ){
-    if (dataMalloced) dFree(dObjData, dPolys);
+    if (dataMalloced) return;
 
     std::vector<Glpa::GPU_ST_OBJECT_DATA> hObjs;
     std::vector<Glpa::GPU_POLYGON*> polys;
@@ -166,6 +167,8 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
     Glpa::GPU_ST_OBJECT_INFO*& dObjInfo, 
     std::unordered_map<std::string, Glpa::SceneObject *> &sObjs
 ){
+    if (infoMalloced) return;
+
     std::vector<Glpa::GPU_ST_OBJECT_INFO> hObjInfo;
     for (auto& pair : idMap)
     {
@@ -177,11 +180,13 @@ void Glpa::ST_OBJECT_FACTORY::dMalloc
 
     cudaMalloc(&dObjInfo, idMap.size() * sizeof(Glpa::GPU_ST_OBJECT_INFO));
     cudaMemcpy(dObjInfo, hObjInfo.data(), idMap.size() * sizeof(Glpa::GPU_ST_OBJECT_INFO), cudaMemcpyHostToDevice);
+
+    infoMalloced = true;
 }
 
 void Glpa::ST_OBJECT_FACTORY::dMalloc(Glpa::GPU_POLY_LINE**& dPolyLines, GPU_MPOLYGON_INFO*& dMPolyInfo, int polySum)
 {
-    if (polyLineMalloced) dFree(dPolyLines, dMPolyInfo);
+    if (polyLineMalloced) return;
 
     cudaMalloc(&dPolyLines, polySum * sizeof(Glpa::GPU_POLY_LINE*));
     cudaMalloc(&dMPolyInfo, polySum * sizeof(GPU_MPOLYGON_INFO));

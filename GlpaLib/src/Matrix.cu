@@ -1,5 +1,5 @@
 #include "Matrix.cuh"
-#include "ErrorHandler.h"
+#include "ErrorHandler.cuh"
 
 Glpa::Matrix::Matrix(std::initializer_list<float> list)
 {

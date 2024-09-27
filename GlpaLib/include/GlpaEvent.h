@@ -6,7 +6,7 @@
 #include <vector>
 #include <initializer_list>
 
-#include "ErrorHandler.h"
+#include "ErrorHandler.cuh"
 
 namespace Glpa
 {

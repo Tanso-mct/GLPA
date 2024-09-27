@@ -109,9 +109,6 @@ typedef struct _GPU_RENDER_RESULT
     int debugNum;
 
     int rasterizePolySum;
-
-    int* hPolyAmounts;
-    int* dPolyAmounts;
 } GPU_RENDER_RESULT;
 
 typedef struct _GPU_Z_BUFFER_ARRAY
@@ -127,6 +124,7 @@ typedef struct _GPU_Z_BUFFER_ARRAY
 class RENDER_RESULT_FACTORY
 {
 public :
+    int* hPolyAmounts = nullptr;
     Glpa::GPU_RENDER_RESULT hResult;
     bool malloced = false;
 
@@ -135,14 +133,14 @@ public :
         malloced = false;
     }
 
-    void dFree(Glpa::GPU_RENDER_RESULT*& dResult);
+    void dFree(Glpa::GPU_RENDER_RESULT*& dResult, int*& dPolyAmounts);
     void dMalloc
     (
-        Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum, 
+        Glpa::GPU_RENDER_RESULT*& dResult, int*& dPolyAmounts, int srcObjSum, 
         int bufWidth, int bufHeight, int bufDpi
     );
 
-    void deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult);
+    void deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult, int*& dPolyAmounts);
 };
 
 class Render3d
@@ -164,8 +162,9 @@ private :
 
     Glpa::RENDER_RESULT_FACTORY resultFactory;
     Glpa::GPU_RENDER_RESULT* dResult = nullptr;
+    int* dPolyAmounts = nullptr;
 
-    LPDWORD dBuf;
+    LPDWORD dBuf = nullptr;
 
     void dMalloc
     (

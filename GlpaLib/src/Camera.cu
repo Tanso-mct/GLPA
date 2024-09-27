@@ -203,12 +203,14 @@ void Glpa::CAMERA_FACTORY::dFree(Glpa::GPU_CAMERA*& dCamera)
 
     cudaFree(dCamera);
     dCamera = nullptr;
+    
     malloced = false;
 }
 
 void Glpa::CAMERA_FACTORY::dMalloc(Glpa::GPU_CAMERA*& dCamera, Glpa::GPU_CAMERA &hCamera)
 {
-    if (malloced) dFree(dCamera);
+    if (malloced) return;
+
     cudaMalloc(&dCamera, sizeof(Glpa::GPU_CAMERA));
     cudaMemcpy(dCamera, &hCamera, sizeof(Glpa::GPU_CAMERA), cudaMemcpyHostToDevice);
 

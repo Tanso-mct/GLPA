@@ -1,5 +1,5 @@
 #include "Material.cuh"
-#include "ErrorHandler.h"
+#include "ErrorHandler.cuh"
 
 Glpa::Material::Material(std::string argName, std::string argBaseColorFilePath)
 {
@@ -84,28 +84,25 @@ void Glpa::Material::release()
 
 void Glpa::MATERIAL_FACTORY::dFree(Glpa::GPU_MATERIAL*& dMts)
 {
-    if (malloced)
+    if (!malloced) return;
+
+    for (size_t i = 0; i < idMap.size(); i++)
     {
-        for (size_t i = 0; i < idMap.size(); i++)
-        {
-            LPDWORD dBaseColor = nullptr;
-            cudaMemcpy(dBaseColor, &dMts[i].baseColor, sizeof(LPDWORD), cudaMemcpyDeviceToHost);
-            cudaFree(dBaseColor);
-        }
-
-        cudaFree(dMts);
-        dMts = nullptr;
-
-        idMap.clear();
-
-        malloced = false;
+        LPDWORD dBaseColor = nullptr;
+        cudaMemcpy(dBaseColor, &dMts[i].baseColor, sizeof(LPDWORD), cudaMemcpyDeviceToHost);
+        cudaFree(dBaseColor);
     }
+
+    cudaFree(dMts);
+    dMts = nullptr;
+
+    idMap.clear();
+
+    malloced = false;
 }
 
 void Glpa::MATERIAL_FACTORY::dMalloc(Glpa::GPU_MATERIAL*& dMts, std::unordered_map<std::string, Glpa::Material *> &sMts)
 {
-    if (malloced) dFree(dMts);
-
     std::vector<Glpa::GPU_MATERIAL> hMts;
     int id = 0;
     for (auto& pair : sMts)

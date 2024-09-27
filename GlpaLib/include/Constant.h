@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "ErrorHandler.h"
+#include "ErrorHandler.cuh"
 
 #define GPU_BOOL int
 

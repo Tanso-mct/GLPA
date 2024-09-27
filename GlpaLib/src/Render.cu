@@ -269,10 +269,8 @@ void Glpa::Render2d::run
             dImgPosX, dImgPosY, dImgWidth, dImgHeight, dImgData, imgAmount, 
             dBuf, bufWidth, bufHeight, bufDpi, backgroundColor
         );
-        cudaError_t error = cudaDeviceSynchronize();
-        if (error != 0){
-            Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
-        }
+        cudaDeviceSynchronize();
+        checkCudaErr(__FILE__, __LINE__, __FUNCSIG__);
 
         cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
     }
@@ -313,13 +311,10 @@ void Glpa::Render3d::dMalloc
     stObjFactory.dMalloc(dStObjInfo, objs);
 
     // Result data
-    if (resultFactory.malloced)
-    {
-        resultFactory.dFree(dResult);
-    }
-    resultFactory.dMalloc(dResult, stObjFactory.idMap.size(), bufWidth, bufHeight, bufDpi);
+    if (resultFactory.malloced) resultFactory.dFree(dResult, dPolyAmounts);
+    resultFactory.dMalloc(dResult, dPolyAmounts, stObjFactory.idMap.size(), bufWidth, bufHeight, bufDpi);
 
-    cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
+    if (dBuf == nullptr) cudaMalloc(&dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
     cudaMemset(dBuf, 0, bufWidth * bufHeight * bufDpi * sizeof(DWORD));
 }
 
@@ -329,6 +324,7 @@ __global__ void GpuPrepareObj
     Glpa::GPU_ST_OBJECT_INFO* objInfo,
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_RENDER_RESULT* result,
+    int* polyAmounts,
     int objAmount
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -351,7 +347,7 @@ __global__ void GpuPrepareObj
             atomicAdd(&result->objSum, 1);
             atomicAdd(&result->polySum, objData[i].polyAmount);
 
-            result->dPolyAmounts[i] = objData[i].polyAmount;
+            polyAmounts[i] = objData[i].polyAmount;
         }
         
     } // if (i < objAmount)
@@ -372,12 +368,11 @@ void Glpa::Render3d::prepareObjs()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    GpuPrepareObj<<<dimGrid, dimBlock>>>(dStObjData, dStObjInfo, dCamData, dResult, dataSize);
+    GpuPrepareObj<<<dimGrid, dimBlock>>>(dStObjData, dStObjInfo, dCamData, dResult, dPolyAmounts, dataSize);
     cudaDeviceSynchronize();
-    cudaError_t err = cudaGetLastError();
-    if (err != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+    checkCudaErr(__FILE__, __LINE__, __FUNCSIG__);
 
-    resultFactory.deviceToHost(dResult);
+    resultFactory.deviceToHost(dResult, dPolyAmounts);
 }
 
 __device__ void GpuSetI(int nI, int* polyAmounts, int objSum, int& objId, int& polyId)
@@ -466,7 +461,8 @@ __global__ void GpuPrepareLines
     Glpa::GPU_CAMERA* camData,
     Glpa::GPU_POLY_LINE** mPolyLines,
     Glpa::GPU_MPOLYGON_INFO* mPolyInfo,
-    Glpa::GPU_RENDER_RESULT* result
+    Glpa::GPU_RENDER_RESULT* result,
+    int* polyAmounts
 ){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     Glpa::GPU_VECTOR_MG vecMgr;
@@ -475,7 +471,7 @@ __global__ void GpuPrepareLines
     {
         // Get the index of each object and polygon from the current i
         int objId, polyId;
-        GpuSetI(i, result->dPolyAmounts, result->objSum, objId, polyId);
+        GpuSetI(i, polyAmounts, result->objSum, objId, polyId);
 
         mPolyInfo[i].height = 0;
 
@@ -1021,19 +1017,18 @@ void Glpa::Render3d::prepareLines()
     dim3 dimBlock(threadsPerBlock);
     dim3 dimGrid(blocks);
 
-    stObjFactory.dFree(dPolyLines, dMPolyInfo);
+    if(stObjFactory.polyLineMalloced) stObjFactory.dFree(dPolyLines, dMPolyInfo);
     stObjFactory.dMalloc(dPolyLines, dMPolyInfo, resultFactory.hResult.polySum);
 
     GpuPrepareLines<<<dimGrid, dimBlock>>>
     (
         dStObjData, dObjPolys, dStObjInfo, dCamData, 
-        dPolyLines, dMPolyInfo, dResult
+        dPolyLines, dMPolyInfo, dResult, dPolyAmounts
     );
     cudaDeviceSynchronize();
-    cudaError_t error = cudaGetLastError();
-    if (error != 0) Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});
+    checkCudaErr(__FILE__, __LINE__, __FUNCSIG__);
 
-    resultFactory.deviceToHost(dResult);
+    resultFactory.deviceToHost(dResult, dPolyAmounts);
 }
 
 void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWORD buf)
@@ -1065,10 +1060,10 @@ void Glpa::Render3d::rasterize(int& bufWidth, int& bufHeight, int& bufDpi, LPDWO
     (
         dPolyLines, dMPolyInfo, bufWidth, bufHeight, bufDpi, dBuf, dResult
     );
-    cudaError_t error = cudaDeviceSynchronize();
-    if (error != 0){Glpa::runTimeError(__FILE__, __LINE__, {"Processing with Cuda failed."});}
+    cudaDeviceSynchronize();
+    checkCudaErr(__FILE__, __LINE__, __FUNCSIG__);
 
-    resultFactory.deviceToHost(dResult);
+    resultFactory.deviceToHost(dResult, dPolyAmounts);
 
     cudaMemcpy(buf, dBuf, bufWidth * bufHeight * bufDpi * sizeof(DWORD), cudaMemcpyDeviceToHost);
 }
@@ -1091,20 +1086,17 @@ void Glpa::Render3d::dRelease()
     stObjFactory.dFree(dStObjData, dObjPolys);
     stObjFactory.dFree(dStObjInfo);
     stObjFactory.dFree(dPolyLines, dMPolyInfo);
-    resultFactory.dFree(dResult);
+    resultFactory.dFree(dResult, dPolyAmounts);
     cudaFree(dBuf);
 }
 
-void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult)
+void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult, int*& dPolyAmounts)
 {
     if (!malloced) return;
 
-    delete[] hResult.hPolyAmounts;
-    hResult.hPolyAmounts = nullptr;
-
-    int* dPolyAmounts;
-    cudaMemcpy(&dPolyAmounts, &dResult->dPolyAmounts, sizeof(int*), cudaMemcpyDeviceToHost);
+    delete[] hPolyAmounts;
     cudaFree(dPolyAmounts);
+    dPolyAmounts = nullptr;
 
     cudaFree(dResult);
     dResult = nullptr;
@@ -1114,10 +1106,10 @@ void Glpa::RENDER_RESULT_FACTORY::dFree(Glpa::GPU_RENDER_RESULT*& dResult)
 
 void Glpa::RENDER_RESULT_FACTORY::dMalloc
 (
-    Glpa::GPU_RENDER_RESULT*& dResult, int srcObjSum, 
+    Glpa::GPU_RENDER_RESULT*& dResult, int*& dPolyAmounts, int srcObjSum, 
     int bufWidth, int bufHeight, int bufDpi
 ){
-    if (malloced) dFree(dResult);
+    if (malloced) return;
 
     hResult.srcObjSum = srcObjSum;
     hResult.objSum = 0;
@@ -1140,32 +1132,20 @@ void Glpa::RENDER_RESULT_FACTORY::dMalloc
 
     hResult.rasterizePolySum = 0;
 
-    hResult.hPolyAmounts = new int[srcObjSum];
-    std::fill(hResult.hPolyAmounts, hResult.hPolyAmounts + srcObjSum, 0);
-
-    cudaMalloc(&hResult.dPolyAmounts, srcObjSum * sizeof(int));
-    cudaMemcpy(hResult.dPolyAmounts, hResult.hPolyAmounts, srcObjSum * sizeof(int), cudaMemcpyHostToDevice);
-
     cudaMalloc(&dResult, sizeof(Glpa::GPU_RENDER_RESULT));
     cudaMemcpy(dResult, &hResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyHostToDevice);
 
-    cudaFree(hResult.dPolyAmounts);
+    hPolyAmounts = new int[srcObjSum];
+    cudaMalloc(&dPolyAmounts, srcObjSum * sizeof(int));
+    cudaMemset(dPolyAmounts, 0, srcObjSum * sizeof(int));
 
     malloced = true;
 }
 
-void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult)
+void Glpa::RENDER_RESULT_FACTORY::deviceToHost(Glpa::GPU_RENDER_RESULT*& dResult, int*& dPolyAmounts)
 {
     if (!malloced) Glpa::runTimeError(__FILE__, __LINE__, {"There is no memory on the result device side."});
 
     cudaMemcpy(&hResult, dResult, sizeof(Glpa::GPU_RENDER_RESULT), cudaMemcpyDeviceToHost);
-
-    int* dOtherPolyAmounts;
-    cudaMalloc(&dOtherPolyAmounts, hResult.srcObjSum * sizeof(int));
-    cudaMemcpy(dOtherPolyAmounts, hResult.dPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToDevice);
-
-    cudaMemcpy(hResult.hPolyAmounts, dOtherPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
-    cudaFree(dOtherPolyAmounts);
-
-
+    cudaMemcpy(hPolyAmounts, dPolyAmounts, hResult.srcObjSum * sizeof(int), cudaMemcpyDeviceToHost);
 }

@@ -185,6 +185,9 @@
     <ClInclude Include="include\SceneObject.h">
       <Filter>ヘッダー ファイル\GlpaLib</Filter>
     </ClInclude>
+    <ClInclude Include="include\ErrorHandler.cuh">
+      <Filter>ヘッダー ファイル\GlpaLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd">

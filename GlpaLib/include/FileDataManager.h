@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 
-#include "ErrorHandler.h"
+#include "ErrorHandler.cuh"
 
 #include "Polygon.h"
 #include "RangeRect.cuh"
