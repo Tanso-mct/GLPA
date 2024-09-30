@@ -20,11 +20,13 @@ constexpr const char* CONSOLE_TAG_GLPA_LIB = "tag_glpa_lib";
 constexpr const char* CONSOLE_TAG_GLPA_RENDER = "tag_glpa_render";
 constexpr const char* CONSOLE_TAG_CONSOLE = "tag_console";
 constexpr const char* CONSOLE_TAG_EXAMPLE = "tag_example";
+constexpr const char* CONSOLE_TAG_EXAMPLE_B = "tag_example_base_b";
 
 constexpr const char* CONSOLE_TAG_ENABLE_FILTERS[] 
 = {
     CONSOLE_TAG_GLPA_LIB,
-    CONSOLE_TAG_GLPA_RENDER
+    CONSOLE_TAG_GLPA_RENDER,
+    CONSOLE_TAG_EXAMPLE_B
 };
 
 

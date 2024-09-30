@@ -12,6 +12,7 @@ public :
     
     void setup() override;
     void start() override;
+    void update() override;
 };
 
 #endif EXAMPLE_SCENE_3D_H_

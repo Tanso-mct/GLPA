@@ -1,4 +1,5 @@
 #include "ExampleScene3d.h"
+#include "GlpaConsole.h"
 
 ExampleScene3d::~ExampleScene3d()
 {
@@ -6,7 +7,7 @@ ExampleScene3d::~ExampleScene3d()
 
 void ExampleScene3d::setup()
 {
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_EXAMPLE, "Scene[" + name + "]");
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::CONSOLE_TAG_EXAMPLE_B, "Scene[" + name + "]");
 
     Glpa::Material *ptMtCube = new Glpa::Material("mt_cube", "resource/Assets/Mtls/cube/cube_baseColor.png");
     AddMaterial(ptMtCube);
@@ -34,5 +35,25 @@ void ExampleScene3d::setup()
 
 void ExampleScene3d::start()
 {
-    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::OUTPUT_TAG_EXAMPLE, "ExampleScene3d::start()");
+    Glpa::OutputLog(__FILE__, __LINE__, __FUNCSIG__, Glpa::CONSOLE_TAG_EXAMPLE_B, "ExampleScene3d::start()");
+}
+
+void ExampleScene3d::update()
+{
+    if (GetNowKeyDownMsg("w"))
+    {
+        Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE_B, __FILE__, __LINE__, {"Key Down W"});
+    }
+    if (GetNowKeyDownMsg("s"))
+    {
+        Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE_B, __FILE__, __LINE__, {"Key Down S"});
+    }
+    if (GetNowKeyDownMsg("a"))
+    {
+        Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE_B, __FILE__, __LINE__, {"Key Down A"});
+    }
+    if (GetNowKeyDownMsg("d"))
+    {
+        Glpa::Console::Log(Glpa::CONSOLE_TAG_EXAMPLE_B, __FILE__, __LINE__, {"Key Down D"});
+    }
 }
