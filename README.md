@@ -1,5 +1,5 @@
 ## GLPA
-`GlpaLib/GlpaLib.sln`を立ち上げ、`GlpaLib`プロジェクトを実行することで使用できます。
+[GlpaLib.sln](GlpaLib/GlpaLib.sln)を立ち上げ、`GlpaLib`プロジェクトを実行することで使用できます。
 ビルドには`CUDA ToolKit`のダウンロードが必要です。
 プログラムはVisual Studioから実行停止を行わなければ、現状ではエラーが起きるため注意してください。
 
